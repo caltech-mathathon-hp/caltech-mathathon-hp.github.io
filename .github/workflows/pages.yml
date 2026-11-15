@@ -1,6 +1,6 @@
 # Builds the site and publishes it with GitHub Pages on every push to main.
 # The repository is named <owner>.github.io, so the site is served at the root,
-# https://mathathon-caltech-hp.github.io/. Under any other name it would be served at
+# https://caltech-mathathon-hp.github.io/. Under any other name it would be served at
 # https://<owner>.github.io/<name>/, and SITE_BASE below follows the name.
 name: Website
 

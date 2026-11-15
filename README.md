@@ -5,7 +5,7 @@ possible is NP-complete, made for Problem 07 of the Caltech × SAIR Mathathon 20
 game and a bin-packing game, Berger and Leighton's 1998 proof as a board of cards, related work,
 and the plan for a proof in Lean.
 
-**Site:** <https://mathathon-caltech-hp.github.io/>
+**Site:** <https://caltech-mathathon-hp.github.io/>
 
 ## Run it locally
 
