@@ -6,14 +6,17 @@
 #   prose    = deliberately argued on paper, not in Lean
 
 project:
-  toolchain: "Lean 4, Mathlib v4.35.0"
-  repo: ""        # link to the Lean project (folder or repository) once it exists
-  download: ""    # URL of a .zip of the project; the download button appears when set
-  commit: ""      # commit hash the status below refers to
+  toolchain: "Lean 4.24.0, Mathlib v4.24.0"
+  repo: "https://github.com/mathathon-caltech-hp/mathathon-caltech-hp.github.io/tree/lean-certificates/lean/cubic"
+  download: "https://github.com/mathathon-caltech-hp/mathathon-caltech-hp.github.io/archive/refs/heads/lean-certificates.zip"
+  commit: "2254adcb56a81c0048092c263090046b210a41f6" # exact certificate source snapshot
 
 build: |
+  # After cloning the lean-certificates branch or extracting its ZIP:
+  cd lean/cubic
   lake exe cache get
   lake build
+  lake env lean checks/CubicHardness.lean
 
 # What "Lean-verified" means (the mathathon rules).
 guarantees:
@@ -21,26 +24,37 @@ guarantees:
   - No `sorry` anywhere.
   - Only the standard axioms (`propext`, `Classical.choice`, `Quot.sound`); check with `#print axioms`.
   - No `native_decide`.
+  - "The final NP-hardness and NP-completeness proofs retain the explicit SAT.CookLevin premise."
 
-# Proposed scope, following the literature review (literature/topics/Q5-formalization.md):
-# definitions and the correctness "iff" of the reduction in Lean, plus a size bound;
-# running time argued in prose. To be confirmed by the Lean team.
+# Source and exact theorem signatures: lean/cubic/docs/theorem-index.md.
+# Uses an alternative cubic frame, preserving the problem statements.
+# Polynomial running times have actual mathlib TM2 proofs.
 items:
   - id: defs
     title: "Definitions: HP strings, folds on the cubic lattice, the score"
-    status: planned
+    status: verified
+    file: "lean/cubic/ProteinFolding/Cubic/Statement.lean"
   - id: iso
     title: "The cube has the smallest surface: n³ nodes have surface ≥ 6n², equality only for the cube"
-    status: planned
+    status: verified
+    file: "lean/cubic/ProteinFolding/Cubic/Proofs/GeometryRigidity.lean"
   - id: cube
     title: "A fold of a string with n³ H's reaches the score bound only if its H's fill a cube"
-    status: planned
+    status: verified
+    file: "lean/cubic/ProteinFolding/Cubic/Proofs/GeometryMain.lean"
   - id: iff
     title: "Correctness of the reduction: a perfect fold exists iff the packing instance has a solution"
-    status: planned
+    status: verified
+    file: "lean/cubic/ProteinFolding/Cubic/Proofs/PackingReductionCorrect.lean"
   - id: size
     title: The string has polynomial length
-    status: planned
+    status: verified
+    file: "lean/cubic/ProteinFolding/Cubic/Proofs/PackingToPerfectComputable.lean"
   - id: time
     title: The reduction runs in polynomial time
-    status: prose
+    status: verified
+    file: "lean/cubic/ProteinFolding/Cubic/Proofs/PackingToPerfectComputable.lean"
+  - id: main
+    title: "Cubic HP and PERFECT HP NP-completeness, assuming the explicit Cook–Levin proposition"
+    status: verified
+    file: "lean/cubic/ProteinFolding/Cubic/Proofs/Main.lean"
