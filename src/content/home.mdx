@@ -4,6 +4,7 @@ lede: Fold a string of H’s and P’s into a grid so that as many H’s as poss
 
 import FoldGame from '../widgets/fold-game/FoldGame.tsx';
 import Equivalence from '../widgets/proof-map/figures/Equivalence.astro';
+import ProteinToHP from '../components/ProteinToHP.astro';
 import '../widgets/proof-map/figures/fig.css';
 
 {/* The front page text, rendered by src/pages/index.astro under the title and the lede above.
@@ -18,6 +19,16 @@ you can. The best fold has 8.
 <div class="wide">
   <FoldGame client:visible compact lattice="cubic" sequence="PHHPPHHPPHHPPHHP" />
 </div>
+
+## Protein folding is hard in practice
+
+A protein folds into the shape with the lowest energy, and computing that shape is hard in
+practice. To *prove* that folding is hard, we first need a precise problem, so we keep a single
+force of real folding and drop the rest.
+
+<Figure>
+  <div class="home-fig"><ProteinToHP /></div>
+</Figure>
 
 ## The HP model
 
