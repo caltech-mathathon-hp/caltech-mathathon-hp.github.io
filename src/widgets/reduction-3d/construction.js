@@ -47,19 +47,29 @@ export function params(K, B) {
   return { K, B, q, n, T, c, m: n - 2 };
 }
 
+// The ribbons hold their H's two at a time, so the construction needs B and every size even. If one
+// of them is odd, all of them are doubled first, which changes nothing about which items fit
+// together (proof board, card 2). Even instances are left as they are.
+export function normalise(B, sizes) {
+  const f = B % 2 || sizes.some((s) => s % 2) ? 2 : 1;
+  return { f, B: f * B, sizes: sizes.map((s) => f * s) };
+}
+
+// P describes the normalised instance: P.B and P.sizes are doubled when P.f = 2, P.origB is the
+// bin size as entered
 export function checkInstance(K, B, sizes) {
   const errs = [];
   if (!(Number.isInteger(K) && K >= 1)) errs.push('K must be a positive integer');
-  if (!(Number.isInteger(B) && B >= 2)) errs.push('B must be an integer ≥ 2');
-  if (B % 2) errs.push('B must be even (the B-strings are (PHHP)^{B/2})');
+  if (!(Number.isInteger(B) && B >= 1)) errs.push('B must be a positive integer');
   if (!sizes.length) errs.push('need at least one item');
   sizes.forEach((s, i) => {
-    if (!(Number.isInteger(s) && s > 0 && s % 2 === 0)) errs.push(`item ${i + 1}: size must be a positive even integer`);
+    if (!(Number.isInteger(s) && s > 0)) errs.push(`item ${i + 1}: size must be a positive integer`);
   });
   const sum = sizes.reduce((a, b) => a + b, 0);
-  if (sum !== B * K) errs.push(`sizes must sum to B·K = ${B * K} (they sum to ${sum})`);
+  if (!errs.length && sum !== B * K) errs.push(`sizes must sum to B·K = ${B * K} (they sum to ${sum})`);
   if (errs.length) return { errs };
-  const P = params(K, B);
+  const nz = normalise(B, sizes);
+  const P = { ...params(K, nz.B), f: nz.f, sizes: nz.sizes, origB: B };
   if (2 * (P.T - P.B) <= P.T) errs.push('need 2(T−B) > T');
   return { errs, P };
 }
@@ -650,14 +660,15 @@ const itemSegs = [];
 }
 
 // ---------------------------------------------------------------- validation
-export function validate(P, fold, types) {
+// o.str, o.max: how the check list names the string and the maximum (defaults: Berger and Leighton)
+export function validate(P, fold, types, o = {}) {
   const { n } = P;
   const { N, X, Y, Z, TY } = fold;
   const checks = [];
   // 1. sequence equals S_B
   let seqOk = N === types.length;
   if (seqOk) for (let i = 0; i < N; i++) if (TY[i] !== types[i]) { seqOk = false; break; }
-  checks.push({ name: 'H/P sequence of the fold equals S_B (Fig. 3)', ok: seqOk, detail: `${N.toLocaleString()} residues` });
+  checks.push({ name: `H/P sequence of the fold equals ${o.str || 'S_B (Fig. 3)'}`, ok: seqOk, detail: `${N.toLocaleString()} residues` });
   // 2. self-avoiding walk
   let adj = true;
   for (let i = 1; i < N; i++) {
@@ -690,10 +701,11 @@ export function validate(P, fold, types) {
     contactPrefix[i + 1] = cnt;
   }
   const target = 3 * n * n * (n - 1);
-  checks.push({ name: `H–H pairs = 3n²(n−1) = ${target.toLocaleString()}, the maximum (Thm 3.2)`, ok: cnt === target, detail: cnt.toLocaleString() });
+  checks.push({ name: `H–H pairs = 3n²(n−1) = ${target.toLocaleString()}, ${o.max || 'the maximum (Thm 3.2)'}`, ok: cnt === target, detail: cnt.toLocaleString() });
   return { checks, ok: checks.every((c) => c.ok), contactPrefix, contacts: cnt, target };
 }
 
+// K, B, sizes as entered (odd values allowed, see normalise).
 // `given` (optional): a packing chosen by the user, assign[u] = bin of item u; it must fill every bin exactly
 export function build(K, B, sizes, given) {
   const chk = checkInstance(K, B, sizes);
@@ -708,9 +720,10 @@ export function build(K, B, sizes, given) {
     sol = { assign: given.slice(), nodes: 0, given: true };
   } else sol = solveBinPacking(sizes, K, B);
   const t1 = Date.now();
-  const str = buildString(P, sizes);
+  // the string and the fold use the normalised (possibly doubled) sizes; the packing is the same
+  const str = buildString(P, P.sizes);
   if (!sol.assign) return { P, solvable: false, solverNodes: sol.nodes, str, tSolve: t1 - t0 };
-  const fold = buildFold(P, sizes, sol.assign);
+  const fold = buildFold(P, P.sizes, sol.assign);
   const t2 = Date.now();
   const val = validate(P, fold, str.types);
   const t3 = Date.now();

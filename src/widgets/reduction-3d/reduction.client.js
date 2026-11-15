@@ -1,14 +1,17 @@
 /**
- * The reduction, folded: Berger and Leighton's string S_B for a bin packing instance, folded into a
- * perfect cube step by step as in §3.2.3 (the "Folded in 3D" section).
+ * A reduction, folded: the string of a hardness proof for a bin packing instance, folded into a
+ * perfect cube step by step. Two constructions share this viewer, chosen by data-construction on
+ * the root: Berger and Leighton's S_B (adapter-bl.js, construction.js; the "Folded in 3D" section)
+ * and the short proof with the instance on one edge (adapter-edge.js, edge-construction.js).
  *
  * mount(root) takes the markup of Reduction3D.astro (ids prefixed rd-, one widget per page) and
- * builds everything inside it: the packing board (drag and drop), the parameters, the formula of
- * S_B with the current factor marked, the front-face map, the checks of the fold, and the three.js
- * stage with the step timeline. The construction itself is in construction.js.
+ * builds everything inside it: the packing board (drag and drop), the formula of the string with
+ * the current factor marked, the checks of the fold, and the three.js stage with the steps and the
+ * string bar. An adapter supplies what belongs to one construction: presets, formula, steps and
+ * their texts, labels on the cube, and the pieces of the string bar.
  *
  * Keys (while the widget fills most of the screen or has focus): → completes the running step or
- * folds the next one, ← goes back one step, Space plays all steps.
+ * folds the next one, ← goes back one step, + and − zoom.
  * Rendering pauses while the widget is off screen.
  */
 import * as THREE from 'three';
@@ -16,26 +19,21 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { LineSegments2 } from 'three/addons/lines/LineSegments2.js';
 import { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
-import * as C from './construction.js';
+import BL from './adapter-bl.js';
+import EDGE from './adapter-edge.js';
 
 export function mount(root) {
   const $ = (s) => root.querySelector(s);
-  // the proof board, for the "On the proof board" links of every step
-  const CARDS = root.dataset.cards || '../original-proof/';
-  const card = (id, label) => `<a href="${CARDS}#step-bl-${id}" target="_blank" rel="noopener">${label}</a>`;
+  // the construction shown, and its code
+  const A = root.dataset.construction === 'edge' ? EDGE : BL;
+  const C = A.C, PRESETS = A.PRESETS;
   const fmt = (x) => Number(x).toLocaleString('en-US');
   const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
+  // what the adapters may use: number format, the stage colours, labels in the scene, and the proof
+  // board, for the "On the proof board" links of every step
+  const X = { fmt, clamp, ST: () => ST(), makeLabel: (...a) => makeLabel(...a), cards: root.dataset.cards || '../original-proof/' };
 
-  // ------------------------------------------------------------------ presets & colours
-  const PRESETS = [
-    { name: 'K = 2, B = 4, U = {2, 4, 2}', K: 2, B: 4, sizes: [2, 4, 2] },
-    { name: 'K = 2, B = 8, U = {4, 2, 6, 2, 2}', K: 2, B: 8, sizes: [4, 2, 6, 2, 2] },
-    { name: 'K = 2, B = 8, U = {2, 4, 2, 2, 4, 2}', K: 2, B: 8, sizes: [2, 4, 2, 2, 4, 2] },
-    { name: 'K = 2, B = 6, U = {2, 2, 4, 2, 2}', K: 2, B: 6, sizes: [2, 2, 4, 2, 2] },
-    { name: 'unsolvable: K = 2, B = 8, U = {6, 6, 4}', K: 2, B: 8, sizes: [6, 6, 4] },
-    { name: 'the running example: K = 2, B = 10, U = {6, 2, 8, 4} (n = 80, heavy)', K: 2, B: 10, sizes: [6, 2, 8, 4] },
-    { name: 'K = 3, B = 12, U = {6, 4, 4, 4, 2, 2, 8, 6} (n = 80, heavy)', K: 3, B: 12, sizes: [6, 4, 4, 4, 2, 2, 8, 6] },
-  ];
+  // ------------------------------------------------------------------ colours
   // CAT: 0 P, 1 edges, 2 back, 3 back-left edge, 4 left, 5 bottom, 6 right, 7 top, 8 interior,
   //      9 wall, 10 special, 11 filler, 12 dummy, 13 item
   // Palettes. 'hp' (the default): H's in reds (edges a light red; faces, core and paddings paler;
@@ -198,11 +196,9 @@ export function mount(root) {
       ? `${K} bins of size ${B} · items ${sizes.join(', ')}` : 'incomplete';
     resetBoardIfNew(K, B, sizes);
     renderBoard();
-    if (chk.errs.length) { setStatus(chk.errs[0], 'err'); renderParams(null); renderFormula(null); return; }
-    if (chk.P.q > 6) { setStatus(`q = ${chk.P.q} gives n = ${chk.P.n} (${fmt(chk.P.n ** 3)} H's), too large for the browser. Use K ≤ 3 and B ≤ 27.`, 'err'); }
-    else if (chk.P.q === 6) setStatus(`Heavy: q = 6 gives n = 80, i.e. 512,000 H's (~620k residues). Takes a few seconds.`);
-    else setStatus('');
-    renderParams(chk.P, sizes);
+    if (chk.errs.length) { setStatus(chk.errs[0], 'err'); renderFormula(null); return; }
+    const note = A.sizeCheck(chk.P, X);
+    setStatus(note.msg, note.cls);
     renderFormula(chk.P, sizes);
   }
 
@@ -238,7 +234,7 @@ export function mount(root) {
     if (RES && RES.solvable && RES.K === BD.K) {
       const same = BD.sizes.every((_, u) => bdBinOf(u) === RES.assign[u]);
       if (!same) setStatus(bdComplete() ? 'Packing changed: press Fold the string to fold this packing.' : 'Packing changed. Finish it, or press Fold the string and the solver fills the bins.', 'err');
-    } else if (bdComplete()) setStatus('Packed. Press Fold the string to fold S_B with this packing.', 'ok');
+    } else if (bdComplete()) setStatus(`Packed. Press Fold the string to fold ${A.strPlain} with this packing.`, 'ok');
   }
   let drag = null;
   document.addEventListener('pointerdown', (e) => {
@@ -308,56 +304,11 @@ export function mount(root) {
     boardChanged();
   });
 
-  function renderParams(P, sizes) {
-    const t = $('#rd-params');
-    if (!t) return; // the parameters card is not shown (kept for pages that want it)
-    if (!P) { t.innerHTML = ''; return; }
-    const { q, n, T, c, K, B } = P;
-    const str = C.buildString(P, sizes);
-    const N = str.types.length;
-    const M = q + (q - K) + sizes.length;
-    const rows = [
-      ['q = 2·max(K, ⌈B<sup>1/3</sup>⌉)', q],
-      ['n = q(2q+1) + 2', n],
-      ['T = (2q−1)(n−2)  (bin size)', fmt(T)],
-      ['c', c],
-      ['|S<sub>B</sub>|  (residues)', fmt(N)],
-      ['H residues = n³', fmt(n ** 3)],
-      ['P residues', fmt(N - n ** 3)],
-      ['linkers, each of cn+2 = ' + fmt(c * n + 2) + ' P\'s', M],
-      ['most H–H pairs, 3n²(n−1)', fmt(3 * n * n * (n - 1))],
-    ];
-    t.innerHTML = rows.map(([a, b]) => `<tr><td>${a}</td><td>${b}</td></tr>`).join('');
-  }
-
   // ------------------------------------------------------------------ formula
-  function formulaParts(P, sizes, num) {
-    const { q, n, T, c, K, B } = P; const m = n - 2;
-    const e = (sym, val) => (num ? fmt(val) : sym);
-    const parts = [
-      ['edges', `(PHP)<sup>${e('9n−10', 9 * n - 10)}</sup>`],
-      ['back', `(PHHP)<sup>${e('(n−2)²/2', m * m / 2)}</sup>`],
-      ['bl', `(PHP)<sup>${e('n−2', m)}</sup>`],
-      ['p4', 'P<sup>4</sup>'],
-      ['faces', `((PHHP)<sup>${e('(n−2)²/2', m * m / 2)}</sup>P<sup>7</sup>)<sup>3</sup>`],
-      ['top', `(PHHP)<sup>${e('(n−2)²/2−1', m * m / 2 - 1)}</sup>`],
-      ['int', `PH<sup>${e('(n−2)³+2', m ** 3 + 2)}</sup>`],
-      ['down', `P<sup>${e('8+q', 8 + q)}</sup>`],
-      ['walls', `((PHP)<sup>${e('q', q)}</sup>(PHHP)<sup>${e('(n−2)/2', m / 2)}</sup>(PHP)<sup>${e('2q+1', 2 * q + 1)}</sup>P<sup>4</sup>(PHHP)<sup>${e('(n−2)/2', m / 2)}</sup>(PHP)<sup>${e('q', q)}</sup>P<sup>${e('2q', 2 * q)}</sup>)<sup>${e('q', q)}</sup>`],
-      ['special', `PH(P<sup>${e('2q+6', 2 * q + 6)}</sup>H)<sup>${e('q−1', q - 1)}</sup>P`],
-      ['fill', `(P<sup>${e('cn', c * n)}</sup>(PHHP)<sup>${e('(T−B)/2', (T - B) / 2)}</sup>)<sup>${e('q', q)}</sup>`],
-      ['dummy', `(P<sup>${e('cn', c * n)}</sup>(PHHP)<sup>${e('B/2', B / 2)}</sup>)<sup>${e('q−K', q - K)}</sup>`],
-    ];
-    let items;
-    if (num) items = sizes.map((s, u) => `<span class="f" data-f="item-${u}">(P<sup>${fmt(c * n)}</sup>(PHHP)<sup>${s / 2}</sup>)</span>`).join('');
-    else items = '∏<sub>u∈U</sub>(P<sup>cn</sup>(PHHP)<sup>s(u)/2</sup>)';
-    parts.push(['items', items]);
-    return parts;
-  }
   function renderFormula(P, sizes) {
     const el = $('#rd-formula');
     if (!P) { el.innerHTML = '<span style="color:#9aa0aa">—</span>'; return; }
-    el.innerHTML = '<i>S</i><sub>B</sub> = ' + formulaParts(P, sizes, fmtNumeric).map(([k, h]) => `<span class="f" data-f="${k}">${h}</span>`).join(' ');
+    el.innerHTML = A.lhs + A.formulaParts(P, sizes, fmtNumeric, X).map(([k, h]) => `<span class="f" data-f="${k}">${h}</span>`).join(' ');
     if (V) markFormula();
   }
   $('#rd-fmtTog').addEventListener('click', () => {
@@ -383,10 +334,11 @@ export function mount(root) {
     const { K, B, sizes } = readInstance();
     const chk = C.checkInstance(K, B, sizes);
     if (chk.errs.length) { setStatus(chk.errs[0], 'err'); return; }
-    if (chk.P.q > 6) { setStatus(`q = ${chk.P.q} gives n = ${chk.P.n}: too large. Use K ≤ 3 and B ≤ 27.`, 'err'); return; }
+    const note = A.sizeCheck(chk.P, X);
+    if (note.block) { setStatus(note.msg, 'err'); return; }
     $('#rd-find').disabled = true;
     const given = bdComplete() ? BD.sizes.map((_, u) => bdBinOf(u)) : null;
-    setStatus((given ? 'Building S_B and folding it with your packing' : 'Solving the bin packing, building S_B and its fold') + (chk.P.q === 6 ? '… (n = 80, a few seconds)' : '…'));
+    setStatus((given ? `Building ${A.strPlain} and folding it with your packing` : `Solving the bin packing, building ${A.strPlain} and its fold`) + (chk.P.n >= 60 ? `… (n = ${chk.P.n}, a few seconds)` : '…'));
     setTimeout(() => {
       let res;
       try { res = C.build(K, B, sizes, given); } catch (err) { console.error(err); setStatus('Construction failed: ' + err.message, 'err'); $('#rd-find').disabled = false; return; }
@@ -394,15 +346,15 @@ export function mount(root) {
       $('#rd-find').disabled = false;
       if (res.error) { setStatus(res.error, 'err'); return; }
       RES = res;
-      renderParams(res.P, sizes);
       if (!res.solvable) {
         teardown();
         BD.active = new Set(); renderBoard();
         $('#rd-packHint').textContent = '(no solution)'; $('#rd-packHint').style.color = 'var(--diff-3-ink)';
         $('#rd-solveinfo').innerHTML = `Exhaustive search (${fmt(res.solverNodes)} nodes): <b>no packing exists</b>.`;
-        setStatus('No packing exists, so by §3.2.4 S_B has no fold with its H\'s in a perfect cube.', 'err');
+        const nf = A.noFold(res, X);
+        setStatus(nf.status, 'err');
         $('#rd-placeholder').hidden = false;
-        $('#rd-placeholder').innerHTML = `<div><b>No packing exists.</b><br>By §3.2.4, any fold of S<sub>B</sub> (${fmt(res.str.types.length)} residues, n = ${res.P.n}) whose H's formed a perfect ${res.P.n}³ cube would yield a packing.<br>So no fold of this string reaches 3n²(n−1) = ${fmt(3 * res.P.n ** 2 * (res.P.n - 1))} H–H pairs.</div>`;
+        $('#rd-placeholder').innerHTML = nf.html;
         $('#rd-hud').hidden = true; $('#rd-dock').hidden = true; $('#rd-zoom').hidden = true;
         $('#rd-checks').innerHTML = '<div class="check"><small>No fold to verify.</small></div>';
         renderFormula(res.P, sizes);
@@ -445,7 +397,6 @@ export function mount(root) {
   }
 
   const TAIL_VIS = 260, DYN_CAP = 4300, DIST_SCALE = 1.3;
-  const FIXED_VIEW = { dir: [1.0, 0.72, 1.1], dist: 3.0, tgt: [0.1, -0.05, 0] };
 
   function setup(res) {
     teardown();
@@ -454,7 +405,7 @@ export function mount(root) {
     const { TY, CAT, SG, segs } = fold;
     const FP = new Float32Array(3 * N);
     for (let i = 0; i < N; i++) { FP[3 * i] = fold.X[i] - cc; FP[3 * i + 1] = fold.Y[i] - cc; FP[3 * i + 2] = -(fold.Z[i] - cc); }
-    const intSeg = segs.find((s) => s.key === 'int');
+    const intSeg = segs.find((s) => s.key === A.interiorKey); // these H's go into their own mesh (lighter beads)
 
     // base colours
     const col = new Float32Array(3 * N);
@@ -468,7 +419,7 @@ export function mount(root) {
     // which connector (string index) a P belongs to
     const connOf = new Int16Array(N).fill(-1);
     fold.strings.forEach((s, si) => { for (let i = s.connStart; i < s.connEnd; i++) connOf[i] = si; });
-    const stringRGB = fold.strings.map((s) => (s.kind === 'item' ? itemRGB(s.item) : catRGB(s.kind === 'filler' ? 11 : 12)));
+    const stringRGB = fold.strings.map(stringColour);
 
     // mesh partition (surface H / interior H / P), all in chain order
     const cntS = new Int32Array(N + 1), cntI = new Int32Array(N + 1), cntP = new Int32Array(N + 1);
@@ -535,37 +486,35 @@ export function mount(root) {
     const wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(n, n, n)),
       new THREE.LineBasicMaterial({ color: 0x4a5466, transparent: true, opacity: 0.55 }));
 
-    // strip outlines and labels, drawn by buildStripOverlay() for the current stage
+    // labels on the cube (strips, bins), drawn by buildOverlay() for the current stage
     const binGroup = new THREE.Group();
 
     const objects = [meshS, meshI, meshP, bonds, dynH, dynP, dynBonds, tail, wire, binGroup];
     objects.forEach((o) => scene.add(o));
     const clipMats = [matH, matP, bondMat, dynH.material, dynP.material, dynBonds.material, tail.material];
 
-    // front face lookup for the mini-map
-    const frontIdx = new Int32Array(n * n).fill(-1);
-    for (let i = 0; i < N; i++) if (TY[i] && fold.Z[i] === 0) frontIdx[fold.X[i] + fold.Y[i] * n] = i;
-    const hexOf = (i) => {
-      if (CAT[i] === 13) return itemHex(segs[SG[i]].item);
-      return catHex(CAT[i]);
-    };
-
     V = {
       P, n, cc, N, FP, TY, CAT, SG, segs, fold, col, connOf, stringRGB, pIdx,
       cntS, cntI, cntP, meshS, meshI, meshP, bondGeo, bonds, dynH, dynP, dynBondGeo, dynBonds, tail, wire, binGroup,
-      objects, clipMats, frontIdx, hexOf, contactPrefix: res.val.contactPrefix, target: res.val.target,
-      lastFace: -1, lastStats: '', tint: null, matP, bondMat, intStart: intSeg.start, intEnd: intSeg.end,
+      objects, clipMats, contactPrefix: res.val.contactPrefix, target: res.val.target,
+      lastStats: '', tint: null, matP, bondMat, intStart: intSeg.start, intEnd: intSeg.end,
     };
-    V.steps = buildSteps(res);
-    V.wallStep = V.steps.findIndex((s) => s.id === 'walls');
+    V.steps = A.buildSteps(res, X);
+    // per-step timing
+    V.steps.forEach((st, i) => {
+      const len = st.e - st.s;
+      st.W = clamp(Math.round(len * 0.18), 4, 3500);
+      st.dur = len ? 1.15 + 0.8 * Math.log10(1 + len) : 1.5;
+      st.dirPrev = i ? V.steps[i - 1].dir : st.dir;
+    });
+    V.overlayFrom = A.overlayFrom(V.steps);
     paintAll();
     // factor ranges for the formula
     V.factorRange = {};
     for (const f of res.str.factors) V.factorRange[f.key] = [f.start, f.end];
-    segs.forEach((s) => { if (s.key === 'item') V.factorRange['item-' + s.item] = [s.start, s.end]; });
+    segs.forEach((s) => { if (s.key === 'item') V.factorRange[s.fkey || 'item-' + s.item] = [s.start, s.end]; });
 
     buildTimeline();
-    setupFace();
     setupBar();
     $('#rd-placeholder').hidden = true; $('#rd-hud').hidden = false; $('#rd-dock').hidden = false; $('#rd-zoom').hidden = false;
     resize();
@@ -573,29 +522,23 @@ export function mount(root) {
     camera.far = 400 * n; camera.near = Math.max(0.1, n / 200); camera.updateProjectionMatrix();
     camTween = null;
     // fixed default camera (the per-step camera flights are opt-in via View ▸ auto camera)
-    const v0 = $('#rd-tgCam').checked ? V.steps[0].view : FIXED_VIEW;
+    const v0 = $('#rd-tgCam').checked ? V.steps[0].view : A.fixedView;
     controls.target.set(...v0.tgt.map((x) => x * n));
     camera.position.copy(controls.target).add(new THREE.Vector3(...v0.dir).normalize().multiplyScalar(v0.dist * n * DIST_SCALE * fitScale));
   }
 
-  function buildStripOverlay() {
-    const g = V.binGroup, n = V.n, cc = V.cc, K = RES.K, st = ST();
+
+  // the colour that highlights a linker: that of the piece it leads to
+  const stringColour = (s) => (s.kind === 'item' ? itemRGB(s.item) : catRGB(s.cat !== undefined ? s.cat : s.kind === 'filler' ? 11 : 12));
+  // labels on the cube for the current stage (the adapter makes them)
+  function buildOverlay() {
+    const g = V.binGroup;
     for (const ch of [...g.children]) {
       g.remove(ch);
       if (ch.geometry) ch.geometry.dispose();
       if (ch.material) { if (ch.material.map) ch.material.map.dispose(); ch.material.dispose(); }
     }
-    V.fold.bins.forEach((bn, j) => {
-      const x0 = 1 - cc - 0.5, x1 = n - 2 - cc + 0.5, y0 = bn.rb + 1 - cc - 0.5, y1 = bn.rt - 1 - cc + 0.5, z = cc + 0.55;
-      const geo = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(x0, y0, z), new THREE.Vector3(x1, y0, z), new THREE.Vector3(x1, y1, z), new THREE.Vector3(x0, y1, z), new THREE.Vector3(x0, y0, z)]);
-      g.add(new THREE.Line(geo, new THREE.LineBasicMaterial({ color: j < K ? st.strip : st.plugStrip, transparent: true, opacity: st.stripOp })));
-      const items = bn.contents.filter((x) => x.kind === 'item').map((x) => `u${x.item + 1}`);
-      const text = j < K ? `strip ${j + 1}: ${items.join(' + ')}` : `strip ${j + 1}: plug`;
-      const spr = makeLabel(text, j < K ? st.ink : st.plugInk, n);
-      spr.position.set(-cc - 1.5 - spr.userData.w / 2, (bn.rt + bn.rb) / 2 - cc, cc + 1);
-      g.add(spr);
-    });
+    for (const o of A.buildOverlay(V, RES, X)) g.add(o);
   }
 
   function makeLabel(text, color, n) {
@@ -621,115 +564,6 @@ export function mount(root) {
     return spr;
   }
 
-  // ------------------------------------------------------------------ steps (the paper's structure)
-  // The steps of §3.2.3, in the words of the proof board (glossary on the Original proof page);
-  // `cards` link each step to its cards there (ids of src/content/proof-steps/bl/*.mdx).
-  function buildSteps(res) {
-    const { P, fold } = res;
-    const { q, n, T, c, K, B } = P; const m = n - 2, cn = c * n;
-    const segs = fold.segs, sizes = res.sizes, assign = res.assign;
-    const N = fold.N;
-    const byKey = (k) => segs.filter((s) => s.key === k);
-    const span = (list) => ({ s: list[0].start, e: list[list.length - 1].end });
-    const tailFront = [1, 0.3, -0.7];
-    const steps = [];
-    const G = ['the string', 'the frame', 'periods', 'strips', 'wrap-up'];
-    const add = (o) => { o.groupName = G[o.group]; steps.push(o); };
-    const M = fold.strings.length;
-    const FRAME = [['frame', '10 Folding the frame']];
-
-    add({ id: 'start', group: 0, s: 0, e: 0, dir: [1, 0, 0], factors: ['edges', 'back', 'bl', 'p4', 'faces', 'top', 'int', 'down', 'walls', 'special', 'fill', 'dummy', 'items'],
-      view: { dir: [1.0, 0.45, 1.05], dist: 3.3, tgt: [0.75, 0.25, 0] },
-      cards: [['string', '4 Spelling the string'], ['cube', '3 Why a cube']],
-      tag: '§3.2.2 · Fig. 3', title: 'The string S_B, still unfolded',
-      body: `<p>The instance on the left has K = ${K} bins of size B = ${B} and ${sizes.length} items of even size, adding up to BK = ${B * K}. Berger and Leighton turn it into the string <b>S<sub>B</sub></b> of Fig. 3, with</p>
-        <p class="eq">q = 2·max(K, ⌈B<sup>1/3</sup>⌉) = ${q}, &nbsp; n = q(2q+1)+2 = ${n}, &nbsp; T = (2q−1)(n−2) = ${T}, &nbsp; c = 52.</p>
-        <p>S<sub>B</sub> has ${fmt(N)} letters, exactly n³ = ${fmt(n ** 3)} of them H. A fold has the most H–H pairs, 3n²(n−1) = ${fmt(3 * n * n * (n - 1))}, exactly when its H's fill an ${n}×${n}×${n} cube (the wireframe), and such a perfect fold exists exactly when the items can be packed. Press <b>→</b> to fold S<sub>B</sub> one step at a time with the packing on the left; <b>←</b> goes back, and dragging along the bar below jumps to any letter of the string.</p>` });
-
-    add({ id: 'edges', group: 1, ...span(byKey('edges')), dir: [0, 0, 1], factors: ['edges'], view: { dir: [1.0, 0.85, -0.85], dist: 2.6, tgt: [0, 0, 0] },
-      cards: [...FRAME, ['local-rules', '5 The counts match']],
-      tag: '§3.2.3 · Figs. 2, 4', title: `The corner rod: (PHP)^${9 * n - 10}`,
-      body: `<p>Every H of a rod sits between two P's. In a perfect fold an H next to a P lies on the surface, and a lone H between two P's lies on an edge. Consecutive H's of the rod are neighbours, joined by a staple of two P's outside the cube that switches between the two outer sides of the edge (Fig. 2).</p>
-        <p>The ${9 * n - 10} H's of the corner rod start at (n−2, n−1, n−1), run around the top face, down the back-right edge and around the bottom face, and end at (n−2, 0, n−1). They pass every corner and fill nine of the twelve edges. The three edges still empty share no corner.</p>` });
-    add({ id: 'back', group: 1, ...span(byKey('back')), dir: [0, 0, 1], factors: ['back'], view: { dir: [0.45, 0.4, -1.2], dist: 2.5, tgt: [0, 0, 0] },
-      cards: FRAME, tag: '§3.2.3 · Fig. 6', title: `Back face ribbon: (PHHP)^${fmt(m * m / 2)}`,
-      body: `<p>In a ribbon every H has exactly one P beside it, so it lies on a face, and its H's come two at a time. The ${fmt(m * m / 2)} pairs snake through the ${m}×${m} inside of the back face column by column, with the P's turning just behind the face. Since n−2 = ${m} is even, the snake ends on the side where it started, at (1, 1, n−1).</p>` });
-    add({ id: 'bl', group: 1, ...span(byKey('bl')), dir: [0, 0, 1], factors: ['bl'], view: { dir: [-1.0, 0.45, -0.95], dist: 2.5, tgt: [0, 0, 0] },
-      cards: FRAME, tag: '§3.2.3', title: `The tenth-edge rod: (PHP)^${m}`,
-      body: `<p>The tenth-edge rod fills the inside of the back-left edge, from (0, 1, n−1) up to (0, n−2, n−1); the corner rod has already filled its two corners. Its last P lands at (0, n−2, n).</p>` });
-    add({ id: 'left', group: 1, s: byKey('p4')[0].start, e: byKey('p7a')[0].end, dir: [-1, 0, 0], factors: ['p4', 'faces'], view: { dir: [-1.3, 0.4, 0.3], dist: 2.5, tgt: [0, 0, 0] },
-      cards: FRAME, tag: '§3.2.3 · Fig. 7', title: 'Left face ribbon: P⁴ (PHHP)^{(n−2)²/2} P⁷',
-      body: `<p>P⁴ hops from (0, n−2, n) to (−2, n−2, n−2), so that the chain reaches the left face without meeting anything already placed. The face ribbon snakes from S<sub>L</sub> = (0, n−2, n−2) to F<sub>L</sub> = (0, 1, n−2). Then P⁷ goes around the bottom-left edge at distance at least 2 from the cube: seven P's, because the sites just outside the edge are taken by its staples.</p>` });
-    add({ id: 'bottom', group: 1, s: byKey('bottom')[0].start, e: byKey('p7b')[0].end, dir: [0, -1, 0], factors: ['faces'], view: { dir: [0.4, -1.3, 0.55], dist: 2.5, tgt: [0, 0, 0] },
-      cards: FRAME, tag: '§3.2.3 · Fig. 7', title: 'Bottom face ribbon: (PHHP)^{(n−2)²/2} P⁷',
-      body: `<p>The bottom face ribbon snakes from S<sub>B</sub> = (1, 0, n−2) to F<sub>B</sub> = (n−2, 0, n−2), and P⁷ goes around the bottom-right edge.</p>` });
-    add({ id: 'right', group: 1, s: byKey('right')[0].start, e: byKey('p7c')[0].end, dir: [1, 0, 0], factors: ['faces'], view: { dir: [1.3, 0.3, -0.3], dist: 2.5, tgt: [0, 0, 0] },
-      cards: FRAME, tag: '§3.2.3 · Fig. 7', title: 'Right face ribbon: (PHHP)^{(n−2)²/2} P⁷',
-      body: `<p>The right face ribbon snakes from S<sub>R</sub> = (n−1, 1, n−2) to F<sub>R</sub> = (n−1, n−2, n−2), and P⁷ goes around the top-right edge. This is the last of the three P⁷ in ((PHHP)<sup>(n−2)²/2</sup>P⁷)³.</p>` });
-    add({ id: 'top', group: 1, ...span(byKey('top')), dir: [0, 1, 0], factors: ['top'], view: { dir: [0.35, 1.3, 0.5], dist: 2.5, tgt: [0, 0, 0] },
-      cards: FRAME, tag: '§3.2.3 · Fig. 7', title: `Top face ribbon: (PHHP)^${fmt(m * m / 2 - 1)}, two H's short`,
-      body: `<p>The top face ribbon runs from S<sub>T</sub> = (n−2, n−1, n−2) to F<sub>T</sub> = (n−4, n−1, 1). It has one pair fewer than the other face ribbons, so the nodes (n−3, n−1, 1) and (n−2, n−1, 1) stay free: the way into the inside and the way out.</p>` });
-    add({ id: 'int', group: 1, ...span(byKey('int')), dir: [0, 1, 0], cut: true, factors: ['int'], view: { dir: [1, 0.9, 1], dist: 2.6, tgt: [0, 0, 0] },
-      cards: FRAME, tag: '§3.2.3', title: `The core: P H^${fmt(m ** 3 + 2)}`,
-      body: `<p>The core is one run of ${fmt(m ** 3 + 2)} H's. It enters through (n−3, n−1, 1) and fills the ${fmt(m ** 3)} inside nodes layer by layer, in a snake that turns back at every layer and leaves the column i = n−2, k = 1 free. It then climbs that column and leaves through (n−2, n−1, 1). A corner of the cube is cut away so that you can watch.</p>` });
-    add({ id: 'down', group: 1, ...span(byKey('down')), dir: [1, 0, -0.6], factors: ['down'], view: { dir: [1.0, 0.65, 0.95], dist: 1.45, tgt: [0.36, 0.3, 0.4] },
-      cards: [...FRAME, ['skeleton', '6 Two edges stay free']], tag: '§3.2.3', title: `To the front face: P^${8 + q}`,
-      body: `<p>P<sup>8+q</sup> goes around the P's already placed to (n−1, n−1−q, −2) = (${n - 1}, ${n - 1 - q}, −2), just in front of the front-right edge. The frame is done: everything is filled except the n×(n−2) nodes of the front face (k = 0), with the two free edges at its sides.</p>` });
-
-    add({ id: 'walls', group: 2, ...span(byKey('walls')), dir: [1, 0, -0.6], factors: ['walls'], view: { dir: [0.4, 0.12, 1.2], dist: 2.3, tgt: [0.02, 0, 0.2] },
-      cards: [['build-walls', '11 Building the walls']], tag: '§3.2.3 · Fig. 8', title: `${q} periods: the walls`,
-      body: `<p>Each of the q = ${q} periods is (PHP)<sup>q</sup>(PHHP)<sup>(n−2)/2</sup>(PHP)<sup>2q+1</sup>P⁴(PHHP)<sup>(n−2)/2</sup>(PHP)<sup>q</sup>P<sup>2q</sup> (the paper's bin wall): a short rod of q H's up the right free edge, a wall of n−2 H's straight across the face, a long rod of 2q+1 H's down the left free edge, four P's around the corner, a wall back, and another short rod. The P<sup>2q</sup> hop to the next period runs at distance 2 from the cube.</p>
-        <p>The walls cut the front face into q = ${q} strips of (2q−1)(n−2) = T = ${T} nodes. Every period leaves one node of the right edge free, between its two short rods.</p>` });
-    add({ id: 'special', group: 2, ...span(byKey('special')), dir: [1, 0, -0.6], factors: ['special'], view: { dir: [1.0, 0.12, 1.0], dist: 2.0, tgt: [0.38, 0, 0.3] },
-      cards: [['build-walls', '11 Building the walls'], ['free-edges', '7 One length per edge']], tag: '§3.2.3 · Fig. 8', title: 'The spaced rod: PH(P^{2q+6}H)^{q−1}P',
-      body: `<p>The spaced rod (the paper's special q-string) puts one lone H into the free node of every period, from bottom to top. The 2q+6 = ${2 * q + 6} P's between two of its H's run at distance 3 from the cube, around the staples of the short rods and the hops between periods. Its last P is at (n−1, n−2−q, −1). All 12n−16 = ${fmt(12 * n - 16)} lone H's of S<sub>B</sub> now fill the twelve edges.</p>` });
-
-    const fill = byKey('filler'), dummy = byKey('dummy'), items = byKey('item');
-    const STRIPS = [['fill-strips', '12 Filling the strips']];
-    add({ id: 'fill', group: 3, ...span(fill), dir: tailFront, factors: ['fill'], tint: fill.map((s) => s.string), view: { dir: [0.32, 0.1, 1.2], dist: 2.4, tgt: [-0.04, -0.02, 0.2] },
-      cards: STRIPS, tag: '§3.2.3', title: `Paddings: (P^{cn}(PHHP)^{(T−B)/2})^${q}`,
-      body: `<p>The rest of S<sub>B</sub> is ribbons, each after a linker of exactly cn+2 = ${fmt(cn + 2)} P's. First every strip gets a padding of T−B = ${T - B} H's. Two paddings never fit into one strip, since 2(T−B) > T, so every strip keeps exactly B = ${B} free nodes. Inside a strip the ribbons follow a snake, and each starts on an even node.</p>
-        <p>The linkers (highlighted) leave the face, drop to a plane of their own in front of the cube and fold their surplus into small boxes of P's under the cube, to use up their fixed length.</p>` });
-    if (dummy.length) {
-      add({ id: 'dummy', group: 3, ...span(dummy), dir: tailFront, factors: ['dummy'], tint: dummy.map((s) => s.string), view: { dir: [0.32, 0.1, 1.2], dist: 2.4, tgt: [-0.04, -0.02, 0.2] },
-        cards: STRIPS, tag: '§3.2.3', title: `Plugs: (P^{cn}(PHHP)^{B/2})^${q - K}`,
-        body: `<p>q − K = ${q - K} plug${q - K > 1 ? 's' : ''} of B = ${B} H's fill strip${q - K > 1 ? 's' : ''} ${K + 1}${q - K > 1 ? '–' + q : ''}. Exactly K = ${K} strips keep B free nodes, one for each bin of the instance.</p>` });
-    }
-    const binLoad = new Array(K).fill(0);
-    items.forEach((sg) => {
-      const u = sg.item, s = sizes[u], bn = assign[u];
-      binLoad[bn] += s;
-      const left = B - binLoad[bn];
-      add({ id: 'item', item: u, group: 3, s: sg.start, e: sg.end, dir: tailFront, factors: ['items', 'item-' + u], tint: [sg.string], items: [u],
-        view: { dir: [0.32, 0.1, 1.2], dist: 2.4, tgt: [-0.04, -0.02, 0.2] },
-        cards: [...STRIPS, ['linkers', '14 Loops take up slack']], tag: '§3.2.3 · the product over u ∈ U', title: `Item u${u + 1} (size ${s}) into strip ${bn + 1}`,
-        body: `<p>The item ribbon (PHHP)<sup>${s / 2}</sup> of u${u + 1} goes into strip ${bn + 1}, the strip of bin ${bn + 1} in the packing on the left. Its ${s} H's continue the snake there, and strip ${bn + 1} has ${left} free node${left === 1 ? '' : 's'} left. The ribbon starts on an even node and so ends on an odd one, which gives the next linker the right parity.</p>
-          <p>Its linker (highlighted) has exactly cn+2 = ${fmt(cn + 2)} P's. It drops to its own plane at k = −${sg.depth}, is routed there around the other linkers, and folds its surplus into a small box of P's under the cube.</p>` });
-    });
-    add({ id: 'conn', group: 4, s: N, e: N, dir: tailFront, factors: ['fill', 'dummy', 'items'], tint: fold.strings.map((_, i) => i), tintAmt: 0.85, view: { dir: [1.2, -0.25, 1.0], dist: 3.2, tgt: [0, -0.35, 0.3] },
-      cards: [['crossbar', '13 Untangling the linkers'], ['linkers', '14 Loops take up slack']], tag: '§3.2.3 · Lemmas 3.3–3.8', title: 'The linkers',
-      body: `<p>Consecutive ribbons of S<sub>B</sub> can land in strips far apart, so each is joined to the next by a linker of exactly cn+2 = ${fmt(cn + 2)} P's through the space in front of the cube (coloured here by the ribbon each one leads to). The paper routes them through a switchboard of disjoint paths, which allows any order of the items, and loops each one away from the cube to use up its length. That is where c = 52 comes from.</p>
-        <p class="note">With only ${M} linkers a simpler routing does the same job here: each linker drops straight to its own plane k = −D, is routed in that plane around the ends of the deeper ones, and folds its surplus into a small box of P's under the front of the cube (the paper loops it away from the cube instead). The parity works out because every ribbon starts on an even node and ends on an odd one.</p>` });
-    const stripTxt = fold.bins.map((bn, j) => {
-      if (j >= K) return `strip ${j + 1}: plug`;
-      const its = bn.contents.filter((s) => s.kind === 'item').map((s) => `u${s.item + 1} (${sizes[s.item]})`);
-      return `strip ${j + 1}: ${its.join(' + ')} = ${B}`;
-    }).join(' · ');
-    add({ id: 'read', group: 4, s: N, e: N, dir: tailFront, factors: [], items: sizes.map((_, u) => u), view: { dir: [0, 0, 1], dist: 2.5, tgt: [-0.1, 0, 0] },
-      cards: [['packing', '9 Reading off a packing'], ['walls', '8 Walls run straight'], ['conclusion', '15 Folding is NP-complete']],
-      tag: '§3.2.4', title: 'Reading off the packing',
-      body: `<p>The converse holds for <i>every</i> perfect fold of S<sub>B</sub>, not only this one. The 12n−16 lone H's fill exactly the 12n−16 edge nodes, two edges stay free, the short and long rods fill those in one way only, and the walls run straight across the front face, cutting it into q strips of T nodes. Every ribbon lies inside one face or one strip, each strip takes one padding, and q−K strips take a plug. So the items fill the other K strips of B nodes <b>exactly</b>: a packing.</p>
-        <p>The front face of this fold: ${stripTxt}.</p>` });
-
-    // per-step timing
-    steps.forEach((st, i) => {
-      const len = st.e - st.s;
-      st.W = clamp(Math.round(len * 0.18), 4, 3500);
-      st.dur = len ? 1.15 + 0.8 * Math.log10(1 + len) : 1.5;
-      st.dirPrev = i ? steps[i - 1].dir : st.dir;
-    });
-    return steps;
-  }
 
   // ------------------------------------------------------------------ timeline & step UI
   function buildTimeline() {
@@ -752,7 +586,7 @@ export function mount(root) {
 
   function prettyTitle(t) {
     // turn X^{...} / X^123 into superscripts
-    return t.replace(/S_B/g, 'S<sub>B</sub>').replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>').replace(/\^([0-9,]+)/g, '<sup>$1</sup>');
+    return t.replace(/S_B/g, 'S<sub>B</sub>').replace(/_\{([^}]*)\}/g, '<sub>$1</sub>').replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>').replace(/\^([0-9,]+)/g, '<sup>$1</sup>');
   }
 
   function stepUI() {
@@ -763,7 +597,7 @@ export function mount(root) {
     });
     $('#rd-stepTag').innerHTML = prettyTitle(`Step ${cur.k} of ${V.steps.length - 1} · ${st.tag}`);
     $('#rd-stepTitle').innerHTML = prettyTitle(st.title);
-    $('#rd-stepBody').innerHTML = st.body + (st.cards ? `<p class="rd-cards">On the proof board: ${st.cards.map(([id, label]) => card(id, label)).join(' · ')}</p>` : '');
+    $('#rd-stepBody').innerHTML = st.body + A.refs(st, X);
     $('#rd-stepinfo').scrollTop = 0;
     if (st.e > st.s) {
       let h = 0; for (let i = st.s; i < st.e; i++) h += V.TY[i];
@@ -845,7 +679,7 @@ export function mount(root) {
       else { cS[3 * ia] = c[0]; cS[3 * ia + 1] = c[1]; cS[3 * ia + 2] = c[2]; ia++; }
     }
     meshS.instanceColor.needsUpdate = true; meshI.instanceColor.needsUpdate = true;
-    V.stringRGB = V.fold.strings.map((s) => (s.kind === 'item' ? itemRGB(s.item) : catRGB(s.kind === 'filler' ? 11 : 12)));
+    V.stringRGB = V.fold.strings.map(stringColour);
     V.tint = null;
     if (V.steps) applyTint(V.steps[Math.min(cur.k, V.steps.length - 1)]);
     const sc = pal(), st = ST();
@@ -853,10 +687,8 @@ export function mount(root) {
     for (const m of [V.bondMat, V.dynBonds.material]) { m.opacity = sc.bondOpacity; m.color.setHex(st.line); }
     V.tail.material.opacity = Math.min(0.5, sc.bondOpacity + 0.1); V.tail.material.color.setHex(st.line);
     V.wire.material.color.setHex(st.wire); V.wire.material.opacity = st.wireOp;
-    buildStripOverlay();
+    buildOverlay();
     if (barPieces.length) drawBar(true);
-    V.lastFace = -1;
-    renderFaceLegend();
   }
   // the legend in the corner: a big H bead and a small P bead in the current colours
   function renderLegend() {
@@ -902,7 +734,7 @@ export function mount(root) {
     V.meshP.visible = showP; V.dynP.visible = showP;
     const showB = $('#rd-tgBond').checked;
     V.bonds.visible = showB; V.dynBonds.visible = showB; V.tail.visible = true;
-    V.binGroup.visible = $('#rd-tgLab').checked && cur.k >= V.wallStep && st.id !== 'walls';
+    V.binGroup.visible = $('#rd-tgLab').checked && cur.k >= V.overlayFrom;
     const cut = $('#rd-tgCut').checked;
     for (const m of V.clipMats) { m.clippingPlanes = cut ? cutPlanes : null; m.clipIntersection = true; m.needsUpdate = true; }
   }
@@ -1052,69 +884,14 @@ export function mount(root) {
     V.tail.visible = hi < N;
   }
 
-  // ------------------------------------------------------------------ mini-map of the front face
-  let faceCtx = null, faceScale = 1;
-  function setupFace() {
-    const cv = $('#rd-face');
-    if (!cv) return;
-    faceScale = Math.max(2, Math.floor(228 / V.n));
-    cv.width = cv.height = faceScale * V.n;
-    faceCtx = cv.getContext('2d');
-    renderFaceLegend();
-    V.lastFace = -1;
-  }
-  function renderFaceLegend() {
-    if (!V || !RES || !RES.assign || !$('#rd-faceLegend')) return;
-    const its = RES.sizes.map((s, u) => `<div><i style="background:${itemHex(u)}"></i>u${u + 1} (${s}) → strip ${RES.assign[u] + 1}</div>`).join('');
-    $('#rd-faceLegend').innerHTML = `${its}<div><i style="background:${catHex(11)}"></i>padding (T−B = ${RES.P.T - RES.P.B})</div>` +
-      (RES.P.q > RES.K ? `<div><i style="background:${catHex(12)}"></i>plug (strip of no bin)</div>` : '') +
-      `<div><i style="background:${catHex(9)}"></i>periods &nbsp;<i style="background:${catHex(10)}"></i>spaced rod</div>`;
-  }
-  function drawFace() {
-    if (!faceCtx) return;
-    const placed = V.placed;
-    if (placed === V.lastFace) return;
-    V.lastFace = placed;
-    const n = V.n, s = faceScale, ctx = faceCtx;
-    const st = ST();
-    ctx.fillStyle = st.map; ctx.fillRect(0, 0, n * s, n * s);
-    const gap = s >= 4 ? 1 : 0;
-    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
-      const i = V.frontIdx[x + y * n];
-      ctx.fillStyle = i >= 0 && i < placed ? V.hexOf(i) : st.mapEmpty;
-      ctx.fillRect(x * s, (n - 1 - y) * s, s - gap, s - gap);
-    }
-    if (cur.k >= V.wallStep) {
-      ctx.lineWidth = 1;
-      V.fold.bins.forEach((bn, j) => {
-        ctx.strokeStyle = j < RES.K ? st.mapLine : st.mapPlug;
-        const x0 = 1 * s - 0.5, y0 = (n - 1 - (bn.rt - 1)) * s - 0.5;
-        ctx.strokeRect(x0, y0, (n - 2) * s, (bn.rt - bn.rb - 1) * s);
-      });
-    }
-  }
-
   // ------------------------------------------------------------------ the string bar
-  // The whole of S_B from left to right: H pieces full height in their colours, runs of P's as a
+  // The whole string from left to right: H pieces full height in their colours, runs of P's as a
   // thin grey line, the part not folded yet faded. The arrow marks how far the fold has got;
   // dragging along the bar folds or unfolds to any residue.
   const bar = $('#rd-bar'), barCv = $('#rd-barCv'), marker = $('#rd-marker'), barTip = $('#rd-barTip');
   let barPieces = [], barW = 0, barH = 0, barShown = -1, barDrag = false;
-  const PIECE_NAMES = {
-    edges: 'corner rod', back: 'back face ribbon', bl: 'tenth-edge rod', p4: 'P-hop', left: 'left face ribbon', p7a: 'P-hop',
-    bottom: 'bottom face ribbon', p7b: 'P-hop', right: 'right face ribbon', p7c: 'P-hop', top: 'top face ribbon', int: 'core',
-    down: 'P-hop to the front face', walls: 'periods: walls and rods', special: 'spaced rod',
-  };
   function setupBar() {
-    barPieces = [];
-    for (const sg of V.segs) {
-      if (sg.key === 'filler' || sg.key === 'dummy' || sg.key === 'item') {
-        const str = V.fold.strings[sg.string];
-        const name = sg.key === 'filler' ? 'padding' : sg.key === 'dummy' ? 'plug' : `item u${sg.item + 1}`;
-        barPieces.push({ s: sg.start, e: str.connEnd, kind: 'P', label: `linker before the ${name}` });
-        barPieces.push({ s: str.connEnd, e: sg.end, kind: sg.key, item: sg.item, label: `${name}, into strip ${sg.bin + 1}`, min: true });
-      } else barPieces.push({ s: sg.start, e: sg.end, cat: sg.cat, kind: sg.cat === 0 ? 'P' : 'H', label: PIECE_NAMES[sg.key] || sg.label, min: sg.key === 'special' });
-    }
+    barPieces = A.barPieces(V);
     bar.setAttribute('aria-valuemax', String(V.N));
     barShown = -1;
     drawBar(true);
@@ -1188,7 +965,6 @@ export function mount(root) {
       statAcc += dt;
       if (statAcc > 0.1) {
         statAcc = 0;
-        drawFace();
         const pl = V.placed;
         const txt = `<span class="k">residues placed</span> ${fmt(pl)} / ${fmt(V.N)}<br><span class="k" title="neighbouring H's, consecutive ones included, as the paper counts">H–H pairs</span> ${fmt(V.contactPrefix[pl])} / ${fmt(V.target)}<br><span class="k">cube</span> ${V.n}×${V.n}×${V.n} &nbsp;<span class="k">step</span> ${cur.k}/${V.steps.length - 1}`;
         if (txt !== V.lastStats) { $('#rd-stats').innerHTML = txt; V.lastStats = txt; }
