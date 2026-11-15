@@ -49,25 +49,25 @@ export function stepGlyph(lattice: Lattice, k: number, from?: Vec): string | nul
 
 /** keyboard help, as [keys, meaning] pairs */
 export function keyHint(lattice: Lattice, rendererKeys: boolean): [string, string][] {
-  if (lattice.id === 'square') return [['← ↑ → ↓', 'place the next residue']];
+  if (lattice.id === 'square') return [['← ↑ → ↓', 'place the next letter']];
   if (lattice.id === 'hexagonal')
     return [
-      ['← →', 'place the next residue on the left or right neighbour'],
+      ['← →', 'place the next letter on the left or right neighbour'],
       ['↑ ↓', 'place it on the third neighbour, above or below'],
     ];
   // with the 3D renderer's camera-relative map (render/three3d-scene.ts, KEY_SLOTS)
   if (lattice.dim === 3 && rendererKeys)
     return lattice.steps.length < 6
       ? [
-          ['← ↑ → ↓', 'place the next residue on the neighbour closest to that direction on the screen'],
+          ['← ↑ → ↓', 'place the next letter on the neighbour closest to that direction on the screen'],
           ['W S', 'the same, away from you or toward you'],
         ]
       : [
-          ['← ↑ → ↓', 'place the next residue in the plane of the screen'],
+          ['← ↑ → ↓', 'place the next letter in the plane of the screen'],
           ['W S', 'place it away from you or toward you'],
         ];
   if (lattice.id === 'cubic') return [['← ↑ → ↓', 'x and y'], ['F B', 'z']];
-  if (lattice.id === 'triangular') return [['W E A D Z X', 'place the next residue (the six keys around S)']];
+  if (lattice.id === 'triangular') return [['W E A D Z X', 'place the next letter (the six keys around S)']];
   return [];
 }
 

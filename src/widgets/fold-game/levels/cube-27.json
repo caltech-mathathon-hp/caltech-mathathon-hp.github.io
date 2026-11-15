@@ -10,6 +10,6 @@
   "bestKind": "proved",
   "bestSource": "27 nodes have at most 54 neighbouring pairs, and only as a 3×3×3 cube (the discrete isoperimetric inequality); 26 of them are consecutive in the string.",
   "intro": "27 H’s. Only the 3×3×3 cube scores 28, so the fold must pass through every node of the cube.",
-  "hint": "Fill one 3×3 layer as a snake, step forward, fill the next layer back the other way, and repeat.",
+  "hint": "Start at a corner or a face centre. Colour the cube like a chessboard: the 14 letters at odd positions need 14 nodes of one colour, and only the corners and face centres have that many. Then fill one 3×3 layer as a snake, step forward, fill the next layer back the other way, and repeat.",
   "solution": "RRULLURRFLLDRRDLLFRRULLURR"
 }

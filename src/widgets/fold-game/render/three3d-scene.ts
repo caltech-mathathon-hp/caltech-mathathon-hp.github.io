@@ -1790,7 +1790,7 @@ export class FoldScene {
     const hg = this.ghosts[this.hoverGhost];
     if (hg && hg.visible && placed < fold.length) {
       tipKind = fold.seq[placed];
-      tipText = `Place residue ${placed + 1}`;
+      tipText = `Place letter ${placed + 1}`;
       tq = this.project(hg.position.x, hg.position.y, hg.position.z);
     } else {
       const h = this.controller.hover;

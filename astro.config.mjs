@@ -7,8 +7,9 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import yaml from '@modyfi/vite-plugin-yaml';
 
-// Deployment: for a GitHub project page set SITE_URL=https://<user>.github.io and
-// SITE_BASE=/<repo>/ (the website repository's workflow does this; see README, Deploying).
+// Deployment: SITE_URL=https://<owner>.github.io, and SITE_BASE=/ for a repository named
+// <owner>.github.io or /<repo>/ for any other (the website repository's workflow sets both;
+// see README, Deploying).
 // Locally both default to the root, so `npm run dev` serves at http://localhost:4321/.
 const site = process.env.SITE_URL ?? 'http://localhost:4321';
 const base = process.env.SITE_BASE ?? '/';
