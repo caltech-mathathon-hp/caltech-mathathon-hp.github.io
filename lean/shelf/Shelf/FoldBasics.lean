@@ -3,14 +3,14 @@ import Shelf.Cube
 /-!
 # Folds, with letters numbered by natural numbers
 
-The team's `Fold` places letter `i : Fin N` at `f.pos i`. The proofs of the paper
+The team's `Fold` places letter `i : Fin N` at `f.pos i`. The proofs of our write-up
 talk about "the letter after `i`" and "the letters between `i` and `j`", which is
 easier with natural numbers: `site f i` is the site of letter `i` (counting from
 0), and `S[i]? = some H` says that letter `i` exists and is an `H`.
 
 `Fills S f n` says that the `H`'s occupy exactly the cube `Q n = {0, …, n-1}³`.
 This is a perfect fold "translated so that the H's occupy Q", the standing
-assumption of Sections 2.2 and 4 of the paper; `perfect_iff_exists_fills` does the translation.
+assumption of Sections 2.2 and 4 of our write-up; `perfect_iff_exists_fills` does the translation.
 -/
 
 namespace ProteinFolding.Shelf

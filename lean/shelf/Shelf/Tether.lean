@@ -3,7 +3,7 @@ import Shelf.Anatomy
 /-!
 # Isolated `H`'s, tethers and dense runs
 
-Lemmas 5 to 8 of the paper (Sections 2.2 and 2.3): the clamp map, isolated `H`'s
+Lemmas 5 to 8 of our write-up (Sections 2.2 and 2.3): the clamp map, isolated `H`'s
 lie on the skeleton, the Tether Lemma, and the `H`'s of a dense run form a simple
 path on the skeleton.
 -/

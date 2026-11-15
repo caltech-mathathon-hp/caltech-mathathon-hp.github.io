@@ -3,7 +3,7 @@ import Shelf.FoldBasics
 /-!
 # Sites by coordinates
 
-Section 5 of the paper builds a fold by writing down sites: `(1, N + 1, N - 1)`,
+Section 5 of our write-up builds a fold by writing down sites: `(1, N + 1, N - 1)`,
 "the sites `(1, y, -1)` for `y = N, …, 0`", and so on. This file has the notation
 for that: `pt x y z` is the site with these coordinates, and `line a e r` is the
 row of `r` sites `a, a + e, a + 2e, …`.

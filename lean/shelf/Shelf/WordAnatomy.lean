@@ -4,7 +4,7 @@ import Shelf.Count
 /-!
 # Where the pieces of the string are
 
-Section 3 of the paper writes the string as a product of pieces: the core, the
+Section 3 of our write-up writes the string as a product of pieces: the core, the
 runs `A`, `F₁`, `F₂`, the separators with their tethers, and one block per item.
 The proof of Theorem 12 only uses where the `H`'s of these pieces are and which
 letters between them are `P`'s. `Anatomy` (in `Shelf/Anatomy.lean`) lists these
@@ -291,7 +291,7 @@ end Pieces
 /-! ### The anatomy -/
 
 /-- The string of the reduction has the features that the proof of Theorem 12 uses
-(Section 3 of the paper: the positions of `A`, `F₁`, the separators, `F₂` and the items). -/
+(Section 3 of our write-up: the positions of `A`, `F₁`, the separators, `F₂` and the items). -/
 def shelfAnatomy (J : Packing.Instance) : Anatomy (shelfWord J) J where
   oA := offA J
   oF₁ := offF₁ J

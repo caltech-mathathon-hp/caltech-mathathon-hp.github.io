@@ -28,8 +28,8 @@ short:
   (`Packing.instanceEncoding`). The team's source problem,
   `Packing.ModifiedAccepts`, is the same with every size even
   (`Shelf.modifiedAccepts_iff`), and it is the one the reduction starts from.
-- **Contacts.** The paper counts pairs of `H`'s on neighbouring sites that are
-  not neighbours in the string. The team's statement counts all pairs of `H`'s
+- **Contacts.** Our write-up, like the website, counts pairs of `H`'s on
+  neighbouring sites that are not neighbours in the string. The team's statement counts all pairs of `H`'s
   on neighbouring sites. The two numbers differ by the number of places where
   the string has `HH`, and the team's reduction from the perfect problem to the
   threshold problem does this bookkeeping.

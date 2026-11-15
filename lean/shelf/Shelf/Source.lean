@@ -4,7 +4,7 @@ import ProteinFolding.Cubic.Proofs.PackingPadding
 /-!
 # The source problem: EXACT PACKING
 
-Section 2.1 of the paper (`proof/paper/paper.tex`): given positive integers
+Section 2.1 of our write-up: given positive integers
 `a₁, …, a_k` and `m`, `B` with `∑ aᵢ = m · B`, can the items be split into `m`
 classes whose sizes each sum to `B`?
 
@@ -12,7 +12,7 @@ We reuse the instance type `Packing.Instance` and the predicate `Packing.Exact` 
 the team's statement library. That library's source problem `Packing.ModifiedAccepts`
 is ours plus the requirement that every size be even (`modifiedAccepts_iff`).
 
-Section 3 of the paper normalises an instance before building the string: all
+Section 3 of our write-up normalises an instance before building the string: all
 sizes and the capacity are multiplied by 6, and if the number of bins is even one
 item of size `B` is added together with one more bin. Both steps are in the team's
 library (`Packing.scale`, `Packing.pad`), with the proofs that they do not change
@@ -47,7 +47,7 @@ theorem sum_eq_of_exact {I : Packing.Instance} {parts : List (List ℕ)}
   rw [h.2.1.sum_eq, sum_flatten_of_sum_eq parts h.2.2, h.1]
 
 /-- The source problem of the team's library is EXACT PACKING restricted to even
-sizes. So our source problem contains theirs, as the paper says. -/
+sizes. So our source problem contains theirs, as our write-up says. -/
 theorem modifiedAccepts_iff (I : Packing.Instance) :
     Packing.ModifiedAccepts I ↔ (∀ s ∈ I.sizes, Even s) ∧ ExactAccepts I := by
   constructor
@@ -58,7 +58,7 @@ theorem modifiedAccepts_iff (I : Packing.Instance) :
 
 /-- What the reduction checks before it builds the string: the numbers are
 positive and `∑ aᵢ = m · B`, that is, the input is an instance in the sense of
-the paper. An input that fails the check has no exact packing, and is sent to a
+our write-up. An input that fails the check has no exact packing, and is sent to a
 fixed no-instance (`noInstance`). -/
 def Guard (I : Packing.Instance) : Prop :=
   Packing.WellFormed I ∧ I.sizes.sum = I.capacity * I.bins
@@ -83,7 +83,7 @@ def normalise (I : Packing.Instance) : Packing.Instance :=
 
 /-- A normalised instance: "6 divides `B` and every `aᵢ`, and `m` is odd", with
 positive numbers and `∑ aᵢ = m · B`. These are the standing assumptions of
-Sections 3 to 5 of the paper. -/
+Sections 3 to 5 of our write-up. -/
 structure Normalised (J : Packing.Instance) : Prop where
   capacity_pos : 0 < J.capacity
   six_dvd_capacity : 6 ∣ J.capacity

@@ -7,14 +7,14 @@ import ProteinFolding.Cubic.Proofs.PackingAnchors
 /-!
 # The cube and its skeleton
 
-The vocabulary of Section 2.2 of the paper (`proof/paper/paper.tex`). Throughout,
+The vocabulary of Section 2.2 of our write-up. Throughout,
 `n` is the side of the cube, `N = n - 1`, and the cube is `Q = {0, …, N}³`.
 
 The team's library already has this vocabulary, for a cube `cube a n` with any
 corner `a`, and we use it as it is, with `a = 0`. The dictionary, with `n = d + 2`
 (so `d = n - 2` is the number of nodes of an edge):
 
-| Paper | Lean (namespace `ProteinFolding.CubicPackingGeometry`) |
+| Write-up | Lean (namespace `ProteinFolding.CubicPackingGeometry`) |
 |---|---|
 | a coordinate of `p` lies in `{0, N}` | `BoundaryCoordinate 0 p n k` |
 | `p` is a point of the skeleton | `EdgeSkeleton 0 n p`, as a finite set `skeletonFinset 0 n` |

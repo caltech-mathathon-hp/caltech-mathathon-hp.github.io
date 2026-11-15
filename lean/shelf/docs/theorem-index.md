@@ -1,11 +1,18 @@
-# From the paper to Lean: the main results
+# From our write-up to Lean: the main results
 
-"Paper" is our proof, `proof/paper/paper.tex`. Names are prefixed by
-`ProteinFolding.` unless another prefix is shown; ours are in
-`ProteinFolding.Shelf`, the others are the team's. This is the short list. The
-table in the [README](../README.md#lemma-map) has every lemma of the paper.
+This project checks the shelf version of our one-edge proof, the one whose
+string the website spells out under
+[Spelling the string](https://caltech-mathathon-hp.github.io/one-edge-proof/#spelling-the-string).
+The first column says what each result is and gives its number in our write-up
+of that version. The [README](../README.md#which-string-lean-checks) says how
+this version differs from the seventeen cards on the website.
 
-| Paper concept | Declaration | Source / status |
+Names are prefixed by `ProteinFolding.` unless another prefix is shown; ours
+are in `ProteinFolding.Shelf`, the others are the team's. This is the short
+list. The table in the [README](../README.md#lemma-map) has every lemma of the
+write-up.
+
+| Concept in our write-up | Declaration | Source / status |
 | --- | --- | --- |
 | Section 1: strings, folds and contacts | `Residue`, `Sequence`, `Fold`, `bondCount` | [team: Common/Statement](../vendor/protein_folding/ProteinFolding/Common/Statement.lean), definitions |
 | Section 1: HP STRING-FOLD and PERFECT HP STRING-FOLD | `HPInstance.Accepts`, `PerfectHPStringFold` | [team: Cubic/Statement](../vendor/protein_folding/ProteinFolding/Cubic/Statement.lean), definitions |
@@ -28,11 +35,14 @@ table in the [README](../README.md#lemma-map) has every lemma of the paper.
 | Theorem 1, membership: both folding problems are in NP | `hpStringFold_inNP`, `perfectHPStringFold_inNP` | [team: Cubic/Proofs/NPMembership](../vendor/protein_folding/ProteinFolding/Cubic/Proofs/NPMembership.lean), unconditional proofs |
 | Section 2.1: the source problem is NP-hard, with numbers in unary | `SATPacking.modifiedBinPackingUnary_NPHard` | [team: Cubic/Proofs/SATPackingComputable](../vendor/protein_folding/ProteinFolding/Cubic/Proofs/SATPackingComputable.lean), assumes Cook–Levin |
 | Corollary 2, proof: the perfect problem reduces to the threshold problem | `hpNPHard_of_perfectNPHard` | [team: Cubic/Proofs/PerfectToHPComputable](../vendor/protein_folding/ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean), unconditional proof |
-| Theorem 1, hardness: PERFECT HP STRING-FOLD is NP-hard | `PerfectHPStringFoldNPHard`; `Shelf.perfectHPStringFold_NPHard` | [Statement](../vendor/protein_folding/ProteinFolding/Cubic/MainTheorem.lean); [proof](../Shelf/NPComplete.lean) with Cook–Levin |
-| Theorem 1: PERFECT HP STRING-FOLD is NP-complete | `PerfectHPStringFoldNPComplete`; `Shelf.perfectHPStringFold_NPComplete` | Same files; proof with Cook–Levin |
-| Corollary 2: HP STRING-FOLD on the cubic lattice is NP-complete | `HPStringFoldNPComplete`; `Shelf.hpStringFold_NPComplete` | Same files; proof with Cook–Levin |
-| The one assumption: SAT is NP-hard | `SAT.CookLevin` | [team: Common/CookLevin](../vendor/protein_folding/ProteinFolding/Common/CookLevin.lean), proposition only |
+| The Cook–Levin theorem: SAT is NP-hard | `SAT.CookLevin`; `SAT.CookLevinUniversal.cookLevin` | [Statement](../vendor/protein_folding/ProteinFolding/Common/CookLevin.lean); [the team's proof](../vendor/protein_folding/ProteinFolding/Common/CookLevinProofUniversal.lean), unconditional proof |
+| Theorem 1, hardness: PERFECT HP STRING-FOLD is NP-hard | `PerfectHPStringFoldNPHard`; `Shelf.Unconditional.perfectHPStringFold_NPHard` | [Statement](../vendor/protein_folding/ProteinFolding/Cubic/MainTheorem.lean); [proof](../Shelf/Unconditional.lean), unconditional proof |
+| Theorem 1: PERFECT HP STRING-FOLD is NP-complete | `PerfectHPStringFoldNPComplete`; `Shelf.Unconditional.perfectHPStringFold_NPComplete` | Same files; unconditional proof |
+| Corollary 2: HP STRING-FOLD on the cubic lattice is NP-complete | `HPStringFoldNPComplete`; `Shelf.Unconditional.hpStringFold_NPComplete` | Same files; unconditional proof |
+| The step before: Theorem 1 and Corollary 2 with the Cook–Levin theorem as a hypothesis | `Shelf.perfectHPStringFold_NPHard`, `Shelf.perfectHPStringFold_NPComplete`, `Shelf.hpStringFold_NPComplete` | [Shelf/NPComplete](../Shelf/NPComplete.lean), assumes Cook–Levin |
+| The team's two final theorems, by the team's string, with nothing assumed | `Shelf.Unconditional.TeamRoute.perfectHPStringFold_NPComplete`, `Shelf.Unconditional.TeamRoute.hpStringFold_NPComplete` | [Shelf/Unconditional](../Shelf/Unconditional.lean), unconditional proofs |
 
 The last column says how each row stands: a definition, a proof with no
-assumption ("unconditional"), a proof that has the Cook–Levin theorem as a
-hypothesis, or the hypothesis itself ("proposition only").
+assumption ("unconditional"), or a proof that has the Cook–Levin theorem as a
+hypothesis ("assumes Cook–Levin"). No row is an assumption: the Cook–Levin
+theorem has a row of its own, and it is proved.

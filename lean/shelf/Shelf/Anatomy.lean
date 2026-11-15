@@ -4,7 +4,7 @@ import Shelf.Word
 /-!
 # Where the pieces of the string are
 
-Section 4 of the paper says that it "uses only these features of `S`": the long
+Section 4 of our write-up says that it "uses only these features of `S`": the long
 run `A`, the fillers `F₁` and `F₂`, the separators, the items, and the lengths of
 the tethers. `Anatomy S J` records exactly these features, as positions of
 letters in `S`. Theorem 12 is proved for any string with an anatomy, and

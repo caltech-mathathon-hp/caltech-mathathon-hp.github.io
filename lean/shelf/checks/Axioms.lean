@@ -61,3 +61,11 @@ open ProteinFolding.Shelf
 #print axioms perfectHPStringFold_NPHard
 #print axioms perfectHPStringFold_NPComplete
 #print axioms hpStringFold_NPComplete
+
+-- The Cook–Levin theorem, and the final theorems with it plugged in.
+#print axioms ProteinFolding.SAT.CookLevinUniversal.cookLevin
+#print axioms Unconditional.perfectHPStringFold_NPHard
+#print axioms Unconditional.perfectHPStringFold_NPComplete
+#print axioms Unconditional.hpStringFold_NPComplete
+#print axioms Unconditional.TeamRoute.perfectHPStringFold_NPComplete
+#print axioms Unconditional.TeamRoute.hpStringFold_NPComplete

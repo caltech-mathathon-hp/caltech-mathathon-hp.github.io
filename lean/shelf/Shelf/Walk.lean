@@ -6,10 +6,10 @@ import ProteinFolding.Cubic.Proofs.PackingCountCompleteness
 /-!
 # Walks and tokens
 
-The foundation of Section 5 of the paper, where we build a fold from a packing. A fold
+The foundation of Section 5 of our write-up, where we build a fold from a packing. A fold
 is given as a list of sites, one per letter (`perfect_of_walk`). Since
 `P D(r) P = (PHP)^r`, every isolated `H` is laid together with the `P` before it and
-the `P` after it; we call these three sites a token. Lemma 13 of the paper ("laying a
+the `P` after it; we call these three sites a token. Lemma 13 of our write-up ("laying a
 dense run") becomes `tokSites_isChain` and `tokSites_nodup`, and `altRun` lays tokens
 along a row with the normals alternating, as in Table 1.
 -/
@@ -82,7 +82,7 @@ structure Token where
 def Token.sites (t : Token) : List Site := [t.c + t.a, t.c, t.c + t.b]
 
 /-- The `H` is in the cube, and `a ≠ b` are unit vectors that point out of the cube at `c`
-(outward normals, in the words of the paper). -/
+(outward normals, in the words of our write-up). -/
 structure Token.Valid (n : ℕ) (t : Token) : Prop where
   mem : t.c ∈ Q n
   a_out : t.c + t.a ∉ Q n
@@ -95,7 +95,7 @@ structure Token.Valid (n : ℕ) (t : Token) : Prop where
 def tokSites (ts : List Token) : List Site := ts.flatMap Token.sites
 
 /-- Two consecutive tokens fit together: the `P` after the first and the `P` before the
-second hang on the same side (this is one link of the paper), and the centres are adjacent. -/
+second hang on the same side (a link, in the words of our write-up), and the centres are adjacent. -/
 def Linked (s t : Token) : Prop := t.a = s.b ∧ cubicLattice.Adj s.c t.c
 
 theorem mem_tokSites {ts : List Token} {p : Site} :

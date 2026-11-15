@@ -4,6 +4,16 @@ ProteinFolding.PerfectHPStringFoldNPHard : Prop
 'ProteinFolding.PerfectHPStringFoldNPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
 ProteinFolding.PerfectHPStringFoldNPComplete : Prop
 'ProteinFolding.PerfectHPStringFoldNPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.Unconditional.perfectHPStringFold_NPHard : ProteinFolding.PerfectHPStringFoldNPHard
+'ProteinFolding.Shelf.Unconditional.perfectHPStringFold_NPHard' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ProteinFolding.Shelf.Unconditional.perfectHPStringFold_NPComplete : ProteinFolding.PerfectHPStringFoldNPComplete
+'ProteinFolding.Shelf.Unconditional.perfectHPStringFold_NPComplete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ProteinFolding.Shelf.Unconditional.hpStringFold_NPComplete : ProteinFolding.HPStringFoldNPComplete
+'ProteinFolding.Shelf.Unconditional.hpStringFold_NPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
 ProteinFolding.Shelf.foldGivesPacking : ProteinFolding.Shelf.FoldGivesPacking
 'ProteinFolding.Shelf.foldGivesPacking' depends on axioms: [propext, Classical.choice, Quot.sound]
 ProteinFolding.Shelf.packingGivesFold : ProteinFolding.Shelf.PackingGivesFold
@@ -31,6 +41,10 @@ ProteinFolding.hpNPHard_of_perfectNPHard
   (h : ProteinFolding.NPHard ProteinFolding.perfectEncoding fun I => ProteinFolding.PerfectHPStringFold I.1 I.2) :
   ProteinFolding.NPHard ProteinFolding.hpEncoding fun I => I.Accepts
 'ProteinFolding.hpNPHard_of_perfectNPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.SAT.CookLevin : Prop
+'ProteinFolding.SAT.CookLevin' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.SAT.CookLevinUniversal.cookLevin : ProteinFolding.SAT.CookLevin
+'ProteinFolding.SAT.CookLevinUniversal.cookLevin' depends on axioms: [propext, Classical.choice, Quot.sound]
 ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard (hCL : ProteinFolding.SAT.CookLevin) :
   ProteinFolding.Packing.ModifiedBinPackingUnaryNPHard
 'ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -43,3 +57,12 @@ ProteinFolding.Shelf.perfectHPStringFold_NPComplete (hCL : ProteinFolding.SAT.Co
 ProteinFolding.Shelf.hpStringFold_NPComplete (hCL : ProteinFolding.SAT.CookLevin) :
   ProteinFolding.HPStringFoldNPComplete
 'ProteinFolding.Shelf.hpStringFold_NPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.Unconditional.TeamRoute.perfectHPStringFold_NPComplete :
+  ProteinFolding.PerfectHPStringFoldNPComplete
+'ProteinFolding.Shelf.Unconditional.TeamRoute.perfectHPStringFold_NPComplete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ProteinFolding.Shelf.Unconditional.TeamRoute.hpStringFold_NPComplete : ProteinFolding.HPStringFoldNPComplete
+'ProteinFolding.Shelf.Unconditional.TeamRoute.hpStringFold_NPComplete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

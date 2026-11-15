@@ -15,7 +15,8 @@ the reduction correct on every input (`reductionCorrect_of`). The two directions
 are proved in `Shelf/Converse.lean` (Theorem 12) and `Shelf/Forward.lean`
 (Theorem 16), and `Shelf/NPComplete.lean` draws the conclusion.
 
-Numbers refer to `proof/paper/paper.tex`.
+Numbers are those of our write-up of the shelf version. `README.md` says which proof
+that is.
 -/
 
 namespace ProteinFolding.Shelf

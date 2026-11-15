@@ -5,7 +5,7 @@ import Shelf.Word
 # A Turing machine for the string
 
 "The string has polynomial length and can be written down in polynomial time"
-(proof of Theorem 1 in the paper). Here this is a statement about Turing
+(proof of Theorem 1 in our write-up). Here this is a statement about Turing
 machines: from an instance with numbers in unary, a machine writes the string
 `S` and the side `n` of the cube (in binary, as the team's statement of the
 folding problem wants it) in polynomial time.

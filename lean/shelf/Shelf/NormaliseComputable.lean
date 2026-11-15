@@ -6,7 +6,7 @@ import Shelf.Source
 /-!
 # A Turing machine for the normalisation
 
-Section 3 of the paper normalises the instance before it writes the string:
+Section 3 of our write-up normalises the instance before it writes the string:
 every size and the capacity are multiplied by 6, and if the number of bins is
 even, one item of size `B` and one bin are added. This file shows that a Turing
 machine does this in polynomial time, for numbers written in unary

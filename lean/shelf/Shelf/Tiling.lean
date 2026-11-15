@@ -4,7 +4,7 @@ import Shelf.Source
 /-!
 # Placing the items on the shelf
 
-First paragraph of Section 5.2 of the paper ("The fold"): an exact packing places the
+First paragraph of Section 5.2 of our write-up ("The fold"): an exact packing places the
 items of each class one after the other inside one bin of the shelf.
 -/
 

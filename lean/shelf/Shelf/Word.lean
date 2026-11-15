@@ -4,7 +4,7 @@ import Shelf.Source
 /-!
 # The string of the reduction
 
-Section 3 of the paper (`proof/paper/paper.tex`). For a normalised instance `(a₁, …, a_k; m, B)` put
+Section 3 of our write-up. For a normalised instance `(a₁, …, a_k; m, B)` put
 
   `n = m (B + 1) + 3`,  `N₀ = n³ - 12 n + 16`,  `λ = 4 n + 2 k`.
 
@@ -16,6 +16,10 @@ where `D(r) = H (PPH)^(r-1)` is the dense run with `r` letters `H`. In the order
 above the pieces are: the core, the long run `A`, a linker, the filler `F₁`, a
 tether, the `m + 1` separators joined by inner tethers, a tether, the filler
 `F₂`, and one linker and one dense run for each item.
+
+The website shows the same formula under "Spelling the string" on its page about
+the one-edge proof, and its 3D view folds this string.
+`checks/SmallInstances.lean` computes the numbers that page gives for its examples.
 -/
 
 namespace ProteinFolding.Shelf
@@ -70,7 +74,7 @@ def shelfWord (J : Packing.Instance) : Sequence :=
   (shelfPieces J).flatten
 
 /-- Where the reduction sends an input that fails the check: the empty string with
-`n = 1`. It has no `H`, so it is a no-instance. (The paper counts `∑ aᵢ = m · B` as
+`n = 1`. It has no `H`, so it is a no-instance. (Our write-up counts `∑ aᵢ = m · B` as
 part of the definition of an instance, so it needs no such string.) -/
 def noInstance : PerfectInput :=
   ([], 1)

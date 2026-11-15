@@ -6,11 +6,11 @@ import Shelf.Count
 /-!
 # The Core Lemma
 
-Lemma 14 of the paper: for even `n ≥ 6`, the points of the cube `Q n` off the skeleton
+Lemma 14 of our write-up: for even `n ≥ 6`, the points of the cube `Q n` off the skeleton
 carry a path of length `n³ - 12n + 16` ending at `(1, N, N - 1)`, with `N = n - 1`.
 
 We write `n = 2m + 6`, so `N = 2m + 5`. A layer `y = const` is described by the pairs
-`(x, z)`. The planar path `deltaRev m` is the cycle `Δ` of the paper without its edge
+`(x, z)`. The planar path `deltaRev m` is the cycle `Δ` of our write-up without its edge
 `pr`, run from `p = (2, N - 1)` to `r = (1, N - 1)`; `gamma m` is the cycle `Γ` without
 its edge `pp'`, run from `p` to `p' = (2, N)`. Both are glued from columns and rows, and
 from the zigzag `zig F L y k`, which runs `L` and its reverse alternately at the `2k`

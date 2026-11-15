@@ -12,7 +12,7 @@ import Shelf.WordComputable
 
 This file puts the pieces together.
 
-* Theorems 12 and 16 make the reduction of the paper correct on every input
+* Theorems 12 and 16 make the reduction of our write-up correct on every input
   (`reductionCorrect`).
 * A Turing machine computes the reduction in polynomial time
   (`shelfMap_polyTime`).
@@ -24,7 +24,7 @@ This file puts the pieces together.
 The team's source problem is EXACT PACKING with the extra condition that every
 size is even (`modifiedAccepts_iff`). So the map of the Karp reduction,
 `shelfMap`, makes the team's check first, which also rejects an input with an odd
-size, and on the inputs that pass the check it is the reduction of the paper,
+size, and on the inputs that pass the check it is the reduction of our write-up,
 `shelfReduction`.
 
 The final theorems have the hypothesis `hCL : SAT.CookLevin`, as in the team's
@@ -35,7 +35,7 @@ namespace ProteinFolding.Shelf
 
 open ProteinFolding Computability Turing
 
-/-- **Theorems 12 and 16 together.** The reduction of the paper is correct on every
+/-- **Theorems 12 and 16 together.** The reduction of our write-up is correct on every
 input: an input is a yes-instance of EXACT PACKING exactly when its string has a
 perfect fold. -/
 theorem reductionCorrect : ReductionCorrect :=
@@ -54,7 +54,7 @@ and the side of the cube. -/
 def shelfMap (I : Packing.Instance) : PerfectInput :=
   if CubicPacking.sourceGuard I then (shelfWord (normalise I), side (normalise I)) else noInstance
 
-/-- On an input that passes the check, the map is the reduction of the paper. -/
+/-- On an input that passes the check, the map is the reduction of our write-up. -/
 theorem shelfMap_of_guard {I : Packing.Instance} (h : CubicPacking.sourceGuard I = true) :
     shelfMap I = shelfReduction I := by
   have hg : Guard I := ((sourceGuard_iff I).mp h).2

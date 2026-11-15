@@ -4,7 +4,7 @@ import Shelf.Count
 /-!
 # The fold of Table 1
 
-Section 5.2 of the paper (`proof/paper/paper.tex`) lists the sites of the fold,
+Section 5.2 of our write-up lists the sites of the fold,
 piece by piece. This file writes that table down. Throughout, `n = side J`,
 `N = n - 1`, the shelf is the edge `(x, 0, 0)`, the separator number `j`
 (from 0) is in the column `sepCol j = 1 + j (B + 1)`.
@@ -151,7 +151,7 @@ end Layout
 
 open Layout
 
-/-- The sites of the fold, in the order of the string (Table 1 of the paper). -/
+/-- The sites of the fold, in the order of the string (Table 1 of our write-up). -/
 def layout {J : Packing.Instance} (P : Parts J) : List Site :=
   P.core ++ [firstP J] ++ tokSites P.aT ++ ([p₀ J] ++ P.mid 0 ++ [q₀ J, q₀' J]) ++
     tokSites (f₁Tokens J) ++ tether₁ J ++ sepPart J ++ tether₂ J ++ tokSites (f₂Tokens J) ++

@@ -1,15 +1,58 @@
-# The shelf proof in Lean
+# Our one-edge proof, checked in Lean
 
-This folder formalizes, in Lean 4 with Mathlib, the proof in
-[`proof/paper/paper.tex`](../proof/paper/paper.tex) that HP protein folding on the
-cubic lattice is NP-complete. All lemma numbers below are the paper's.
+This folder is a Lean 4 project, with Mathlib. It checks our proof that HP
+protein folding on the cubic lattice is NP-complete: the reduction from bin
+packing in which every bin is a gap on one edge of the cube. The website
+presents this proof on the page
+[A proof with bins on one edge](https://caltech-mathathon-hp.github.io/one-edge-proof/).
+
+## Which string Lean checks
+
+That page has two versions of the reduction, each with its own string.
+
+- The board of seventeen cards uses the longer string. Its separators are rods
+  of `B + 6` letters `H`, two walls pin the row of separators to the ends of the
+  edge, and the cube has side `n = (K + 1)(B + 6) + KB + 2`.
+- The section
+  [Folding a small instance](https://caltech-mathathon-hp.github.io/one-edge-proof/#folding-a-small-instance)
+  uses a shorter string. Each separator is a single `H`, two runs of `P`'s
+  called tethers do the work of the walls, and the cube has side
+  `n = m (B + 1) + 3`. The page calls the edge with the bins the shelf, so here
+  this version is the shelf proof.
+
+Lean checks the shelf proof. The string `Shelf.shelfWord` is the formula under
+[Spelling the string](https://caltech-mathathon-hp.github.io/one-edge-proof/#spelling-the-string)
+on that page, piece by piece. The string of the seventeen cards is not in Lean.
+
+Lean's string and the one the 3D view folds differ in one place, the order of
+the items. When the number of bins is even, the reduction adds one item of size `B`. Lean puts it first in the
+list of items, because it uses the team's `Packing.pad`, and the website's 3D
+view puts it last. Theorems 12 and 16 are proved for the items in any order
+(`Shelf.foldGivesPacking`, `Shelf.packingGivesFold`), so they hold for the
+website's string too. [`docs/verification.md`](docs/verification.md#the-websites-examples)
+says how we compared the two strings.
+
+Both versions prove the theorem at the top of the page: from a bin packing
+puzzle with even sizes we can build, in polynomial time, a string that has a
+perfect fold exactly when the items fit. In Lean this is `Shelf.shelfKarp`, for
+the shelf string, and its proof needs no assumption.
+
+The proofs of the shelf version are in our write-up of it. Lemma 7, Theorem 12,
+Table 1 and the other numbers in this folder are the numbers of that write-up.
+Every table also says in words what each result is, so the tables can be read
+without it.
+
+## Whose statement it is
 
 The statement of the theorem is not ours. It is the one in the team's Lean
-library (`lean/cubic` on the branch `lean-certificates` of the website
-repository). An unchanged copy of that library is in
+library, `lean/cubic` in the website's repository. A copy of that library is in
 [`vendor/protein_folding`](vendor/protein_folding), and this project is built
-against the copy; [`vendor/README.md`](vendor/README.md) says which commit it was
-copied from. We prove that statement by a different reduction.
+against the copy. We prove that statement by a different reduction.
+
+The copy also has the team's proof of the Cook–Levin theorem: 57 files that the
+library did not have at the commit we copied. No file of the team's is edited.
+[`vendor/README.md`](vendor/README.md) says where both come from and how to
+check that the copies are exact.
 
 ## What we prove ourselves, and what we take from the team's library
 
@@ -18,37 +61,46 @@ the shelf proof.
 
 | Step | Where it comes from |
 |---|---|
-| SAT is NP-hard (Cook–Levin) | a hypothesis `hCL : SAT.CookLevin` of the final theorems, as in the team's library |
+| SAT is NP-hard (Cook–Levin) | the team's proof (`SAT.CookLevinUniversal.cookLevin`, in the files `Common/CookLevinProof*.lean`) |
 | SAT reduces to EXACT PACKING with even sizes and numbers in unary | the team's library (`SATPacking.modifiedBinPackingUnary_NPHard`) |
-| **EXACT PACKING reduces to PERFECT HP STRING-FOLD** | **this folder: the shelf proof, Sections 2 to 5 of the paper, and a Turing machine that computes the reduction** |
+| **EXACT PACKING reduces to PERFECT HP STRING-FOLD** | **this folder: the shelf proof, Sections 2 to 5 of our write-up, and a Turing machine that computes the reduction** |
 | PERFECT HP STRING-FOLD reduces to HP STRING-FOLD | the team's library (`hpNPHard_of_perfectNPHard`) |
 | both folding problems are in NP | the team's library (`perfectHPStringFold_inNP`, `hpStringFold_inNP`) |
 
 Inside the shelf proof we also reuse the team's lemmas about the cube wherever
 the two proofs need the same fact: an isolated `H` lies on the skeleton, a path
 on the skeleton has at most `9n - 10` vertices, edges that do not touch are far
-apart. The file `Shelf/Cube.lean` has the dictionary between the words of the
-paper and the names in that library.
+apart. The file `Shelf/Cube.lean` has the dictionary between the words of our
+write-up and the names in that library.
 
-The two final theorems are in `Shelf/NPComplete.lean`:
+The two final theorems are in `Shelf/Unconditional.lean`, in the namespace
+`ProteinFolding.Shelf.Unconditional`:
 
 ```lean
-theorem perfectHPStringFold_NPComplete (hCL : SAT.CookLevin) : PerfectHPStringFoldNPComplete
-theorem hpStringFold_NPComplete (hCL : SAT.CookLevin) : HPStringFoldNPComplete
+theorem perfectHPStringFold_NPComplete : PerfectHPStringFoldNPComplete
+theorem hpStringFold_NPComplete : HPStringFoldNPComplete
 ```
 
-The hypothesis `hCL` says that SAT is NP-hard. It is the only thing that is
-assumed. There is no `sorry` and no axiom of our own anywhere:
+Nothing is assumed: the statements have no hypothesis. We get there in two
+steps. `Shelf/NPComplete.lean` proves both results from a hypothesis
+`hCL : SAT.CookLevin`, which says that SAT is NP-hard; the team's library does
+the same for its own proof. `Shelf/Unconditional.lean` then puts the team's
+proof of that statement, `SAT.CookLevinUniversal.cookLevin`, in the place of
+`hCL`. The same file does this for the team's two final theorems, which go by
+the team's string (`Unconditional.TeamRoute`).
+
+There is no `sorry` and no axiom of our own anywhere:
 `lake env lean checks/Axioms.lean` prints the axioms each main result depends
 on, and these are only `propext`, `Classical.choice` and `Quot.sound`, the three
 axioms of Lean and Mathlib themselves.
 
 ## Build
 
+In this folder:
+
 ```bash
-cd lean
 lake exe cache get     # compiled Mathlib, about 300 MB to download
-lake build             # compiles the team's library (a few minutes) and ours
+lake build             # compiles the team's library and ours
 lake env lean checks/Axioms.lean
 ```
 
@@ -56,6 +108,10 @@ Lean `v4.24.0` and Mathlib `v4.24.0`, the same as the team's library. The first
 command downloads Mathlib and the packages Mathlib needs. Nothing else is
 fetched: the team's library is the copy in `vendor/`. Nothing in this folder is
 sent anywhere.
+
+The first build compiles 369 files, about 33 minutes of work shared among the
+processor's cores: 5 minutes on a laptop with 16 cores. The Cook–Levin proof is
+4 of the 33 minutes, the rest of the team's library 24, and our files 5.
 
 ## The certificate
 
@@ -67,13 +123,14 @@ projects in the same way.
 
 | File | What it is |
 |---|---|
-| [`docs/theorem-index.md`](docs/theorem-index.md) | the main results: the statement in the paper, the Lean name, the file, and whether it is a definition, proved, or proved given Cook–Levin |
-| [`docs/proof-route.md`](docs/proof-route.md) | the chain of reductions, the shelf reduction on one page, and where Lean differs from the paper |
+| [`docs/theorem-index.md`](docs/theorem-index.md) | the main results: the statement in our write-up, the Lean name, the file, and whether it is a definition, proved, or proved given Cook–Levin |
+| [`docs/proof-route.md`](docs/proof-route.md) | the chain of reductions, the shelf reduction on one page, and where Lean differs from our write-up |
 | [`docs/model.md`](docs/model.md) | the model and the statements, which are the team's |
 | [`docs/verification.md`](docs/verification.md) | how to check the proof yourself, and how to read what Lean prints |
-| [`checks/ShelfHardness.lean`](checks/ShelfHardness.lean) | prints the statement and the axioms of the 16 main results |
+| [`checks/ShelfHardness.lean`](checks/ShelfHardness.lean) | prints the statement and the axioms of the 23 main results |
 | [`checks/publication-axioms.txt`](checks/publication-axioms.txt) | what it prints |
-| [`checks/Axioms.lean`](checks/Axioms.lean) | prints the axioms of every lemma of the paper |
+| [`checks/Axioms.lean`](checks/Axioms.lean) | prints the axioms of every lemma of our write-up |
+| [`checks/SmallInstances.lean`](checks/SmallInstances.lean) | computes the side of the cube and the number of `H`'s for the website's examples; it prints nothing when they agree |
 
 After a change to the proofs, write the output again:
 
@@ -94,16 +151,19 @@ Status is one of
 
 Every row is now `proved` or `defined`.
 
-Files are in `lean/`; a file marked "team:" is in the team's library, under
+The first column gives the number in our write-up. Files are in this folder; a
+file marked "team:" is in the team's library, under
 `vendor/protein_folding/ProteinFolding/`.
 
 <!-- lemma-map:start -->
-| Paper | What it says | Lean name | File | Status |
+| Write-up | What it says | Lean name | File | Status |
 |---|---|---|---|---|
 | Theorem 1 | PERFECT HP STRING-FOLD is NP-complete (the statement) | `PerfectHPStringFoldNPComplete` | team: `Cubic/MainTheorem.lean` | defined |
-| Theorem 1 | PERFECT HP STRING-FOLD is NP-complete, given the Cook–Levin theorem | `perfectHPStringFold_NPComplete` | `Shelf/NPComplete.lean` | proved |
+| Theorem 1 | PERFECT HP STRING-FOLD is NP-complete, with nothing assumed | `Unconditional.perfectHPStringFold_NPComplete` | `Shelf/Unconditional.lean` | proved |
+| Theorem 1 | the step before: the same, with the Cook–Levin theorem as a hypothesis | `perfectHPStringFold_NPComplete` | `Shelf/NPComplete.lean` | proved |
 | Theorem 1, membership | a fold is a certificate that is checked in polynomial time | `perfectHPStringFold_inNP` | team: `Cubic/Proofs/NPMembership.lean` | proved |
-| Theorem 1, hardness | PERFECT HP STRING-FOLD is NP-hard, given the Cook–Levin theorem | `perfectHPStringFold_NPHard` | `Shelf/NPComplete.lean` | proved |
+| Theorem 1, hardness | PERFECT HP STRING-FOLD is NP-hard, with nothing assumed | `Unconditional.perfectHPStringFold_NPHard` | `Shelf/Unconditional.lean` | proved |
+| Theorem 1, hardness | the step before: the same, with the Cook–Levin theorem as a hypothesis | `perfectHPStringFold_NPHard` | `Shelf/NPComplete.lean` | proved |
 | Theorem 1, hardness | Theorems 12 and 16 make the reduction correct on every input | `reductionCorrect_of` | `Shelf/MainTheorem.lean` | proved |
 | Theorem 1, hardness | the reduction is correct on every input | `reductionCorrect` | `Shelf/NPComplete.lean` | proved |
 | Theorem 1, hardness | the map that the machine computes is a reduction from the team's source problem | `shelfMap`, `shelfMap_correct`, `shelfKarp` | `Shelf/NPComplete.lean` | proved |
@@ -111,10 +171,12 @@ Files are in `lean/`; a file marked "team:" is in the team's library, under
 | Theorem 1, polynomial time | a Turing machine writes the string and the side of the cube in polynomial time | `machineWord_eq`, `shelfPairComputable` | `Shelf/WordComputable.lean` | proved |
 | Theorem 1, polynomial time | a Turing machine computes the reduction in polynomial time | `shelfMap_polyTime` | `Shelf/NPComplete.lean` | proved |
 | Corollary 2 | HP STRING-FOLD is NP-complete (the statement) | `HPStringFoldNPComplete` | team: `Cubic/MainTheorem.lean` | defined |
-| Corollary 2 | HP STRING-FOLD is NP-complete, given the Cook–Levin theorem | `hpStringFold_NPComplete` | `Shelf/NPComplete.lean` | proved |
+| Corollary 2 | HP STRING-FOLD is NP-complete, with nothing assumed | `Unconditional.hpStringFold_NPComplete` | `Shelf/Unconditional.lean` | proved |
+| Corollary 2 | the step before: the same, with the Cook–Levin theorem as a hypothesis | `hpStringFold_NPComplete` | `Shelf/NPComplete.lean` | proved |
 | Corollary 2, proof | the perfect problem reduces to the threshold problem | `hpNPHard_of_perfectNPHard` | team: `Cubic/Proofs/PerfectToHPComputable.lean` | proved |
 | Section 2.1 | EXACT PACKING, and that it contains the team's source problem | `ExactAccepts`, `modifiedAccepts_iff` | `Shelf/Source.lean` | proved |
 | Section 2.1 | EXACT PACKING with even sizes and numbers in unary is NP-hard, given the Cook–Levin theorem | `SATPacking.modifiedBinPackingUnary_NPHard` | team: `Cubic/Proofs/SATPackingComputable.lean` | proved |
+| Section 2.1 | the Cook–Levin theorem: SAT is NP-hard | `SAT.CookLevinUniversal.cookLevin` | team: `Common/CookLevinProofUniversal.lean` | proved |
 | Lemma 3, Corollary 4 | a fold has the maximum number of contacts exactly when its `H`'s fill a cube | `packsCube_iff_bond_threshold` | team: `Cubic/Proofs/GeometryMain.lean` | proved |
 | Section 2.2 | the cube `Q`, the skeleton, edges, end nodes, the clamp map | `Q`, `clamp`, `IsEnd`, `EdgeSkeleton`, `CubeEdge` | `Shelf/Cube.lean` | defined |
 | Section 2.2 | a perfect fold can be translated so that the `H`'s occupy `Q` | `perfect_iff_exists_fills` | `Shelf/FoldBasics.lean` | proved |
@@ -153,30 +215,28 @@ Files are in `lean/`; a file marked "team:" is in the team's library, under
 | Theorem 16, inputs that are not instances | the string they are sent to has no perfect fold | `noInstance_rejected` | `Shelf/MainTheorem.lean` | proved |
 <!-- lemma-map:end -->
 
-The older write-up `proof/proof.tex` numbers the same lemmas differently:
-Lemmas 3, 6, 7, 8, 9, 10, 11 of the paper are its Lemmas 1, 2, 3, 4, 5, 6, 7;
-Lemma 5 is its Lemma 8(b); Lemmas 13, 14, 15 are its Lemmas 9, 11, 10; Theorems
-12 and 16 are its Theorems 2 and 3.
-
 ## What stays on paper
 
-- **Cook–Levin.** That SAT is NP-hard is a hypothesis of the final theorems, not
-  a proof. Mathlib does not have this theorem, and the team's library makes the
-  same choice.
-- **The citation for the source problem.** The paper cites Garey and Johnson for
-  the fact that EXACT PACKING is NP-hard with numbers in unary. In Lean this
-  comes from the team's reduction from SAT instead, so it is proved, given
-  Cook–Levin.
-- **Contacts.** The paper counts contacts between `H`'s that are not neighbours
-  in the string. The team's statement counts all adjacent pairs of `H`'s,
+Nothing that the theorems need. The Cook–Levin theorem was a hypothesis of the
+final theorems until the team proved it in Lean, and `Shelf/Unconditional.lean`
+now uses that proof.
+
+Two sentences of our write-up are not in Lean as they are written.
+
+- **The citation for the source problem.** Our write-up cites Garey and Johnson
+  for the fact that EXACT PACKING is NP-hard with numbers in unary. In Lean
+  nothing is cited: the fact comes from the team's reduction from SAT and the
+  team's proof of the Cook–Levin theorem.
+- **Contacts.** Our write-up counts contacts between `H`'s that are not
+  neighbours in the string. The team's statement counts all adjacent pairs of `H`'s,
   neighbours included; the two numbers differ by the number of factors `HH`.
   The team's reduction from the perfect problem to the threshold problem does
   this bookkeeping, so the last sentence of Lemma 11 (`h(S) = N₀ - 1`) has no
   counterpart here.
 
-## Differences from the paper
+## Differences from our write-up
 
-In the paper `∑ aᵢ = m · B` is part of what an instance is. A Turing machine
+In our write-up `∑ aᵢ = m · B` is part of what an instance is. A Turing machine
 gets arbitrary input, so the Lean reduction first checks this equation and that
 all numbers are positive (`Guard`), and sends an input that fails the check to
 the empty string with `n = 1`, which has no perfect fold
@@ -189,8 +249,8 @@ makes the team's check, which also rejects an input with an odd size, and on the
 inputs that pass it is `shelfReduction`. Nothing is lost: an instance with even
 sizes is an instance of EXACT PACKING (`modifiedAccepts_iff`).
 
-The paper says in one line that the string can be written down in polynomial
-time. In Lean this is a statement about Turing machines, and the machine is put
+Our write-up says in one line that the string can be written down in
+polynomial time. In Lean this is a statement about Turing machines, and the machine is put
 together from the machines of the team's library: one for the check, one for
 the normalisation, one that writes the string. The last one writes each item as
 `P^(λ-2) (PPH)^a` instead of `P^λ H (PPH)^(a-1)`; the two are the same word when

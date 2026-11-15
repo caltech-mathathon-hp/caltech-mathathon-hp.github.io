@@ -5,7 +5,7 @@ import Shelf.Word
 /-!
 # Counting the letters of the string
 
-Lemma 11 of the paper (first sentence): the string of a normalised instance has exactly
+Lemma 11 of our write-up (first sentence): the string of a normalised instance has exactly
 `n³` letters `H`. We also compute the length of the string.
 -/
 
