@@ -1,0 +1,47 @@
+import ProteinFolding.Cubic.Proofs.Hardness
+
+-- The unchanged statement definitions.
+#check ProteinFolding.HPStringFoldNPComplete
+#print axioms ProteinFolding.HPStringFoldNPComplete
+#check ProteinFolding.PerfectHPStringFoldNPHard
+#print axioms ProteinFolding.PerfectHPStringFoldNPHard
+#check ProteinFolding.PerfectHPStringFoldNPComplete
+#print axioms ProteinFolding.PerfectHPStringFoldNPComplete
+
+-- Unconditional geometry, verifiers and actual Karp reductions.
+#check ProteinFolding.perfectIffThreshold_holds
+#print axioms ProteinFolding.perfectIffThreshold_holds
+#check ProteinFolding.hpStringFold_inNP
+#print axioms ProteinFolding.hpStringFold_inNP
+#check ProteinFolding.perfectHPStringFold_inNP
+#print axioms ProteinFolding.perfectHPStringFold_inNP
+#check ProteinFolding.ThreeDimensionalMatching.cnfToBlockMatching_karp
+#print axioms ProteinFolding.ThreeDimensionalMatching.cnfToBlockMatching_karp
+#check ProteinFolding.MatchingPacking.matching_karpReduces_modified
+#print axioms ProteinFolding.MatchingPacking.matching_karpReduces_modified
+#check ProteinFolding.CubicPacking.packingToPerfectComputable
+#print axioms ProteinFolding.CubicPacking.packingToPerfectComputable
+#check ProteinFolding.CubicPacking.frameWord_complete
+#print axioms ProteinFolding.CubicPacking.frameWord_complete
+#check ProteinFolding.CubicPackingGeometry.frameWord_sound
+#print axioms ProteinFolding.CubicPackingGeometry.frameWord_sound
+#check ProteinFolding.CubicPacking.packingToPerfect_complete
+#print axioms ProteinFolding.CubicPacking.packingToPerfect_complete
+#check ProteinFolding.CubicPacking.packingToPerfect_sound
+#print axioms ProteinFolding.CubicPacking.packingToPerfect_sound
+#check ProteinFolding.CubicPacking.packingToPerfect_correct
+#print axioms ProteinFolding.CubicPacking.packingToPerfect_correct
+#check ProteinFolding.CubicPacking.packingToPerfect_karp
+#print axioms ProteinFolding.CubicPacking.packingToPerfect_karp
+#check ProteinFolding.perfect_karpReduces_hp
+#print axioms ProteinFolding.perfect_karpReduces_hp
+
+-- Cook--Levin is an explicit premise, never an additional global axiom.
+#check ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard
+#print axioms ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard
+#check ProteinFolding.perfectHPStringFold_NPHard
+#print axioms ProteinFolding.perfectHPStringFold_NPHard
+#check ProteinFolding.perfectHPStringFold_NPComplete
+#print axioms ProteinFolding.perfectHPStringFold_NPComplete
+#check ProteinFolding.hpStringFold_NPComplete
+#print axioms ProteinFolding.hpStringFold_NPComplete

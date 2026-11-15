@@ -1,0 +1,10 @@
+.lake/
+.tools/
+tmp/
+*.olean
+*.ilean
+*.olean.private
+*.olean.server
+checks/local-*
+checks/ci-*
+checks/CubicSourceAudit.lean
