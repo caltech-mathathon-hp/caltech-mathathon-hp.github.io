@@ -9,6 +9,8 @@ Facts come from ../literature/ (the single source of truth):
 Judgement comes from src/data/papers/curation.toml (hand-edited): themes (lanes), the
 one-clause gist shown by default, the longer takeaway and "why it matters" shown on demand,
 relations between papers, wording overrides, and papers that are in refs.bib but not in INDEX.md.
+A paper whose curation entry has `offsite = "<reason>"` stays in the literature folder but is left
+out of papers.json, so the website does not list it.
 
 Usage (from site/):
     python3 scripts/build_papers.py           # write src/data/papers/papers.json
@@ -310,10 +312,17 @@ def build(problems: Problems) -> dict:
     for key in cur_papers:
         if key not in keys:
             problems.error(f"curation: papers.{key} is not in INDEX.md or [extra]")
+    offsite = {k for k, c in cur_papers.items() if "offsite" in c}
+    for k in offsite:
+        if not str(cur_papers[k]["offsite"]).strip():
+            problems.error(f"{k}: offsite needs a reason")
+    keys -= offsite
 
     papers = []
     for row in base:
         key = row["key"]
+        if key in offsite:
+            continue
         c = cur_papers.get(key, {})
         b = bib.get(key)
         if b is None:
@@ -395,7 +404,9 @@ def build(problems: Problems) -> dict:
         for r in c.get("relations", []):
             if r.get("kind") not in RELATION_KINDS:
                 problems.error(f"{key}: relation kind '{r.get('kind')}' unknown")
-            if r.get("to") not in keys:
+            if r.get("to") in offsite:
+                problems.error(f"{key}: relation to '{r.get('to')}', which is offsite")
+            elif r.get("to") not in keys:
                 problems.error(f"{key}: relation to unknown paper '{r.get('to')}'")
             if r.get("to") == key:
                 problems.error(f"{key}: relation to itself")

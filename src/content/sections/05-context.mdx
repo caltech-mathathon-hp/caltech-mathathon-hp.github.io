@@ -18,6 +18,13 @@ P's (polar). It keeps one force of real folding: hydrophobic residues gather in 
 [The front page](../) defines folds and contacts. <Cite k="istrail2009combinatorial" /> survey
 the mathematics of the model up to 2009.
 
+A string has far too many folds to try them one by one. On the cubic lattice each new letter has up
+to five free directions, and the number of folds of a string with $n+1$ letters grows like $4.68^n$:
+it is the number of self-avoiding walks of $n$ steps, whose growth rate has been estimated
+numerically as $4.684\ldots$ <Cite k="clisby2013calculation" />. Folds with many contacts are rare
+among them. Many folds alone do not make a problem hard, though, as the [front page](../) explains;
+the hardness proofs below are needed for that.
+
 Before 1998, hardness was known only for models with more structure.
 <Cite k="paterson1996complexity" /> proved it for an unbounded alphabet in which only identical
 letters bond. Other proofs used energies that are part of the input <Cite k="unger1993finding" />,
@@ -73,6 +80,71 @@ paragraph.
 | Longest part | the fold and the routing of the linkers | fold ⇒ Hamiltonian path |
 | Length of the journal version | 14 pages | 43 pages, 25 of them appendices |
 
+## NP-complete on two lattices, open on four
+
+The question on the [front page](../) makes sense on any lattice: does a string have a fold with at
+least a given number of contacts? The two proofs above answer it for the cubic and the square
+lattice. The [Playground](../playground/) has four more lattices, and for those we found no proof of
+hardness; "open" in the table means exactly that. The last column gives the best approximation
+ratio we found: an algorithm that runs in polynomial time and, on long strings, always finds a fold
+with at least that fraction of the best score.
+
+| Lattice | Neighbours of a node | Hardness | Approximation ratio |
+|---|---|---|---|
+| Cubic (3D) | 6 | NP-complete <Cite k="berger1998protein" /> | 3/8 <Cite k="hart1996fast" /> |
+| Face-centred cubic (3D) | 12 | open | 3/5 <Cite k="agarwala1997local" /> |
+| Diamond (3D) | 4 | open; a path problem with rules on dihedral angles is NP-complete <Cite k="ngo1992computational" /> | 1/8 <Cite k="hart1996invariant" /> |
+| Square (2D) | 4 | NP-complete <Cite k="crescenzi1998complexity" /> | 1/4 <Cite k="hart1996fast" /> |
+| Triangular (2D) | 6 | open | 6/11 <Cite k="agarwala1997local" /> |
+| Hexagonal (2D) | 3 | open, as listed by <Cite k="istrail2009combinatorial" /> | 1/6, as listed by <Cite k="istrail2009combinatorial" /> |
+
+The survey of <Cite k="istrail2009combinatorial" /> also lists later algorithms that raise the
+square ratio to 1/3 and the cubic one slightly above 3/8; we have not read those papers. When
+<Cite k="agarwala1997local" /> gave their triangular algorithm in 1997, they wrote that nobody knew
+whether folding is NP-hard on the square or the triangular lattice. The square case was settled a
+year later. For the triangular one we found no proof.
+
+### Bipartite lattices allow fewer contacts
+
+Colour the nodes of a lattice with two colours so that neighbours always differ. The cubic,
+diamond, square and hexagonal lattices can be coloured this way: they are bipartite. Every step of
+a fold then changes colour, so two H's can touch only if they are an odd number of steps apart
+along the string. <Cite k="hart1996fast" /> build their upper bound on the score on this rule, and
+so does the Playground's. The triangular and face-centred cubic lattices contain triangles, and
+the rule fails there. The string <Seq s="HPHPHPHPH" /> has no contact on the square lattice, but its
+best fold has 7 on the triangular lattice and 8 on the face-centred cubic one (our exhaustive
+search).
+
+The same string can score very differently from one lattice to the next. The Playground's
+20-letter test string <Seq s="HPHPPHHPHPPHPHHPPHPH" /> has a best fold with 11 contacts on the cubic
+lattice, 9 on the square, 15 on the triangular, 6 on the diamond and 4 on the hexagonal lattice
+(our exhaustive search). On the face-centred cubic lattice our search found a fold with 13 contacts
+but did not finish in 15 minutes, so 13 is only a lower bound.
+
+### The face-centred cubic lattice has no cube
+
+Berger and Leighton's proof starts from the cube: $n^3$ H's have the most contacts exactly when they
+fill an $n\times n\times n$ cube. On the face-centred cubic lattice, where every node has 12
+neighbours, we found no such shape in the literature. <Cite k="backofen2001optimally" /> compute the
+sets of $n$ nodes with the most neighbouring pairs one size at a time, up to $n = 100$, and find that
+they are often not unique: there are two for 60 nodes and three for 100. Upper bounds on the number
+of contacts come from cutting the H's into layers and combining a bound for each layer by dynamic
+programming <Cite k="backofen2000upper" /> <Cite k="ullah2009upper" />. Only for very large sets is
+the shape known: they approach a truncated octahedron <Cite k="cicalese2022emergence" />.
+
+Exact search still goes far. <Cite k="backofen2006constraint" /> first compute compact sets for the
+H's, then thread the string through them. In this way they found optimal folds, with proof, for
+three random strings of 200 letters; the threading took less than a minute for each. On the cubic
+lattice, with the cube as the given set, this threading step is exactly the problem Berger and
+Leighton prove NP-hard (our observation). The papers on the face-centred cubic
+lattice cite the 1998 proofs for the hardness of HP folding in general; none of them proves hardness
+on their own lattice, and none calls the question open.
+
+The ratio of 3/5 in the table comes from <Cite k="agarwala1997local" />, who describe their lattice
+as triangular layers stacked so that every node has 12 neighbours; <Cite k="backofen2001optimally" />
+read it as the face-centred cubic lattice. In a model with side chains, where every letter hangs off
+a backbone node, <Cite k="hart1997lattice" /> reach 31/36 on the same lattice.
+
 ## What came after
 
 ### Variants
@@ -90,12 +162,16 @@ way to fix the shape other than the number of contacts.
 
 ### Approximation
 
-<Cite k="hart1996fast" /> gave algorithms that reach, asymptotically, 1/4 of the optimal score in
-2D and 3/8 in 3D. They rest on a parity bound: the lattices are bipartite, so an H can form
-contacts only with H's whose positions in the string have the other parity.
-<Cite k="istrail2009combinatorial" /> restate the 2D bound without its term for H's at the ends of
-the string. That form fails for <Seq s="HPPHPHPH" />, which folds with 3 contacts against a bound
-of 2 (our check).
+<Cite k="hart1996fast" /> gave the first algorithms with a guarantee: on long strings they reach
+1/4 of the best score on the square lattice and 3/8 on the cubic one. Their analysis rests on the
+parity bound of bipartite lattices. <Cite k="istrail2009combinatorial" /> restate the 2D bound
+without its term for H's at the ends of the string. That form fails for <Seq s="HPPHPHPH" />, which
+folds with 3 contacts against a bound of 2 (our check). Lattices with triangles have no parity
+bound, so <Cite k="agarwala1997local" /> bound the score by the free sides each H must lose, and
+reach 6/11 on the triangular lattice. <Cite k="hart1996invariant" /> turn the method into a recipe
+that gives a constant ratio on every lattice containing the square or the triangular pattern, such
+as 1/8 on the diamond lattice. The recipe maps folds from one lattice into another, which carries
+algorithms across lattices but, in our reading, not hardness.
 
 <Cite k="berger1998protein" /> derive hardness within $9/8-\varepsilon$ for a related measure, the
 number of missed H–H bonds: deciding whether a fold misses only the minimum of 8 is NP-hard, and
@@ -142,9 +218,10 @@ Three related questions are also open in the literature:
 
 - hardness of approximating the number of contacts <Cite k="nayak1998spatial" />
   <Cite k="demaine2012geometric" />;
-- hardness on other lattices: we found no hardness proof for HP folding on the triangular,
-  hexagonal or face-centred cubic lattice, where only approximation algorithms are known, and
-  <Cite k="istrail2009combinatorial" /> list the hexagonal case as open;
+- hardness on other lattices: we found no hardness proof for HP folding on the face-centred cubic,
+  diamond, triangular or hexagonal lattice, where only approximation algorithms and, for the
+  face-centred cubic one, exact search are known; <Cite k="istrail2009combinatorial" /> list the
+  hexagonal case as open;
 - hardness for strings whose optimal fold is unique <Cite k="aichholzer2003long" />, which the known
   proofs do not cover.
 

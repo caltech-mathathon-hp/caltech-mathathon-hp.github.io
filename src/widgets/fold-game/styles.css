@@ -882,6 +882,73 @@
 .fg .fg-solve-compact {
   color: var(--accent);
 }
+/* the score over the board, on the right. In 3D it sits under the view's buttons
+   (three3d.css: 8px from the corner, 40px tall). It lets clicks and drags through. */
+.fg-tally {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  z-index: 3;
+  min-width: 6.5rem;
+  padding: var(--s-2) var(--s-3) var(--s-3);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--bg-elev) 88%, transparent);
+  box-shadow: var(--shadow-sm);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+  transition:
+    border-color 160ms,
+    background-color 160ms;
+}
+.fg-stage[data-dim='3'] .fg-tally {
+  top: calc(8px + 40px + var(--s-3));
+  right: 8px;
+}
+.fg-tally-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-1);
+}
+.fg-tally-num {
+  font-size: var(--fs-h1);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.fg-tally-of {
+  font-size: var(--fs-base);
+  color: var(--fg-muted);
+}
+.fg-tally-label {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.fg-tally .fg-meter {
+  margin-top: var(--s-2);
+}
+/* the best is reached: the colours of a solved level, and its check */
+.fg-tally.is-good {
+  border-color: color-mix(in srgb, var(--st-proved) 45%, var(--rule));
+  background: color-mix(in srgb, var(--st-proved) 10%, var(--bg-elev));
+}
+.fg-tally.is-good .fg-tally-num {
+  color: var(--st-proved);
+}
+.fg-tally .fg-chip-done {
+  animation: fg-fade 220ms ease;
+}
+/* wide screens: the bar's copy of the score is for screen readers only */
+@media (min-width: 48rem) {
+  .fg-bar-tally {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
 
 /* ---------- the 2D board (Svg2D) ---------- */
 .fg-svg-wrap {
@@ -1065,6 +1132,25 @@
   }
   .fg-compact .fg-bar-score {
     grid-area: score;
+  }
+  /* no room on the board: the score is in the bar, with a large number */
+  .fg-tally {
+    display: none;
+  }
+  .fg-bar-tally strong {
+    font-size: var(--fs-h2);
+    line-height: 1;
+  }
+  .fg-bar-tally.is-good strong {
+    color: var(--st-proved);
+  }
+  .fg-bar-tally .fg-chip-done {
+    position: relative;
+    top: auto;
+    right: auto;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: var(--s-2);
   }
   .fg-compact .fg-undo {
     grid-area: undo;

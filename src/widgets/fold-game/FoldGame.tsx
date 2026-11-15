@@ -15,7 +15,8 @@
  *   brief    the level's title and goal (or the form for an own string)
  *   body     [string strip, board, context line] | [score panel: contacts, bounds, actions]
  * The context line under the board says what to do next and how (it changes with the state);
- * "Controls" there opens the full list. Compact: strip, board, one bar with the same parts.
+ * "Controls" there opens the full list. Compact: strip, board, one bar with the same parts;
+ * the score sits over the board on the right (on narrow screens it is in the bar instead).
  *
  * "Show solution" replays a best fold letter by letter (levels store one; for other strings
  * the browser runs an exhaustive search, engine/solve.ts, when the string is short enough).
@@ -849,6 +850,20 @@ export default function FoldGame(props: FoldGameProps) {
     </div>
   ) : null;
 
+  // compact: the score over the board, on the right (narrow screens: in the bar instead)
+  const reached = best !== undefined && score >= best;
+  const tally = compact && play && (
+    <div class={`fg-tally${reached ? ' is-good' : ''}`} aria-hidden="true">
+      <div class="fg-tally-row">
+        <span class="fg-tally-num">{score}</span>
+        {best !== undefined && <span class="fg-tally-of">/ {best}</span>}
+      </div>
+      <div class="fg-tally-label">{best === undefined && score === 1 ? 'contact' : 'contacts'}</div>
+      {best !== undefined && best > 0 && <Meter score={score} best={best} />}
+      {reached && <span class="fg-chip-done" />}
+    </div>
+  );
+
   const scrubber = !play && (
     <div class="fg-scrub">
       <button type="button" class="btn ghost fg-icon" aria-label="Previous letter" onClick={() => scrubTo(placed - 1)} disabled={placed <= 1}>
@@ -948,9 +963,10 @@ export default function FoldGame(props: FoldGameProps) {
           </p>
           {compact && (
             <div class="fg-context-actions">
-              <span class="fg-bar-score">
+              <span class={`fg-bar-score fg-bar-tally${reached ? ' is-good' : ''}`}>
                 <strong>{score}</strong> {score === 1 ? 'contact' : 'contacts'}
                 {best !== undefined && <span class="fg-bar-best"> · best {best}</span>}
+                {reached && <span class="fg-chip-done" aria-hidden="true" />}
               </span>
               <button type="button" class="btn ghost fg-icon fg-undo" aria-label="Undo" title="Undo (Backspace)" onClick={undo} disabled={!ctrl.canUndo}>
                 <Icon d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
@@ -1095,6 +1111,7 @@ export default function FoldGame(props: FoldGameProps) {
           >
             {board}
             {pill}
+            {tally}
           </div>
           {context}
           {!play && (

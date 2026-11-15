@@ -64,6 +64,13 @@ color = "--bond"
 description = "Algorithms that reach a fixed fraction of the optimal score."
 
 [[themes]]
+id = "lattices"
+label = "Other lattices: contact bounds and exact search"
+short = "Other lattices"
+color = "--st-computed"
+description = "How many contacts H's can make on the face-centred cubic lattice, and how far exact search reaches there. None of these papers proves hardness."
+
+[[themes]]
 id = "design"
 label = "Inverse folding and sequence design"
 short = "Inverse folding"
@@ -382,6 +389,126 @@ gist = "Simple folding algorithms that reach 1/4 of the optimal score in 2D and 
 takeaway = "The ratios are asymptotic, and the algorithms run in linear or quadratic time. They rest on a parity bound: the lattices are bipartite, so an H can touch only H's at positions of the other parity. In 2D a fold has at most 2X + T contacts, where X counts the H's of the smaller parity class and T the ends of the string that are H's of that class. The paper lists the complexity of HP folding as open and conjectures that it is NP-hard."
 why = "A fold meets the parity bound only if every free side of the smaller class touches an H. This is the 2D counterpart of Berger and Leighton's perfect fold."
 
+[papers.agarwala1997local]
+themes = ["approx", "lattices"]
+badge = "triangular lattice"
+gist = "Simple folding rules reach 6/11 of the best score on the triangular lattice, and 3/5 in 3D."
+takeaway = "The rules fold any string in linear time; the ratios hold for long strings. The 3D lattice is a stack of triangular layers in which every node has twelve neighbours, drawn as the face-centred cubic lattice. With no parity rule to lean on, the upper bound counts, for each H, the free sides lost where an H meets a P along the string."
+why = "The source of the 6/11 ratio, still the best we know for the triangular lattice. The authors write that in 1997 nobody knew whether folding on the square or the triangular lattice is NP-hard. The square case was settled a year later; we found no hardness proof for the triangular one."
+relations = [
+  { to = "hart1996fast", kind = "builds-on", note = "The same kind of guarantee, moved from the square lattice to the triangular lattice." },
+  { to = "paterson1996complexity", kind = "discusses", note = "Cited for hardness when the alphabet is unbounded." },
+]
+
+[papers.hart1996invariant]
+themes = ["approx", "lattices"]
+gist = "One recipe gives constant-factor folding algorithms on many lattices at once."
+takeaway = "An approximation algorithm needs only a small pattern in the lattice: two rows that can face each other, and room for loops. Every lattice that contains the square-lattice pattern or the triangular one gets an algorithm within a constant factor of the best score. That covers the cubic, diamond, hexagonal and face-centred cubic lattices; only the diamond lattice gets an explicit ratio, 1/8."
+why = "Approximation is settled up to constants on all the common lattices. The method maps folds of one lattice into another, so it carries algorithms across lattices but cannot carry NP-hardness."
+relations = [
+  { to = "hart1996fast", kind = "extends", note = "Generalizes its algorithm from the square and cubic lattices to every lattice that contains the same pattern." },
+  { to = "agarwala1997local", kind = "extends", note = "Generalizes the triangular-lattice rules to lattices with triangles." },
+  { to = "berger1998protein", kind = "discusses", note = "Cited for hardness on the cubic lattice." },
+]
+
+[papers.hart1997lattice]
+themes = ["approx"]
+gist = "With side chains on the face-centred cubic lattice, a linear-time fold reaches 31/36 of the best score."
+takeaway = "In this model each residue is a bead hanging off an unlabelled backbone, so the H's can pack more tightly than in the plain model. The algorithm stacks the H beads in eight columns. On the cubic lattice the same idea gives 2/5."
+why = "A different model, so its ratios say nothing direct about the plain chain on the face-centred cubic lattice. The paper proves no hardness."
+relations = [
+  { to = "hart1996fast", kind = "builds-on", note = "Reuses its folding point on the cubic lattice." },
+  { to = "agarwala1997local", kind = "builds-on", note = "The face-centred cubic algorithm builds on the star folding of Agarwala et al." },
+]
+
+# ----- other lattices: contact bounds and exact search
+
+[papers.backofen2000upper]
+themes = ["lattices"]
+badge = "face-centred cubic"
+gist = "An upper bound on the contacts of n H's on the face-centred cubic lattice, computed in polynomial time."
+takeaway = "Backofen cuts the H's into layers that are square grids, bounds the contacts inside each layer and between neighbouring layers, and combines the bounds by dynamic programming in time of order n⁵. The bound is proved for sets whose layers have no gaps along a row or column. For 300 H's it allows 1461 contacts."
+why = "On the cubic lattice the cube lemma gives the exact maximum, and Berger and Leighton build on it. On the face-centred cubic lattice this computed bound is what takes its place. The paper proves no hardness."
+relations = [
+  { to = "berger1998protein", kind = "variant-of", note = "The same model on the face-centred cubic lattice. It bounds contacts to speed up exact search and proves no hardness." },
+]
+
+[papers.ullah2009upper]
+themes = ["lattices"]
+gist = "Sharpens the face-centred cubic contact bound by cutting the H's into triangular layers."
+takeaway = "In a triangular layer each node has six neighbours in its layer and three in each adjacent one. The dynamic program runs in time of order n⁴ and lowers the earlier bound by at most two contacts, for example from 438 to 436 for 100 H's. Most of the case analysis is left out of the paper."
+why = "A slightly sharper answer to how many contacts n H's can make on this lattice. It proves no hardness."
+relations = [
+  { to = "backofen2000upper", kind = "extends", note = "The same method with triangular layers instead of square ones." },
+]
+
+[papers.backofen2001optimally]
+themes = ["lattices"]
+gist = "Computes the most compact sets of up to 100 nodes of the face-centred cubic lattice."
+takeaway = "A search guided by layer bounds finds the sets of n nodes with the most neighbouring pairs, for example 436 pairs for 100 nodes. Optimal sets are not unique: there are two for 60 nodes and three for 100."
+why = "The H's of a best fold form such a compact set, if the string allows it. On the cubic lattice the most compact set of n³ nodes is the cube, the target of Berger and Leighton's proof. Here the optimal sets are computed one size at a time, and their shapes vary."
+relations = [
+  { to = "berger1998protein", kind = "discusses", note = "Cites it for hardness, and computes the counterpart of its cube on the face-centred cubic lattice." },
+  { to = "backofen2000upper", kind = "builds-on", note = "Uses layer bounds of the same kind to prune the search." },
+]
+
+[papers.will2002constraint]
+themes = ["lattices"]
+gist = "Lists all the most compact gap-free sets of H's on the face-centred cubic lattice, up to about 100."
+takeaway = "A constraint program, pruned by layer bounds, builds every optimal set that has no gap along a lattice line. Threading strings through these sets gives optimal folds in practice: 60% of random strings of length 160 with 100 H's were solved within 15 minutes."
+why = "Shows how far exact search reaches on this lattice. The method has no polynomial time bound, and the paper claims no complexity result."
+relations = [
+  { to = "backofen2001optimally", kind = "builds-on", note = "Takes its bounds for each sequence of layers from this paper." },
+  { to = "backofen2000upper", kind = "builds-on", note = "Cites it for the first contact bounds on this lattice." },
+]
+
+[papers.backofen2001fast]
+themes = ["lattices"]
+gist = "Threads a given string onto a given compact set of nodes by constraint search."
+takeaway = "The string must become a self-avoiding walk with every H on the given set. On random strings the search succeeds quickly for small sets; for a set of 100 nodes, half or more fail within the time limit."
+why = "The second step of exact folding. On the cubic lattice, with the cube as the given set, this step is exactly the problem Berger and Leighton prove NP-hard (our observation; the paper does not say so)."
+relations = [
+  { to = "backofen2001optimally", kind = "builds-on", note = "Threads strings onto the compact sets computed there." },
+  { to = "berger1998protein", kind = "discusses", note = "Cites it for hardness. With the cube as the given set, its threading problem is the one Berger and Leighton prove hard." },
+]
+
+[papers.backofen2006constraint]
+themes = ["lattices"]
+gist = "Proves folds optimal on the cubic and face-centred cubic lattices, on the latter for 200 letters."
+takeaway = "Compact sets for the H's are computed once and stored. A string is tried on the sets with the most contacts first, then on sets with one contact fewer, and so on; the first set it fits on gives an optimal fold. The paper also counts all optimal folds of some cubic-lattice strings exactly."
+why = "The main evidence of how far exact computation reaches on the face-centred cubic lattice, where no hardness proof is known. Its starting point, that a best fold packs the H's tightly, is also where Berger and Leighton's cube comes from."
+relations = [
+  { to = "backofen2001optimally", kind = "extends", note = "Journal account of the construction of compact sets, with bounds for the cubic lattice added." },
+  { to = "backofen2001fast", kind = "extends", note = "Journal account of the threading, with the fallback to less compact sets added." },
+  { to = "berger1998protein", kind = "discusses", note = "Cited for hardness of HP folding." },
+]
+
+[papers.mann2008cpsp]
+themes = ["lattices"]
+gist = "Software that finds and counts optimal folds and designs strings on 3D lattices."
+takeaway = "The tools reuse a stored database of compact sets of H's. They return every optimal fold, count them, and design strings with a unique optimal fold. All worked examples are strings of 27 letters on the cubic lattice."
+why = "A ready tool for checking small instances on the cubic and face-centred cubic lattices. It proves nothing new about complexity."
+relations = [
+  { to = "backofen2006constraint", kind = "builds-on", note = "Implements its method." },
+  { to = "berman2004protein", kind = "discusses", note = "Cited for hardness of string design in 3D and its ease in 2D." },
+]
+
+[papers.mann2009equivalence]
+themes = ["lattices"]
+gist = "Counts optimal folds up to the positions of the H's, which removes most duplicates."
+takeaway = "Two optimal folds count as one if every H sits in the same place. For random 27-letter strings on the cubic lattice, the average drops from about 125,000 optimal folds to about 4,900 classes."
+why = "Most optimal folds of an HP string differ only in where the P's go. Background for the question of strings with a unique optimal fold."
+relations = [
+  { to = "mann2008cpsp", kind = "extends", note = "Adds a tool to the package that lists one fold per class." },
+  { to = "aichholzer2003long", kind = "discusses", note = "Both concern how many optimal folds a string has; we relate them, the paper does not cite it." },
+]
+
+[papers.cicalese2022emergence]
+themes = ["lattices"]
+gist = "On the face-centred cubic lattice, the densest large sets of nodes approach a truncated octahedron."
+takeaway = "For N nodes the number of missing pairs grows like N to the power 2/3, and the rescaled optimal sets converge to the Wulff shape of an explicit surface energy. The paper also treats the hexagonal close-packed lattice."
+why = "The face-centred cubic counterpart of the cube lemma, but only in the limit and up to lower-order terms. The paper has no strings and says nothing about complexity."
+
 # ----- inverse folding and sequence design
 
 [papers.hart1997computational]
@@ -549,6 +676,27 @@ themes = ["background"]
 gist = "Bounds the size of a set by the sizes of its projections onto the coordinate planes."
 takeaway = "Theorem 2 is the discrete form: for a set S of unit cubes, |S|² is at most the product of the sizes of its three projections. The paper has no case of equality."
 why = "Berger and Leighton's cube lemma says that n³ H's have the most contacts exactly when they fill a cube. They give no source. Its inequality is this one; the case of equality is proved by Atkins and Hart."
+
+[papers.clisby2013calculation]
+themes = ["background"]
+gist = "Estimates how fast the number of self-avoiding walks on the cubic lattice grows: about 4.684 per step."
+takeaway = "The estimate comes from simulations with the pivot algorithm, which samples very long walks. It is a numerical value, not a theorem; no exact value is known."
+why = "Every fold of a string is a self-avoiding walk, so a string with n+1 letters has roughly 4.68 to the power n folds on the cubic lattice. Trying them all is hopeless, but that alone does not make folding hard."
+
+[papers.lauria2013combinatorial]
+offsite = "Unrefereed thesis about side-chain packing, with no chain; its hardness result is on arbitrary graphs."
+themes = ["lattices"]
+gist = "Side-chain packing is NP-hard on arbitrary graphs; its best shape on 3D lattices is only conjectured."
+
+[papers.nadimpalli2019discrete]
+offsite = "Unrefereed thesis whose main claim, on the cubic lattice, fails as written (our check); no chain."
+themes = ["lattices"]
+gist = "Surveys discrete isoperimetry and attacks side-chain packing; its cubic-lattice proof does not hold."
+
+[papers.stewart2010face]
+offsite = "Thesis about fitting real proteins to the face-centred cubic lattice; no complexity results."
+themes = ["lattices"]
+gist = "Fits real proteins to the face-centred cubic lattice and compares two-layer and octahedral cores."
 
 # ---------------------------------------------------------------- papers in refs.bib but not in INDEX.md
 
