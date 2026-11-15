@@ -18,17 +18,26 @@ npm run build      # the static site, in dist/
 This repository is the site's source, so edit the files here. No other repository is copied over
 it, and none is needed to build or change the site.
 
-1. Branch off `main`, make the change and run `npm run build`.
-2. Push the branch and open a pull request into `main`.
-3. Merging the pull request publishes the change: every push to `main` rebuilds the site with
-   GitHub Pages (`.github/workflows/pages.yml`).
+We all work on `main`, with no other branches and no pull requests. Every push to `main` rebuilds
+and publishes the site with GitHub Pages (`.github/workflows/pages.yml`). If the build fails, the
+deploy stops and the site already online stays up.
+
+```bash
+git pull --rebase            # get everyone's latest work first
+# edit, then check that the site still builds:
+npm run build
+git add <files> && git commit -m "…"
+git pull --rebase && git push
+```
+
+If `git pull --rebase` stops on a conflict, someone changed the same lines. Keep both changes
+where they make sense, then `git add` the file and `git rebase --continue`.
 
 Older commits on `main` are named "Update from front-page at …". They come from an earlier setup
 in which the site was copied here from another repository. That setup is gone: there is no
 `front-page` branch here, and nothing is copied any more.
 
-Everything in this repository is public: unmerged branches, pull requests and pages with
-`status: hidden` too.
+Everything in this repository is public, including pages with `status: hidden`.
 
 A repository named `<owner>.github.io` is served at the root, so the workflow sets `SITE_BASE=/`.
 
@@ -56,6 +65,7 @@ src/
 scripts/                  generators (e.g. papers.json from the literature notes)
 public/                   static files served as is
 lean/                     the Lean certificates (branch lean-certificates)
+explainer-video/          source of the explainer video, not part of the site (npm run stepper inside)
 ```
 
 ## Adding, hiding or removing a section

@@ -7,8 +7,9 @@ This repository is the source of the website <https://caltech-mathathon-hp.githu
   change the site.
 - Commits named "Update from front-page at …" come from an earlier setup that copied the site in
   from another repository. There is no `front-page` branch to look for.
-- Every push to `main` publishes the site. Work on a branch, run `npm run build`, and open a pull
-  request into `main`.
-- Everything here is public, including unmerged branches and pull requests.
+- The team works on `main` only: no other branches, no pull requests. Every push to `main`
+  publishes the site. Before you push: `git pull --rebase`, `npm run build`, then
+  `git pull --rebase && git push`.
+- Everything here is public, including pages with `status: hidden`.
 - `src/data/papers/papers.json` is generated; don't edit it by hand (see the papers map in
   `README.md`).
