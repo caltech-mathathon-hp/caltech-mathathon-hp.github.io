@@ -3,8 +3,8 @@ title: Lean formalization
 slug: lean
 navTitle: Lean
 kicker: Part IV
-lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem twice, once with their reduction and once with ours. The team has also proved in Lean the one classical theorem the proof uses, Cook–Levin, so HP folding on the cubic lattice is NP-complete with no hypothesis left. The team has also proved in Lean that HP folding is NP-complete on a second lattice, the diamond lattice. You can download the four projects and check them yourself.
-summary: Berger and Leighton's theorem checked in Lean twice, with their reduction and with ours, with the Cook–Levin theorem proved in Lean too, and the same result on the diamond lattice.
+lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem twice, once with their reduction and once with ours. The team has also proved in Lean the one classical theorem the proof uses, Cook–Levin, so HP folding on the cubic lattice is NP-complete with no hypothesis left. Lean also checks a new result of the team, that HP folding is NP-complete on the diamond lattice, where hardness was open. You can download the four projects and check them yourself.
+summary: Berger and Leighton's theorem checked in Lean twice, with their reduction and with ours, with the Cook–Levin theorem proved in Lean too, and the same theorem on the diamond lattice, which is new.
 order: 6
 status: ready
 ---
@@ -224,15 +224,17 @@ The final theorems are the team's statements, proved through our step:
 
 <LeanCode cert="shelf" names="Shelf.perfectHPStringFold_NPComplete Shelf.hpStringFold_NPComplete" caption="Our final theorems" />
 
-## The diamond lattice
+## A new result on the diamond lattice
 
 The team has also proved in Lean that HP folding is NP-complete on a second lattice, the diamond
-lattice. Its sites sit like the carbon atoms of a diamond: every site has four neighbours, at the
-corners of a regular tetrahedron around it.
+lattice. The result is new: we found no earlier proof of hardness on this lattice (see
+[Context](../context/#np-complete-on-three-lattices-open-on-three)). Its sites sit like the carbon
+atoms of a diamond: every site has four neighbours, at the corners of a regular tetrahedron around
+it.
 
 <LeanCertificate
   cert="tetrahedral"
-  label="A second lattice"
+  label="A new result"
   claim="Lean checks that HP folding on the diamond lattice is NP-complete, with no hypothesis."
   how="The source problem and its hardness are the team's, from SAT through 3D matching to bin packing, with Cook–Levin proved. The new step is a reduction from bin packing to folding on the diamond lattice."
   labels={{ SAT: 'Cook–Levin, proved in Lean' }}

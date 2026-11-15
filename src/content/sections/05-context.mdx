@@ -80,20 +80,22 @@ paragraph.
 | Longest part | the fold and the routing of the linkers | fold ⇒ Hamiltonian path |
 | Length of the journal version | 14 pages | 43 pages, 25 of them appendices |
 
-## NP-complete on two lattices, open on four
+## NP-complete on three lattices, open on three
 
 The question on the [front page](../) makes sense on any lattice: does a string have a fold with at
 least a given number of contacts? The two proofs above answer it for the cubic and the square
-lattice. The [Playground](../playground/) has four more lattices, and for those we found no proof of
-hardness; "open" in the table means exactly that. The last column gives the best approximation
-ratio we found: an algorithm that runs in polynomial time and, on long strings, always finds a fold
-with at least that fraction of the best score.
+lattice. The [Playground](../playground/) has four more lattices. On one of them, the diamond
+lattice, the team has a new proof of hardness, checked in
+[Lean](../lean/#a-new-result-on-the-diamond-lattice). For the other three we found no proof of
+hardness; "open" in the table means exactly that. The last column gives the best approximation ratio
+we found: an algorithm that runs in polynomial time and, on long strings, always finds a fold with
+at least that fraction of the best score.
 
 | Lattice | Neighbours of a node | Hardness | Approximation ratio |
 |---|---|---|---|
 | Cubic (3D) | 6 | NP-complete <Cite k="berger1998protein" /> | 3/8 <Cite k="hart1996fast" /> |
 | Face-centred cubic (3D) | 12 | open | 3/5 <Cite k="agarwala1997local" /> |
-| Diamond (3D) | 4 | open; a path problem with rules on dihedral angles is NP-complete <Cite k="ngo1992computational" /> | 1/8 <Cite k="hart1996invariant" /> |
+| Diamond (3D) | 4 | NP-complete, a new result of the team, checked in [Lean](../lean/#a-new-result-on-the-diamond-lattice); a path problem with rules on dihedral angles is NP-complete <Cite k="ngo1992computational" /> | 1/8 <Cite k="hart1996invariant" /> |
 | Square (2D) | 4 | NP-complete <Cite k="crescenzi1998complexity" /> | 1/4 <Cite k="hart1996fast" /> |
 | Triangular (2D) | 6 | open | 6/11 <Cite k="agarwala1997local" /> |
 | Hexagonal (2D) | 3 | open, as listed by <Cite k="istrail2009combinatorial" /> | 1/6, as listed by <Cite k="istrail2009combinatorial" /> |
@@ -219,9 +221,10 @@ Three related questions are also open in the literature:
 - hardness of approximating the number of contacts <Cite k="nayak1998spatial" />
   <Cite k="demaine2012geometric" />;
 - hardness on other lattices: we found no hardness proof for HP folding on the face-centred cubic,
-  diamond, triangular or hexagonal lattice, where only approximation algorithms and, for the
-  face-centred cubic one, exact search are known; <Cite k="istrail2009combinatorial" /> list the
-  hexagonal case as open;
+  triangular or hexagonal lattice, where only approximation algorithms and, for the face-centred
+  cubic one, exact search are known; <Cite k="istrail2009combinatorial" /> list the hexagonal case
+  as open. The diamond lattice was open too, until the team's new
+  [proof in Lean](../lean/#a-new-result-on-the-diamond-lattice);
 - hardness for strings whose optimal fold is unique <Cite k="aichholzer2003long" />, which the known
   proofs do not cover.
 
