@@ -54,6 +54,15 @@ jobs:
           (cd lean/cooklevin && sha256sum --quiet -c ../shelf/vendor/cook_levin_files.sha256)
           (cd lean/shelf/vendor/protein_folding && sha256sum --quiet -c ../cook_levin_files.sha256)
           echo "$(wc -l < lean/shelf/vendor/cook_levin_files.sha256) files match"
+      # lean-action caches only lean/shelf/.lake. The team's library and the Cook–Levin files
+      # compile into vendor/protein_folding/.lake, so we cache that folder too. The key hashes
+      # every vendor file, the toolchain and the manifest, and there are no restore-keys, so
+      # any change to them means a miss and a full build.
+      - name: Restore the compiled vendor files, if no vendor file has changed
+        uses: actions/cache@v4
+        with:
+          path: lean/shelf/vendor/protein_folding/.lake
+          key: shelf-vendor-${{ runner.os }}-${{ hashFiles('lean/shelf/lean-toolchain', 'lean/shelf/lake-manifest.json', 'lean/shelf/vendor/protein_folding/**') }}
       - name: Build the shelf proof
         uses: leanprover/lean-action@v1
         with:
