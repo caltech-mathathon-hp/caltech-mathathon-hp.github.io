@@ -1,0 +1,76 @@
+ProteinFolding.HPStringFoldNPComplete : Prop
+'ProteinFolding.HPStringFoldNPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.PerfectHPStringFoldNPHard : Prop
+'ProteinFolding.PerfectHPStringFoldNPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.PerfectHPStringFoldNPComplete : Prop
+'ProteinFolding.PerfectHPStringFoldNPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.perfectIffThreshold_holds : ProteinFolding.PerfectIffThreshold
+'ProteinFolding.perfectIffThreshold_holds' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.hpStringFold_inNP : ProteinFolding.InNP ProteinFolding.hpEncoding fun I => I.Accepts
+'ProteinFolding.hpStringFold_inNP' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.perfectHPStringFold_inNP :
+  ProteinFolding.InNP ProteinFolding.perfectEncoding fun I => ProteinFolding.PerfectHPStringFold I.1 I.2
+'ProteinFolding.perfectHPStringFold_inNP' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.ThreeDimensionalMatching.cnfToBlockMatching_karp :
+  ProteinFolding.KarpReduces ProteinFolding.SAT.cnfEncoding ProteinFolding.ThreeDimensionalMatching.instanceEncoding
+    ProteinFolding.SAT.Satisfiable ProteinFolding.ThreeDimensionalMatching.Accepts
+'ProteinFolding.ThreeDimensionalMatching.cnfToBlockMatching_karp' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ProteinFolding.MatchingPacking.matching_karpReduces_modified :
+  ProteinFolding.KarpReduces ProteinFolding.ThreeDimensionalMatching.instanceEncoding
+    ProteinFolding.Packing.instanceEncoding ProteinFolding.ThreeDimensionalMatching.Accepts
+    ProteinFolding.Packing.ModifiedAccepts
+'ProteinFolding.MatchingPacking.matching_karpReduces_modified' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ProteinFolding.CubicPacking.packingToPerfectComputable :
+  Turing.TM2ComputableInPolyTime ProteinFolding.Packing.instanceEncoding ProteinFolding.perfectEncoding
+    ProteinFolding.CubicPacking.packingToPerfect
+'ProteinFolding.CubicPacking.packingToPerfectComputable' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.CubicPacking.frameWord_complete (q Q : ℕ) (items : List ℕ) (hq : 2 ≤ q) (hQ : q < Q)
+  (hpositive : ∀ a ∈ items, 0 < a) (heven : ∀ a ∈ items, Even a) (parts : List (List ℕ))
+  (hexact : ProteinFolding.Packing.Exact { sizes := items, capacity := 4 * Q, bins := q } parts) :
+  ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.frameWord q Q items)
+    (ProteinFolding.CubicPacking.side q Q)
+'ProteinFolding.CubicPacking.frameWord_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.CubicPackingGeometry.frameWord_sound (q Q : ℕ) (items : List ℕ) (hq : 2 ≤ q) (hQ : q < Q)
+  (hpos : ∀ s ∈ items, 0 < s) (hsum : items.sum = q * (4 * Q)) :
+  ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.frameWord q Q items)
+      (ProteinFolding.CubicPacking.side q Q) →
+    ∃ parts, ProteinFolding.Packing.Exact { sizes := items, capacity := 4 * Q, bins := q } parts
+'ProteinFolding.CubicPackingGeometry.frameWord_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.CubicPacking.packingToPerfect_complete (I : ProteinFolding.Packing.Instance)
+  (hI : ProteinFolding.Packing.ModifiedAccepts I) :
+  ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.packingToPerfect I).1
+    (ProteinFolding.CubicPacking.packingToPerfect I).2
+'ProteinFolding.CubicPacking.packingToPerfect_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.CubicPacking.packingToPerfect_sound (I : ProteinFolding.Packing.Instance) :
+  ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.packingToPerfect I).1
+      (ProteinFolding.CubicPacking.packingToPerfect I).2 →
+    ProteinFolding.Packing.ModifiedAccepts I
+'ProteinFolding.CubicPacking.packingToPerfect_sound' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.CubicPacking.packingToPerfect_correct (I : ProteinFolding.Packing.Instance) :
+  ProteinFolding.Packing.ModifiedAccepts I ↔
+    ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.packingToPerfect I).1
+      (ProteinFolding.CubicPacking.packingToPerfect I).2
+'ProteinFolding.CubicPacking.packingToPerfect_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.CubicPacking.packingToPerfect_karp :
+  ProteinFolding.KarpReduces ProteinFolding.Packing.instanceEncoding ProteinFolding.perfectEncoding
+    ProteinFolding.Packing.ModifiedAccepts fun I => ProteinFolding.PerfectHPStringFold I.1 I.2
+'ProteinFolding.CubicPacking.packingToPerfect_karp' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.perfect_karpReduces_hp :
+  ProteinFolding.KarpReduces ProteinFolding.perfectEncoding ProteinFolding.hpEncoding
+    (fun I => ProteinFolding.PerfectHPStringFold I.1 I.2) fun I => I.Accepts
+'ProteinFolding.perfect_karpReduces_hp' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard (hCL : ProteinFolding.SAT.CookLevin) :
+  ProteinFolding.Packing.ModifiedBinPackingUnaryNPHard
+'ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.perfectHPStringFold_NPHard (hCL : ProteinFolding.SAT.CookLevin) :
+  ProteinFolding.PerfectHPStringFoldNPHard
+'ProteinFolding.perfectHPStringFold_NPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.perfectHPStringFold_NPComplete (hCL : ProteinFolding.SAT.CookLevin) :
+  ProteinFolding.PerfectHPStringFoldNPComplete
+'ProteinFolding.perfectHPStringFold_NPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.hpStringFold_NPComplete (hCL : ProteinFolding.SAT.CookLevin) : ProteinFolding.HPStringFoldNPComplete
+'ProteinFolding.hpStringFold_NPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
