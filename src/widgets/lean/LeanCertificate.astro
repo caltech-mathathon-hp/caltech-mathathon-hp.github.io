@@ -1,75 +1,85 @@
 ---
 /**
- * The top of the Lean page: what Lean proves, the chain of reductions it checks (each step
- * linked to its declaration on GitHub), the project's facts, and the download.
+ * A certificate's card: what Lean proves, the chain of reductions it checks (each step linked to
+ * its declaration on GitHub when the project has a public address), the project's facts, and the
+ * download. The chain comes from [[route]] in the certificate's settings.
  *
- *   <LeanCertificate />
+ *   <LeanCertificate />                                   the team's certificate
+ *   <LeanCertificate cert="shelf" label="…" claim="…" how="…" labels={{ 'Perfect folding': '…' }} />
  */
 import './lean.css';
-import { asset, date, decl, lean, num, size, type Status } from './lean';
+import { asset, cert as getCert, date, decl, num, size } from './lean';
 
-interface Step {
-  name: string;
-  /** How the previous problem reduces to this one. */
-  via?: { status: Extract<Status, 'proved' | 'premise'>; decl: string };
-  /** The declaration proving the problem is in NP. */
-  np?: string;
-  goal?: boolean;
+interface Props {
+  cert?: string;
+  /** A short line above the claim, naming the certificate. */
+  label?: string;
+  claim?: string;
+  how?: string;
+  /** Edge labels by the problem they lead to, in place of "proved in Lean". */
+  labels?: Record<string, string>;
 }
-const steps: Step[] = [
-  { name: 'Every problem in NP' },
-  { name: 'SAT', via: { status: 'premise', decl: 'SAT.CookLevin' } },
-  { name: '3D matching', via: { status: 'proved', decl: 'ThreeDimensionalMatching.cnfToBlockMatching_karp' } },
-  { name: 'Bin packing', via: { status: 'proved', decl: 'MatchingPacking.matching_karpReduces_modified' } },
-  {
-    name: 'Perfect folding',
-    via: { status: 'proved', decl: 'CubicPacking.packingToPerfect_karp' },
-    np: 'perfectHPStringFold_inNP',
-  },
-  { name: 'HP folding', via: { status: 'proved', decl: 'perfect_karpReduces_hp' }, np: 'hpStringFold_inNP', goal: true },
-];
+const {
+  cert = 'cubic',
+  label,
+  claim = 'Lean checks that HP folding on the cubic lattice is NP-complete, assuming the Cook–Levin theorem.',
+  how = 'Each problem in the chain reduces to the next in polynomial time. Lean proves every step after the first, and that both folding problems are in NP.',
+  labels = {},
+} = Astro.props;
+const c = getCert(cert);
+const route = c.route ?? [];
+if (route.length === 0) throw new Error(`Lean page: the "${cert}" certificate has no [[route]].`);
+const d = (name: string) => decl(name, cert);
+const edge = (s: (typeof route)[number]) =>
+  labels[s.problem] ?? (s.assumed ? (s.via === 'SAT.CookLevin' ? 'Cook–Levin, assumed' : 'assumed') : 'proved in Lean');
 
-const p = lean.project;
+const p = c.project;
 const clean = [p.sorries === 0 && 'no sorry', p.axioms === 0 && 'no axiom'].filter(Boolean).join(', ');
 const facts = [
   `Lean ${p.lean}, mathlib ${p.mathlib}`,
   `${num(p.files)} files, ${num(p.lines)} lines`,
+  p.excluded && `plus a copy of the team's library (${num(p.excluded.files)} files)`,
   clean,
-  lean.source.date && `version of ${date(lean.source.date)}`,
+  c.source.date && `version of ${date(c.source.date)}`,
 ].filter(Boolean);
 ---
 
-<section class="ln ln-cert wide" aria-label="What Lean checks">
+<section class="ln ln-cert wide" aria-label={label ?? 'What Lean checks'}>
   <div class="ln-cert-head">
-    <p class="ln-cert-claim">
-      Lean checks that HP folding on the cubic lattice is NP-complete, assuming the Cook–Levin theorem.
-    </p>
-    <p class="ln-cert-how">
-      Each problem in the chain reduces to the next in polynomial time. Lean proves every step after
-      the first, and that both folding problems are in NP.
-    </p>
+    {label && <p class="ln-cert-label">{label}</p>}
+    <p class="ln-cert-claim">{claim}</p>
+    <p class="ln-cert-how">{how}</p>
   </div>
 
   <ol class="ln-route" aria-label="The chain of reductions">
     {
-      steps.map((s) => (
-        <li class:list={['ln-step', { 'is-goal': s.goal, 'is-start': !s.via }]}>
+      route.map((s, i) => (
+        <li class:list={['ln-step', { 'is-goal': i === route.length - 1, 'is-start': !s.via }]}>
           {s.via && (
-            <p class={`ln-via is-${s.via.status}`}>
+            <p class={`ln-via is-${s.assumed ? 'premise' : 'proved'}`}>
               <i class="ln-stick" aria-hidden="true" />
-              <a href={decl(s.via.decl).href} title={decl(s.via.decl).full}>
-                {s.via.status === 'premise' ? 'Cook–Levin, assumed' : 'proved in Lean'}
-              </a>
+              {d(s.via).href ? (
+                <a href={d(s.via).href} title={d(s.via).full}>
+                  {edge(s)}
+                </a>
+              ) : (
+                <span title={d(s.via).full}>{edge(s)}</span>
+              )}
             </p>
           )}
           <p class="ln-node">
             <i class="ln-bead" aria-hidden="true" />
-            <span class="ln-node-name">{s.name}</span>
-            {s.np && (
-              <a class="ln-np" href={decl(s.np).href} title={decl(s.np).full}>
-                in NP, proved
-              </a>
-            )}
+            <span class="ln-node-name">{s.problem}</span>
+            {s.np &&
+              (d(s.np).href ? (
+                <a class="ln-np" href={d(s.np).href} title={d(s.np).full}>
+                  in NP, proved
+                </a>
+              ) : (
+                <span class="ln-np" title={d(s.np).full}>
+                  in NP, proved
+                </span>
+              ))}
           </p>
         </li>
       ))
@@ -81,11 +91,11 @@ const facts = [
       {facts.map((f) => <li>{f}</li>)}
     </ul>
     <p class="ln-links">
-      <a class="btn primary" href={asset(lean.download.path)} download>
+      <a class="btn primary" href={asset(c.download.path)} download>
         <span>Download the Lean project</span>
-        <span class="ln-btn-note">zip, {size(lean.download.bytes)}</span>
+        <span class="ln-btn-note">zip, {size(c.download.bytes)}</span>
       </a>
-      <a class="btn ghost" href={lean.links.tree}>Read it on GitHub</a>
+      {c.links.tree && <a class="btn ghost" href={c.links.tree}>Read it on GitHub</a>}
     </p>
   </div>
 </section>

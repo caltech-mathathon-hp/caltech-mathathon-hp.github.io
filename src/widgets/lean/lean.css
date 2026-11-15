@@ -80,6 +80,14 @@
 .ln-cert-head {
   grid-area: head;
 }
+.ln-cert-label {
+  margin: 0 0 var(--s-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--st-lean);
+}
 .ln-cert-claim {
   margin: 0 0 var(--s-3);
   font-size: var(--fs-h3);
@@ -204,7 +212,8 @@
 .ln-via a {
   color: inherit;
 }
-.ln-via.is-proved a {
+.ln-via.is-proved a,
+.ln-via.is-proved span {
   color: var(--st-lean);
 }
 .ln-stick {
@@ -361,4 +370,9 @@
 /* The zip's SHA-256, in the page's prose. */
 .ln-hash {
   overflow-wrap: anywhere;
+}
+
+/* A declaration's file, when the project has no public address to link to. */
+.ln-decl-file {
+  color: var(--fg-subtle);
 }

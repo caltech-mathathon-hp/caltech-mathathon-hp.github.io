@@ -1,0 +1,28 @@
+# Settings like those of src/data/lean/certificate-shelf.toml, for the fixture in lean-cubic/
+# with vendor-lib/ copied to vendor/lib/ (used by test_build_lean.py): no repo_url, so no links.
+
+[source]
+id = "shelf"
+ref = "HEAD"
+branch = "main"
+path = "lean"
+namespace = "ProteinFolding"
+zip = "lean/lean-shelf.zip"
+audit = "checks/CubicHardness.lean"
+count_exclude = ["vendor"]
+
+[show]
+extra = ["Lib.binCount_pos"]
+
+[[route]]
+problem = "Every problem in NP"
+
+[[route]]
+problem = "SAT"
+via = "SAT.CookLevin"
+assumed = true
+
+[[route]]
+problem = "Folding"
+via = "main_conditional"
+np = "Lib.binCount"

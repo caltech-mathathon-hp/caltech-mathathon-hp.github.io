@@ -1,0 +1,1020 @@
+{
+  "_comment": "Written by scripts/build_lean.py from lean/shelf. Do not edit by hand.",
+  "id": "shelf",
+  "source": {
+    "ref": "HEAD",
+    "path": "lean/shelf",
+    "commit": "dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b",
+    "date": "2026-11-14"
+  },
+  "project": {
+    "lean": "4.24.0",
+    "mathlib": "v4.24.0",
+    "files": 34,
+    "lines": 5580,
+    "declarations": 570,
+    "theorems": 433,
+    "sorries": 0,
+    "axioms": 0,
+    "nativeDecide": 0,
+    "checks": {
+      "audit": "checks/ShelfHardness.lean",
+      "verify": null
+    },
+    "excluded": {
+      "paths": [
+        "vendor"
+      ],
+      "files": 286,
+      "lines": 36073,
+      "theorems": 2556
+    }
+  },
+  "links": {
+    "repo": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io",
+    "tree": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/tree/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf",
+    "clone": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io.git",
+    "branch": "main",
+    "ci": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/actions/workflows/lean-certificates.yml",
+    "docs": {
+      "readme": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/README.md",
+      "theoremIndex": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/docs/theorem-index.md",
+      "model": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/docs/model.md",
+      "proofRoute": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/docs/proof-route.md",
+      "verification": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/docs/verification.md",
+      "audit": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/checks/ShelfHardness.lean"
+    }
+  },
+  "download": {
+    "path": "lean/lean-shelf.zip",
+    "folder": "lean-shelf",
+    "bytes": 723301,
+    "sha256": "148cb9919a9a786d8649c677e5ba7d2617e83ee971a6113d3510a2cd8c771688"
+  },
+  "index": [
+    {
+      "concept": "Section 1: strings, folds and contacts",
+      "names": [
+        "Residue",
+        "Sequence",
+        "Fold",
+        "bondCount"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "team: Common/Statement",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Statement.lean"
+        }
+      ],
+      "note": "definitions"
+    },
+    {
+      "concept": "Section 1: HP STRING-FOLD and PERFECT HP STRING-FOLD",
+      "names": [
+        "HPInstance.Accepts",
+        "PerfectHPStringFold"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "team: Cubic/Statement",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Statement.lean"
+        }
+      ],
+      "note": "definitions"
+    },
+    {
+      "concept": "What NP-complete means, and how an input is written",
+      "names": [
+        "InNP",
+        "NPHard",
+        "NPComplete",
+        "KarpReduces",
+        "hpEncoding",
+        "perfectEncoding"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "team: Common/Complexity",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Complexity.lean"
+        },
+        {
+          "label": "team: Cubic/Encodings",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Encodings.lean"
+        }
+      ],
+      "note": "definitions"
+    },
+    {
+      "concept": "Section 2.1: EXACT PACKING",
+      "names": [
+        "Packing.Instance",
+        "Shelf.ExactAccepts"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "team: Cubic/Proofs/PackingSources",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/PackingSources.lean"
+        },
+        {
+          "label": "Shelf/Source",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Source.lean"
+        }
+      ],
+      "note": "definitions"
+    },
+    {
+      "concept": "Section 2.1: the team's source problem is EXACT PACKING with even sizes",
+      "names": [
+        "Shelf.modifiedAccepts_iff"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/Source",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Source.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Section 3: the normalisation, the string `S`, the side `n` of the cube",
+      "names": [
+        "Shelf.normalise",
+        "Shelf.shelfWord",
+        "Shelf.side",
+        "Shelf.shelfReduction"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "Shelf/Source",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Source.lean"
+        },
+        {
+          "label": "Shelf/Word",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Word.lean"
+        }
+      ],
+      "note": "definitions"
+    },
+    {
+      "concept": "Lemma 11: `S` has exactly `n³` letters `H`",
+      "names": [
+        "Shelf.hydrophobicCount_shelfWord"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/Count",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Count.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Lemma 7, the Tether Lemma: `H`'s joined by `g` letters `P` are at distance at most `g - 1`",
+      "names": [
+        "Shelf.tether"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/Tether",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Tether.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Lemma 9: a simple path on the skeleton has at most `9n - 10` vertices, and at equality three edges are free",
+      "names": [
+        "Shelf.longPath_length_le",
+        "Shelf.longPath_free_edges"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/LongPath",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/LongPath.lean"
+        }
+      ],
+      "note": "unconditional proofs"
+    },
+    {
+      "concept": "Lemma 10: edges that do not touch are far apart",
+      "names": [
+        "Shelf.far_edges",
+        "Shelf.far_edges_eq",
+        "Shelf.far_edges_end"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/EdgeDistance",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/EdgeDistance.lean"
+        }
+      ],
+      "note": "unconditional proofs"
+    },
+    {
+      "concept": "Theorem 12: a perfect fold of `S` gives an exact packing",
+      "names": [
+        "Shelf.foldGivesPacking"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/Converse",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Converse.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Lemma 14, the Core Lemma: a path through all points of the cube outside the skeleton",
+      "names": [
+        "Shelf.corePath"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/Core",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Core.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Lemma 15, the Routing Lemma: disjoint routes for the linkers",
+      "names": [
+        "Shelf.routes"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/Routing",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Routing.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Section 5.2, Table 1: the sites of the fold",
+      "names": [
+        "Shelf.layout"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "Shelf/Layout",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Layout.lean"
+        }
+      ],
+      "note": "definition"
+    },
+    {
+      "concept": "Theorem 16: an exact packing gives a perfect fold of `S`",
+      "names": [
+        "Shelf.packingGivesFold"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/Forward",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Forward.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Theorems 12 and 16 together: the reduction is correct on every input",
+      "names": [
+        "Shelf.reductionCorrect"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/NPComplete",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Theorem 1, polynomial time: a Turing machine computes the reduction",
+      "names": [
+        "Shelf.shelfMap_polyTime"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/NPComplete",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "The shelf reduction, from the team's source problem to PERFECT HP STRING-FOLD",
+      "names": [
+        "Shelf.shelfKarp"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Shelf/NPComplete",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Theorem 1, membership: both folding problems are in NP",
+      "names": [
+        "hpStringFold_inNP",
+        "perfectHPStringFold_inNP"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "team: Cubic/Proofs/NPMembership",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/NPMembership.lean"
+        }
+      ],
+      "note": "unconditional proofs"
+    },
+    {
+      "concept": "Section 2.1: the source problem is NP-hard, with numbers in unary",
+      "names": [
+        "SATPacking.modifiedBinPackingUnary_NPHard"
+      ],
+      "status": "conditional",
+      "sources": [
+        {
+          "label": "team: Cubic/Proofs/SATPackingComputable",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/SATPackingComputable.lean"
+        }
+      ],
+      "note": "assumes Cook–Levin"
+    },
+    {
+      "concept": "Corollary 2, proof: the perfect problem reduces to the threshold problem",
+      "names": [
+        "hpNPHard_of_perfectNPHard"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "team: Cubic/Proofs/PerfectToHPComputable",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Theorem 1, hardness: PERFECT HP STRING-FOLD is NP-hard",
+      "names": [
+        "PerfectHPStringFoldNPHard",
+        "Shelf.perfectHPStringFold_NPHard"
+      ],
+      "status": "conditional",
+      "sources": [
+        {
+          "label": "Statement",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/MainTheorem.lean"
+        },
+        {
+          "label": "proof",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean"
+        }
+      ],
+      "note": "with Cook–Levin"
+    },
+    {
+      "concept": "Theorem 1: PERFECT HP STRING-FOLD is NP-complete",
+      "names": [
+        "PerfectHPStringFoldNPComplete",
+        "Shelf.perfectHPStringFold_NPComplete"
+      ],
+      "status": "conditional",
+      "sources": [],
+      "note": "Same files; proof with Cook–Levin"
+    },
+    {
+      "concept": "Corollary 2: HP STRING-FOLD on the cubic lattice is NP-complete",
+      "names": [
+        "HPStringFoldNPComplete",
+        "Shelf.hpStringFold_NPComplete"
+      ],
+      "status": "conditional",
+      "sources": [],
+      "note": "Same files; proof with Cook–Levin"
+    },
+    {
+      "concept": "The one assumption: SAT is NP-hard",
+      "names": [
+        "SAT.CookLevin"
+      ],
+      "status": "premise",
+      "sources": [
+        {
+          "label": "team: Common/CookLevin",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/CookLevin.lean"
+        }
+      ],
+      "note": "proposition only"
+    }
+  ],
+  "route": [
+    {
+      "problem": "Every problem in NP",
+      "via": null,
+      "assumed": false,
+      "np": null
+    },
+    {
+      "problem": "SAT",
+      "via": "SAT.CookLevin",
+      "assumed": true,
+      "np": null
+    },
+    {
+      "problem": "Bin packing",
+      "via": "SATPacking.cnfToSortedModified_karp",
+      "assumed": false,
+      "np": null
+    },
+    {
+      "problem": "Perfect folding",
+      "via": "Shelf.shelfKarp",
+      "assumed": false,
+      "np": "perfectHPStringFold_inNP"
+    },
+    {
+      "problem": "HP folding",
+      "via": "perfect_karpReduces_hp",
+      "assumed": false,
+      "np": "hpStringFold_inNP"
+    }
+  ],
+  "decls": {
+    "Residue": {
+      "full": "ProteinFolding.Residue",
+      "kw": "inductive",
+      "file": "vendor/protein_folding/ProteinFolding/Common/Statement.lean",
+      "line": 27,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Statement.lean#L27",
+      "code": "/-- Hydrophobic (H) and hydrophilic (P) residues. -/\ninductive Residue where\n  | H\n  | P\n  deriving DecidableEq, Repr"
+    },
+    "Sequence": {
+      "full": "ProteinFolding.Sequence",
+      "kw": "abbrev",
+      "file": "vendor/protein_folding/ProteinFolding/Common/Statement.lean",
+      "line": 33,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Statement.lean#L33",
+      "code": "/-- An input protein is a finite word over {H,P}; the empty word is allowed. -/\nabbrev Sequence := List Residue"
+    },
+    "Fold": {
+      "full": "ProteinFolding.Fold",
+      "kw": "structure",
+      "file": "vendor/protein_folding/ProteinFolding/Common/Statement.lean",
+      "line": 37,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Statement.lean#L37",
+      "code": "/-- A self-avoiding walk of length N vertices in an arbitrary simple graph.\nOnly consecutive positions must be adjacent; other positions may also touch. -/\nstructure Fold {V : Type*} (G : SimpleGraph V) (N : ℕ) where\n  pos : Fin N → V\n  injective_pos : Function.Injective pos\n  consecutive : ∀ i j : Fin N, i.val + 1 = j.val → G.Adj (pos i) (pos j)"
+    },
+    "bondCount": {
+      "full": "ProteinFolding.bondCount",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Common/Statement.lean",
+      "line": 60,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Statement.lean#L60",
+      "code": "def bondCount (S : Sequence) (f : Fold G S.length) : ℕ :=\n  (hhBonds S f).card"
+    },
+    "HPInstance.Accepts": {
+      "full": "ProteinFolding.HPInstance.Accepts",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Statement.lean",
+      "line": 42,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Statement.lean#L42",
+      "code": "def HPInstance.Accepts (I : HPInstance) : Prop :=\n  HPStringFold (G := cubicLattice) I.sequence I.minBonds"
+    },
+    "PerfectHPStringFold": {
+      "full": "ProteinFolding.PerfectHPStringFold",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Statement.lean",
+      "line": 78,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Statement.lean#L78",
+      "code": "/-- A total predicate on raw inputs: an incorrect H count makes it false. -/\ndef PerfectHPStringFold (S : Sequence) (n : ℕ) : Prop :=\n  hydrophobicCount S = n ^ 3 ∧\n    ∃ f : Fold cubicLattice S.length, PacksCube S f n"
+    },
+    "InNP": {
+      "full": "ProteinFolding.InNP",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Common/Complexity.lean",
+      "line": 39,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Complexity.lean#L39",
+      "code": "/-- The polynomially bounded verifier definition of NP.\n\nThe certificate encoder must cover all words over its alphabet. This prevents\nan arbitrary encoding image from hiding an undecidable certificate-validity\ncondition. Ordinary finite-word certificates with `wordEncoding` satisfy this\ncondition directly. The verifier runs on `pairEncoding ea ec`, whose length is\nthe input length plus certificate length plus one. Both lengths in the bound\nare actual encoding lengths; p has natural coefficients.\n\nThis is a predicate definition, not a proof of membership for any HP problem. -/\ndef InNP {A : Type} (ea : FinEncoding A) (L : A → Prop) : Prop :=\n  ∃ (C : Type) (ec : FinEncoding C),\n    Function.Surjective ec.encode ∧\n    ∃ (p : Polynomial ℕ) (R : A × C → Prop),\n      PolyTimeDecidable (pairEncoding ea ec) R ∧\n        ∀ x, L x ↔ ∃ c, (ec.encode c).length ≤ p.eval (ea.encode x).length ∧ R (x, c)"
+    },
+    "NPHard": {
+      "full": "ProteinFolding.NPHard",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Common/Complexity.lean",
+      "line": 55,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Complexity.lean#L55",
+      "code": "/-- Universal NP-hardness, not hardness relative to an assumed complete problem.\nThe source type is in universe zero, just as in mathlib's TM2 computation API. -/\ndef NPHard {A : Type} (ea : FinEncoding A) (L : A → Prop) : Prop :=\n  ∀ (B : Type) (eb : FinEncoding B) (M : B → Prop),\n    InNP eb M → KarpReduces eb ea M L"
+    },
+    "NPComplete": {
+      "full": "ProteinFolding.NPComplete",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Common/Complexity.lean",
+      "line": 60,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Complexity.lean#L60",
+      "code": "/-- Membership in NP together with universal Karp NP-hardness. -/\ndef NPComplete {A : Type} (ea : FinEncoding A) (L : A → Prop) : Prop :=\n  InNP ea L ∧ NPHard ea L"
+    },
+    "KarpReduces": {
+      "full": "ProteinFolding.KarpReduces",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Common/Complexity.lean",
+      "line": 48,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/Complexity.lean#L48",
+      "code": "/-- Karp (polynomial-time many-one) reducibility, for independently encoded types.\nThe reducing function is total and preserves both yes- and no-instances. -/\ndef KarpReduces {A B : Type} (ea : FinEncoding A) (eb : FinEncoding B)\n    (L : A → Prop) (M : B → Prop) : Prop :=\n  ∃ f : A → B,\n    Nonempty (TM2ComputableInPolyTime ea eb f) ∧ ∀ x, L x ↔ M (f x)"
+    },
+    "hpEncoding": {
+      "full": "ProteinFolding.hpEncoding",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Encodings.lean",
+      "line": 13,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Encodings.lean#L13",
+      "code": "/-- Section 2's HP STRING-FOLD instance with the graph fixed to Z³.\nFormat: tagged residues, separator, sign bit, binary magnitude of m.\nLength = |S| + 2 + bitlength(|m|); no padding and no unary integer field. -/\ndef hpEncoding : FinEncoding HPInstance :=\n  let e := pairEncoding sequenceEncoding signedEncoding\n  { Γ := e.Γ\n    ΓFin := e.ΓFin\n    encode := fun I => e.encode (I.sequence, I.minBonds)\n    decode := fun w => (e.decode w).map (fun sm => ⟨sm.1, sm.2⟩)\n    decode_encode := by\n      intro I\n      rw [e.decode_encode]\n      cases I\n      rfl }"
+    },
+    "perfectEncoding": {
+      "full": "ProteinFolding.perfectEncoding",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Encodings.lean",
+      "line": 32,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Encodings.lean#L32",
+      "code": "/-- Section 2's perfect-fold input: tagged residues, separator, binary n.\nLength = |S| + 1 + bitlength(n). Binary is economical even for malformed inputs;\non valid inputs with n>0, the explicit sequence already has at least n³ symbols. -/\ndef perfectEncoding : FinEncoding PerfectInput :=\n  pairEncoding sequenceEncoding finEncodingNatBool"
+    },
+    "Packing.Instance": {
+      "full": "ProteinFolding.Packing.Instance",
+      "kw": "structure",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Proofs/PackingSources.lean",
+      "line": 19,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/PackingSources.lean#L19",
+      "code": "structure Instance where\n  sizes : List ℕ\n  capacity : ℕ\n  bins : ℕ\n  deriving DecidableEq, Repr"
+    },
+    "Shelf.ExactAccepts": {
+      "full": "ProteinFolding.Shelf.ExactAccepts",
+      "kw": "def",
+      "file": "Shelf/Source.lean",
+      "line": 30,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Source.lean#L30",
+      "code": "/-- EXACT PACKING. `I.sizes` are the item sizes `a₁, …, a_k`, `I.bins` is `m` and\n`I.capacity` is `B`. All of them must be positive; an input that breaks this rule\nis a no-instance. -/\ndef ExactAccepts (I : Packing.Instance) : Prop :=\n  Packing.WellFormed I ∧ ∃ parts, Packing.Exact I parts"
+    },
+    "Shelf.modifiedAccepts_iff": {
+      "full": "ProteinFolding.Shelf.modifiedAccepts_iff",
+      "kw": "theorem",
+      "file": "Shelf/Source.lean",
+      "line": 51,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Source.lean#L51",
+      "code": "/-- The source problem of the team's library is EXACT PACKING restricted to even\nsizes. So our source problem contains theirs, as the paper says. -/\ntheorem modifiedAccepts_iff (I : Packing.Instance) :\n    Packing.ModifiedAccepts I ↔ (∀ s ∈ I.sizes, Even s) ∧ ExactAccepts I"
+    },
+    "Shelf.normalise": {
+      "full": "ProteinFolding.Shelf.normalise",
+      "kw": "def",
+      "file": "Shelf/Source.lean",
+      "line": 81,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Source.lean#L81",
+      "code": "/-- The normalisation of Section 3: multiply every size and the capacity by 6\n(`Packing.scale 6`), then make the number of bins odd. -/\ndef normalise (I : Packing.Instance) : Packing.Instance :=\n  padOdd (Packing.scale 6 I)"
+    },
+    "Shelf.shelfWord": {
+      "full": "ProteinFolding.Shelf.shelfWord",
+      "kw": "def",
+      "file": "Shelf/Word.lean",
+      "line": 69,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Word.lean#L69",
+      "code": "/-- The string `S` of the reduction. -/\ndef shelfWord (J : Packing.Instance) : Sequence :=\n  (shelfPieces J).flatten"
+    },
+    "Shelf.side": {
+      "full": "ProteinFolding.Shelf.side",
+      "kw": "def",
+      "file": "Shelf/Word.lean",
+      "line": 33,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Word.lean#L33",
+      "code": "/-- The side of the cube, `n = m (B + 1) + 3`. One edge then has `n - 2 = (m + 1) + m B`\ninner nodes: room for `m + 1` separators and `m` bins of size `B`. -/\ndef side (J : Packing.Instance) : ℕ :=\n  J.bins * (J.capacity + 1) + 3"
+    },
+    "Shelf.shelfReduction": {
+      "full": "ProteinFolding.Shelf.shelfReduction",
+      "kw": "def",
+      "file": "Shelf/Word.lean",
+      "line": 80,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Word.lean#L80",
+      "code": "/-- The reduction on raw inputs: check the instance, normalise it, write the\nstring and the side of the cube. -/\ndef shelfReduction (I : Packing.Instance) : PerfectInput :=\n  if Guard I then (shelfWord (normalise I), side (normalise I)) else noInstance"
+    },
+    "Shelf.hydrophobicCount_shelfWord": {
+      "full": "ProteinFolding.Shelf.hydrophobicCount_shelfWord",
+      "kw": "theorem",
+      "file": "Shelf/Count.lean",
+      "line": 72,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Count.lean#L72",
+      "code": "/-- Lemma 11, first sentence: the string of a normalised instance has exactly `n³` letters `H`. -/\ntheorem hydrophobicCount_shelfWord (J : Packing.Instance) (hJ : Normalised J) :\n    hydrophobicCount (shelfWord J) = side J ^ 3"
+    },
+    "Shelf.tether": {
+      "full": "ProteinFolding.Shelf.tether",
+      "kw": "theorem",
+      "file": "Shelf/Tether.lean",
+      "line": 73,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Tether.lean#L73",
+      "code": "/-- Lemma 7 (Tether Lemma): if letters `i < j` are `H`'s and all `g = j - i - 1 ≥ 1` letters\nbetween them are `P`'s, then the two sites are at distance at most `g - 1`. -/\ntheorem tether (hf : Fills S f n) {i j : ℕ} (hij : i + 1 < j)\n    (hi : S[i]? = some H) (hj : S[j]? = some H)\n    (hP : ∀ t, i < t → t < j → S[t]? = some P) :\n    latticeDistance (site f i) (site f j) + 2 ≤ j - i"
+    },
+    "Shelf.longPath_length_le": {
+      "full": "ProteinFolding.Shelf.longPath_length_le",
+      "kw": "theorem",
+      "file": "Shelf/LongPath.lean",
+      "line": 8,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/LongPath.lean#L8",
+      "code": "/-- Lemma 9, first sentence: a simple path on the skeleton has at most `9n - 10` vertices (`n = d + 2`). -/\ntheorem longPath_length_le (d : ℕ) (ps : List Site) (hnd : ps.Nodup)\n    (hchain : ps.IsChain cubicLattice.Adj) (hsk : ∀ p ∈ ps, EdgeSkeleton 0 (d + 2) p) :\n    ps.length ≤ 9 * (d + 2) - 10"
+    },
+    "Shelf.longPath_free_edges": {
+      "full": "ProteinFolding.Shelf.longPath_free_edges",
+      "kw": "theorem",
+      "file": "Shelf/LongPath.lean",
+      "line": 50,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/LongPath.lean#L50",
+      "code": "/-- Lemma 9, second sentence: a simple path with exactly `9n - 10` vertices contains all corners and\nall nodes of nine edges, and no two of the three remaining (\"free\") edges touch. -/\ntheorem longPath_free_edges (d : ℕ) (hd : 0 < d) (ps : List Site) (hnd : ps.Nodup)\n    (hchain : ps.IsChain cubicLattice.Adj) (hsk : ∀ p ∈ ps, EdgeSkeleton 0 (d + 2) p)\n    (hlen : ps.length = 9 * (d + 2) - 10) :\n    ∃ free : Finset CubeEdge, free.card = 3 ∧\n      (∀ e ∈ free, ∀ e' ∈ free, e ≠ e' → NoCommonCorner e e') ∧\n      (∀ p, p ∈ ps ↔ p ∈ cornerFinset 0 d ∨ ∃ e, e ∉ free ∧ p ∈ openEdgeFinset 0 d e)"
+    },
+    "Shelf.far_edges": {
+      "full": "ProteinFolding.Shelf.far_edges",
+      "kw": "theorem",
+      "file": "Shelf/EdgeDistance.lean",
+      "line": 31,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/EdgeDistance.lean#L31",
+      "code": "/-- Lemma 10: nodes of two edges that do not touch are at distance at least `n - 1 = d + 1`. -/\ntheorem far_edges (d : ℕ) {e e' : CubeEdge} (h : NoCommonCorner e e') (r s : Fin d) :\n    d + 1 ≤ latticeDistance (openEdgePoint 0 d e r) (openEdgePoint 0 d e' s)"
+    },
+    "Shelf.far_edges_eq": {
+      "full": "ProteinFolding.Shelf.far_edges_eq",
+      "kw": "theorem",
+      "file": "Shelf/EdgeDistance.lean",
+      "line": 60,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/EdgeDistance.lean#L60",
+      "code": "/-- Lemma 10, the case of equality: the two nodes have the same number on their edges. -/\ntheorem far_edges_eq (d : ℕ) {e e' : CubeEdge} (h : NoCommonCorner e e') (r s : Fin d)\n    (heq : latticeDistance (openEdgePoint 0 d e r) (openEdgePoint 0 d e' s) = d + 1) : r = s"
+    },
+    "Shelf.far_edges_end": {
+      "full": "ProteinFolding.Shelf.far_edges_end",
+      "kw": "theorem",
+      "file": "Shelf/EdgeDistance.lean",
+      "line": 78,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/EdgeDistance.lean#L78",
+      "code": "/-- Lemma 10, as used in Step 4: if equality holds and one node is an end node, so is the other. -/\ntheorem far_edges_end (d : ℕ) {e e' : CubeEdge} (h : NoCommonCorner e e') (r s : Fin d)\n    (heq : latticeDistance (openEdgePoint 0 d e r) (openEdgePoint 0 d e' s) = d + 1)\n    (hr : IsEnd r) : IsEnd s"
+    },
+    "Shelf.foldGivesPacking": {
+      "full": "ProteinFolding.Shelf.foldGivesPacking",
+      "kw": "theorem",
+      "file": "Shelf/Converse.lean",
+      "line": 363,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Converse.lean#L363",
+      "code": "/-- **Theorem 12.** If the string of a normalised instance has a perfect fold, the\ninstance has an exact packing. -/\ntheorem foldGivesPacking : FoldGivesPacking"
+    },
+    "Shelf.corePath": {
+      "full": "ProteinFolding.Shelf.corePath",
+      "kw": "theorem",
+      "file": "Shelf/Core.lean",
+      "line": 514,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Core.lean#L514",
+      "code": "/-- **Lemma 14 (Core Lemma).** For even `n ≥ 6` there is a path through `n³ - 12n + 16`\ndifferent points of the cube that are not on the skeleton, consecutive ones adjacent,\nending at `(1, N, N - 1)`. -/\ntheorem corePath (n : ℕ) (hn : 6 ≤ n) (heven : Even n) :\n    ∃ ps : List Site,\n      ps.length = coreLength n ∧ ps.Nodup ∧ ps.IsChain cubicLattice.Adj ∧\n      (∀ p ∈ ps, p ∈ Q n ∧ ¬ EdgeSkeleton 0 n p) ∧\n      ps.getLast? = some (pt 1 ((n : ℤ) - 1) ((n : ℤ) - 2))"
+    },
+    "Shelf.routes": {
+      "full": "ProteinFolding.Shelf.routes",
+      "kw": "theorem",
+      "file": "Shelf/Routing.lean",
+      "line": 165,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Routing.lean#L165",
+      "code": "/-- **Lemma 15 (Routing Lemma).** `W` is a set of sites with `y ≥ y₀` and `z ≥ z₀`; the ports\n`p i`, `q i` have pairwise different `x`-coordinates, and no site of `W` is below a port.\nThen the pairs can be joined by pairwise disjoint paths that avoid `W`, the `i`-th one with\n`routeBound … + 2 * e i` steps for any prescribed `e i`. We return the inner sites `mid i` of\nthe paths: the `i`-th path is `p i :: (mid i ++ [q i])`. -/\ntheorem routes (W : Set Site) (y₀ z₀ : ℤ) (hW : ∀ w ∈ W, y₀ ≤ w 1 ∧ z₀ ≤ w 2)\n    (k : ℕ) (p q : Fin k → Site) (e : Fin k → ℕ)\n    (hp : ∀ i, y₀ ≤ p i 1 ∧ z₀ ≤ p i 2) (hq : ∀ i, y₀ ≤ q i 1 ∧ z₀ ≤ q i 2)\n    (hpp : ∀ i j, i ≠ j → p i 0 ≠ p j 0) (hqq : ∀ i j, i ≠ j → q i 0 ≠ q j 0)\n    (hpq : ∀ i j, p i 0 ≠ q j 0)\n    (hpW : ∀ i, ∀ t : ℤ, 1 ≤ t → pt (p i 0) (p i 1 - t) (p i 2) ∉ W)\n    (hqW : ∀ i, ∀ t : ℤ, 1 ≤ t → pt (q i 0) (q i 1 - t) (q i 2) ∉ W) :\n    ∃ mid : Fin k → List Site,\n      (∀ i, ((mid i).length : ℤ) + 1 = routeBound y₀ z₀ i (p i) (q i) + 2 * (e i : ℤ)) ∧\n      (∀ i, (p i :: (mid i ++ [q i])).IsChain cubicLattice.Adj) ∧\n      (∀ i, (p i :: (mid i ++ [q i])).Nodup) ∧\n      (∀ i j, i ≠ j → ∀ s ∈ mid i, s ∉ mid j) ∧\n      (∀ i, ∀ s ∈ mid i, s ∉ W) ∧\n      (∀ i j, ∀ s ∈ mid i, s ≠ p j ∧ s ≠ q j)"
+    },
+    "Shelf.layout": {
+      "full": "ProteinFolding.Shelf.layout",
+      "kw": "def",
+      "file": "Shelf/Layout.lean",
+      "line": 155,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Layout.lean#L155",
+      "code": "/-- The sites of the fold, in the order of the string (Table 1 of the paper). -/\ndef layout {J : Packing.Instance} (P : Parts J) : List Site :=\n  P.core ++ [firstP J] ++ tokSites P.aT ++ ([p₀ J] ++ P.mid 0 ++ [q₀ J, q₀' J]) ++\n    tokSites (f₁Tokens J) ++ tether₁ J ++ sepPart J ++ tether₂ J ++ tokSites (f₂Tokens J) ++\n    (List.finRange J.sizes.length).flatMap fun i =>\n      P.mid i.succ ++ tokSites (itemTokens P.lo i)"
+    },
+    "Shelf.packingGivesFold": {
+      "full": "ProteinFolding.Shelf.packingGivesFold",
+      "kw": "theorem",
+      "file": "Shelf/Forward.lean",
+      "line": 57,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/Forward.lean#L57",
+      "code": "/-- **Theorem 16.** If the instance has an exact packing, the string has a perfect fold. -/\ntheorem packingGivesFold : PackingGivesFold"
+    },
+    "Shelf.reductionCorrect": {
+      "full": "ProteinFolding.Shelf.reductionCorrect",
+      "kw": "theorem",
+      "file": "Shelf/NPComplete.lean",
+      "line": 41,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean#L41",
+      "code": "/-- **Theorems 12 and 16 together.** The reduction of the paper is correct on every\ninput: an input is a yes-instance of EXACT PACKING exactly when its string has a\nperfect fold. -/\ntheorem reductionCorrect : ReductionCorrect"
+    },
+    "Shelf.shelfMap_polyTime": {
+      "full": "ProteinFolding.Shelf.shelfMap_polyTime",
+      "kw": "theorem",
+      "file": "Shelf/NPComplete.lean",
+      "line": 102,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean#L102",
+      "code": "/-- **Proof of Theorem 1, \"this takes polynomial time\".** A Turing machine computes\nthe map in polynomial time, for sizes written in unary: it makes the check\n(the team's machine), normalises the instance (`normaliseComputable`), and writes\nthe string and the side of the cube (`shelfPairComputable`). -/\ntheorem shelfMap_polyTime :\n    Nonempty (TM2ComputableInPolyTime Packing.instanceEncoding perfectEncoding shelfMap)"
+    },
+    "Shelf.shelfKarp": {
+      "full": "ProteinFolding.Shelf.shelfKarp",
+      "kw": "theorem",
+      "file": "Shelf/NPComplete.lean",
+      "line": 111,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean#L111",
+      "code": "/-- The shelf map is a polynomial-time many-one reduction from the team's source\nproblem to PERFECT HP STRING-FOLD. -/\ntheorem shelfKarp :\n    KarpReduces Packing.instanceEncoding perfectEncoding Packing.ModifiedAccepts PerfectFolds"
+    },
+    "hpStringFold_inNP": {
+      "full": "ProteinFolding.hpStringFold_inNP",
+      "kw": "theorem",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Proofs/NPMembership.lean",
+      "line": 34,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/NPMembership.lean#L34",
+      "code": "/-- HP STRING-FOLD on the fixed cubic lattice belongs to NP (footnote 1).\nThe polynomial verifier is implemented and its soundness/completeness proved. -/\ntheorem hpStringFold_inNP : InNP hpEncoding (fun I : HPInstance => I.Accepts)"
+    },
+    "perfectHPStringFold_inNP": {
+      "full": "ProteinFolding.perfectHPStringFold_inNP",
+      "kw": "theorem",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Proofs/NPMembership.lean",
+      "line": 39,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/NPMembership.lean#L39",
+      "code": "/-- PERFECT HP STRING-FOLD belongs to NP (footnote 1). Raw inputs with the\nwrong H count are rejected, exactly as in the frozen problem definition. -/\ntheorem perfectHPStringFold_inNP :\n    InNP perfectEncoding (fun I : PerfectInput => PerfectHPStringFold I.1 I.2)"
+    },
+    "SATPacking.modifiedBinPackingUnary_NPHard": {
+      "full": "ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard",
+      "kw": "theorem",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Proofs/SATPackingComputable.lean",
+      "line": 43,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/SATPackingComputable.lean#L43",
+      "code": "/-- The strong unary packing source is NP-hard assuming only Cook--Levin.\nEvery reduction and runtime witness used after that source assumption is\nproved, rather than supplied as an additional hypothesis. -/\ntheorem modifiedBinPackingUnary_NPHard (hCL : CookLevin) :\n    Packing.ModifiedBinPackingUnaryNPHard"
+    },
+    "hpNPHard_of_perfectNPHard": {
+      "full": "ProteinFolding.hpNPHard_of_perfectNPHard",
+      "kw": "theorem",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean",
+      "line": 120,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean#L120",
+      "code": "theorem hpNPHard_of_perfectNPHard\n    (h : NPHard perfectEncoding (fun I : PerfectInput => PerfectHPStringFold I.1 I.2)) :\n    NPHard hpEncoding (fun I : HPInstance => I.Accepts)"
+    },
+    "PerfectHPStringFoldNPHard": {
+      "full": "ProteinFolding.PerfectHPStringFoldNPHard",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/MainTheorem.lean",
+      "line": 21,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/MainTheorem.lean#L21",
+      "code": "/-- The main hardness step, Section 2 and Section 3.2 (pp. 31-32):\nPERFECT HP STRING-FOLD is NP-hard. Raw inputs with the wrong H count are rejected. -/\ndef PerfectHPStringFoldNPHard : Prop :=\n  NPHard perfectEncoding (fun I : PerfectInput => PerfectHPStringFold I.1 I.2)"
+    },
+    "Shelf.perfectHPStringFold_NPHard": {
+      "full": "ProteinFolding.Shelf.perfectHPStringFold_NPHard",
+      "kw": "theorem",
+      "file": "Shelf/NPComplete.lean",
+      "line": 117,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean#L117",
+      "code": "/-- **Theorem 1, hardness.** PERFECT HP STRING-FOLD is NP-hard, given the\nCook–Levin theorem. -/\ntheorem perfectHPStringFold_NPHard (hCL : SAT.CookLevin) : PerfectHPStringFoldNPHard"
+    },
+    "PerfectHPStringFoldNPComplete": {
+      "full": "ProteinFolding.PerfectHPStringFoldNPComplete",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/MainTheorem.lean",
+      "line": 27,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/MainTheorem.lean#L27",
+      "code": "/-- Section 3.2's NP-completeness claim for PERFECT HP STRING-FOLD.\nFootnote 1 (p. 31) distinguishes hardness from the additional NP-membership step.\nThe raw-input formulation uses the same perfect-packing predicate as Section 2. -/\ndef PerfectHPStringFoldNPComplete : Prop :=\n  NPComplete perfectEncoding (fun I : PerfectInput => PerfectHPStringFold I.1 I.2)"
+    },
+    "Shelf.perfectHPStringFold_NPComplete": {
+      "full": "ProteinFolding.Shelf.perfectHPStringFold_NPComplete",
+      "kw": "theorem",
+      "file": "Shelf/NPComplete.lean",
+      "line": 122,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean#L122",
+      "code": "/-- **Theorem 1.** PERFECT HP STRING-FOLD is NP-complete, given the Cook–Levin\ntheorem. -/\ntheorem perfectHPStringFold_NPComplete (hCL : SAT.CookLevin) : PerfectHPStringFoldNPComplete"
+    },
+    "HPStringFoldNPComplete": {
+      "full": "ProteinFolding.HPStringFoldNPComplete",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/MainTheorem.lean",
+      "line": 16,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/MainTheorem.lean#L16",
+      "code": "/-- The paper's main result, announced in Section 2 (p. 31) and Section 3:\nHP STRING-FOLD on the fixed cubic lattice Z³ is NP-complete. -/\ndef HPStringFoldNPComplete : Prop :=\n  NPComplete hpEncoding (fun I : HPInstance => I.Accepts)"
+    },
+    "Shelf.hpStringFold_NPComplete": {
+      "full": "ProteinFolding.Shelf.hpStringFold_NPComplete",
+      "kw": "theorem",
+      "file": "Shelf/NPComplete.lean",
+      "line": 127,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/NPComplete.lean#L127",
+      "code": "/-- **Corollary 2.** HP STRING-FOLD on the cubic lattice is NP-complete, given the\nCook–Levin theorem. -/\ntheorem hpStringFold_NPComplete (hCL : SAT.CookLevin) : HPStringFoldNPComplete"
+    },
+    "SAT.CookLevin": {
+      "full": "ProteinFolding.SAT.CookLevin",
+      "kw": "def",
+      "file": "vendor/protein_folding/ProteinFolding/Common/CookLevin.lean",
+      "line": 192,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Common/CookLevin.lean#L192",
+      "code": "/-- **The Cook–Levin hypothesis**: CNF-SAT (binary indices) is NP-hard in the\nproject's sense. Use only as an explicit hypothesis. -/\ndef CookLevin : Prop := NPHard cnfEncoding Satisfiable"
+    },
+    "Shelf.PerfectFolds": {
+      "full": "ProteinFolding.Shelf.PerfectFolds",
+      "kw": "abbrev",
+      "file": "Shelf/MainTheorem.lean",
+      "line": 27,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/MainTheorem.lean#L27",
+      "code": "/-- The predicate of PERFECT HP STRING-FOLD on raw inputs, as in the team's\n`PerfectHPStringFoldNPHard`. -/\nabbrev PerfectFolds (X : PerfectInput) : Prop :=\n  PerfectHPStringFold X.1 X.2"
+    },
+    "Shelf.PackingGivesFold": {
+      "full": "ProteinFolding.Shelf.PackingGivesFold",
+      "kw": "def",
+      "file": "Shelf/MainTheorem.lean",
+      "line": 38,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/MainTheorem.lean#L38",
+      "code": "/-- **Theorem 16** (a packing gives a perfect fold). If a normalised instance has an\nexact packing, its string has a perfect fold. -/\ndef PackingGivesFold : Prop :=\n  ∀ J : Packing.Instance, Normalised J →\n    (∃ parts, Packing.Exact J parts) → PerfectHPStringFold (shelfWord J) (side J)"
+    },
+    "Shelf.FoldGivesPacking": {
+      "full": "ProteinFolding.Shelf.FoldGivesPacking",
+      "kw": "def",
+      "file": "Shelf/MainTheorem.lean",
+      "line": 32,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/MainTheorem.lean#L32",
+      "code": "/-- **Theorem 12** (a perfect fold gives a packing). If the string of a normalised\ninstance has a perfect fold, the instance has an exact packing. -/\ndef FoldGivesPacking : Prop :=\n  ∀ J : Packing.Instance, Normalised J →\n    PerfectHPStringFold (shelfWord J) (side J) → ∃ parts, Packing.Exact J parts"
+    },
+    "Shelf.ReductionCorrect": {
+      "full": "ProteinFolding.Shelf.ReductionCorrect",
+      "kw": "def",
+      "file": "Shelf/MainTheorem.lean",
+      "line": 44,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/Shelf/MainTheorem.lean#L44",
+      "code": "/-- **Theorems 12 and 16 on raw inputs.** The reduction sends yes-instances to\nyes-instances and no-instances to no-instances. -/\ndef ReductionCorrect : Prop :=\n  ∀ I : Packing.Instance, ExactAccepts I ↔ PerfectFolds (shelfReduction I)"
+    },
+    "SATPacking.cnfToSortedModified_karp": {
+      "full": "ProteinFolding.SATPacking.cnfToSortedModified_karp",
+      "kw": "theorem",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Proofs/SATPackingComputable.lean",
+      "line": 35,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/SATPackingComputable.lean#L35",
+      "code": "/-- A complete Karp reduction from the unchanged binary-variable CNF language\nto positive-even, exact, unary modified packing. -/\ntheorem cnfToSortedModified_karp :\n    KarpReduces cnfEncoding Packing.instanceEncoding Satisfiable Packing.ModifiedAccepts"
+    },
+    "perfect_karpReduces_hp": {
+      "full": "ProteinFolding.perfect_karpReduces_hp",
+      "kw": "theorem",
+      "file": "vendor/protein_folding/ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean",
+      "line": 114,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/dc19ea3d6b8501f240e441dcb812c0bccfa7ef9b/lean/shelf/vendor/protein_folding/ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean#L114",
+      "code": "/-- Theorem 3.2 yields an actual Karp reduction on all raw perfect inputs.\nThe wrong-H-count cases map to a fixed HP no-instance. -/\ntheorem perfect_karpReduces_hp :\n    KarpReduces perfectEncoding hpEncoding\n      (fun I : PerfectInput => PerfectHPStringFold I.1 I.2) (fun I : HPInstance => I.Accepts)"
+    }
+  },
+  "axiomReport": [
+    {
+      "name": "ProteinFolding.HPStringFoldNPComplete",
+      "type": ": Prop",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.PerfectHPStringFoldNPHard",
+      "type": ": Prop",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.PerfectHPStringFoldNPComplete",
+      "type": ": Prop",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.Shelf.foldGivesPacking",
+      "type": ": ProteinFolding.Shelf.FoldGivesPacking",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.Shelf.packingGivesFold",
+      "type": ": ProteinFolding.Shelf.PackingGivesFold",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.Shelf.reductionCorrect",
+      "type": ": ProteinFolding.Shelf.ReductionCorrect",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.Shelf.shelfMap_correct",
+      "type": "(I : ProteinFolding.Packing.Instance) : ProteinFolding.Packing.ModifiedAccepts I ↔ ProteinFolding.Shelf.PerfectFolds (ProteinFolding.Shelf.shelfMap I)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.Shelf.shelfMap_polyTime",
+      "type": ": Nonempty (Turing.TM2ComputableInPolyTime ProteinFolding.Packing.instanceEncoding ProteinFolding.perfectEncoding ProteinFolding.Shelf.shelfMap)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.Shelf.shelfKarp",
+      "type": ": ProteinFolding.KarpReduces ProteinFolding.Packing.instanceEncoding ProteinFolding.perfectEncoding ProteinFolding.Packing.ModifiedAccepts ProteinFolding.Shelf.PerfectFolds",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.hpStringFold_inNP",
+      "type": ": ProteinFolding.InNP ProteinFolding.hpEncoding fun I => I.Accepts",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.perfectHPStringFold_inNP",
+      "type": ": ProteinFolding.InNP ProteinFolding.perfectEncoding fun I => ProteinFolding.PerfectHPStringFold I.1 I.2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.hpNPHard_of_perfectNPHard",
+      "type": "(h : ProteinFolding.NPHard ProteinFolding.perfectEncoding fun I => ProteinFolding.PerfectHPStringFold I.1 I.2) : ProteinFolding.NPHard ProteinFolding.hpEncoding fun I => I.Accepts",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard",
+      "type": "(hCL : ProteinFolding.SAT.CookLevin) : ProteinFolding.Packing.ModifiedBinPackingUnaryNPHard",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.Shelf.perfectHPStringFold_NPHard",
+      "type": "(hCL : ProteinFolding.SAT.CookLevin) : ProteinFolding.PerfectHPStringFoldNPHard",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.Shelf.perfectHPStringFold_NPComplete",
+      "type": "(hCL : ProteinFolding.SAT.CookLevin) : ProteinFolding.PerfectHPStringFoldNPComplete",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.Shelf.hpStringFold_NPComplete",
+      "type": "(hCL : ProteinFolding.SAT.CookLevin) : ProteinFolding.HPStringFoldNPComplete",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  ]
+}

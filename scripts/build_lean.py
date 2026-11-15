@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""Generate the Lean page's data from the teammate's Lean project (lean/cubic).
+"""Generate the Lean page's data from a Lean project (by default the teammate's, lean/cubic).
 
-Reads   lean/cubic from git (--repo at --ref; defaults in src/data/lean/certificate.toml), or a
+Reads   the project from git (--repo at --ref; defaults in src/data/lean/certificate.toml), or a
         plain directory (--lean DIR): docs/theorem-index.md, checks/publication-axioms.txt,
         lean-toolchain, lake-manifest.json / lakefile.toml and every .lean file.
 Writes  src/data/lean/certificate.json and public/lean/lean-cubic.zip (deterministic).
 Fails   on a theorem-index row without a status, an unknown declaration, a sorry/admit or an
         axiom in the code; warns on native_decide.
+
+Another project gets its own settings file and outputs (--config, --out, --zip); see
+certificate-shelf.toml. Without a repo_url there, the certificate has no links.
 
 Usage (from site/; REPO defaults to the git repo holding site/):
     python3 scripts/build_lean.py [--repo REPO] [--ref REF]   # write both files
@@ -40,21 +43,21 @@ PUBLIC = SITE / "public"
 INDEX_MD = "docs/theorem-index.md"
 AXIOMS_TXT = "checks/publication-axioms.txt"
 CI_WORKFLOW = "lean-certificates.yml"
+VERIFY = "checks/Verify.ps1"
+AUDIT = "checks/CubicHardness.lean"  # default for [source] audit
 DOCS = {
     "readme": "README.md",
     "theoremIndex": "docs/theorem-index.md",
     "model": "docs/model.md",
     "proofRoute": "docs/proof-route.md",
     "verification": "docs/verification.md",
-    "audit": "checks/CubicHardness.lean",
-}
+}  # and "audit", from the settings
 SKIP_DIRS = {".lake", "lake-packages", "build", ".git", "__pycache__"}
 SKIP_FILES = {".DS_Store"}
 DEFINITION_KWS = {"def", "abbrev", "structure", "inductive", "class"}
 COUNTED_KWS = DEFINITION_KWS | {"theorem", "lemma", "instance"}
 STATEMENT_KWS = {"theorem", "lemma"}
-COMMENT = ("Written by scripts/build_lean.py from lean/cubic. "
-           "Do not edit by hand.")
+ROUTE_KEYS = {"problem", "via", "assumed", "np"}
 
 
 class Problems:
@@ -496,6 +499,11 @@ def make_zip(files: dict[str, bytes], top: str, date: str | None) -> bytes:
     return buf.getvalue()
 
 
+def under(rel: str, folders: list[str]) -> bool:
+    """Whether rel is in one of these folders of the project."""
+    return any(rel == f or rel.startswith(f + "/") for f in folders)
+
+
 def build(files: dict[str, bytes], cfg: dict, commit: str | None, date: str | None,
           problems: Problems) -> tuple[dict, bytes]:
     src_cfg, show = cfg.get("source", {}), cfg.get("show", {})
@@ -504,15 +512,27 @@ def build(files: dict[str, bytes], cfg: dict, commit: str | None, date: str | No
     path = src_cfg.get("path", "lean/cubic").strip("/")
     namespace = src_cfg.get("namespace", "")
     zip_path = src_cfg.get("zip", "lean/lean-cubic.zip")
+    audit = src_cfg.get("audit", AUDIT)
+    exclude = [f.strip("/") for f in src_cfg.get("count_exclude", [])]
     at = commit or branch
-    blob = lambda rel: f"{repo_url}/blob/{at}/{rel}"
 
-    # the code
+    def blob(rel: str, frag: str = "") -> str | None:
+        """A file of the repo at the commit read; None when the project has no public address."""
+        if not repo_url:
+            return None
+        return f"{repo_url}/blob/{at}/{rel}" + (f"#{frag}" if frag else "")
+
+    # the code. Files under count_exclude (a vendored library) are checked and searched for
+    # names like the others, but not counted as the project's own.
     sources = {rel: b.decode("utf-8").replace("\r\n", "\n") for rel, b in files.items() if rel.endswith(".lean")}
     index: dict[str, list[Decl]] = {}
-    counted = theorems = sorries = axioms = native = lines = 0
+    sorries = axioms = native = 0
+    own = {"files": 0, "lines": 0, "declarations": 0, "theorems": 0}
+    other = dict.fromkeys(own, 0)
     for rel, src in sources.items():
-        lines += sum(1 for ln in src.split("\n") if ln.strip())
+        tally = other if under(rel, exclude) else own
+        tally["files"] += 1
+        tally["lines"] += sum(1 for ln in src.split("\n") if ln.strip())
         code = strip_comments(src, keep_strings=False, blank=True)
         for m in SORRY_RE.finditer(code):
             sorries += 1
@@ -524,8 +544,8 @@ def build(files: dict[str, bytes], cfg: dict, commit: str | None, date: str | No
             native += 1
             problems.warn(f"{rel}:{line_of(code, m.start())}: `{m.group(0)}` (trusts the compiler)")
         for d in scan(rel, src):
-            counted += d.kw in COUNTED_KWS
-            theorems += d.kw in STATEMENT_KWS
+            tally["declarations"] += d.kw in COUNTED_KWS
+            tally["theorems"] += d.kw in STATEMENT_KWS
             if d.full:
                 index.setdefault(d.full, []).append(d)
 
@@ -539,7 +559,7 @@ def build(files: dict[str, bytes], cfg: dict, commit: str | None, date: str | No
         if name not in decls:
             code = without_proof(d.text) if d.kw in STATEMENT_KWS else d.text
             decls[name] = {"full": d.full, "kw": d.kw, "file": d.file, "line": d.line,
-                           "href": f"{blob(f'{path}/{d.file}')}#L{d.line}",
+                           "href": blob(f"{path}/{d.file}", f"L{d.line}"),
                            "code": code.rstrip()}
         return d
 
@@ -562,44 +582,74 @@ def build(files: dict[str, bytes], cfg: dict, commit: str | None, date: str | No
                                "(say definitions, unconditional, Cook–Levin or proposition only)")
             links = []
             for label, href in LINK_RE.findall(source_cell):
-                if not re.match(r"^[a-z][a-z0-9+.-]*:", href, re.I):
+                if not repo_url:
+                    href = None
+                elif not re.match(r"^[a-z][a-z0-9+.-]*:", href, re.I):
                     target, _, frag = href.partition("#")
-                    href = blob(posixpath.normpath(posixpath.join(path, posixpath.dirname(INDEX_MD), target)))
-                    href += f"#{frag}" if frag else ""
+                    href = blob(posixpath.normpath(posixpath.join(path, posixpath.dirname(INDEX_MD), target)), frag)
                 links.append({"label": label.strip(), "href": href})
             rows.append({"concept": LINK_RE.sub(r"\1", concept).strip(), "names": names,
                          "status": status, "sources": links, "note": note})
     for name in show.get("extra", []):
-        show_decl(name, "certificate.toml [show] extra")
+        show_decl(name, "[show] extra")
+    route = read_route(cfg.get("route", []), show_decl, problems)
 
-    for key, rel in DOCS.items():
+    docs = {**DOCS, "audit": audit}
+    for key, rel in docs.items():
         if rel not in files:
-            problems.warn(f"{path}/{rel} is missing; links.docs.{key} points nowhere")
+            problems.warn(f"{path}/{rel} is missing" + (f"; links.docs.{key} points nowhere" if repo_url else ""))
 
-    zip_bytes = make_zip(files, Path(zip_path).stem, date)
     lean, mathlib = project_versions(files)
+    project = {
+        "lean": lean, "mathlib": mathlib, **own,
+        "sorries": sorries, "axioms": axioms, "nativeDecide": native,
+        "checks": {"audit": audit, "verify": VERIFY if VERIFY in files else None},
+    }
+    if exclude:
+        project["excluded"] = {"paths": exclude, "files": other["files"], "lines": other["lines"],
+                               "theorems": other["theorems"]}
+    links = {} if not repo_url else {
+        "repo": repo_url,
+        "tree": f"{repo_url}/tree/{at}/{path}",
+        "clone": f"{repo_url}.git",
+        "branch": branch,
+        "ci": f"{repo_url}/actions/workflows/{CI_WORKFLOW}",
+        "docs": {key: blob(f"{path}/{rel}") for key, rel in docs.items()},
+    }
+    folder = Path(zip_path).stem  # the zip holds one folder, named like the zip
+    zip_bytes = make_zip(files, folder, date)
     data = {
-        "_comment": COMMENT,
+        "_comment": f"Written by scripts/build_lean.py from {path}. Do not edit by hand.",
+        "id": src_cfg.get("id", "cubic"),
         "source": {"ref": src_cfg.get("ref"), "path": path, "commit": commit, "date": date},
-        "project": {
-            "lean": lean, "mathlib": mathlib, "files": len(sources), "lines": lines,
-            "declarations": counted, "theorems": theorems,
-            "sorries": sorries, "axioms": axioms, "nativeDecide": native,
-        },
-        "links": {
-            "repo": repo_url,
-            "tree": f"{repo_url}/tree/{at}/{path}",
-            "clone": f"{repo_url}.git",
-            "branch": branch,
-            "ci": f"{repo_url}/actions/workflows/{CI_WORKFLOW}",
-            "docs": {key: blob(f"{path}/{rel}") for key, rel in DOCS.items()},
-        },
-        "download": {"path": zip_path, "bytes": len(zip_bytes), "sha256": hashlib.sha256(zip_bytes).hexdigest()},
+        "project": project,
+        "links": links,
+        "download": {"path": zip_path, "folder": folder, "bytes": len(zip_bytes),
+                     "sha256": hashlib.sha256(zip_bytes).hexdigest()},
         "index": rows,
+        "route": route,
         "decls": decls,
         "axiomReport": parse_axioms(files[AXIOMS_TXT].decode("utf-8")) if AXIOMS_TXT in files else [],
     }
     return data, zip_bytes
+
+
+def read_route(steps: list[dict], show_decl, problems: Problems) -> list[dict]:
+    """The [[route]] tables: the chain of problems, each reached from the one before by `via`
+    (`assumed` marks the hypothesis), with `np` proving it is in NP. Their names join decls."""
+    route = []
+    for k, step in enumerate(steps, 1):
+        where = f"[[route]] {k}"
+        if unknown := sorted(set(step) - ROUTE_KEYS):
+            problems.error(f"{where}: unknown key {', '.join(unknown)} (use {', '.join(sorted(ROUTE_KEYS))})")
+        if not isinstance(step.get("problem"), str) or not step["problem"].strip():
+            problems.error(f"{where}: no problem")
+        for key in ("via", "np"):
+            if step.get(key):
+                show_decl(step[key], where)
+        route.append({"problem": step.get("problem"), "via": step.get("via") or None,
+                      "assumed": bool(step.get("assumed", False)), "np": step.get("np") or None})
+    return route
 
 
 def summary(data: dict) -> str:
@@ -607,8 +657,11 @@ def summary(data: dict) -> str:
     counts = ", ".join(f"{s} {sts.count(s)}" for s in ("definition", "proved", "conditional", "premise") if s in sts)
     p, src = data["project"], data["source"]
     at = f"{src['commit'][:7]} ({src['date']})" if src["commit"] else "no commit"
+    files = f"{p['files']} files"
+    if x := p.get("excluded"):
+        files += f" (and {x['files']} in {', '.join(x['paths'])}, not counted)"
     return (f"{at}: {len(sts)} index rows ({counts}), {len(data['decls'])} declarations shown, "
-            f"{p['files']} files, {p['theorems']} theorems, zip {data['download']['bytes']} bytes")
+            f"{files}, {p['theorems']} theorems, zip {data['download']['bytes']} bytes")
 
 
 def shown(p: Path) -> str:
@@ -647,6 +700,9 @@ def main(argv: list[str] | None = None) -> int:
         cfg.setdefault("source", {})["ref"] = ref
         files, commit, date = from_git(repo.resolve(), ref, src_cfg.get("path", "lean/cubic"), problems)
         rerun = f"python3 scripts/build_lean.py --repo {args.repo or repo}" + (f" --ref {args.ref}" if args.ref else "")
+    for flag, value, default in (("--config", args.config, CONFIG), ("--out", args.out, OUT), ("--zip", args.zip, None)):
+        if value and value != default:
+            rerun += f" {flag} {value}"
     data, zip_bytes = build(files, cfg, commit, date, problems) if files else ({}, b"")
     for w in problems.warnings:
         print(f"warning: {w}", file=sys.stderr)

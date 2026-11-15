@@ -1,21 +1,26 @@
 ---
 /**
- * What Lean prints for the main results when you run checks/CubicHardness.lean: each
- * declaration's type, then the axioms it depends on. Taken from the project's recorded run,
- * checks/publication-axioms.txt.
+ * What Lean prints for the main results when you run the project's audit file
+ * (checks/CubicHardness.lean for the team's): each declaration's type, then the axioms it depends
+ * on. Taken from the project's recorded run, checks/publication-axioms.txt.
  *
  *   <LeanAxioms names="hpStringFold_NPComplete perfectIffThreshold_holds" />
+ *   <LeanAxioms cert="shelf" names="Shelf.hpStringFold_NPComplete" />
  */
 import './lean.css';
-import { lean, names as split } from './lean';
+import { cert as getCert, names as split } from './lean';
 
 interface Props {
   names: string;
+  /** The certificate's id (default "cubic"). */
+  cert?: string;
 }
+const { names, cert = 'cubic' } = Astro.props;
+const c = getCert(cert);
 const ns = 'ProteinFolding.';
-const rows = split(Astro.props.names).map((n) => {
-  const r = lean.axiomReport.find((a) => a.name === n || a.name === ns + n);
-  if (!r) throw new Error(`Lean page: ${n} is not in the axiom report (checks/publication-axioms.txt).`);
+const rows = split(names).map((n) => {
+  const r = c.axiomReport.find((a) => a.name === n || a.name === ns + n);
+  if (!r) throw new Error(`Lean page: ${n} is not in the "${cert}" axiom report (checks/publication-axioms.txt).`);
   return r;
 });
 // Shorter to read without the namespace; Lean prints it in full.
