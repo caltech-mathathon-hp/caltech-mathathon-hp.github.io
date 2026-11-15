@@ -1,0 +1,50 @@
+---
+title: One length per edge
+caption: 'The walls hang from rods on the two free edges, in two lengths with no common factor. The lengths cannot mix on one edge, so one free edge takes all the long rods and the other all the short ones.'
+lane: left
+group: forced
+order: 3
+difficulty: 2
+figure: bl-edge-rods
+source: 'Lemma 3.12, p. 38'
+---
+
+### The idea
+
+A wall must be held at both ends. So in the string each wall comes between two rods, and these rods can only go on the free edges. We want them to lie in a known pattern, and two lengths with no common factor give one.
+
+The rods left are $2q$ short rods of length $q$, $q$ long rods of length $2q+1$, and the spaced rod with its $q$ H's. They must fill the two free edges, of $n-2=q(2q+1)$ nodes each. No rod can turn from one free edge to the other, because the corners are taken. The spaced rod's runs of P's are too short to jump between the free edges, yet long enough to reach along one edge from hole to hole ([11 Building the walls](#step-bl-build-walls)).
+
+Say the edge without the spaced rod holds $x$ short rods and $y$ long ones. Then $xq+y(2q+1)=q(2q+1)$. Since $q$ and $2q+1$ have no common factor, $q$ divides $y$, and $y$ is $0$ or $q$. With $y=0$ the edge would need $2q+1$ short rods, one more than there are. So it holds all the long rods, and the other edge holds the short rods and the spaced rod. For $q=4$, an edge of 36 nodes holds nine short rods or four long ones, and there are only eight short rods.
+
+### Statement
+
+One free edge holds all the long rods and nothing else, and the other holds the short rods and the spaced rod.
+
+### Exact statement
+
+In a perfect fold, one free edge holds the $q$ rods <Seq s="(PHP)^{2q+1}" /> and nothing else. The other holds the $2q$ rods <Seq s="(PHP)^q" /> and the $q$ H's of the spaced rod <Seq s="PH(P^{2q+6}H)^{q−1}P" />. For the edge without the spaced rod, this is the paper's Lemma 3.12.
+
+### Uses
+
+[4 Spelling the string](#step-bl-string): the wall part and $q\ge4$. [5 The counts match](#step-bl-local-rules): (b), (c), (d). [6 Two edges stay free](#step-bl-skeleton).
+
+### Proof
+
+1. The lone H's not used by the corner rod and the tenth-edge rod are those of the $2q$ $q$-rods, the $q$ $(2q+1)$-rods and the spaced rod: $2q\cdot q+q(2q+1)+q=2(n-2)$. By (d) they fill the two free edges, of $n-2=q(2q+1)$ nodes each.
+2. Each $q$-rod and each $(2q+1)$-rod is a path in the skeleton, and the corners are taken, so it lies within one free edge.
+3. Two consecutive H's of the spaced rod are joined by $2q+6$ P's, a walk of $2q+7$ steps. Two nodes on different free edges are at least $n-1$ steps apart, because the edges share no corner. Since $q\ge4$, $n-1=q(2q+1)+1>2q+7$. So the spaced rod lies within one free edge.
+4. **Lemma 3.12.** Say the other free edge holds $i$ $q$-rods and $j$ $(2q+1)$-rods. Then $iq+j(2q+1)=q(2q+1)$. Modulo $q$ this gives $j\equiv0$, so $j=0$ or $j=q$, as there are $q$ rods of length $2q+1$. If $j=0$, then $i=2q+1$, but there are only $2q$ $q$-rods. So $j=q$ and $i=0$.
+5. The edge with the spaced rod then holds the $2q$ $q$-rods: $2q\cdot q+q=q(2q+1)$ nodes.
+
+### Where in the paper
+
+“Forming the bins”, pp. 37–38: the three kinds of lone H's (the paper's "$q$-strings", "$(2q+1)$-strings" and "special $q$-string") and Lemma 3.12 with its proof.
+
+### Rating
+
+2: a short counting argument, with one distance check (proof step 3) that the paper only names.
+
+### Our note
+
+Lemma 3.12 covers an edge with $q$-rods and $(2q+1)$-rods only. On the edge with the spaced rod, $(i+1)q+j(2q+1)=q(2q+1)$ gives $j=0$ and $i=2q$, which agrees with proof step 5. For proof step 3 the paper gives the reason $2q+6 < n$. The walk has $2q+7$ steps and the free edges are at least $n-1$ apart, so what is needed is $2q+8 < n$; it holds because $q\ge4$.

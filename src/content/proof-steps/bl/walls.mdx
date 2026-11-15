@@ -1,0 +1,70 @@
+---
+title: Walls run straight
+caption: 'A wall must cross from one free edge to the other with no step to spare, so it runs straight across the face between them. That face is the front face, and the walls cut it into equal strips.'
+lane: left
+group: forced
+order: 4
+difficulty: 3
+figure: bl-walls
+source: '“Forming the bins”, p. 38, footnote 7, Fig. 8'
+---
+
+import SixPs from '../../../widgets/proof-map/figures/SixPs.astro';
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+Leaving out short runs of P's, each period reads: short rod, wall, long rod, wall, short rod. The long and short rods lie on different free edges ([7 One length per edge](#step-bl-free-edges)), so each wall leads from one free edge to the other.
+
+How far apart are the free edges? They share no corner, so their nodes are at least $n-1$ steps apart, and exactly $n-1$ only when the edges are opposite sides of one face and we go straight along a row. Now count the steps of a wall. Between a rod and a wall the string has <Seq s="PP" />, and the H's on both sides of <Seq s="PP" /> are neighbours ([5 The counts match](#step-bl-local-rules)). So the last H of the short rod, the $n-2$ H's of the wall and the first H of the long rod form a walk of exactly $n-1$ steps, with none to spare. So the free edges are opposite sides of one face. This is the front face of [4 Spelling the string](#step-bl-string), and the wall runs straight across it along a row.
+
+The delicate point is the second wall of a period. It must start next to the far end of the long rod, so that the two walls lie $2q$ rows apart with the $2q-1$ rows of a strip between them. Here the string has six P's between the rod and the wall instead of two, so the fact from [5 The counts match](#step-bl-local-rules) does not apply. Two things rescue it. The wall still lies on the front face, because it starts only a few steps from the rod. And almost every node just outside the cube already holds a P beside some H, so the six P's have only one way to go, and that way ends next to the rod. The paper's footnote on this step is false as written, and *The details* give the correct route.
+
+### Statement
+
+Every wall runs straight across the front face, and together the walls cut it into $q$ strips of $T$ nodes.
+
+### Exact statement
+
+In a perfect fold, let $E_1$ be the free edge with the $(2q+1)$-rods and $E_2$ the other. Then:
+
+1. $E_1$ and $E_2$ are opposite sides of one face, the front face;
+2. each wall <Seq s="(PHHP)^{(n−2)/2}" /> fills one row of the front face: the $n-2$ face nodes on a line from $E_2$ to $E_1$;
+3. the two walls of a period fill the rows at the two ends of the $2q+1$ rows of $E_1$ taken by its $(2q+1)$-rod;
+4. the face nodes of the front face outside the walls form $q$ strips, each of $2q-1$ consecutive rows, so of $T=(2q-1)(n-2)$ nodes.
+
+### Uses
+
+[4 Spelling the string](#step-bl-string): the order of the pieces in a period. [5 The counts match](#step-bl-local-rules): (c), (d), (e), and that a ribbon lies in one face. [6 Two edges stay free](#step-bl-skeleton): the free edges share no corner. [7 One length per edge](#step-bl-free-edges).
+
+### Proof
+
+Coordinates: once (1) is shown, put the front face at $k=0$, $E_1$ at $(0,j,0)$ and $E_2$ at $(n-1,j,0)$ with $1\le j\le n-2$, and the cube at $0\le i,j,k\le n-1$. A **row** is a set of face nodes $(i,j,0)$, $1\le i\le n-2$, with $j$ fixed.
+
+1. **Distance between the free edges.** An edge node has two coordinates in $\{0,n-1\}$ and the third in $[1,n-2]$. If two edges are parallel, their nodes are at least $n-1$ apart, with equality only when the edges are opposite sides of one face and the nodes lie in the same row across it. Two perpendicular edges with no common corner differ by $n-1$ in one coordinate and by at least 1 in the other two, so their nodes are at least $n+1$ apart.
+2. **The first wall.** In <Seq s="(PHP)^q(PHHP)^{(n−2)/2}(PHP)^{2q+1}" />, the last H of the $q$-rod, the $n-2$ wall H's and the first H of the $(2q+1)$-rod are consecutive neighbours, by (c) and because <Seq s="HH" /> are neighbours. They form a walk of $n-1$ steps from $E_2$ to $E_1$. By step 1 this proves (1), the two ends lie in the same row $a$, and the walk is a shortest path. A shortest path from $(n-1,a,0)$ to $(0,a,0)$ only decreases $i$, so the wall fills row $a$.
+3. **The rod's last P.** The $(2q+1)$-rod fills $2q+1$ consecutive nodes of $E_1$, from $(0,a,0)$ to $(0,b,0)$ with $b=a\pm2q$. Each of its H's has two neighbours outside the cube, $(-1,j,0)$ and $(0,j,-1)$, and its two P's fill them. The P's between two consecutive H's are neighbours, so they lie on the same side: both at $i=-1$ or both at $k=-1$. Hence the sides alternate along the rod. The P before the first H is a neighbour of the P after the wall H $(1,a,0)$, which is $(1,a,-1)$, so it is $(0,a,-1)$. As $2q+1$ is odd, the P after the last H is $(-1,b,0)$.
+4. **The second wall starts next to the rod.** Between the rod's last H and the second wall's first H $w$ lie six P's $x_1,\dots,x_6$, with $x_1=(-1,b,0)$. The second wall ends next to the next $q$-rod's first H, on $E_2$, and lies in one face, so it lies on the front face or the face $i=n-1$. Since $w$ is at most 7 steps from $(0,b,0)$, its first coordinate is at most $7 < n-1$, so it lies on the front face. So $x_6=w+(0,0,-1)$.
+5. By (e), every node outside the cube next to it holds a P that is next to an H in the string, except one node next to each corner. So $x_2,\dots,x_5$ are not next to the cube unless they are such spare nodes. The neighbours of $x_6$ other than $w$ are next to the cube and are not spares, except $x_6+(0,0,-1)$. So $x_5=w+(0,0,-2)$. The walk $x_1,\dots,x_5$ has 4 steps and $x_5=(i,j,-2)$ is at distance $i+1+|j-b|+2$ from $x_1$ with $i\ge1$. So $i=1$, $j=b$, and $w=(1,b,0)$.
+6. **The second wall.** From $w=(1,b,0)$, the wall and the step to $E_2$ form a walk of $n-2$ steps to a node $(n-1,j',0)$, which is $n-2+|j'-b|$ away. So $j'=b$ and the wall fills row $b$. This proves (2) and (3).
+7. **The strips.** The $q$ rods split the $n-2$ rows into $q$ intervals of $2q+1$ consecutive rows, and the walls fill the first and last row of each. What is left is $2q-1$ consecutive rows inside each interval, $q$ strips of $(2q-1)(n-2)=T$ nodes. This proves (4).
+
+<More title="The six P's of step 5">
+
+The route of step 5 is unique. The walk $x_1,\dots,x_5$ is a shortest path from $(-1,b,0)$ to $(1,b,-2)$, so it moves twice in $+i$ and twice in $-k$. Its first step cannot enter the cube and its second cannot meet the P at $(0,b,-1)$, so it is $(-1,b,0)$, $(-1,b,-1)$, $(-1,b,-2)$, $(0,b,-2)$, $(1,b,-2)$, then $x_6=(1,b,-1)$.
+
+<Figure caption="Footnote 7 in cross-section: one row of the front face seen from above, with the edge seen end-on. The P's of the rod fill every node in front of the edge (grey, one shown). The six P's (numbered) lead from the last H of the rod to the face node next to the edge."><SixPs /></Figure>
+
+</More>
+
+### Where in the paper
+
+“Forming the bins”, p. 38: the free edges lie on one face, the walls are straight, and the face splits into $q$ bins (our strips) of $(n-2)(2q-1)$ nodes. Footnote 7, p. 38, argues proof step 5. Fig. 8, p. 35, shows the bins.
+
+### Rating
+
+3: a terse argument in the paper. Proof steps 3 and 4 are not in it, and footnote 7 states a claim that is false as written (see our note).
+
+### Our note
+
+Footnote 7 says that the paper's six P's are needed because H's six P's apart in the string need not be neighbours. It then says that $(1,b,0)$ is the only non-edge face node reachable by six P's once the first P is at $(-1,b,0)$. That is not so: the face node $(0,b,1)$ on the face $i=0$ is reachable through $(-2,b,0)$, $(-3,b,0)$, $(-3,b,1)$, $(-2,b,1)$, $(-1,b,1)$. What excludes it is proof step 4: the second wall must end next to $E_2$, so it lies on the front face. The footnote also takes the last P at $(-1,b,0)$ as given; proof step 3 derives it from the odd length $2q+1$.

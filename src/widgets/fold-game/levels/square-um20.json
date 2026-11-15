@@ -1,0 +1,15 @@
+{
+  "id": "square-um20",
+  "order": 150,
+  "group": "Square lattice (2D)",
+  "title": "The 20-letter test string",
+  "lattice": "square",
+  "sequence": "HPHPPHHPHPPHPHHPPHPH",
+  "best": 9,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Benchmark string of Unger and Moult (1993). Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "The first of the standard test strings for folding algorithms (Unger and Moult, 1993). Its best fold has 9 contacts.",
+  "hint": "Find a compact block for the ten H’s first; the P’s go on its boundary.",
+  "solution": "RUULDLULLDRDRDLDRRU"
+}

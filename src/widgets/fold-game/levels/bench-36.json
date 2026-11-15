@@ -1,0 +1,14 @@
+{
+  "id": "bench-36",
+  "order": 230,
+  "group": "Benchmarks (2D)",
+  "title": "Benchmark 36",
+  "lattice": "square",
+  "sequence": "PPPHHPPHHPPPPPHHHHHHHPPHHPPPPHHPPHPP",
+  "best": 14,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Benchmark string of Unger and Moult (1993). Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "A run of seven H’s in the middle. Build the core around it.",
+  "solution": "RRRRURDRRRDLDLULDLULLDRDLDRRURDRURR"
+}

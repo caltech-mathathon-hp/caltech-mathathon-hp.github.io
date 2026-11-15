@@ -1,0 +1,160 @@
+---
+/**
+ * The front page: a folding game to start with, the problem, the idea of the proof and our
+ * question (text and lede in src/content/home.mdx), then one card per section.
+ * The cards come from the sections collection, so they update when sections are added.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Home, { frontmatter } from '../content/home.mdx';
+import { listedSections } from '../lib/sections';
+import { withBase } from '../lib/url';
+import { SITE } from '../data/site';
+import Seq from '../components/Seq.astro';
+import Theorem from '../components/Theorem.astro';
+import Figure from '../components/Figure.astro';
+import Cite from '../components/Cite.astro';
+import SectionArt from '../components/SectionArt.astro';
+
+const sections = await listedSections();
+const components = { Seq, Theorem, Figure, Cite };
+---
+
+<BaseLayout>
+  <article class="flow">
+    <header class="page-head">
+      <p class="kicker ui">{SITE.event}</p>
+      <h1>{SITE.title}</h1>
+      <p class="lede">{frontmatter.lede}</p>
+    </header>
+
+    <Home components={components} />
+
+    <section class="wide site-map" aria-labelledby="site-map-h">
+      <h2 id="site-map-h">On this site</h2>
+      <div class="cards">
+        {
+          sections.map((s) => (
+            <a class:list={['card', s.data.status]} href={withBase(`/${s.data.slug}/`)}>
+              <span class="card-art">
+                <SectionArt slug={s.data.slug} />
+              </span>
+              <span class="card-body">
+                <span class="card-title">
+                  {s.data.title}
+                  {s.data.status === 'soon' && <span class="tag ui">In preparation</span>}
+                  {s.data.status === 'draft' && <span class="tag ui">Draft</span>}
+                </span>
+                <span class="card-sum">{s.data.summary}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .flow {
+    padding-top: var(--s-7);
+    padding-bottom: var(--s-8);
+  }
+  /* the board's idea figure, at the size it has in the board's popup */
+  .flow :global(.home-fig) {
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+  .site-map {
+    margin-top: var(--s-7);
+  }
+  /* two columns of cards, each with a picture in the game's style above its text */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+  @media (max-width: 40rem) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color 140ms, box-shadow 140ms, transform 140ms;
+  }
+  .card:hover {
+    border-color: var(--rule-strong);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    color: var(--fg);
+  }
+  .card.soon {
+    border-style: dashed;
+  }
+  .card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .card-art {
+    display: block;
+    padding: var(--s-3) var(--s-4);
+    background: var(--bg-sunk);
+    border-bottom: 1px solid var(--rule);
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    padding: var(--s-4) var(--s-5) var(--s-5);
+  }
+  .card-title {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-3);
+    font-family: var(--font-sans);
+    font-weight: 650;
+    font-size: 1.125rem;
+    line-height: var(--lh-tight);
+  }
+  .card-title::after {
+    content: '→';
+    margin-left: auto;
+    color: var(--fg-subtle);
+    font-weight: 400;
+    transition: transform 140ms, color 140ms;
+  }
+  .card:hover .card-title::after {
+    transform: translateX(3px);
+    color: var(--accent);
+  }
+  .card-sum {
+    color: var(--fg-muted);
+    font-size: var(--fs-sm);
+    line-height: 1.5;
+  }
+  .tag {
+    padding: 0.1rem 0.45rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    color: var(--fg-muted);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card,
+    .card-title::after {
+      transition: none;
+    }
+    .card:hover {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,106 @@
+---
+/**
+ * Card "The free edges" (BL Lemma 3.12), drawn for q = 4: a free edge has q(2q + 1) = 36 nodes.
+ * There are q long rods (9 H's), 2q short rods (4 H's) and the spaced rod (q H's between P's).
+ * Row 1: the long rods fill one free edge, E₁. Row 2: the short rods and the spaced rod (ringed) fill the other, E₂,
+ * in the order the walls lay them. Rows 3–4: an edge of short rods and long rods only, with a short rod in
+ * it, fails: a mix leaves a node empty, and short rods alone would need 2q + 1 of them.
+ */
+import './fig.css';
+import Tx from './Tx.astro';
+import { N } from './notation';
+
+const q = 4;
+const L = q * (2 * q + 1);
+const pitch = 8;
+const x0 = 18;
+const X = (i: number) => x0 + i * pitch;
+type Row = { label: string; rods: number[]; spaced?: number[]; missing?: number; ok: boolean; verdict: string; edge?: string };
+const rows: Row[] = [
+  { label: `${N.q2Rod}s: 4 · 9`, rods: [9, 9, 9, 9], ok: true, verdict: 'fills', edge: '₁' },
+  {
+    label: `${N.qRod}s and ${N.spaced}: 8 · 4 + 4`,
+    rods: [4, 1, 4, 4, 1, 4, 4, 1, 4, 4, 1, 4],
+    spaced: [1, 4, 7, 10],
+    ok: true,
+    verdict: 'fills',
+    edge: '₂',
+  },
+  { label: 'mixed: 3 · 9 + 2 · 4 = 35', rods: [9, 9, 9, 4, 4], ok: false, verdict: 'a node left' },
+  { label: `${N.qRod}s only: 9 · 4`, rods: [4, 4, 4, 4, 4, 4, 4, 4], missing: 4, ok: false, verdict: 'only 8 exist' },
+];
+const y = (r: number) => 46 + r * 42;
+const layout = (r: Row) => {
+  let u = 0;
+  return r.rods.map((len, k) => {
+    const a = u;
+    u += len;
+    return { a, len, spaced: r.spaced?.includes(k) ?? false };
+  });
+};
+---
+
+<svg class="pmf" viewBox="0 0 320 218" role="img" aria-labelledby="pmf-edge-t">
+  <title id="pmf-edge-t">Rods along a free edge, drawn for q = 4, where an edge has q(2q + 1) = 36 nodes. Four long rods of 9 H's fill one free edge, E1. Eight short rods of 4 H's and the four H's between P's of the spaced rod, ringed, fill the other, E2, in the order the walls lay them. Mixing the rods fails: three 9's and two 4's make 35 and leave a node empty. Nine short rods would fill it, but there are only eight.</title>
+  <Tx x={x0 - 6} y="16" t={`drawn for ${N.q} = 4: an edge of ${N.q}(2${N.q} + 1) = 36 nodes`} />
+  {
+    rows.map((r, k) => {
+      const rods = layout(r);
+      const used = rods.reduce((s, d) => s + d.len, 0);
+      const yy = y(k) + 15;
+      return (
+        <g>
+          <Tx x={x0 - 6} y={y(k)} t={r.label} c="pmf-label-strong" />
+          <text class="pmf-label" x={X(L - 1) + 6} y={y(k)} text-anchor="end">
+            <tspan class:list={[r.ok ? 'pmf-ok' : 'pmf-no']} font-weight="700">
+              {r.ok ? '✓' : '✗'}
+            </tspan>{' '}
+            {r.verdict}
+            {r.edge && (
+              <>
+                {' '}
+                <tspan class="pmf-v">E</tspan>
+                {r.edge}
+              </>
+            )}
+          </text>
+          <line class="pmf-edge-line" x1={x0 - 6} y1={yy} x2={X(L - 1) + 6} y2={yy} />
+          {Array.from({ length: L }, (_, i) => (
+            <circle class="pmf-dot" cx={X(i)} cy={yy} r="1.8" />
+          ))}
+          {rods.map(({ a, len, spaced }) =>
+            spaced ? (
+              <g>
+                <circle class="pmf-h" cx={X(a)} cy={yy} r="3" />
+                <circle class="pmf-ring" cx={X(a)} cy={yy} r="5.2" />
+              </g>
+            ) : (
+              <g>
+                <rect class="pmf-er-rod" x={X(a) - 4.6} y={yy - 5.6} width={(len - 1) * pitch + 9.2} height="11.2" rx="5.6" />
+                <line class="pmf-chain" x1={X(a)} y1={yy} x2={X(a + len - 1)} y2={yy} />
+                {Array.from({ length: len }, (_, i) => (
+                  <circle class="pmf-h" cx={X(a + i)} cy={yy} r="3" />
+                ))}
+              </g>
+            ),
+          )}
+          {r.missing && <rect class="pmf-er-gap" x={X(used) - 4.6} y={yy - 5.6} width={(r.missing - 1) * pitch + 9.2} height="11.2" rx="5.6" />}
+          {!r.ok && !r.missing && <circle class="pmf-er-gap" cx={X(used)} cy={yy} r="4.6" />}
+        </g>
+      );
+    })
+  }
+</svg>
+
+<style>
+  .pmf-er-rod {
+    fill: var(--bg-elev);
+    stroke: var(--rule-strong);
+  }
+  .pmf-er-gap {
+    fill: none;
+    stroke: var(--diff-3-ink);
+    stroke-width: 1.3;
+    stroke-dasharray: 2 2;
+  }
+</style>

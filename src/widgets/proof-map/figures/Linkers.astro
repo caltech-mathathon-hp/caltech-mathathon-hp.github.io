@@ -1,0 +1,63 @@
+---
+/**
+ * Card "Linkers" (BL pp. 36–37), seen from the side: the cube on the left, its front face edge on.
+ * The linker from the last H of u₁ to the first H of u₂ (which may lie in another strip): 4 P's
+ * straight out, the crossbar (its runs drawn dotted), which brings the two ends next to each other;
+ * there they join, after a loop out and back that makes the linker exactly 52n + 2 P's long.
+ * Faded: runs of other linkers.
+ */
+import './fig.css';
+import Tx from './Tx.astro';
+import { N } from './notation';
+import { itemColor } from './lib';
+
+const fx = 34; // the front face
+const yA = 58; // last H of u₁
+const yB = 146; // first H of u₂
+const step = 11;
+const xIn = fx + 4 * step + 8; // inputs of the crossbar
+const xOut = 210; // outputs
+const yO = [96, 108];
+const loopX = 254;
+const pA = [1, 2, 3, 4].map((i) => fx + i * step);
+const runA = `M${pA[3]} ${yA}H120V${yO[0]}H${xOut}`;
+const runB = `M${pA[3]} ${yB}H156V${yO[1]}H${xOut}`;
+const loop = `M${xOut} ${yO[0]}H${loopX}V${yO[1]}H${xOut}`;
+const others = [`M${xIn} 38H${xOut}`, `M${xIn} 168C150 168 170 160 ${xOut} 160`];
+---
+
+<svg class="pmf" viewBox="0 0 320 206" role="img" aria-labelledby="pmf-link-t">
+  <title id="pmf-link-t">A side view: the cube on the left, its front face seen edge on. The linker from the last H of item u1 to the first H of item u2: four P's go straight out from each end, the switchboard routes the two runs until they lie next to each other, and there they join, after a loop out and back that makes the linker exactly 52n + 2 P's long. Faded runs belong to other linkers.</title>
+  <rect class="pmf-face pmf-face-front" x="2" y="28" width={fx - 2} height="152" />
+  <line class="pmf-edge-line" x1={fx} y1="28" x2={fx} y2="180" stroke-width="1.6" />
+  <text class="pmf-label" x={fx} y="18" text-anchor="middle">front face</text>
+  <text class="pmf-label" x="5" y="196">cube</text>
+
+  <rect class="pmf-bin" x={xIn} y="28" width={xOut - xIn} height="152" rx="3" />
+  <text class="pmf-label-strong" x={(xIn + xOut) / 2} y="18" text-anchor="middle">switchboard</text>
+  <g class="pmf-faded">
+    {others.map((d) => <path class="pmf-prun" d={d} />)}
+  </g>
+  <path class="pmf-prun" d={runA} />
+  <path class="pmf-prun" d={runB} />
+  <path class="pmf-prun" d={loop} />
+  <line class="pmf-chain" x1={fx} y1={yA} x2={pA[3]} y2={yA} />
+  <line class="pmf-chain" x1={fx} y1={yB} x2={pA[3]} y2={yB} />
+  {pA.map((x) => <circle class="pmf-p" cx={x} cy={yA} r="3.6" />)}
+  {pA.map((x) => <circle class="pmf-p" cx={x} cy={yB} r="3.6" />)}
+  <text class="pmf-label" x={(pA[0] + pA[3]) / 2} y={yA - 10} text-anchor="middle">4 P's</text>
+  <text class="pmf-label" x={(pA[0] + pA[3]) / 2} y={yB - 10} text-anchor="middle">4 P's</text>
+
+  <line x1={fx} y1={yA - 13} x2={fx} y2={yA} stroke-width="2" style={`stroke:${itemColor(0)}`} />
+  <circle cx={fx} cy={yA - 13} r="4.4" style={`fill:${itemColor(0)}`} />
+  <circle cx={fx} cy={yA} r="4.4" style={`fill:${itemColor(0)}`} />
+  <line x1={fx} y1={yB} x2={fx} y2={yB + 13} stroke-width="2" style={`stroke:${itemColor(1)}`} />
+  <circle cx={fx} cy={yB} r="4.4" style={`fill:${itemColor(1)}`} />
+  <circle cx={fx} cy={yB + 13} r="4.4" style={`fill:${itemColor(1)}`} />
+  <Tx x={fx - 9} y={yA + 4} t={N.item(1)} a="end" c="pmf-label-strong" style={`fill:${itemColor(0)}`} />
+  <Tx x={fx - 9} y={yB + 4} t={N.item(2)} a="end" c="pmf-label-strong" style={`fill:${itemColor(1)}`} />
+
+  <text class="pmf-label" x={loopX + 7} y={(yO[0] + yO[1]) / 2 - 3}>join</text>
+  <text class="pmf-label" x={loopX + 7} y={(yO[0] + yO[1]) / 2 + 11}>by a loop</text>
+  <Tx x={xIn} y="196" t={`${N.linker}: ${N.linkerLen} P's in all`} />
+</svg>

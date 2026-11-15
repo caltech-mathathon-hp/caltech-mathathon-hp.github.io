@@ -1,0 +1,337 @@
+---
+/**
+ * A small picture for a section's card on the front page, drawn in the game's style: shaded H
+ * beads, hollow P beads, grey bonds, dashed contacts, small dots for empty nodes, and bins with
+ * size chips as in the bin-packing game. Colours come from the theme tokens, so light and dark
+ * both work. Decorative (aria-hidden); the card's title and summary say what the section is.
+ *
+ *   <SectionArt slug="playground" />
+ *
+ * Unknown slugs draw nothing.
+ */
+interface Props {
+  slug: string;
+}
+const { slug } = Astro.props;
+const id = (s: string) => `sa-${slug}-${s}`;
+
+type Pt = [number, number];
+interface Bead {
+  x: number;
+  y: number;
+  kind: 'H' | 'P' | 'grey';
+  r?: number;
+}
+
+// ---------- playground: the front page's string folded on the square lattice ----------
+// PHHPPHHPPHHPPHHP as a ladder: four columns, H's in the two middle rows, six contacts.
+const grid = { x0: 43, y0: 26, d: 26, cols: 10, rows: 4 };
+const gx = (i: number) => grid.x0 + i * grid.d;
+const gy = (j: number) => grid.y0 + j * grid.d;
+const ladder: Pt[] = [];
+for (let c = 0; c < 4; c++) for (let k = 0; k < 4; k++) ladder.push([3 + c, c % 2 === 0 ? 3 - k : k]);
+const pgSeq = 'PHHPPHHPPHHPPHHP';
+const pgBeads: Bead[] = ladder.map(([i, j], n) => ({ x: gx(i), y: gy(j), kind: pgSeq[n] === 'H' ? 'H' : 'P' }));
+const pgContacts: [Pt, Pt][] = [];
+ladder.forEach((a, n) =>
+  ladder.forEach((b, m) => {
+    if (m <= n + 1 || pgSeq[n] !== 'H' || pgSeq[m] !== 'H') return;
+    if (Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) === 1) pgContacts.push([[gx(a[0]), gy(a[1])], [gx(b[0]), gy(b[1])]]);
+  }),
+);
+const pgFree: Pt[] = [];
+for (let i = 0; i < grid.cols; i++)
+  for (let j = 0; j < grid.rows; j++) if (!ladder.some(([a, b]) => a === i && b === j)) pgFree.push([gx(i), gy(j)]);
+
+// ---------- original proof: items in bins ↔ a cube of H's ----------
+const bin = { x: 26, unit: 17, h: 22, pad: 3, B: 5 };
+const bins = [
+  { y: 43, items: [3, 2] },
+  { y: 75, items: [4, 1] },
+].map((b, bi) => {
+  let k = 0;
+  const items = b.items.map((size, ii) => {
+    const it = { x: bin.x + bin.pad + k * bin.unit, size, color: `var(--item-${bi * 2 + ii + 1})` };
+    k += size;
+    return it;
+  });
+  return { ...b, items };
+});
+// an oblique view: x to the right and a little down, z towards the reader (down-left), y up.
+// (A true isometric view along the diagonal would put two corners of the cube on top of each other.)
+const iso = (x: number, y: number, z: number): Pt => [244 + x * 38 - z * 19, 68 + x * 10 + z * 17 - y * 38];
+const depth = ([x, y, z]: [number, number, number]) => z + 0.5 * y + 0.3 * x;
+// the chain: a P, the eight H's of the cube along one path, a P
+const chain3: [number, number, number][] = [
+  [1.5, 0.5, 0.5],
+  [0.5, 0.5, 0.5],
+  [0.5, 0.5, -0.5],
+  [-0.5, 0.5, -0.5],
+  [-0.5, 0.5, 0.5],
+  [-0.5, -0.5, 0.5],
+  [0.5, -0.5, 0.5],
+  [0.5, -0.5, -0.5],
+  [-0.5, -0.5, -0.5],
+  [-1.5, -0.5, -0.5],
+];
+const cubeContacts: [Pt, Pt][] = [];
+for (let n = 1; n < 9; n++)
+  for (let m = n + 2; m < 9; m++) {
+    const [a, b] = [chain3[n], chain3[m]];
+    if (Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]) === 1) cubeContacts.push([iso(...a), iso(...b)]);
+  }
+const cubeBeads: Bead[] = chain3
+  .map((p, n) => ({ p, n }))
+  .sort((a, b) => depth(a.p) - depth(b.p))
+  .map(({ p, n }) => {
+    const [x, y] = iso(...p);
+    return { x, y, kind: n === 0 || n === 9 ? 'P' : 'H', r: 9 };
+  });
+
+// ---------- context: the cited works by year, the two 1998 proofs in H colour ----------
+const works = [
+  'abel2013', 'aichholzer2003', 'atkins1999', 'bahi2013', 'balbach2023', 'berger1998', 'berman2004',
+  'chandru2003', 'crescenzi1998', 'cslibfrontier2026', 'demaine2012', 'demaine2022', 'dill1985',
+  'feng2022', 'fraenkel1993', 'gaher2021', 'garey1979', 'hart1996', 'hart1997', 'hart1997',
+  'istrail2009', 'itai1982', 'kjoshanssen2024', 'kleinberg1999', 'kreuzer2023', 'leighton1986',
+  'mathlib2026', 'nayak1998', 'ngo1992', 'paterson1996', 'rbarish2026', 'senellart2026',
+  'solresol2026', 'trevisan1997', 'unger1993',
+];
+// works are grouped by two-year periods, so that neighbouring stacks do not overlap
+const yearX = (y: number) => 28 + ((y - 1978) / (2028 - 1978)) * 264;
+const period = (y: number) => 1978 + 2 * Math.floor((y - 1978) / 2);
+const isBL = (w: string) => w === 'berger1998' || w === 'crescenzi1998';
+const stacks = new Map<number, string[]>();
+for (const w of works) {
+  const p = period(Number(w.slice(-4)));
+  stacks.set(p, [...(stacks.get(p) ?? []), w]);
+}
+const ctxBeads: Bead[] = [];
+for (const [p, ws] of stacks) {
+  ws.sort((a, b) => Number(isBL(b)) - Number(isBL(a)));
+  ws.forEach((w, k) => ctxBeads.push({ x: yearX(p + 1), y: 92 - k * 11, kind: isBL(w) ? 'H' : 'grey', r: 5 }));
+}
+const ctxTicks = [
+  { year: 1980, hot: false },
+  { year: 1998, hot: true },
+  { year: 2026, hot: false },
+].map((t) => ({ ...t, x: yearX(period(t.year) + 1) }));
+
+// ---------- lean: the plan, every part still to do ----------
+const leanNodes: Record<string, { x: number; y: number; prose?: boolean; goal?: boolean }> = {
+  defs: { x: 40, y: 66 },
+  iso: { x: 98, y: 40 },
+  cube: { x: 156, y: 40 },
+  iff: { x: 214, y: 40 },
+  size: { x: 120, y: 96 },
+  time: { x: 196, y: 96, prose: true },
+  goal: { x: 276, y: 66, goal: true },
+};
+const leanEdges = [
+  ['defs', 'iso'],
+  ['iso', 'cube'],
+  ['cube', 'iff'],
+  ['iff', 'goal'],
+  ['defs', 'size'],
+  ['size', 'time'],
+  ['time', 'goal'],
+].map(([a, b]) => {
+  const [p, q] = [leanNodes[a], leanNodes[b]];
+  const [dx, dy] = [q.x - p.x, q.y - p.y];
+  const len = Math.hypot(dx, dy);
+  const [ra, rb] = [p.goal ? 13 : 9, q.goal ? 13 : 9];
+  return { x1: p.x + (dx / len) * (ra + 3), y1: p.y + (dy / len) * (ra + 3), x2: q.x - (dx / len) * (rb + 5), y2: q.y - (dy / len) * (rb + 5) };
+});
+---
+
+{
+  ['playground', 'original-proof', 'context', 'lean'].includes(slug) && (
+    <svg class="section-art" viewBox="0 0 320 130" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id={id('h')} cx="0.36" cy="0.32" r="0.75">
+          <stop offset="0" class="sa-h0" />
+          <stop offset="0.38" class="sa-h1" />
+          <stop offset="1" class="sa-h2" />
+        </radialGradient>
+        <radialGradient id={id('g')} cx="0.36" cy="0.32" r="0.75">
+          <stop offset="0" class="sa-g0" />
+          <stop offset="1" class="sa-g1" />
+        </radialGradient>
+        <marker id={id('arrow')} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0.5 0.8 L7 4 L0.5 7.2" class="sa-arrowhead" />
+        </marker>
+      </defs>
+
+      {slug === 'playground' && (
+        <g>
+          {pgFree.map(([x, y]) => <circle cx={x} cy={y} r="1.7" class="sa-node" />)}
+          <polyline points={pgBeads.map((b) => `${b.x},${b.y}`).join(' ')} class="sa-chain" />
+          {pgContacts.map(([a, b]) => <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} class="sa-contact" />)}
+          {pgBeads.map((b) =>
+            b.kind === 'H' ? <circle cx={b.x} cy={b.y} r="8.5" fill={`url(#${id('h')})`} /> : <circle cx={b.x} cy={b.y} r="6.8" class="sa-p" />,
+          )}
+        </g>
+      )}
+
+      {slug === 'original-proof' && (
+        <g>
+          {bins.map((b) => (
+            <g>
+              <rect x={bin.x} y={b.y} width={bin.B * bin.unit + 2 * bin.pad} height={bin.h + 2 * bin.pad} rx="5" class="sa-bin" />
+              {b.items.map((it) => (
+                <g>
+                  <rect x={it.x + 1} y={b.y + bin.pad + 1} width={it.size * bin.unit - 2} height={bin.h - 2} rx="3.5" style={`fill:${it.color}`} />
+                  {Array.from({ length: it.size - 1 }, (_, k) => (
+                    <line x1={it.x + (k + 1) * bin.unit} x2={it.x + (k + 1) * bin.unit} y1={b.y + bin.pad + 3} y2={b.y + bin.pad + bin.h - 3} class="sa-unit" />
+                  ))}
+                  <rect x={it.x + (it.size * bin.unit) / 2 - 6} y={b.y + bin.pad + bin.h / 2 - 6.5} width="12" height="13" rx="2.5" class="sa-chip" />
+                  <text x={it.x + (it.size * bin.unit) / 2} y={b.y + bin.pad + bin.h / 2 + 3.4} class="sa-chip-text">{it.size}</text>
+                </g>
+              ))}
+            </g>
+          ))}
+          <line x1="136" y1="72" x2="182" y2="72" class="sa-arrow" marker-start={`url(#${id('arrow')})`} marker-end={`url(#${id('arrow')})`} />
+          <polyline points={chain3.map((p) => iso(...p).join(',')).join(' ')} class="sa-chain" />
+          {cubeContacts.map(([a, b]) => <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} class="sa-contact" />)}
+          {cubeBeads.map((b) =>
+            b.kind === 'H' ? <circle cx={b.x} cy={b.y} r="9" fill={`url(#${id('h')})`} /> : <circle cx={b.x} cy={b.y} r="7" class="sa-p" />,
+          )}
+        </g>
+      )}
+
+      {slug === 'context' && (
+        <g>
+          <line x1="20" y1="102" x2="300" y2="102" class="sa-axis" />
+          {ctxTicks.map((t) => (
+            <g>
+              <line x1={t.x} y1="102" x2={t.x} y2="106" class="sa-axis" />
+              <text x={t.x} y="119" class:list={['sa-year', t.hot && 'hot']}>{t.year}</text>
+            </g>
+          ))}
+          {ctxBeads.map((b) => <circle cx={b.x} cy={b.y} r={b.r} fill={`url(#${id(b.kind === 'H' ? 'h' : 'g')})`} />)}
+        </g>
+      )}
+
+      {slug === 'lean' && (
+        <g>
+          {leanEdges.map((e) => <line {...e} class="sa-edge" marker-end={`url(#${id('arrow')})`} />)}
+          {Object.values(leanNodes).map((n) =>
+            n.goal ? (
+              <circle cx={n.x} cy={n.y} r="13" class="sa-goal" />
+            ) : (
+              <circle cx={n.x} cy={n.y} r="9" class:list={['sa-step', n.prose && 'prose']} />
+            ),
+          )}
+        </g>
+      )}
+    </svg>
+  )
+}
+
+<style>
+  .section-art {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .sa-h0 {
+    stop-color: color-mix(in srgb, var(--h) 50%, white);
+  }
+  .sa-h1 {
+    stop-color: var(--h);
+  }
+  .sa-h2 {
+    stop-color: color-mix(in srgb, var(--h) 72%, black);
+  }
+  .sa-g0 {
+    stop-color: color-mix(in srgb, var(--backbone) 35%, white);
+  }
+  .sa-g1 {
+    stop-color: color-mix(in srgb, var(--backbone) 85%, black);
+  }
+  .sa-node {
+    fill: var(--lattice);
+  }
+  .sa-chain {
+    fill: none;
+    stroke: var(--backbone);
+    stroke-width: 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .sa-contact {
+    stroke: var(--bond);
+    stroke-width: 2.4;
+    stroke-dasharray: 3.5 3;
+    stroke-linecap: round;
+  }
+  .sa-p {
+    fill: var(--bg-elev);
+    stroke: var(--p);
+    stroke-width: 2.6;
+  }
+  .sa-bin {
+    fill: var(--bg-elev);
+    stroke: var(--rule-strong);
+    stroke-width: 1.2;
+  }
+  .sa-unit {
+    stroke: var(--bg-elev);
+    stroke-opacity: 0.55;
+    stroke-width: 1;
+  }
+  .sa-chip {
+    fill: var(--bg-elev);
+  }
+  .sa-chip-text {
+    font-family: var(--font-sans);
+    font-size: 9.5px;
+    font-weight: 650;
+    fill: var(--fg);
+    text-anchor: middle;
+    font-variant-numeric: tabular-nums;
+  }
+  .sa-arrow,
+  .sa-edge {
+    stroke: var(--fg-subtle);
+    stroke-width: 1.6;
+  }
+  .sa-arrowhead {
+    fill: none;
+    stroke: var(--fg-subtle);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .sa-axis {
+    stroke: var(--rule-strong);
+    stroke-width: 1.2;
+  }
+  .sa-year {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    fill: var(--fg-subtle);
+    text-anchor: middle;
+    font-variant-numeric: tabular-nums;
+  }
+  .sa-year.hot {
+    fill: var(--h);
+    font-weight: 650;
+  }
+  /* a part of the plan: dashed while it is still to do; argued on paper: solid grey */
+  .sa-step {
+    fill: var(--bg-elev);
+    stroke: var(--st-lean);
+    stroke-width: 2.2;
+    stroke-dasharray: 3 2.4;
+  }
+  .sa-step.prose {
+    stroke: var(--fg-subtle);
+    stroke-dasharray: none;
+  }
+  .sa-goal {
+    fill: var(--bg-elev);
+    stroke: var(--st-lean);
+    stroke-width: 2.6;
+  }
+</style>

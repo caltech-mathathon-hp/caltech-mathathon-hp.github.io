@@ -1,0 +1,154 @@
+---
+/**
+ * Cards "Straight walls" and "Items into bins": the front face, shortened (story/face.ts).
+ * Empty: long rods fill the left free edge; short rods and the spaced rod (ringed) the right one.
+ * Each period lays two straight walls of n − 2 H's; the walls cut the face into q strips.
+ * `filled`: every strip holds a padding ribbon. Strip 1 is a bin: the item ribbons u₁ and u₄ fill
+ * its B free nodes. Strip q is not a bin: a plug fills it.
+ */
+import '../fig.css';
+import Tx from '../Tx.astro';
+import { N } from '../notation';
+import { itemColor, pts, hbrace, vbrace, hbreak, vbreak, type Pt } from '../lib';
+import { faceGeom } from './face';
+import { inBin } from './items';
+
+interface Props {
+  filled?: boolean;
+}
+const { filled = false } = Astro.props;
+const uid = filled ? 'pmf-ff-f' : 'pmf-ff-e';
+
+const F = faceGeom({ ox: 74, oy: 34, s: 12, gx: 14, gy: 12 });
+const { at, X, Y, right, box } = F;
+const periods = [0, 1].map((p) => F.period(p));
+const chains = periods.map((q) => [...q.qRod1, ...q.wall1, ...q.q2Rod, ...q.wall2, ...q.qRod2]);
+const edge: Pt[] = [];
+for (const r of F.edgeRows) for (let c = 0; c <= right; c++) edge.push(at(c, r));
+const wallRows = [F.top(0), F.bot(0), F.top(1), F.bot(1)];
+
+/* Filled: padding first, then (strip 1) the item ribbons of bin 1 or (strip q) a plug. */
+const tail = 4; // cells after the column break in the last strip row: the B free nodes
+const snakes = [0, 1].map((p) => F.stripSnake(p));
+const padCells = (p: number) => snakes[p].slice(0, snakes[p].length - tail);
+const binItems = inBin(0); // u₁ and u₄
+const free = snakes[0].slice(snakes[0].length - tail);
+const itemRuns = binItems.map((k, i) => ({ k, cells: free.slice(i * 2, i * 2 + 2) }));
+const plug = snakes[1].slice(snakes[1].length - tail);
+
+const lx = X(right) + 32; // right-hand labels
+const mid = (p: number) => Y(F.top(p) + 2) + 4;
+const colBreak = F.colBreak;
+const rowBreak = F.rowBreak(0);
+const stripRect = (p: number) => {
+  const [x1, y1] = at(1, F.top(p) + 1);
+  const [x2, y2] = at(F.inner, F.top(p) + 3);
+  return { x: x1 - F.s / 2 + 2, y: y1 - F.s / 2 + 2, w: x2 - x1 + F.s - 4, h: y2 - y1 + F.s - 4 };
+};
+const foot = box.y + box.h;
+---
+
+<svg class="pmf" viewBox="0 0 320 214" role="img" aria-labelledby={`${uid}-t`}>
+  <title id={`${uid}-t`}>
+    {
+      filled
+        ? 'The front face, shortened, with its strips filled. Every strip holds a grey padding ribbon. Strip 1 is a bin: the item ribbons u1 and u4 fill its B free nodes. Strip q is not a bin: a plug, drawn light grey, fills it. Each ribbon stays inside one strip.'
+        : 'The front face of the cube, shortened by break marks. long rods fill its left free edge; short rods and the spaced rod, ringed, fill its right free edge. Each period lays two straight walls of n − 2 H\'s across the face, and the walls cut it into strips: strip 1, and so on to strip q.'
+    }
+  </title>
+  <rect class="pmf-face pmf-face-front" x={box.x} y={box.y} width={box.w} height={box.h} rx="3" />
+  {edge.map(([x, y]) => <circle class="pmf-h pmf-faded" cx={x} cy={y} r="3.6" />)}
+  {
+    !filled &&
+      [0, 1].map((p) => {
+        const r = stripRect(p);
+        return <rect class="pmf-bin" x={r.x} y={r.y} width={r.w} height={r.h} rx="3" />;
+      })
+  }
+  {!filled && snakes.map((sn) => sn.map(([x, y]) => <circle class="pmf-dot" cx={x} cy={y} r="1.8" />))}
+  <g class:list={[filled && 'pmf-faded']}>
+    {chains.map((c) => <polyline class="pmf-chain" points={pts(c)} />)}
+    {chains.map((c) => c.map(([x, y]) => <circle class="pmf-h" cx={x} cy={y} r="3.6" />))}
+    {periods.map((q) => <circle class="pmf-h" cx={q.spaced[0]} cy={q.spaced[1]} r="3.6" />)}
+  </g>
+  {!filled && periods.map((q) => <circle class="pmf-ring" cx={q.spaced[0]} cy={q.spaced[1]} r="5.8" />)}
+  {
+    filled && (
+      <g>
+        {[0, 1].map((p) => (
+          <polyline class="pmf-ff-pad" points={pts(padCells(p))} />
+        ))}
+        {[0, 1].map((p) => padCells(p).map(([x, y]) => <circle class="pmf-ff-padh" cx={x} cy={y} r="3.6" />))}
+        <polyline class="pmf-ff-pad pmf-ff-plug" points={pts(plug)} />
+        {plug.map(([x, y]) => <circle class="pmf-ff-padh pmf-ff-plug" cx={x} cy={y} r="3.6" />)}
+        {itemRuns.map((r) => (
+          <polyline points={pts(r.cells)} fill="none" stroke-width="2" stroke-linejoin="round" style={`stroke:${itemColor(r.k)}`} />
+        ))}
+        {itemRuns.map((r) => r.cells.map(([x, y]) => <circle cx={x} cy={y} r="4.2" style={`fill:${itemColor(r.k)}`} />))}
+      </g>
+    )
+  }
+  <!-- breaks: the columns and the periods left out -->
+  {[box.y, foot].map((y) => <path class="pmf-break" d={hbreak(colBreak, y, 5)} />)}
+  {wallRows.map((r) => <path class="pmf-break" d={hbreak(colBreak, Y(r), 5)} />)}
+  {[box.x, box.x + box.w].map((x) => <path class="pmf-break" d={vbreak(x, rowBreak, 5)} />)}
+
+  {
+    !filled && (
+      <g>
+        <Tx x={box.x - 4} y={box.y - 8} t={`${N.q2Rod}s`} />
+        <Tx x={box.x + box.w + 4} y={box.y - 8} t={`${N.qRod}s`} a="end" />
+        <path class="pmf-brace" d={vbrace(box.x - 4, Y(F.top(0)) - 4, Y(F.bot(0)) + 4, -1)} />
+        <Tx x={box.x - 14} y={mid(0)} t={`2${N.q} + 1`} a="end" />
+        <path class="pmf-brace" d={vbrace(box.x + box.w + 4, Y(F.top(0)) - 4, Y(F.top(0) + 1) + 4, 1)} />
+        <Tx x={box.x + box.w + 14} y={Y(F.top(0) + 0.5) + 4} t={N.q} />
+        <path class="pmf-brace" d={hbrace(X(1) - 3, X(F.inner) + 3, foot + 4, 1)} />
+        <Tx x={(X(1) + X(F.inner)) / 2} y={foot + 24} t={`${N.n} − 2`} a="middle" />
+        {[F.top(0), F.bot(0)].map((r) => <text class="pmf-label" x={lx + 12} y={Y(r) + 4}>wall</text>)}
+        <Tx x={lx + 12} y={mid(0)} t={`${N.strip} 1`} c="pmf-label-strong" />
+        <Tx x={lx + 12} y={mid(1)} t={`${N.strip} ${N.q}`} c="pmf-label-strong" />
+        <circle class="pmf-h" cx={lx + 4} cy={foot + 16} r="3.6" />
+        <circle class="pmf-ring" cx={lx + 4} cy={foot + 16} r="5.8" />
+        <text class="pmf-label" x={lx + 14} y={foot + 20}>{N.spaced}</text>
+      </g>
+    )
+  }
+  {
+    filled && (
+      <g>
+        <Tx x={lx} y={mid(0) - 7} t={`${N.strip} 1`} c="pmf-label-strong" />
+        <text class="pmf-label" x={lx} y={mid(0) + 8}>
+          bin:{' '}
+          {binItems.map((k, i) => (
+            <>
+              {i > 0 && ', '}
+              <tspan class="pmf-v" font-weight="600" style={`fill:${itemColor(k)}`}>u</tspan>
+              <tspan font-weight="600" style={`fill:${itemColor(k)}`}>{N.item(k + 1).slice(1)}</tspan>
+            </>
+          ))}
+        </text>
+        <Tx x={lx} y={mid(1) - 7} t={`${N.strip} ${N.q}`} c="pmf-label-strong" />
+        <text class="pmf-label" x={lx} y={mid(1) + 8}>{N.plug}</text>
+        <circle class="pmf-ff-padh" cx={X(0)} cy={foot + 16} r="3.6" />
+        <text class="pmf-label" x={X(0) + 9} y={foot + 20}>{N.padding}</text>
+        <circle class="pmf-ff-padh pmf-ff-plug" cx={X(0) + 76} cy={foot + 16} r="3.6" />
+        <text class="pmf-label" x={X(0) + 85} y={foot + 20}>{N.plug}</text>
+      </g>
+    )
+  }
+</svg>
+
+<style>
+  .pmf-ff-pad {
+    fill: none;
+    stroke: var(--pmf-pad);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  .pmf-ff-padh {
+    fill: var(--pmf-pad);
+  }
+  .pmf-ff-plug {
+    opacity: 0.5;
+  }
+</style>

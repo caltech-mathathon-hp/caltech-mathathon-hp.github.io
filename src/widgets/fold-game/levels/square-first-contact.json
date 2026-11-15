@@ -1,0 +1,15 @@
+{
+  "id": "square-first-contact",
+  "order": 110,
+  "group": "Square lattice (2D)",
+  "title": "A first contact",
+  "lattice": "square",
+  "sequence": "HPPH",
+  "best": 1,
+  "optimal": true,
+  "bestKind": "proved",
+  "bestSource": "The string has two H’s, so it has at most one contact.",
+  "intro": "Place the letters one by one, each on a free neighbour of the last. Make the two H’s touch.",
+  "hint": "Right, up, left.",
+  "solution": "RUL"
+}

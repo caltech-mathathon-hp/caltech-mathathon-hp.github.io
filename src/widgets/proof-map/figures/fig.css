@@ -1,0 +1,163 @@
+/*
+ * Shared look of the proof figures (class prefix pmf-). Colours only from tokens.css.
+ * H: filled --h. P: hollow, stroke --p. Chain: --backbone. Contact: dashed --bond.
+ * Items u₁, u₂, … use --item-1 … --item-4 (repeating), padding uses --item-pad.
+ * Figures are drawn in a 320-unit-wide viewBox and shown 320–450px wide, so 11 units of text
+ * is at least 11px on screen.
+ */
+.pmf {
+  --pmf-i1: var(--item-1);
+  --pmf-i2: var(--item-2);
+  --pmf-i3: var(--item-3);
+  --pmf-i4: var(--item-4);
+  --pmf-pad: var(--item-pad);
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.pmf .pmf-face {
+  fill: var(--bg-sunk);
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+.pmf .pmf-face-front {
+  fill: color-mix(in srgb, var(--h) 7%, var(--bg-sunk));
+}
+/* The inside of the cube, where only H's are. */
+.pmf .pmf-solid {
+  fill: color-mix(in srgb, var(--h) 14%, var(--bg-elev));
+  stroke: var(--h);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+.pmf .pmf-solid-side {
+  fill: color-mix(in srgb, var(--h) 24%, var(--bg-elev));
+  stroke: var(--h);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+.pmf .pmf-edge-line {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+.pmf .pmf-dot {
+  fill: var(--lattice);
+}
+.pmf .pmf-out {
+  fill: none;
+  stroke: var(--fg-subtle);
+  stroke-width: 1;
+  opacity: 0.7;
+}
+.pmf .pmf-chain {
+  fill: none;
+  stroke: var(--backbone);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.pmf .pmf-bond {
+  fill: none;
+  stroke: var(--bond);
+  stroke-width: 2.2;
+  stroke-dasharray: 3 2.5;
+}
+.pmf .pmf-h {
+  fill: var(--h);
+}
+.pmf .pmf-p {
+  fill: var(--bg);
+  stroke: var(--p);
+  stroke-width: 1.6;
+}
+.pmf .pmf-prun {
+  fill: none;
+  stroke: var(--p);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 0.1 5;
+}
+.pmf .pmf-faded {
+  opacity: 0.35;
+}
+.pmf .pmf-ring {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.4;
+}
+.pmf .pmf-bin {
+  fill: var(--bg-elev);
+  stroke: var(--rule-strong);
+  stroke-dasharray: 3 3;
+}
+.pmf .pmf-cell {
+  fill: var(--bg-elev);
+  stroke: var(--rule-strong);
+}
+.pmf .pmf-brace,
+.pmf .pmf-lead {
+  fill: none;
+  stroke: var(--fg-muted);
+  stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pmf .pmf-break {
+  fill: none;
+  stroke: var(--fg-muted);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+/* A gap cut out of a line or a grid, before its break mark. */
+.pmf .pmf-gap {
+  fill: var(--bg-elev);
+}
+.pmf .pmf-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  fill: var(--fg-muted);
+}
+.pmf .pmf-label-strong {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--fg);
+}
+/* Labels drawn over lines or fills keep a halo of the background. */
+.pmf .pmf-halo {
+  paint-order: stroke;
+  stroke: var(--bg-elev);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.pmf .pmf-v {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.12em;
+}
+.pmf .pmf-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  fill: var(--fg-muted);
+}
+.pmf .pmf-badge {
+  fill: var(--bg-elev);
+  stroke: var(--fg-muted);
+  stroke-width: 1;
+}
+.pmf .pmf-badge-num {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--fg);
+}
+.pmf .pmf-ok {
+  fill: var(--diff-1-ink);
+}
+.pmf .pmf-no {
+  fill: var(--diff-3-ink);
+}

@@ -1,0 +1,178 @@
+/* 3D renderer of the folding game (Three3D.tsx). Colours and fonts only from tokens.css. */
+
+.fg3-root {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  overflow: hidden;
+  background: var(--bg-sunk);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  contain: layout paint;
+}
+
+.fg3-host {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  touch-action: none;
+}
+.fg3-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+}
+
+/* ---------- HTML labels drawn over the canvas ---------- */
+.fg3-labels {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fg3-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  line-height: 1;
+  will-change: transform;
+}
+.fg3-idx {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-muted);
+  translate: 0 -100%;
+  text-shadow:
+    0 0 2px var(--bg-sunk),
+    0 0 2px var(--bg-sunk);
+}
+.fg3-key {
+  translate: -50% -50%;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ghost);
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--bg-elev) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ghost) 45%, transparent);
+}
+.fg3-tip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -100%;
+  padding: 3px 7px;
+  font-size: var(--fs-xs);
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--fg);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  font-variant-numeric: tabular-nums;
+}
+.fg3-tip b {
+  font-weight: 650;
+}
+.fg3-tip-act {
+  display: block;
+  margin-top: 2px;
+  color: var(--fg-muted);
+}
+.fg3-kH {
+  color: var(--h);
+}
+.fg3-kP {
+  color: var(--p);
+}
+
+/* ---------- axis gizmo ---------- */
+.fg3-gizmo {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  width: 52px;
+  height: 52px;
+  overflow: visible;
+  pointer-events: none;
+}
+.fg3-gz-line {
+  stroke: var(--fg-muted);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.fg3-gz-text {
+  fill: var(--fg-muted);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ---------- view buttons ---------- */
+.fg3-tools {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+}
+.fg3-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--bg-elev) 88%, transparent);
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition:
+    color 120ms,
+    border-color 120ms,
+    background-color 120ms;
+}
+.fg3-btn svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.fg3-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.fg3-btn:hover {
+  color: var(--fg);
+  border-color: var(--rule-strong);
+  background: var(--bg-elev);
+}
+.fg3-btn.is-on {
+  color: var(--h);
+  border-color: color-mix(in srgb, var(--h) 45%, var(--rule));
+}
+.fg3-btn.is-alert {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--rule));
+  background: var(--bg-elev);
+}
+
+/* ---------- no WebGL ---------- */
+.fg3-fail {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--s-5);
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--fg-muted);
+}

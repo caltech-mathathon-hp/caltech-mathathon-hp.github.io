@@ -1,0 +1,48 @@
+---
+title: Filling the strips
+caption: 'Each strip gets its long ribbon and then either the items of one bin or a bin-sized ribbon. That fills every strip exactly, and now every node of the cube holds an H.'
+lane: right
+order: 3
+difficulty: 1
+figure: bl-padding
+source: '“Packing the front face: placing the items”, pp. 35–36'
+---
+
+### The idea
+
+Once everything but the strips is folded, the $q$ strips of the front face are empty, each with $T$ nodes. A padding takes $T-B$ of them and leaves $B$. So we put the items of the first bin of the packing into the first strip, those of the second bin into the second, and so on for all $K$ bins, and a plug into each strip left over. Every strip then receives exactly $T$ H's.
+
+To place them, we run a **snake** through the strip, along one row and back along the next, cut it into pieces of the right sizes, and lay one ribbon on each piece. We also choose where each ribbon starts, because this will let every linker use up its exact length ([14 Loops take up slack](#step-bl-linkers)). Colour the nodes like a chessboard, calling a node **even** if its three coordinates add up to an even number and **odd** otherwise. A snake alternates colours, and every ribbon has an even number of H's. So if the snake starts on an even node, every ribbon starts on an even node and ends on an odd one.
+
+### Statement
+
+Every strip can be filled exactly, with each ribbon starting on an even node and ending on an odd one. Then every node of the cube holds an H.
+
+### Exact statement
+
+Given a packing $U_1,\dots,U_K$, number the strips $1,\dots,q$. Place in strip $i\le K$ a padding and the item ribbons of the items in $U_i$, and in strip $i > K$ a padding and a plug. This can be done so that every ribbon is a path of face nodes with each P just in front of its H, and every ribbon starts on an even node (one whose coordinates add up to an even number) and ends on an odd one. Then every node of the cube holds an H.
+
+### Uses
+
+[2 Why bin packing](#step-bl-problems): the packing. [4 Spelling the string](#step-bl-string): the item part. [11 Building the walls](#step-bl-build-walls): the strips.
+
+### Proof
+
+1. **Sizes.** Strip $i\le K$ receives $(T-B)+\sum_{u\in U_i}s(u)=T$ H's, and strip $i > K$ receives $(T-B)+B=T$. There are $q$ paddings and $q-K$ plugs, and every item lies in exactly one $U_i$. So the item part has exactly the H's to fill the $q$ strips.
+2. **Snakes.** A strip has $2q-1$ rows of $n-2$ nodes. Run a snake through it, row by row, starting at an even corner (one of the two ends of the first row is even, as $n-2$ is even). Cut the snake into consecutive pieces of the sizes received, in any order, and place one ribbon on each piece.
+3. **Parity.** Along the snake the nodes alternate between even and odd. Every piece has an even number of nodes, so each piece starts on an even node and ends on an odd one.
+4. **P's.** Each H of a ribbon on the front face has one neighbour outside the cube, just in front of it at $k=-1$, and its one P goes there. Consecutive H's of a ribbon are neighbours along the snake, and so are their P's.
+
+With [10 Folding the frame](#step-bl-frame) and [11 Building the walls](#step-bl-build-walls), every node of the cube now holds an H.
+
+### Where in the paper
+
+“Packing the front face: placing the items”, pp. 35–36: the paper's "$x$-item-strings" (our paddings, plugs and item ribbons), the bins $B_1,\dots,B_q$ (our strips), the snake, and even nodes.
+
+### Rating
+
+1: a direct check of sizes and parity.
+
+### Our note
+
+A typo: p. 35 writes $q-k$ for $q-K$.

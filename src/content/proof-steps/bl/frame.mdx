@@ -1,0 +1,78 @@
+---
+title: Folding the frame
+caption: 'From a packing we build a perfect fold, starting with the pieces that the packing does not affect. They form a frame that fills ten edges, five faces and the inside, and leaves the front face empty.'
+lane: right
+group: frame
+order: 1
+difficulty: 3
+figure: bl-face-order
+source: '“Packing all but the front face of the cube”, p. 34, Figs. 4–7'
+---
+
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+Now the other direction: given a packing, we fold $S$ perfectly, piece by piece in string order. Most of $S$ does not depend on the packing, and we fold that part first. We call it the **frame**: the corner rod, the second rod, the five face ribbons and the core.
+
+Hold the cube with the front face towards us. The corner rod runs round the edges of the top face, down one edge at the back and round the bottom face. Each face ribbon fills its face by going along one column and back along the next. We call such a path a **snake**. Since $n-2$ is even, a snake ends on the side where it began, near where the next piece must start. Inside, the core goes layer by layer in the same back-and-forth way. Short runs of P's lead from each piece to the next, around the P's already placed.
+
+We leave the front face empty for the walls and the items. No P lies more than two steps out in front of it, which keeps the space further out free for the linkers. The frame ends in front of the free edge where the walls begin.
+
+### Statement
+
+The frame folds onto every node except those of the front face and its two free edges. Its P's lie outside the cube and no more than two steps out in front of the front face, and the last one sits in front of the free edge where the walls begin.
+
+### Exact statement
+
+Take coordinates $(i,j,k)$, $0\le i,j,k\le n-1$, for the cube, with $n$ and $q$ as in [4 Spelling the string](#step-bl-string). The frame part of $S$ has a fold, with no node used twice, in which:
+
+1. the H's fill every node of the cube except the $n(n-2)$ nodes $(i,j,0)$ with $1\le j\le n-2$: the face nodes of the front face $k=0$ and its two free edges $(0,j,0)$ and $(n-1,j,0)$;
+2. every P lies outside the cube;
+3. the last P lies at $(n-1,n-1-q,-2)$;
+4. every P with $k<0$ has $k\ge-2$, and the only ones with $1\le j\le n-2$ are the last $q$, at $(n-1,j,-2)$ for $n-1-q\le j\le n-2$.
+
+### Uses
+
+[4 Spelling the string](#step-bl-string): the frame part, and $n$ even.
+
+### Proof
+
+Faces: back $k=n-1$, front $k=0$, left $i=0$, right $i=n-1$, bottom $j=0$, top $j=n-1$. A node outside the cube is next to at most one node of the cube, so the P's that sit next to their own H's never collide. Every other P is listed in the More below.
+
+1. **Corner rod.** Its H's run from $(n-2,n-1,n-1)$ around the four edges of the top face to $(n-1,n-1,n-1)$, down the edge to $(n-1,0,n-1)$, and around the four edges of the bottom face to $(n-2,0,n-1)$: $9n-10$ nodes, all 8 corners and the 9 edges other than $(0,*,n-1)$, $(0,*,0)$ and $(n-1,*,0)$. Each H has its two P's on two of its neighbours outside the cube, the first P at $(n-2,n-1,n)$ and the last at $(n-2,0,n)$ (More).
+2. **Back face.** A snake of $n-2$ columns from $(n-2,1,n-1)$ to $(1,1,n-1)$, each H with its P just behind it. As $n-2$ is even, it ends in row $j=1$, where it began.
+3. **Tenth-edge rod.** Its H's fill $(0,1,n-1),\dots,(0,n-2,n-1)$. Its P's alternate between the sides $i=-1$ and $k=n$, starting with $(0,1,n)$, next to the back face's last P $(1,1,n)$. As $n-2$ is even, its last P is $(0,n-2,n)$.
+4. **Four faces.** <Seq s="P^4" /> leads to the left face. Snakes then fill the left, bottom, right and top faces, each starting and ending next to the back face, with <Seq s="P^7" /> between consecutive faces. The top-face snake is one block short and stops at $(n-4,n-1,1)$, leaving $(n-3,n-1,1)$ and $(n-2,n-1,1)$ open.
+5. **Core.** It enters the interior through $(n-3,n-1,1)$, fills it layer by layer (More), and ends at $(n-2,n-1,1)$: $(n-2)^3+2$ H's, and no P's inside.
+6. **The last run.** <Seq s="P^{8+q}" /> goes over the top front edge and down at $k=-2$ to $(n-1,n-1-q,-2)$.
+
+The H's then fill everything but the front face's free part, which proves (1), and (2) holds by construction. The P's with $k<0$ are those of the corner rod next to the edges $(*,0,0)$ and $(*,n-1,0)$, which have $k=-1$ and $j\in\{0,n-1\}$, and the last ones of <Seq s="P^{8+q}" />. This proves (4).
+
+<More title="Coordinates of the runs of P's">
+
+**Corner rod.** Along an edge, the two P's between consecutive H's are neighbours, so they sit on the same side, and the sides alternate from H to H. At a corner the H has three neighbours outside the cube, which lets the P's change side. Every edge has an even number $n-2$ of nodes, so the side on which the P's leave an edge does not depend on $n$. We checked by a short search over the sides that the P's fit, from $(n-2,n-1,n)$ to $(n-2,0,n)$.
+
+**<Seq s="P^4" />**, from the tenth-edge rod's last P $(0,n-2,n)$: $(-1,n-2,n)$, $(-2,n-2,n)$, $(-2,n-2,n-1)$, $(-2,n-2,n-2)$, then the left face's first P $(-1,n-2,n-2)$ and first H $(0,n-2,n-2)$. The route avoids $(-1,n-2,n-1)$, a P of the rod.
+
+**Faces.** Start and end of each snake, as in Fig. 7: left $(0,n-2,n-2)$ to $(0,1,n-2)$; bottom $(1,0,n-2)$ to $(n-2,0,n-2)$; right $(n-1,1,n-2)$ to $(n-1,n-2,n-2)$; top $(n-2,n-1,n-2)$ to $(n-4,n-1,1)$, row by row in $k$.
+
+**<Seq s="P^7" />**, from the left to the bottom face, in the plane $k=n-2$, giving $(i,j)$: from the left face's last P $(-1,1)$ through $(-2,1)$, $(-2,0)$, $(-2,-1)$, $(-1,-1)$, $(-1,-2)$, $(0,-2)$, $(1,-2)$ to the bottom face's first P $(1,-1)$. It goes around $(-1,0)$ and $(0,-1)$, the P's of the edge node $(0,0,n-2)$. The other two joints are the same route turned by a right angle about the $k$-axis.
+
+**Core.** In the interior, layers $j=n-2,n-3,\dots,1$ come in turn. In layer $j$ take a closed tour of the $(n-2)\times(n-2)$ square of nodes $(i,j,k)$, $1\le i,k\le n-2$, which exists because $n-2$ is even, and cut out $(n-2,j,1)$. What is left is a path from $(n-3,j,1)$ to $(n-2,j,2)$. Run it one way in layer $n-2$, the other way in layer $n-3$, and so on, stepping between layers at the same $(i,k)$. As $n-2$ is even, layer 1 ends at $(n-3,1,1)$. The core then climbs the column $(n-2,1,1),\dots,(n-2,n-2,1)$ to $(n-2,n-1,1)$.
+
+**<Seq s="P^{8+q}" />**, from the core's last H $(n-2,n-1,1)$: $(n-2,n,1)$, $(n-2,n+1,1)$, $(n-2,n+1,0)$, $(n-2,n+1,-1)$, $(n-2,n+1,-2)$, then $(n-1,j,-2)$ for $j=n+1,n,\dots,n-1-q$. That is $5+(q+3)=8+q$ P's. The route avoids the P's of the corner rod in front of and above the top front edge.
+
+</More>
+
+### Where in the paper
+
+“Packing all but the front face of the cube”, p. 34, with Figs. 4–7 on pp. 34–35. The paper gives the H's of each piece, the ends of each run of P's, and the reason for <Seq s="P^7" />: the neighbours outside the cube of edge nodes are taken. It describes the core in one sentence and says the corner rod's P's are placed "so as to keep the string connected".
+
+### Rating
+
+3: long, and written in coordinates. The paper leaves the P's of the rods, the routes of the runs and the core's path to the reader; the More gives them.
+
+### Our note
+
+We found this direction the hardest part of the paper to check. It rests on coordinates, the <Seq s="P^7" /> and <Seq s="P^{8+q}" /> detours, linking paths at distance 2 and 3 from the cube, and the padding loops. The routes in the More are ours, written to match the ends the paper gives; the paper states only those ends.

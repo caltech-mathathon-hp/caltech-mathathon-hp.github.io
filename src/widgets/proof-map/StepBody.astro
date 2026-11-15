@@ -1,0 +1,109 @@
+---
+/**
+ * The body of a step popup: the rendered MDX of one card, cut at its top-level `###` headings
+ * into <section class="pb-sec pb-sec-<kind>"> blocks, so each kind can be styled for reading
+ * (board.css). Kinds come from the heading text:
+ *
+ *   The idea / Intuition · Example · Statement (the claim in words) · Why it is hard   (front: shown)
+ *   Exact statement · Proof / Why it holds · Our note · anything else (Where in the paper …)   (back)
+ *
+ * The front sections are shown in order; the back sections follow, folded into one
+ * <details class="pb-back"> ("The details"), so a reader gets the idea first and opens
+ * the details to check them. board.client.ts keeps that toggle in the same state on every step.
+ *
+ * Headings get ids prefixed with the step id, so the eleven "Intuition" headings on a page stay unique.
+ * Used only by ProofBoard.astro:  <StepBody id={step.id}><step.Content … /></StepBody>
+ */
+interface Props {
+  /** Step id, e.g. step-bl-walls. */
+  id: string;
+}
+const { id } = Astro.props;
+const html = await Astro.slots.render('default');
+
+const KINDS: [RegExp, string][] = [
+  [/^(intuition|the idea|idea)\b/i, 'intuition'],
+  [/^example/i, 'example'],
+  [/^statement/i, 'statement'],
+  [/^(why it holds|proof)/i, 'why'],
+  [/^(why it is hard|why it's hard|where it gets hard)/i, 'hard'],
+  [/^(our note|note)/i, 'note'],
+];
+const kindOf = (text: string) => KINDS.find(([re]) => re.test(text))?.[1] ?? 'other';
+const FRONT = new Set(['lead', 'intuition', 'example', 'statement', 'hard']);
+const textOf = (h: string) => h.replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/gi, ' ').trim();
+const slugOf = (t: string) =>
+  t
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+/* Find the <h3> elements at the top level of the body (not inside a component's box). */
+const CONTAINERS = 'div|section|aside|details|blockquote|figure|ul|ol|table|dl';
+const tagRe = new RegExp(`<(/?)(${CONTAINERS}|h3)\\b[^>]*>`, 'gi');
+type Head = { start: number; end: number; inner: string };
+const heads: Head[] = [];
+let depth = 0;
+let open: { start: number; innerStart: number } | null = null;
+for (let m: RegExpExecArray | null; (m = tagRe.exec(html)); ) {
+  const closing = m[1] === '/';
+  const tag = m[2].toLowerCase();
+  if (tag === 'h3') {
+    if (depth !== 0) continue;
+    if (!closing) open = { start: m.index, innerStart: m.index + m[0].length };
+    else if (open) {
+      heads.push({ start: open.start, end: m.index + m[0].length, inner: html.slice(open.innerStart, m.index) });
+      open = null;
+    }
+  } else depth += closing ? -1 : 1;
+}
+
+type Sec = { kind: string; title?: string; hid?: string; body: string };
+const secs: Sec[] = [];
+const lead = html.slice(0, heads[0]?.start ?? html.length);
+if (lead.trim()) secs.push({ kind: 'lead', body: lead });
+const used = new Set<string>();
+heads.forEach((h, i) => {
+  const title = h.inner;
+  const plainTitle = textOf(title);
+  let hid = `${id}-${slugOf(plainTitle) || 'section'}`;
+  while (used.has(hid)) hid += '-';
+  used.add(hid);
+  const body = html.slice(h.end, heads[i + 1]?.start ?? html.length);
+  secs.push({ kind: kindOf(plainTitle), title, hid, body });
+});
+const front = secs.filter((s) => FRONT.has(s.kind));
+const back = secs.filter((s) => !FRONT.has(s.kind));
+const backId = `${id}-back`;
+---
+
+{
+  front.map((s) =>
+    s.title === undefined ? (
+      <div class="pb-sec pb-sec-lead" set:html={s.body} />
+    ) : (
+      <section class={`pb-sec pb-sec-${s.kind}`} aria-labelledby={s.hid}>
+        <h3 class="pb-sec-h" id={s.hid} set:html={s.title} />
+        <div class="pb-sec-body" set:html={s.body} />
+      </section>
+    ),
+  )
+}
+{
+  back.length > 0 && (
+    <details class="pb-back" id={backId}>
+      <summary class="pb-back-sum ui">
+        <span class="pb-back-k">The details</span>
+        <span class="pb-back-list">{back.map((s) => textOf(s.title ?? '')).join(' · ')}</span>
+      </summary>
+      <div class="pb-back-body">
+        {back.map((s) => (
+          <section class={`pb-sec pb-sec-${s.kind}`} aria-labelledby={s.hid}>
+            <h3 class="pb-sec-h" id={s.hid} set:html={s.title} />
+            <div class="pb-sec-body" set:html={s.body} />
+          </section>
+        ))}
+      </div>
+    </details>
+  )
+}

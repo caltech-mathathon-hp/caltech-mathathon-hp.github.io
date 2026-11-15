@@ -1,0 +1,15 @@
+{
+  "id": "fcc-parity",
+  "order": 420,
+  "group": "Face-centred cubic lattice (3D)",
+  "title": "Odd and even",
+  "lattice": "fcc",
+  "sequence": "HPHPHPHPH",
+  "best": 8,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "On the square and cubic lattices this string has no contact: the parity bound is 0. This lattice has triangles, so the bound does not apply.",
+  "hint": "An H, a P and an H can form a triangle. Then the two H’s touch.",
+  "solution": "01163960"
+}

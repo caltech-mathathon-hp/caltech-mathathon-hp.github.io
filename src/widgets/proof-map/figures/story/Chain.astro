@@ -1,0 +1,162 @@
+---
+/**
+ * Card "The string" (BL Fig. 3), shortened by break marks, in its three parts.
+ * Frame: rods PHP, face ribbons PHHP, the core of H's. Walls: q periods (short rod, wall, long rod,
+ * wall, short rod), then the spaced rod, whose H's between P's sit between long runs of P's.
+ * Item part: q paddings and q − K plugs, then one item ribbon per item u₁, u₂, …; each of these
+ * ribbons comes after a linker (a run of P's, drawn as a loop). Ribbons of the item part show their
+ * H's only, in pairs (one pair per block PHHP).
+ */
+import '../fig.css';
+import Tx from '../Tx.astro';
+import { N } from '../notation';
+import { itemColor, hbreak, hbrace, type Pt } from '../lib';
+import { ITEMS } from './items';
+
+const pitch = 8;
+type Group = { label?: string; s: string };
+/** Beads of a row of groups joined by break marks. */
+const beadRow = (groups: Group[], x0: number, join: number) => {
+  let x = x0;
+  return groups.map((g) => {
+    const beads = [...g.s].map((t, i) => ({ t, x: x + i * pitch }));
+    const out = { ...g, beads, x0: x, x1: x + (g.s.length - 1) * pitch };
+    x = out.x1 + join;
+    return out;
+  });
+};
+/* Frame. */
+const yA = 32;
+const frame = beadRow(
+  [
+    { label: 'rods', s: 'PHPPHP' },
+    { label: 'face ribbons', s: 'PHHPPHHP' },
+    { label: 'core', s: 'HHHH' },
+  ],
+  18,
+  28,
+);
+/* Walls: one period, each piece cut short, then the spaced rod. */
+const yB = 90;
+const period = beadRow(
+  [
+    { s: 'PHP' },
+    { s: 'PHHP' },
+    { s: 'PHP' },
+    { s: 'PHHP' },
+    { s: 'PHP' },
+  ],
+  18,
+  16,
+);
+const pEnd = period.at(-1)!.x1;
+const spacedX = pEnd + 34;
+const loop: Pt[] = [
+  [0, 0],
+  [0, 10],
+  [7, 16],
+  [14, 10],
+  [14, 0],
+];
+/* The spaced rod: P H, then (loop of P's, H) twice more, then P. */
+const spacedH = [spacedX + pitch, spacedX + pitch + 30, spacedX + pitch + 60];
+const spacedLoops = [0, 1].map((i) => loop.map(([dx, dy]) => [spacedH[i] + 8 + dx, yB + dy] as Pt));
+
+/* Item part: a linker loop, then a ribbon of H's in pairs. */
+const hp = 6.6;
+const pair = 2.4;
+const ribbonRow = (sizes: number[], x0: number, y: number, gap = 6) => {
+  let xx = x0;
+  return sizes.map((size) => {
+    const p = loop.map(([dx, dy]) => [xx + dx, y + dy] as Pt);
+    const start = xx + 14 + 8;
+    const beads = Array.from({ length: size }, (_, u) => start + u * hp + Math.floor(u / 2) * pair);
+    xx = beads[beads.length - 1] + gap;
+    return { p, beads, y };
+  });
+};
+const yC = 160;
+const pads = ribbonRow([8, 4], 16, yC, 30);
+const padBreak = (pads[0].beads[3] + pads[0].beads[4]) / 2;
+const yD = 214;
+const items = ribbonRow(ITEMS, 16, yD);
+const dots = (x1: number, x2: number, y: number) => ({ x1, x2, y1: y, y2: y });
+---
+
+<svg class="pmf" viewBox="0 0 320 236" role="img" aria-labelledby="pmf-chain-t">
+  <title id="pmf-chain-t">The string, shortened, in three parts. The frame: rods PHP, face ribbons PHHP and a core of H's. The walls: q periods, each a short rod, a wall, a long rod, a wall and a short rod, then the spaced rod, whose H's between P's are far apart. The item part: q paddings and q − K plugs in grey, then one ribbon per item u1, u2, u3, u4 and so on, in the item colours. Each ribbon of the item part comes after a linker, a run of P's drawn as a loop.</title>
+  <text class="pmf-label-strong" x="16" y="14">frame</text>
+  {
+    frame.map((g, i) => (
+      <g>
+        <line class="pmf-chain" x1={g.x0} y1={yA} x2={g.x1} y2={yA} />
+        <line class="pmf-chain" {...dots(g.x1 + 4, g.x1 + 24, yA)} stroke-dasharray="1 3" />
+        <path class="pmf-break" d={hbreak(g.x1 + 14, yA, 5)} />
+        {g.beads.map((b) => (b.t === 'H' ? <circle class="pmf-h" cx={b.x} cy={yA} r="3.5" /> : <circle class="pmf-p" cx={b.x} cy={yA} r="2.9" />))}
+        <text class="pmf-label" x={(g.x0 + g.x1) / 2} y={yA + 18} text-anchor="middle">
+          {g.label}
+        </text>
+      </g>
+    ))
+  }
+
+  <text class="pmf-label-strong" x="16" y="72">walls</text>
+  {
+    period.map((g, i) => (
+      <g>
+        <line class="pmf-chain" x1={g.x0} y1={yB} x2={g.x1} y2={yB} />
+        {i < period.length - 1 && <line class="pmf-chain" {...dots(g.x1 + 4, g.x1 + 12, yB)} stroke-dasharray="1 3" />}
+        {i < period.length - 1 && <path class="pmf-break" d={hbreak(g.x1 + 8, yB, 4)} />}
+        {g.beads.map((b) => (b.t === 'H' ? <circle class="pmf-h" cx={b.x} cy={yB} r="3.5" /> : <circle class="pmf-p" cx={b.x} cy={yB} r="2.9" />))}
+      </g>
+    ))
+  }
+  <path class="pmf-brace" d={hbrace(period[0].x0 - 3, pEnd + 3, yB + 8, 1)} />
+  <Tx x={(period[0].x0 + pEnd) / 2} y={yB + 28} t={`${N.q} periods`} a="middle" />
+  <line class="pmf-chain" {...dots(pEnd + 4, spacedX - 4, yB)} stroke-dasharray="1 3" />
+  <path class="pmf-break" d={hbreak((pEnd + spacedX) / 2, yB, 5)} />
+  <polyline class="pmf-chain" points={[[spacedX, yB], [spacedH[0], yB], ...spacedLoops[0], [spacedH[1], yB], ...spacedLoops[1], [spacedH[2], yB], [spacedH[2] + pitch, yB]].map((q) => q.join(',')).join(' ')} />
+  <circle class="pmf-p" cx={spacedX} cy={yB} r="2.9" />
+  {spacedLoops.map((l) => l.map(([x, y]) => <circle class="pmf-p" cx={x} cy={y} r="2.9" />))}
+  {spacedH.map((x) => <circle class="pmf-h" cx={x} cy={yB} r="3.5" />)}
+  <circle class="pmf-p" cx={spacedH[2] + pitch} cy={yB} r="2.9" />
+  <text class="pmf-label" x={(spacedX + spacedH[2] + pitch) / 2} y={yB + 28} text-anchor="middle">{N.spaced}</text>
+
+  <text class="pmf-label-strong" x="16" y="132">item part</text>
+  {
+    [...pads, ...items].map((r, n) => {
+      const isItem = n >= pads.length;
+      const k = n - pads.length;
+      const fill = isItem ? itemColor(k) : 'var(--pmf-pad)';
+      return (
+        <g class:list={[!isItem && n === 1 && 'pmf-chain-plug']}>
+          <polyline class="pmf-chain" points={[...r.p, [r.beads[0], r.y]].map((q) => q.join(',')).join(' ')} />
+          <line class="pmf-chain" x1={r.beads[0]} y1={r.y} x2={r.beads.at(-1)} y2={r.y} />
+          {r.p.map(([px, py]) => <circle class="pmf-p" cx={px} cy={py} r="2.9" />)}
+          {r.beads.map((bx) => <circle cx={bx} cy={r.y} r="3.4" style={`fill:${fill}`} />)}
+          {isItem && <Tx x={(r.beads[0] + r.beads.at(-1)!) / 2} y={r.y - 10} t={N.item(k + 1)} a="middle" c="pmf-label-strong" style={`fill:${itemColor(k)}`} />}
+        </g>
+      );
+    })
+  }
+  <rect class="pmf-gap" x={padBreak - 3} y={yC - 5} width="6" height="10" />
+  <path class="pmf-break" d={hbreak(padBreak, yC, 6)} />
+  {
+    pads.map((r) => (
+      <g>
+        <line class="pmf-chain" {...dots(r.beads.at(-1)! + 5, r.beads.at(-1)! + 23, yC)} stroke-dasharray="1 3" />
+        <path class="pmf-break" d={hbreak(r.beads.at(-1)! + 14, yC, 5)} />
+      </g>
+    ))
+  }
+  <Tx x={(pads[0].beads[0] + pads[0].beads.at(-1)!) / 2} y={yC - 10} t={`${N.q} paddings`} a="middle" />
+  <Tx x={(pads[1].beads[0] + pads[1].beads.at(-1)!) / 2} y={yC - 10} t={`${N.q} − ${N.K} plugs`} a="middle" />
+  <text class="pmf-label" x={pads[0].p[2][0]} y={yC + 30} text-anchor="middle">{N.linker}</text>
+  <text class="pmf-label" x={items.at(-1)!.beads.at(-1)! + 8} y={yD + 4}>…</text>
+</svg>
+
+<style>
+  .pmf-chain-plug circle:not(.pmf-p) {
+    opacity: 0.5;
+  }
+</style>

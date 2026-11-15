@@ -1,0 +1,15 @@
+{
+  "id": "fcc-eight",
+  "order": 410,
+  "group": "Face-centred cubic lattice (3D)",
+  "title": "Eight H’s",
+  "lattice": "fcc",
+  "sequence": "HHHHHHHH",
+  "best": 11,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "Each node has twelve neighbours. The best fold of this string has 3 contacts on the square lattice and 5 on the cubic lattice; here it has 11.",
+  "hint": "Neighbours of a node are often neighbours of each other: the lattice is full of triangles. Keep every new H next to as many earlier H’s as you can.",
+  "solution": "0061324"
+}

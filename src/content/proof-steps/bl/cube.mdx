@@ -1,0 +1,66 @@
+---
+title: Why a cube
+caption: 'An H on the surface touches fewer H''s, and among shapes of the same size the cube has the least surface. So the perfect folds are exactly the folds with the most contacts.'
+lane: setup
+order: 2
+difficulty: 2
+figure: bl-cube
+source: 'Fact 3.1 and Theorem 3.2, p. 32'
+---
+
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+Why a cube? Because H's on the surface touch fewer H's. Take $n^3$ H's, enough to fill a cube of side $n$. Every node has six neighbours. An H inside a shape can have H's on all six sides, while an H on the surface has at least one side with no H across it, which we call an **open side**. Count the touching pairs of H's by their sides: each pair uses two sides, so twice the number of touching pairs is $6n^3$ minus the number of open sides. Fewer open sides means more touching pairs, and among all shapes of $n^3$ nodes the cube has the fewest. Eight H's, for example, make 12 touching pairs as a $2\times2\times2$ cube, 10 as a $2\times4$ slab and 7 in a line.
+
+Touching pairs also include H's that are neighbours in the string. But a string fixes how many of those there are, so the folds with the most touching pairs are the folds with the most contacts, and these are exactly the perfect folds.
+
+A perfect fold leaves no room inside the cube, so every P lies outside it. [4 Spelling the string](#step-bl-string) builds the whole string around this.
+
+### Statement
+
+$n^3$ H's touch each other most often when they fill a cube, and only then. So the perfect folds are exactly the folds with the most contacts.
+
+### Exact statement
+
+**Fact 3.1.** A set $X$ of $n^3$ nodes of $\mathbb Z^3$ contains at most $3n^2(n-1)$ pairs of neighbouring nodes, and exactly that many only if $X$ is an $n\times n\times n$ cube.
+
+**Theorem 3.2.** A string with $n^3$ H's has a fold with at least $3n^2(n-1)$ H–H pairs if and only if it has a perfect fold.
+
+So asking whether a string with $n^3$ H's has a perfect fold is folding with $m=3n^2(n-1)$. Counted in contacts, the bound is $3n^2(n-1)$ minus the number of <Seq s="HH" /> in the string.
+
+### Uses
+
+[2 Why bin packing](#step-bl-problems): the definitions.
+
+### Proof
+
+1. A side of a node of $X$ is **open** if the node across it is not in $X$. Each node has six sides, so twice the number of pairs is $6n^3$ minus the number of open sides. The cube has $6n^2$ open sides, two on each of its $3n^2$ lines, so it has $(6n^3-6n^2)/2=3n^2(n-1)$ pairs.
+2. Let $L_x,L_y,L_z$ be the numbers of lines parallel to the three axes that meet $X$. Each such line has an open side at both ends of every run of $X$ on it, so at least two. Hence $X$ has at least $2(L_x+L_y+L_z)$ open sides.
+3. $L_x$ is the size of the projection of $X$ to the plane of the other two axes, and so on. The inequality of Loomis and Whitney gives $|X|^2\le L_xL_yL_z$.
+4. Suppose $X$ has at least $3n^2(n-1)$ pairs. Then it has at most $6n^2$ open sides, so $L_x+L_y+L_z\le 3n^2$. By the inequality of arithmetic and geometric means, $L_xL_yL_z\le n^6=|X|^2$. So equality holds everywhere: $L_x=L_y=L_z=n^2$, every line that meets $X$ meets it in one run, and $|X|^2=L_xL_yL_z$.
+5. Equality in step 3 forces $X=A\times B\times C$ for some finite sets $A,B,C$ of integers (below). One run per line makes $A$, $B$ and $C$ sets of consecutive integers, and $|B||C|=|A||C|=|A||B|=n^2$ gives $|A|=|B|=|C|=n$. So $X$ is an $n\times n\times n$ cube.
+6. A fold of a string with $n^3$ H's puts them on a set $X$ of $n^3$ nodes, and its H–H pairs are the pairs of neighbours in $X$. Steps 1–5 give Theorem 3.2.
+
+<More title="Loomis–Whitney and its equality case">
+
+Write $X_z$ for the set of $(x,y)$ with $(x,y,z)\in X$. Let $A_z$ be the set of $x$ such that $(x,z)$ lies in the projection of $X$ to the $xz$-plane, and $B_z$ the set of $y$ such that $(y,z)$ lies in the projection to the $yz$-plane, with sizes $a_z$ and $b_z$. Then $X_z\subseteq A_z\times B_z$, and $X_z$ lies inside the projection of $X$ to the $xy$-plane, of size $L_z$. So $|X_z|\le\min(L_z,a_zb_z)$, and hence $|X_z|\le\sqrt{L_z a_z b_z}$. The $a_z$ add up to $L_y$ and the $b_z$ to $L_x$. Summing over $z$ and applying the Cauchy–Schwarz inequality,
+
+$$|X|\le\sqrt{L_z}\sum_z\sqrt{a_zb_z}\le\sqrt{L_z}\Big(\sum_z a_z\Big)^{1/2}\Big(\sum_z b_z\Big)^{1/2}=\sqrt{L_zL_yL_x}.$$
+
+If equality holds, then every nonempty slice has $|X_z|=a_zb_z=L_z$. So each nonempty slice equals $A_z\times B_z$ and also equals the whole projection to the $xy$-plane. Hence that projection is a product $A\times B$, and $X=A\times B\times C$, where $C$ is the set of $z$ with $X_z$ nonempty.
+
+</More>
+
+### Where in the paper
+
+§3.1, p. 32: Fact 3.1 and Theorem 3.2. The paper calls the inequality of proof step 3 "a classic result in geometry" and gives no reference.
+
+### Rating
+
+2: a count of open sides and one cited inequality. The equality case needs proof step 5, which the paper states imprecisely.
+
+### Our note
+
+The "classic result" is the inequality of <Cite k="loomis1949inequality" />, followed by the inequality of arithmetic and geometric means. The proof also needs the equality case. The paper says equality holds only for a "rectangular solid". For lattice points it holds for every product $A\times B\times C$, including sets with gaps such as $\{0,2\}\times\{0\}\times\{0\}$. The condition of one run per line in proof step 4 rules out gaps, so the conclusion stands.

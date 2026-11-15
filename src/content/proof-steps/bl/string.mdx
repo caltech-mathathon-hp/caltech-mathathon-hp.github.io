@@ -1,0 +1,94 @@
+---
+title: Spelling the string
+caption: 'In a perfect fold every P lies outside the cube, so rods (H''s between P''s) can only lie on its edges and ribbons (H''s two at a time) only on its surface. Walls cut one face, which we call the front face, into strips that play the bins.'
+lane: setup
+order: 3
+difficulty: 1
+figure: bl-string
+source: '§3.2.2, p. 33, and Fig. 3, p. 34'
+---
+
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+In a perfect fold every P lies outside the cube, so a P next to an H in the string must sit on a neighbour of that H outside the cube. A node inside the cube has no such neighbour. A node in the middle of a face has one, and a node on an edge or at a corner has two or three. This is the principle behind the whole string: an H between two P's can only sit on an edge or at a corner, an H with one P beside it only on the surface, and only an H with no P beside it can go inside.
+
+So we spell three kinds of piece. A **rod** has its H's alone between P's, as in <Seq s="PHPPHPPHP" />, which we write <Seq s="(PHP)^3" />: an exponent means repetition. The number of H's is the rod's **length**. A **ribbon** such as <Seq s="(PHHP)^3" /> has its H's two at a time, so each H has one P beside it. The **core** is one long run of H's with a P at each end. We give the string exactly as many H's of each kind as the cube has places for them: rods for the edges and corners, ribbons for the faces, and the core for the inside.
+
+Two edges must stay empty, because the walls that make the bins will hang between them. So the string starts with a rod so long that it has only one way to lie. This **corner rod** passes every corner and covers nine edges, and a second rod covers a tenth ([6 Two edges stay free](#step-bl-skeleton)). The two edges left are the **free edges**, and the face between them is the **front face**. A **wall** is a ribbon as long as a row of the front face, a row being the line of nodes from one free edge to the other. Each wall hangs between rods on the free edges: short rods of $q$ H's and long rods of $2q+1$. These two lengths have no common factor, and that pins the rods to one pattern ([7 One length per edge](#step-bl-free-edges)). The wall pieces come in **periods** of a short rod, a wall, a long rod, a wall and a short rod, and the two walls of a period enclose a **strip**. A last rod, the **spaced rod**, fills a few holes that the periods leave ([11 Building the walls](#step-bl-build-walls)).
+
+The strips play the bins. A strip consists of whole rows, though, so its size $T$ is set by the cube and not by $B$. To fix this, each strip also gets a ribbon of $T-B$ H's, which leaves exactly $B$ nodes free. We call it the strip's **padding**. We need at least $K$ strips so that every bin gets one, and we close the spare strips with ribbons of $B$ H's, called **plugs**. Each item becomes an **item ribbon** with as many H's as its size. A ribbon has an even number of H's, which is why the sizes and $B$ are even. Before each padding, plug and item ribbon comes a run of $52n+2$ P's. We call it a **linker**, and it is long enough to reach from any strip to any other ([14 Loops take up slack](#step-bl-linkers)).
+
+Last, the sizes. We want at least $K$ strips, one per bin, and we want every strip to hold more than $2B$ nodes, because then a padding fills more than half a strip and no strip can hold two ([9 Reading off a packing](#step-bl-packing)). Under *The details* we choose $q$, and with it the cube's side $n$ and the strip size $T$, so that both hold.
+
+### Statement
+
+The string $S$ has exactly $n^3$ H's, with as many of each kind as the cube has places for them, and about $n^3$ letters in all.
+
+### Exact statement
+
+We spell the string $S$ in three parts: a **frame** that fills all of the cube but the front face, **walls** that cut that face into strips, and an **item part** that fills the strips. A **rod** <Seq s="(PHP)^k" /> holds $k$ **lone H's**, each between two P's, and we call it a $k$-rod. A **ribbon** <Seq s="(PHHP)^k" /> holds $2k$ H's, each with one P beside it. We set $q=2\max\big(K,\lceil B^{1/3}\rceil\big)$, $n=q(2q+1)+2$ and $T=(2q-1)(n-2)$. In string order, $S$ consists of:
+
+- **Frame.** The **corner rod**, with $9n-10$ lone H's; a **face ribbon** of $(n-2)^2$ H's; the **tenth-edge rod**, with $n-2$ lone H's; three more face ribbons and a fifth that is two H's short; and the **core**, a run of $(n-2)^3+2$ H's.
+- **Walls.** $q$ **periods**, one per strip. Each is a $q$-rod, a **wall**, a $(2q+1)$-rod, a second wall and a second $q$-rod, where a wall is a ribbon of $n-2$ H's. Then the **spaced rod**: $q$ lone H's with $2q+6$ P's between each two.
+- **Item part.** $q$ **paddings**, ribbons of $T-B$ H's; $q-K$ **plugs**, ribbons of $B$ H's; and an **item ribbon** of $s(u)$ H's for each item $u$. Each of these ribbons is joined to the piece before it by a **linker**, a run of $52n+2$ P's.
+
+Short runs of P's join the other pieces, as listed in *The exact string* below. The string has these properties:
+
+1. $q$, $n$ and $T$ are even, $q\ge4$ and $n\ge38$.
+2. $T>2B$, so $2(T-B)>T$, and two paddings never fit in one strip.
+3. $S$ has $12n-16$ lone H's, $6(n-2)^2-2$ H's in ribbons and $(n-2)^3+2$ H's in the core: $n^3$ H's in all.
+4. $S$ has $n^3+O(n^2+n|U|)$ letters, where $|U|$ is the number of items and $n=O(K^2+B^{2/3})$.
+5. No P of $S$ has an H on both sides.
+
+### Choosing the numbers
+
+A period takes $2q+1$ rows: its two walls and the $2q-1$ rows of its strip. Add the top and bottom rows, which lie on edges of the cube, and the cube has side $n=q(2q+1)+2$, while a strip has $T=(2q-1)(n-2)$ nodes. We choose $q=2\max\big(K,\lceil B^{1/3}\rceil\big)$. It is at least $K$, so every bin gets a strip. It is at least $2B^{1/3}$, which makes a strip hold more than $2B$ nodes. A padding then fills more than half a strip, and no strip can hold two ([9 Reading off a packing](#step-bl-packing)). And it is even, so a row has an even number of nodes and a wall can fill it two H's at a time.
+
+The core's two end H's each have a P beside them, so they too sit on a face. That is why one of the five face ribbons is two H's short: it leaves room for them.
+
+### The exact string
+
+With $c=52$, the three parts of $S$ are, in this order:
+
+- **Frame:** the corner rod <Seq s="(PHP)^{9n−10}" />, a face ribbon <Seq s="(PHHP)^{(n−2)²/2}" />, the tenth-edge rod <Seq s="(PHP)^{n−2}" />, <Seq s="P^4" />, three more face ribbons each followed by <Seq s="P^7" />, a face ribbon one block short, and the core <Seq s="PH^{(n−2)³+2}P^{8+q}" />.
+- **Walls:** $q$ periods, each a $q$-rod, a wall <Seq s="(PHHP)^{(n−2)/2}" />, a $(2q+1)$-rod, <Seq s="P^4" />, a wall, a $q$-rod and <Seq s="P^{2q}" />; then the spaced rod <Seq s="PH(P^{2q+6}H)^{q−1}P" />.
+- **Item part:** $q$ paddings <Seq s="(PHHP)^{(T−B)/2}" />, $q-K$ plugs <Seq s="(PHHP)^{B/2}" />, and one item ribbon <Seq s="(PHHP)^{s(u)/2}" /> for each item $u$, each of these ribbons preceded by <Seq s="P^{cn}" />.
+
+### Uses
+
+[2 Why bin packing](#step-bl-problems): the instance $U$, $s$, $K$, $B$.
+
+### Proof
+
+1. $q$ is even by definition, so $n-2=q(2q+1)$ and $T$ are even. Every size is at least 2, so either $K\ge2$, or $K=1$ and $B=\sum_u s(u)\ge2$. In both cases $q\ge4$, and then $n\ge4\cdot9+2$.
+2. $q\ge2B^{1/3}$ gives $q^3\ge8B$. Since $T=(2q-1)q(2q+1)$, which is $4q^3-q\ge3q^3$, we get $T\ge24B>2B$.
+3. Lone H's: $9n-10$ and $n-2$ in the frame, $q+(2q+1)+q$ in each period, $q$ in the spaced rod. With $q(4q+2)=2(n-2)$ the total is $12n-16$. Ribbon H's: the face ribbons have $5(n-2)^2-2$. The walls have $2q(n-2)$. The item part has $q(T-B)+(q-K)B+KB=qT$. Since $2q+q(2q-1)=q(2q+1)=n-2$, the walls and the item part together have $(n-2)^2$. Core: $(n-2)^3+2$. With $m=n-2$, the sum is $12m+8+6m^2+m^3$, which is $(m+2)^3=n^3$.
+4. Count the P's. Rods have two per lone H, ribbons one per H, and the runs <Seq s="P^4" />, <Seq s="P^7" />, <Seq s="P^{8+q}" />, <Seq s="P^{2q}" /> and those of the spaced rod have $O(q^2)$ P's in all. That is $O(n^2)$, plus $2q-K+|U|$ runs <Seq s="P^{cn}" />, and $q\le n$. Finally $n=8M^2+2M+2$ with $M=\max(K,\lceil B^{1/3}\rceil)$.
+5. Every piece listed above begins and ends with P, and inside a piece no P has an H on both sides.
+
+<More title="The string as in Fig. 3">
+
+The paper writes $S_{\mathcal B}$ for the string and lists it in four lines:
+
+- <Seq s="(PHP)^{9n−10}" /><wbr /><Seq s="(PHHP)^{(n−2)²/2}" /><wbr /><Seq s="(PHP)^{n−2}P^4" />
+- <Seq s="((PHHP)^{(n−2)²/2}P^7)^3" /><wbr /><Seq s="(PHHP)^{(n−2)²/2−1}" /><wbr /><Seq s="PH^{(n−2)³+2}P^{8+q}" />
+- <Seq s="((PHP)^q" /><wbr /><Seq s="(PHHP)^{(n−2)/2}" /><wbr /><Seq s="(PHP)^{2q+1}P^4" /><wbr /><Seq s="(PHHP)^{(n−2)/2}" /><wbr /><Seq s="(PHP)^qP^{2q})^q" /> <Seq s="PH(P^{2q+6}H)^{q−1}P" />
+- <Seq s="(P^{cn}(PHHP)^{(T−B)/2})^q" /><wbr /><Seq s="(P^{cn}(PHHP)^{B/2})^{q−K}" /> and, for each $u\in U$, <Seq s="P^{cn}(PHHP)^{s(u)/2}" />.
+
+Between the last H of one ribbon of the item part and the first H of the next lie $cn+2=52n+2$ P's: the last P of one ribbon, <Seq s="P^{cn}" />, and the first P of the next. We call these runs **linkers**.
+
+</More>
+
+### Where in the paper
+
+§3.2.2, p. 33: the parameters and the remark that $q$, $n$, $T$ are even and $2(T-B)>T$. Fig. 3, p. 34: the string. The value $c=52$ is fixed on p. 37. The count of lone H's is on p. 37. Footnote 2 (p. 32) calls the polynomial length "obvious from the construction".
+
+### Rating
+
+1: a definition; the facts are direct checks.
+
+### Our note
+
+The plugs <Seq s="(PHHP)^{B/2}" /> need $B$ even, and the paper does not say so. Nothing is lost: if $B$ is odd the answer is no, since every set of items has an even total, and the instances made from 3-PARTITION in [2 Why bin packing](#step-bl-problems) have $B$ even. The bounds $q\ge4$ and $T\ge24B$ are ours; later cards use $q\ge4$.

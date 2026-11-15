@@ -1,0 +1,85 @@
+---
+/**
+ * Card "Local rules" (BL Facts 3.9–3.11, Figs. 1–2). A cube (drawn with side 5), all its H's left out
+ * but the string's. A rod (PHP)^5 on the top right edge: each H has its two P's outside, one
+ * above and one to the right, so it lies on an edge. A ribbon (PHHP)^3 on the front face: each H has
+ * one P outside, in front of the face, so it lies on a face; in HPPH the two H's are neighbours (dashed).
+ */
+import '../fig.css';
+import Tx from '../Tx.astro';
+import { N } from '../notation';
+import { oblique, pts, hbrace, type P3 } from '../lib';
+
+const m = 4;
+const pr = oblique(26, 178, 25);
+const face = (a: P3[]) => pts(a.map(pr));
+const grid: [P3, P3][] = [];
+for (let k = 1; k < m; k++) {
+  grid.push([[0, k, 0], [m, k, 0]], [[k, 0, 0], [k, m, 0]]);
+  grid.push([[0, m, k], [m, m, k]], [[k, m, 0], [k, m, m]]);
+  grid.push([[m, 0, k], [m, m, k]], [[m, k, 0], [m, k, m]]);
+}
+type Bead = { p: P3; t: 'H' | 'P' };
+// Rod on the edge x = m, y = m: each H has its two P's at (m+1, m, z) and (m, m+1, z).
+const rod: Bead[] = [];
+for (let z = 0; z <= m; z++) {
+  const up: P3 = [m, m + 1, z];
+  const right: P3 = [m + 1, m, z];
+  const [a, b] = z % 2 === 0 ? [up, right] : [right, up];
+  rod.push({ p: a, t: 'P' }, { p: [m, m, z], t: 'H' }, { p: b, t: 'P' });
+}
+// Ribbon on the front face z = 0: H pairs on the face, each P one step in front (z = −1).
+const pairs: [number, number][][] = [
+  [[1, 1], [2, 1]],
+  [[2, 2], [1, 2]],
+  [[1, 3], [2, 3]],
+];
+const rib: Bead[] = [];
+for (const [[x1, y1], [x2, y2]] of pairs)
+  rib.push({ p: [x1, y1, -1], t: 'P' }, { p: [x1, y1, 0], t: 'H' }, { p: [x2, y2, 0], t: 'H' }, { p: [x2, y2, -1], t: 'P' });
+const bonds: [P3, P3][] = [
+  [[2, 1, 0], [2, 2, 0]],
+  [[1, 2, 0], [1, 3, 0]],
+];
+const depth = (p: P3) => p[2] * 10 - p[0];
+const draw = (a: Bead[]) => [...a].sort((u, v) => depth(v.p) - depth(u.p));
+const P = pr;
+const f0 = pr([0, 0, 0]);
+const f1 = pr([m, 0, 0]);
+const lx = 212;
+---
+
+<svg class="pmf" viewBox="0 0 320 206" role="img" aria-labelledby="pmf-blocks-t">
+  <title id="pmf-blocks-t">A cube, with only the H's of the string drawn. A rod, PHP repeated five times, lies along its top right edge: each H has its two P's outside the cube, one above and one to the right, so it sits on an edge. A ribbon, PHHP repeated three times, lies on its front face: each H has one P outside, in front of the face, so it sits on a face. In each HPPH the two H's are neighbours, marked by a dashed line.</title>
+  <polygon class="pmf-face pmf-face-front" points={face([[0, 0, 0], [m, 0, 0], [m, m, 0], [0, m, 0]])} />
+  <polygon class="pmf-face" points={face([[0, m, 0], [m, m, 0], [m, m, m], [0, m, m]])} />
+  <polygon class="pmf-face" points={face([[m, 0, 0], [m, 0, m], [m, m, m], [m, m, 0]])} />
+  {grid.map(([a, b]) => <polyline class="pmf-edge-line" stroke-opacity="0.6" points={pts([P(a), P(b)])} />)}
+  <polyline class="pmf-chain" points={pts(rib.map((c) => P(c.p)))} />
+  {bonds.map(([a, b]) => <polyline class="pmf-bond" points={pts([P(a), P(b)])} />)}
+  {
+    draw(rib).map((c) => {
+      const [x, y] = P(c.p);
+      return c.t === 'H' ? <circle class="pmf-h" cx={x} cy={y} r="5" /> : <circle class="pmf-p" cx={x} cy={y} r="4.2" />;
+    })
+  }
+  <polyline class="pmf-chain" points={pts(rod.map((c) => P(c.p)))} />
+  {
+    draw(rod).map((c) => {
+      const [x, y] = P(c.p);
+      return c.t === 'H' ? <circle class="pmf-h" cx={x} cy={y} r="5" /> : <circle class="pmf-p" cx={x} cy={y} r="4.2" />;
+    })
+  }
+  <path class="pmf-brace" d={hbrace(f0[0], f1[0], f0[1] + 6, 1)} />
+  <Tx x={(f0[0] + f1[0]) / 2} y={f0[1] + 26} t={N.n} a="middle" />
+
+  <text class="pmf-label-strong" x={lx} y="34">rod</text>
+  <text class="pmf-label" x={lx} y="49">two P's outside,</text>
+  <text class="pmf-label" x={lx} y="63">so on an edge</text>
+  <text class="pmf-label-strong" x={lx} y="108">ribbon</text>
+  <text class="pmf-label" x={lx} y="123">one P outside,</text>
+  <text class="pmf-label" x={lx} y="137">so on a face</text>
+  <line class="pmf-bond" x1={lx} y1="174" x2={lx + 18} y2="174" />
+  <text class="pmf-label" x={lx + 24} y="178">HPPH:</text>
+  <text class="pmf-label" x={lx + 24} y="192">neighbours</text>
+</svg>

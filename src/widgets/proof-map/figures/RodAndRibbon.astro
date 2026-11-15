@@ -1,0 +1,175 @@
+---
+/**
+ * (a) A rod (PHP)^5 along an edge of the cube; (b) a ribbon (PHHP)^3 on a face.
+ * Oblique projection: x to the right, y up, z into the page (drawn up and to the right).
+ * After Berger–Leighton, Figs. 1–2. Colours from tokens (H filled, P hollow).
+ */
+type P3 = [number, number, number];
+const U = 40;
+const proj = ([x, y, z]: P3, ox: number, oy: number): [number, number] => [ox + U * x + 0.5 * U * z, oy - U * y - 0.36 * U * z];
+const pts = (a: P3[], ox: number, oy: number) => a.map((p) => proj(p, ox, oy).map((v) => v.toFixed(1)).join(',')).join(' ');
+
+/* ---------- (a) rod: the edge is y = 0, z = 0; the cube is y ≤ 0, z ≥ 0 ---------- */
+const ax = 8, ay = 64;
+const rodTop: P3[] = [[0.4, 0, 0], [5.6, 0, 0], [5.6, 0, 1.5], [0.4, 0, 1.5]];
+const rodFront: P3[] = [[0.4, 0, 0], [5.6, 0, 0], [5.6, -1.4, 0], [0.4, -1.4, 0]];
+const rodGrid: [P3, P3][] = [];
+for (let x = 1; x <= 5; x++) rodGrid.push([[x, 0, 0], [x, 0, 1.5]], [[x, 0, 0], [x, -1.4, 0]]);
+rodGrid.push([[0.4, 0, 1], [5.6, 0, 1]], [[0.4, -1, 0], [5.6, -1, 0]]);
+// The string P H P | P H P | … : the P's alternate between the top side (y = 1) and the front side (z = −1).
+const up = (x: number): P3 => [x, 1, 0];
+const front = (x: number): P3 => [x, 0, -1];
+const rodChain: { p: P3; t: 'H' | 'P' }[] = [];
+for (let x = 1; x <= 5; x++) {
+  const odd = x % 2 === 1;
+  rodChain.push({ p: odd ? up(x) : front(x), t: 'P' }, { p: [x, 0, 0], t: 'H' }, { p: odd ? front(x) : up(x), t: 'P' });
+}
+const rodBonds: [P3, P3][] = [];
+for (let x = 1; x < 5; x++) rodBonds.push([[x, 0, 0], [x + 1, 0, 0]]);
+
+/* ---------- (b) ribbon: the face is y = 0; P's one step above it ---------- */
+const bx = 75, by = 85;
+const face: P3[] = [[-0.6, 0, -0.6], [3.6, 0, -0.6], [3.6, 0, 1.6], [-0.6, 0, 1.6]];
+const faceGrid: [P3, P3][] = [];
+for (let x = 0; x <= 3; x++) faceGrid.push([[x, 0, -0.6], [x, 0, 1.6]]);
+for (let z = 0; z <= 1; z++) faceGrid.push([[-0.6, 0, z], [3.6, 0, z]]);
+const hs: [number, number][] = [[0, 0], [1, 0], [2, 0], [3, 0], [3, 1], [2, 1]];
+const ribChain: { p: P3; t: 'H' | 'P' }[] = [];
+for (let b = 0; b < 3; b++) {
+  const [h1, h2] = [hs[2 * b], hs[2 * b + 1]];
+  ribChain.push(
+    { p: [h1[0], 1, h1[1]], t: 'P' },
+    { p: [h1[0], 0, h1[1]], t: 'H' },
+    { p: [h2[0], 0, h2[1]], t: 'H' },
+    { p: [h2[0], 1, h2[1]], t: 'P' },
+  );
+}
+const ribBonds: [P3, P3][] = [
+  [[1, 0, 0], [2, 0, 0]],
+  [[3, 0, 0], [3, 0, 1]],
+];
+// Draw far nodes first so that near ones sit on top.
+const depth = (p: P3) => p[2] * 10 - p[1];
+const byDepth = <T extends { p: P3 }>(a: T[]) => [...a].sort((u, v) => depth(v.p) - depth(u.p));
+---
+
+<div class="pmf-pair">
+  <figure class="pmf-panel">
+    <svg viewBox="0 6 290 122" role="img" aria-labelledby="pmf-rod-t">
+      <title id="pmf-rod-t">A rod: the string PHP repeated five times along an edge of the cube. The H's lie on the edge; their P's alternate between the two faces that meet there.</title>
+      <polygon class="pmf-face" points={pts(rodTop, ax, ay)} />
+      <polygon class="pmf-face" points={pts(rodFront, ax, ay)} />
+      {rodGrid.map(([p, q]) => <polyline class="pmf-grid" points={pts([p, q], ax, ay)} />)}
+      <polyline class="pmf-edge" points={pts([[0.4, 0, 0], [5.6, 0, 0]], ax, ay)} />
+      {rodBonds.map(([p, q]) => <polyline class="pmf-bond" points={pts([p, q], ax, ay)} />)}
+      <polyline class="pmf-chain" points={pts(rodChain.map((c) => c.p), ax, ay)} />
+      {
+        byDepth(rodChain).map((c) => {
+          const [x, y] = proj(c.p, ax, ay);
+          return <circle class={c.t === 'H' ? 'pmf-h' : 'pmf-p'} cx={x} cy={y} r={c.t === 'H' ? 7 : 6} />;
+        })
+      }
+      <text class="pmf-label" x={proj([5.6, 0, 0], ax, ay)[0] + 6} y={ay + 4}>edge</text>
+      <text class="pmf-label" x={proj([3, -1.4, 0], ax, ay)[0]} y={proj([3, -1.4, 0], ax, ay)[1] - 6} text-anchor="middle">front face</text>
+    </svg>
+    <figcaption>(a) A rod <span class="pmf-seq"><b>P</b><i>H</i><b>P</b></span> repeated: every H sits on the edge.</figcaption>
+  </figure>
+
+  <figure class="pmf-panel">
+    <svg viewBox="0 6 290 122" role="img" aria-labelledby="pmf-rib-t">
+      <title id="pmf-rib-t">A ribbon: the string PHHP repeated three times on a face of the cube. The H's lie on the face, each P one step above its H, and consecutive blocks are neighbours.</title>
+      <polygon class="pmf-face" points={pts(face, bx, by)} />
+      {faceGrid.map(([p, q]) => <polyline class="pmf-grid" points={pts([p, q], bx, by)} />)}
+      {ribBonds.map(([p, q]) => <polyline class="pmf-bond" points={pts([p, q], bx, by)} />)}
+      <polyline class="pmf-chain" points={pts(ribChain.map((c) => c.p), bx, by)} />
+      {
+        byDepth(ribChain).map((c) => {
+          const [x, y] = proj(c.p, bx, by);
+          return <circle class={c.t === 'H' ? 'pmf-h' : 'pmf-p'} cx={x} cy={y} r={c.t === 'H' ? 7 : 6} />;
+        })
+      }
+      <text class="pmf-label" x={proj([3.6, 0, -0.6], bx, by)[0] - 2} y={proj([3.6, 0, -0.6], bx, by)[1] + 16} text-anchor="end">face</text>
+    </svg>
+    <figcaption>(b) A ribbon <span class="pmf-seq"><b>P</b><i>HH</i><b>P</b></span> repeated: the H's form a path on one face.</figcaption>
+  </figure>
+</div>
+
+<style>
+  .pmf-pair {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--s-4) var(--s-6);
+  }
+  .pmf-panel {
+    margin: 0;
+    flex: 1 1 16rem;
+    max-width: 22rem;
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  figcaption {
+    margin-top: var(--s-2);
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    color: var(--fg-muted);
+    text-align: center;
+  }
+  .pmf-seq {
+    font-family: var(--font-mono);
+    letter-spacing: 0.04em;
+  }
+  .pmf-seq b {
+    color: var(--p);
+    font-weight: 400;
+  }
+  .pmf-seq i {
+    color: var(--h);
+    font-style: normal;
+    font-weight: 700;
+  }
+  .pmf-face {
+    fill: var(--bg-sunk);
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+  }
+  .pmf-grid {
+    fill: none;
+    stroke: var(--lattice);
+    stroke-width: 1;
+  }
+  .pmf-edge {
+    fill: none;
+    stroke: var(--fg-subtle);
+    stroke-width: 2;
+  }
+  .pmf-chain {
+    fill: none;
+    stroke: var(--backbone);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  .pmf-bond {
+    fill: none;
+    stroke: var(--bond);
+    stroke-width: 2.5;
+    stroke-dasharray: 4 3;
+  }
+  .pmf-h {
+    fill: var(--h);
+  }
+  .pmf-p {
+    fill: var(--bg);
+    stroke: var(--p);
+    stroke-width: 2;
+  }
+  /* The panels can shrink to 16rem for a 290-unit viewBox: 12.5 units stay at least 11px. */
+  .pmf-label {
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    fill: var(--fg-muted);
+  }
+</style>

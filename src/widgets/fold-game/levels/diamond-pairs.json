@@ -1,0 +1,15 @@
+{
+  "id": "diamond-pairs",
+  "order": 520,
+  "group": "Diamond lattice (3D)",
+  "title": "Three pairs",
+  "lattice": "diamond",
+  "sequence": "HPPHPPHPPPHH",
+  "best": 3,
+  "optimal": true,
+  "bestKind": "proved",
+  "bestSource": "Two H’s can touch only if they are an odd number of steps apart along the string, and at least five: the lattice is bipartite and its shortest cycle has six nodes. Three pairs of H’s qualify, and the solution makes all three touch.",
+  "intro": "Two H’s can touch only if they are an odd number of steps apart along the string, and at least five. This string has three such pairs. Make all three touch.",
+  "hint": "The pairs are letters 1 and 12, 4 and 11, and 7 and 12.",
+  "solution": "03123013213"
+}

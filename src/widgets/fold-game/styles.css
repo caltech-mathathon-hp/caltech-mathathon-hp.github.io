@@ -1,0 +1,1145 @@
+/*
+ * Folding game (FoldGame.tsx, render/Svg2D.tsx). Class prefix fg-.
+ * Colours, fonts and sizes come from tokens.css only, so the dark theme is automatic.
+ * Colour language: H = --h (filled), P = --p (hollow), contact = --bond (dashed),
+ * chain = --backbone, legal next position = --ghost, the reader's focus = --accent.
+ * Controls are at least 2.5rem (40px) tall; the residues of the string strip are 1.5rem.
+ */
+
+.fg {
+  /* the board: inset like a figure (the 3D renderer uses the same background) */
+  --fg-board: var(--bg-sunk);
+  --fg-pad: var(--s-4);
+  position: relative;
+  margin: var(--s-6) 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+  color: var(--fg);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.fg :where(p) {
+  margin: 0;
+}
+.fg-error {
+  padding: var(--s-2) var(--fg-pad);
+  color: var(--invalid);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ---------- buttons (on top of the site's .btn) ---------- */
+.fg .btn {
+  min-height: 2.5rem;
+  justify-content: center;
+}
+.fg .btn:focus-visible,
+.fg-opt:focus-visible,
+.fg-cell:focus-visible,
+.fg-hint summary:focus-visible,
+.fg-tip:focus-visible,
+.fg-pop:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.fg-pop:focus-visible {
+  outline-offset: -2px;
+}
+.fg .btn.ghost {
+  color: var(--fg-muted);
+}
+.fg .btn.ghost:hover {
+  color: var(--fg);
+}
+.fg .btn:disabled:hover {
+  background: var(--bg-elev);
+  border-color: var(--rule-strong);
+}
+.fg .btn.ghost:disabled:hover {
+  background: transparent;
+  border-color: transparent;
+}
+.fg-icon {
+  min-width: 2.5rem;
+  padding: 0.4em;
+}
+.fg-ico {
+  flex: none;
+}
+.fg-wide {
+  width: 100%;
+}
+.fg-spin {
+  width: 0.9em;
+  height: 0.9em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: fg-spin 0.8s linear infinite;
+}
+@keyframes fg-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* ---------- header: dimension, lattice, levels ---------- */
+.fg-head {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-3) var(--fg-pad);
+  border-bottom: 1px solid var(--rule);
+}
+.fg-where {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-3) var(--s-5);
+}
+
+.fg-opt {
+  position: relative;
+  font: inherit;
+  color: var(--fg-muted);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background-color 120ms,
+    border-color 120ms,
+    color 120ms;
+}
+.fg-opt:hover {
+  color: var(--fg);
+}
+
+/* 3D or 2D: two segments */
+.fg-dims {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  padding: 3px;
+  background: var(--bg-sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+}
+.fg-dims .fg-opt {
+  display: grid;
+  place-items: center;
+  min-width: 3.25rem;
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  border-radius: calc(var(--radius-md) - 2px);
+}
+.fg-dims .fg-opt.is-on {
+  color: var(--fg);
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-sm);
+}
+.fg-dim-label {
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.fg-dims .fg-opt.is-on .fg-dim-label {
+  color: var(--accent);
+}
+
+/* the lattices of the chosen dimension: tabs with an underline */
+.fg-lats {
+  display: flex;
+  gap: var(--s-4);
+  border-bottom: 1px solid var(--rule);
+}
+.fg-lats .fg-opt {
+  min-height: 2.5rem;
+  padding: 0 0.15rem;
+  margin-bottom: -1px;
+  font-weight: 550;
+  border-bottom: 2px solid transparent;
+}
+.fg-lats .fg-opt.is-on {
+  color: var(--fg);
+  border-bottom-color: var(--accent);
+}
+.fg-lats .fg-opt:focus-visible {
+  outline-offset: 0;
+}
+
+/* the levels of this lattice */
+.fg-levels {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+.fg-levels-label {
+  font-size: var(--fs-xs);
+  font-weight: 550;
+  color: var(--fg-muted);
+  letter-spacing: 0.02em;
+}
+.fg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.fg-chips .fg-opt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-md);
+}
+.fg-chips .fg-opt:hover {
+  border-color: var(--fg-subtle);
+  background: var(--bg-sunk);
+}
+.fg-chips .fg-opt.is-on {
+  color: var(--accent);
+  background: var(--accent-weak);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+/* the gap before "Own string" sits on the last level, so a wrapped "Own string" starts flush left */
+.fg-chips .fg-chip-last {
+  margin-right: var(--s-2);
+}
+.fg-chips .fg-chip-own {
+  padding: 0 0.8rem;
+  font-weight: 550;
+}
+/* solved: a check in the corner */
+.fg-chip-done {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  background: var(--st-proved);
+  border: 2px solid var(--bg-elev);
+}
+.fg-chip-done::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 0.2rem;
+  height: 0.38rem;
+  border: solid var(--bg-elev);
+  border-width: 0 1.5px 1.5px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* ---------- brief: the level's goal, or the own string ---------- */
+.fg-brief {
+  display: grid;
+  gap: var(--s-1);
+  padding: var(--s-4) var(--fg-pad) var(--s-3);
+  border-bottom: 1px solid var(--rule);
+}
+.fg-brief > * {
+  max-width: 44rem;
+}
+.fg-kicker {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.fg-solved {
+  color: var(--st-proved);
+}
+.fg-title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  text-wrap: balance;
+}
+.fg-goal {
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+.fg-hint {
+  margin-bottom: calc(-1 * var(--s-2));
+}
+.fg-hint summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  color: var(--accent);
+  font-weight: 550;
+  cursor: pointer;
+  list-style-position: inside;
+}
+.fg-hint summary:hover {
+  text-decoration: underline;
+}
+.fg-hint p {
+  margin-bottom: var(--s-3);
+  padding-left: var(--s-3);
+  border-left: 2px solid var(--rule-strong);
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+
+.fg-own {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-2);
+}
+.fg-own input {
+  flex: 1 1 12rem;
+  min-width: 0;
+  max-width: 28rem;
+  min-height: 2.5rem;
+  padding: 0.45em 0.75em;
+  font: 500 var(--fs-sm) / 1.2 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-md);
+}
+.fg-own input::placeholder {
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--fg-subtle);
+}
+.fg-own input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.fg-own input[aria-invalid='true'] {
+  border-color: var(--invalid);
+}
+.fg-own-note {
+  margin-top: var(--s-1);
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+.fg-own-note.is-error {
+  color: var(--invalid);
+}
+
+/* ---------- body: the string, the board, the line under it | the score panel ---------- */
+.fg-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 17rem;
+}
+.fg-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* the string, residue by residue */
+.fg-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: var(--s-3) var(--fg-pad);
+}
+.fg-strip-summary {
+  color: var(--fg-muted);
+}
+.fg-cell {
+  --c: 1.5rem;
+  display: inline-grid;
+  place-items: center;
+  width: var(--c);
+  height: var(--c);
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid;
+  font: 600 0.66rem/1 var(--font-mono);
+  cursor: default;
+  transition:
+    opacity 140ms,
+    transform 140ms,
+    box-shadow 140ms;
+}
+.fg-cell.is-H {
+  background: var(--h);
+  border-color: var(--h);
+  color: var(--bg-elev);
+}
+.fg-cell.is-P {
+  background: var(--bg-elev);
+  border-color: var(--p);
+  color: var(--p);
+}
+.fg-cell.is-active {
+  cursor: pointer;
+}
+.fg-cell.is-future {
+  opacity: 0.3;
+}
+.fg-cell.is-next {
+  opacity: 0.75;
+  outline: 1.5px dashed var(--ghost);
+  outline-offset: 2px;
+}
+.fg-cell.is-cut {
+  opacity: 0.3;
+}
+.fg-cell.is-last {
+  box-shadow:
+    0 0 0 2px var(--bg-elev),
+    0 0 0 3.5px var(--accent);
+}
+.fg-cell.is-hover {
+  opacity: 1;
+  box-shadow:
+    0 0 0 2px var(--bg-elev),
+    0 0 0 3.5px var(--fg-muted);
+}
+.fg-cell.is-active.is-hover {
+  box-shadow:
+    0 0 0 2px var(--bg-elev),
+    0 0 0 3.5px var(--accent);
+  transform: translateY(-2px);
+}
+.fg-strip.is-dense {
+  gap: 2px;
+}
+.fg-strip.is-dense .fg-cell {
+  --c: 1.12rem;
+  font-size: 0.52rem;
+  border-width: 1.25px;
+}
+
+/* the board */
+.fg-stage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--fg-board);
+  border-block: 1px solid var(--rule);
+  outline: none;
+}
+/* a frame over the board (above the 3D canvas): the focus ring while the keyboard is in use
+   on the board (not after a click), and a short red flash when a key cannot place a residue */
+.fg-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  border-radius: inherit;
+}
+.fg-stage.is-kbd::after {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.fg-stage.is-bump::after {
+  animation: fg-bump 260ms ease;
+}
+@keyframes fg-bump {
+  35% {
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--invalid) 60%, transparent);
+  }
+}
+.fg-stage > .fg3-root {
+  border-radius: 0;
+}
+
+/* state on the board, top left (the 3D view's own buttons are top right) */
+.fg-pill {
+  position: absolute;
+  left: var(--s-3);
+  top: var(--s-3);
+  padding: 0.3em 0.75em;
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow-sm);
+  pointer-events: none;
+  z-index: 3;
+  animation: fg-fade 220ms ease;
+}
+.fg-pill.is-score {
+  display: none;
+  animation: none;
+}
+.fg-pill-best {
+  font-weight: 500;
+  color: var(--fg-muted);
+}
+.fg-pill.is-good {
+  color: var(--st-proved);
+  border-color: color-mix(in srgb, var(--st-proved) 35%, var(--rule));
+}
+.fg-pill.is-warn {
+  color: var(--diff-2);
+  border-color: color-mix(in srgb, var(--diff-2) 40%, var(--rule));
+}
+.fg-pill.is-sol {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
+}
+@keyframes fg-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* 3D renderer not loaded (yet) */
+.fg-placeholder {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  text-align: center;
+  color: var(--fg-muted);
+}
+
+/* the line under the board: what to do next, and Controls */
+.fg-context {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  min-height: 3.5rem;
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--fg-pad);
+}
+.fg-context-text {
+  flex: 1 1 16rem;
+  min-width: 0;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+.fg-context-text strong {
+  color: var(--fg);
+  font-weight: 650;
+}
+.fg-context-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+.fg-context.is-sol {
+  background: var(--accent-weak);
+}
+.fg-context.is-sol .fg-context-text {
+  color: var(--fg);
+}
+.fg-ctl-btn {
+  margin-left: auto;
+}
+.fg-ctl-btn.is-on {
+  color: var(--fg);
+  background: var(--bg-sunk);
+}
+.fg-keys {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  vertical-align: baseline;
+}
+.fg-keys kbd {
+  min-width: 1.6em;
+  text-align: center;
+  font-size: 0.74rem;
+  color: var(--fg);
+  line-height: 1.35;
+}
+.fg-kH {
+  color: var(--h);
+}
+.fg-kP {
+  color: var(--p);
+}
+
+/* the list of controls: opens over the board, above the line */
+.fg-pop {
+  position: absolute;
+  z-index: 40;
+  right: var(--s-2);
+  bottom: calc(100% - var(--s-1));
+  width: min(27rem, calc(100% - 2 * var(--s-2)));
+  max-height: min(28rem, 70vh);
+  overflow: auto;
+  padding: var(--s-2) var(--s-2) var(--s-4) var(--s-4);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  outline: none;
+  animation: fg-fade 140ms ease;
+}
+.fg-pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.fg-pop-head p {
+  font-weight: 650;
+}
+.fg-ctl {
+  display: grid;
+  gap: var(--s-1);
+  margin: 0;
+  padding-right: var(--s-2);
+}
+.fg-ctl dt {
+  margin-top: var(--s-2);
+  font-weight: 600;
+}
+.fg-ctl dt:first-child {
+  margin-top: 0;
+}
+.fg-ctl dd {
+  margin: 0;
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+.fg-ctl-keys,
+.fg-ctl-note {
+  display: block;
+  margin-top: var(--s-1);
+}
+.fg-ctl-note {
+  font-size: var(--fs-xs);
+}
+
+/* ---------- the score panel ---------- */
+.fg-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-4);
+  border-left: 1px solid var(--rule);
+  min-width: 0;
+}
+.fg-score-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: var(--fs-xs);
+  font-weight: 550;
+  color: var(--fg-muted);
+  letter-spacing: 0.02em;
+}
+.fg-score-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  margin-top: var(--s-1);
+}
+.fg-score-num {
+  font-size: 2.75rem;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.fg-score-of {
+  font-size: var(--fs-base);
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.fg-meter {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 3px;
+  height: 6px;
+  margin-top: var(--s-3);
+}
+.fg-meter > span {
+  border-radius: 2px;
+  background: var(--rule);
+  transition: background-color 160ms;
+}
+.fg-meter > span.is-on {
+  background: var(--bond);
+}
+.fg-meter.is-bar {
+  display: block;
+  border-radius: 3px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.fg-meter.is-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--bond);
+  border-radius: 0;
+}
+
+.fg-facts {
+  display: grid;
+  margin: 0;
+}
+.fg-facts > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-3);
+  padding: 0.35rem 0;
+  border-top: 1px solid var(--rule);
+}
+.fg-facts > div:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+.fg-facts dt {
+  color: var(--fg-muted);
+}
+.fg-facts dd {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.fg-status {
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--rule-strong);
+  background: var(--bg-sunk);
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+.fg-status.is-good {
+  color: var(--fg);
+  border-left-color: var(--st-proved);
+  background: color-mix(in srgb, var(--st-proved) 10%, var(--bg-elev));
+}
+.fg-status.is-warn {
+  color: var(--fg);
+  border-left-color: var(--diff-2);
+  background: color-mix(in srgb, var(--diff-2) 12%, var(--bg-elev));
+}
+.fg-status.is-sol {
+  color: var(--fg);
+  border-left-color: var(--accent);
+  background: var(--accent-weak);
+}
+
+.fg-actions {
+  display: grid;
+  gap: var(--s-2);
+}
+.fg-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-2);
+}
+.fg-actions-row .btn {
+  padding-inline: 0.5em;
+}
+.fg-nosol {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+.fg-share {
+  margin-top: auto;
+  justify-content: flex-start;
+  padding-inline: 0.4em;
+  font-size: var(--fs-xs);
+}
+.fg .fg-share {
+  color: var(--accent);
+}
+
+/* (i): a short explanation on hover or focus */
+.fg-tip {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 1px solid var(--rule-strong);
+  color: var(--fg-muted);
+  font: italic 600 0.7rem/1 var(--font-serif);
+  letter-spacing: 0;
+  cursor: help;
+}
+/* a larger invisible target for fingers */
+.fg-tip::before {
+  content: '';
+  position: absolute;
+  inset: -0.7rem;
+}
+.fg-tip:hover,
+.fg-tip:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.fg-tip-body {
+  display: none;
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 8px);
+  right: -0.5rem;
+  width: max-content;
+  max-width: min(17rem, calc(100vw - 3rem));
+  padding: var(--s-2) var(--s-3);
+  color: var(--fg);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  font: 400 var(--fs-xs) / 1.5 var(--font-sans);
+  text-align: left;
+  white-space: normal;
+  cursor: auto;
+}
+.fg-score-head .fg-tip-body {
+  right: auto;
+  left: -0.5rem;
+}
+.fg-tip:hover .fg-tip-body,
+.fg-tip:focus .fg-tip-body {
+  display: block;
+  animation: fg-fade 120ms ease;
+}
+
+/* ---------- view mode: the scrubber ---------- */
+.fg-scrub {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+.fg-range {
+  flex: 1 1 auto;
+  min-width: 5rem;
+  min-height: 2.5rem;
+  margin-inline: var(--s-2);
+  accent-color: var(--accent);
+}
+.fg-scrub-count {
+  min-width: 4.5em;
+  text-align: right;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- compact: strip, board, one line ---------- */
+.fg-compact {
+  --fg-pad: var(--s-3);
+}
+.fg-compact .fg-body {
+  grid-template-columns: minmax(0, 1fr);
+}
+.fg-compact .fg-strip {
+  padding-block: var(--s-3);
+}
+.fg-compact .fg-stage:first-child {
+  border-top: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.fg-compact .fg-stage {
+  border-bottom: 1px solid var(--rule);
+}
+.fg-compact .fg-context-text {
+  font-size: var(--fs-xs);
+}
+.fg-compact .fg-ctl-btn {
+  margin-left: 0;
+}
+.fg-bar-score {
+  margin-right: var(--s-2);
+  color: var(--fg-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.fg-bar-score strong {
+  color: var(--fg);
+  font-weight: 650;
+}
+.fg-bar-best {
+  color: var(--fg-subtle);
+}
+.fg .fg-solve-compact {
+  color: var(--accent);
+}
+
+/* ---------- the 2D board (Svg2D) ---------- */
+.fg-svg-wrap {
+  position: relative;
+  width: 100%;
+}
+.fg-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.fg-svg.is-interactive {
+  touch-action: none;
+}
+.fg-svg.is-over-target {
+  cursor: pointer;
+}
+.fg-svg-dots circle {
+  fill: var(--lattice);
+}
+.fg-svg-edges line {
+  stroke: var(--lattice);
+  stroke-width: 0.02;
+}
+.fg-svg-backbone {
+  fill: none;
+  stroke: var(--backbone);
+  stroke-width: 0.075;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.fg-svg-backbone.is-cut {
+  stroke-dasharray: 0.1 0.09;
+  opacity: 0.4;
+}
+.fg-svg-contacts line,
+.fg-svg-preview-bond {
+  stroke: var(--bond);
+  stroke-width: 0.055;
+  stroke-dasharray: 0.075 0.055;
+}
+.fg-svg-contacts line {
+  animation: fg-fade 220ms ease;
+}
+.fg-svg-preview-bond {
+  opacity: 0.75;
+}
+.fg-svg-preview-bb {
+  stroke: var(--backbone);
+  stroke-width: 0.075;
+  stroke-dasharray: 0.1 0.08;
+  opacity: 0.55;
+}
+.fg-svg-res circle {
+  stroke-width: 0.06;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fg-pop 200ms cubic-bezier(0.2, 0.8, 0.3, 1.15);
+  transition: opacity 120ms;
+}
+.fg-svg-res.is-H circle {
+  fill: var(--h);
+  stroke: var(--h);
+}
+.fg-svg-res.is-P circle {
+  fill: var(--fg-board, var(--bg-elev));
+  stroke: var(--p);
+}
+.fg-svg-res.is-cut circle {
+  opacity: 0.28;
+}
+@keyframes fg-pop {
+  from {
+    transform: scale(0.35);
+  }
+}
+.fg-svg-ghost-dot {
+  fill: color-mix(in srgb, var(--ghost) 9%, transparent);
+  stroke: var(--ghost);
+  stroke-width: 0.03;
+  stroke-dasharray: 0.06 0.045;
+  animation: fg-fade 180ms ease;
+}
+.fg-svg-ghost-res.is-H {
+  fill: var(--h);
+  opacity: 0.45;
+}
+.fg-svg-ghost-res.is-P {
+  fill: none;
+  stroke: var(--p);
+  stroke-width: 0.06;
+  opacity: 0.6;
+}
+/* the key that places a residue on this node (while the keyboard is in use) */
+.fg-svg-key {
+  font: 600 0.26px var(--font-sans);
+  fill: var(--ghost);
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  animation: fg-fade 160ms ease;
+}
+.fg-svg-last {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 0.035;
+}
+.fg-svg-last.is-new {
+  stroke-width: 0.05;
+}
+.fg-svg-last.is-stuck {
+  stroke: var(--diff-2);
+  stroke-width: 0.05;
+}
+.fg-svg-hover {
+  fill: none;
+  stroke: var(--fg-muted);
+  stroke-width: 0.03;
+}
+.fg-svg-idx text {
+  font: 500 0.23px var(--font-sans);
+  fill: var(--fg-muted);
+  paint-order: stroke;
+  stroke: var(--fg-board, var(--bg-elev));
+  stroke-width: 0.06px;
+}
+.fg-svg-idx text.is-hot {
+  fill: var(--fg);
+  font-weight: 650;
+}
+.fg-svg-gain {
+  font: 650 0.24px var(--font-sans);
+  fill: var(--bond);
+  text-anchor: middle;
+  pointer-events: none;
+}
+/* the residue under the pointer: its number and what a click does */
+.fg-svg-tip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  translate: -50% calc(-100% - 6px);
+  padding: 3px 8px;
+  font-size: var(--fs-xs);
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--fg);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.fg-svg-tip.is-below {
+  translate: -50% 6px;
+}
+.fg-svg-tip b {
+  font-weight: 650;
+}
+.fg-svg-tip-act {
+  display: block;
+  color: var(--fg-muted);
+}
+
+/* ---------- narrow screens ---------- */
+@media (max-width: 47.99rem) {
+  /* compact bar: the hint, then score | undo reset, then solution | controls */
+  .fg-compact .fg-context-actions {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas:
+      'score undo reset'
+      'solve . ctl';
+    width: 100%;
+    gap: 0 var(--s-1);
+  }
+  .fg-compact .fg-bar-score {
+    grid-area: score;
+  }
+  .fg-compact .fg-undo {
+    grid-area: undo;
+  }
+  .fg-compact .fg-reset {
+    grid-area: reset;
+  }
+  .fg-compact .fg-solve-compact {
+    grid-area: solve;
+    justify-self: start;
+    padding-inline: 0.5em;
+    margin-left: -0.5em;
+  }
+  .fg-compact .fg-ctl-btn {
+    grid-area: ctl;
+  }
+  .fg-compact .fg-context {
+    padding-bottom: var(--s-1);
+  }
+  .fg {
+    --fg-pad: var(--s-3);
+  }
+  .fg-where {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .fg-dims {
+    justify-self: start;
+  }
+  .fg-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .fg-side {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: var(--s-3) var(--s-4);
+    padding: var(--s-3) var(--fg-pad) var(--s-4);
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .fg-side > :not(.fg-score):not(.fg-facts) {
+    grid-column: 1 / -1;
+  }
+  .fg-score-num {
+    font-size: 2.25rem;
+  }
+  .fg-pill.is-score {
+    display: block;
+  }
+  .fg-pop {
+    right: var(--s-2);
+    left: var(--s-2);
+    width: auto;
+  }
+}
+@media (pointer: coarse) {
+  .fg-cell {
+    --c: 1.75rem;
+  }
+  .fg-strip {
+    gap: 4px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fg *,
+  .fg *::before,
+  .fg *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  .fg-spin {
+    animation: none !important;
+    border-right-color: currentColor;
+    opacity: 0.6;
+  }
+}

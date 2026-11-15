@@ -1,0 +1,14 @@
+{
+  "id": "bench-24",
+  "order": 210,
+  "group": "Benchmarks (2D)",
+  "title": "Benchmark 24",
+  "lattice": "square",
+  "sequence": "HHPPHPPHPPHPPHPPHPPHPPHH",
+  "best": 9,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Benchmark string of Unger and Moult (1993). Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "Regularly spaced H’s, with HH at both ends.",
+  "solution": "RRRULLLULDLDRDDRDRURULL"
+}

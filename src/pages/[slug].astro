@@ -1,0 +1,132 @@
+---
+/**
+ * Renders every section (src/content/sections/*.mdx) at /<slug>/.
+ * Prose components are passed in globally, so MDX files can use them without imports:
+ * Seq, Status, Callout, Theorem, Aside, Figure, Cite, Placeholder.
+ * Interactive widgets (islands) are imported explicitly at the top of the MDX file.
+ */
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { listedSections, type Section } from '../lib/sections';
+import { withBase } from '../lib/url';
+import Seq from '../components/Seq.astro';
+import Status from '../components/Status.astro';
+import Callout from '../components/Callout.astro';
+import Theorem from '../components/Theorem.astro';
+import Aside from '../components/Aside.astro';
+import Figure from '../components/Figure.astro';
+import Cite from '../components/Cite.astro';
+import Placeholder from '../components/Placeholder.astro';
+
+export async function getStaticPaths() {
+  const sections = await listedSections();
+  return sections.map((section, i) => ({
+    params: { slug: section.data.slug },
+    props: { section, prev: sections[i - 1], next: sections[i + 1] },
+  }));
+}
+
+interface Props {
+  section: Section;
+  prev?: Section;
+  next?: Section;
+}
+const { section, prev, next } = Astro.props;
+const { Content } = await render(section);
+const d = section.data;
+const components = { Seq, Status, Callout, Theorem, Aside, Figure, Cite, Placeholder };
+---
+
+<BaseLayout title={d.title} description={d.lede ?? d.summary} current={d.slug}>
+  <article class="flow">
+    <header class="page-head">
+      {d.kicker && <p class="kicker ui">{d.kicker}</p>}
+      <h1>{d.title}</h1>
+      {d.lede && <p class="lede">{d.lede}</p>}
+      {
+        d.status === 'draft' && (
+          <p class="banner ui">
+            <strong>Draft.</strong> This page is not finished.
+          </p>
+        )
+      }
+    </header>
+
+    {
+      d.status === 'soon' ? (
+        <div class="soon ui">
+          <p>
+            <strong>In preparation.</strong> {d.summary}
+          </p>
+        </div>
+      ) : (
+        <Content components={components} />
+      )
+    }
+
+    <nav class="pager ui wide" aria-label="Previous and next section">
+      {
+        prev ? (
+          <a class="prev" href={withBase(`/${prev.data.slug}/`)}>
+            <span class="muted">Previous</span>
+            <span>{prev.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a class="next" href={withBase(`/${next.data.slug}/`)}>
+            <span class="muted">Next</span>
+            <span>{next.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .flow {
+    padding-top: var(--s-7);
+  }
+  .banner {
+    margin: var(--s-5) 0 0;
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--radius-md);
+    background: color-mix(in srgb, var(--st-draft) 10%, var(--bg-elev));
+    border: 1px solid color-mix(in srgb, var(--st-draft) 35%, transparent);
+  }
+  .soon {
+    padding: var(--s-6);
+    border: 1.5px dashed var(--rule-strong);
+    border-radius: var(--radius-lg);
+    background: var(--bg-sunk);
+  }
+  .soon p {
+    margin: 0;
+  }
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-top: var(--s-8);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--rule);
+  }
+  .pager a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-1);
+    text-decoration: none;
+    max-width: 48%;
+  }
+  .pager .next {
+    text-align: right;
+    margin-left: auto;
+  }
+  .pager a span:last-child {
+    font-weight: 600;
+  }
+</style>

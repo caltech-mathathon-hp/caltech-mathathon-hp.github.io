@@ -1,0 +1,62 @@
+---
+/**
+ * A formal statement.
+ * <Theorem kind="Lemma" number="3.12" name="the walls" source="BL, p. 38" status="cited">…</Theorem>
+ */
+import Status from './Status.astro';
+interface Props {
+  kind?: string; // Theorem | Lemma | Fact | Proposition | Corollary | Definition
+  number?: string;
+  name?: string;
+  source?: string;
+  status?: 'proved' | 'computed' | 'cited' | 'conjecture' | 'draft' | 'lean' | 'open';
+  id?: string;
+}
+const { kind = 'Theorem', number, name, source, status, id } = Astro.props;
+---
+
+<div class="thm" id={id}>
+  <p class="thm-head">
+    <span class="thm-kind">{kind}{number && ` ${number}`}</span>
+    {name && <span class="thm-name">({name})</span>}
+    {source && <span class="thm-source ui">{source}</span>}
+    {status && <Status kind={status} />}
+  </p>
+  <div class="thm-body"><slot /></div>
+</div>
+
+<style>
+  .thm {
+    margin: var(--s-5) 0;
+    padding: var(--s-4) var(--s-5);
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-md);
+  }
+  .thm-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-2);
+    margin: 0 0 var(--s-2);
+  }
+  .thm-kind {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: var(--fs-sm);
+  }
+  .thm-name {
+    font-style: italic;
+  }
+  .thm-source {
+    color: var(--fg-muted);
+    font-size: var(--fs-xs);
+    margin-left: auto;
+  }
+  .thm-body {
+    font-style: italic;
+  }
+  .thm-body :global(> :last-child) {
+    margin-bottom: 0;
+  }
+</style>

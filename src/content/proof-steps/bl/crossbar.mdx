@@ -1,0 +1,69 @@
+---
+title: Untangling the linkers
+caption: 'We call the runs of P''s between consecutive items linkers. A switchboard of disjoint paths in front of the cube brings the two ends of every linker side by side, whatever order the packing puts the items in.'
+lane: right
+group: links
+order: 4
+difficulty: 3
+figure: bl-crossbar
+source: 'Lemmas 3.3–3.8, pp. 36–37, Figs. 9–10'
+---
+
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+The string fixes the order of the items, but the packing decides where they lie. Two consecutive items may sit in strips far apart, and the linker between them must reach across. Linkers are runs of P's and must stay outside the cube, which means many of them cross in front of the front face. No two may use the same node, and rather than route them one by one we build one device that handles every order at once.
+
+Picture the front face from four steps further out, as a square grid of points with the two ends of every linker among them. A **switchboard** is a block of disjoint paths that leads from this grid to a parallel grid further out, in any order we choose. We choose the order so that the two ends of each linker come out side by side. That every order is possible rests on a known theorem: any rearrangement of a square grid can be done in three rounds, moving points within rows, then within columns, then within rows again. So the paths first spread out until each row and each column has room of its own, then make the three rounds one after another, and finally gather back into a grid.
+
+### Statement
+
+Disjoint paths of bounded length lead from a square grid of points to a parallel grid further out, in any order we choose.
+
+### Exact statement
+
+**Lemma 3.8.** Let $h\ge4$ and let $\pi$ be any permutation of the grid $A=\{0,\dots,h-1\}^2$. In the box $\{0,\dots,10h-7\}\times\{0,\dots,3h-3\}^2$ there are node-disjoint paths, one from $(0,j,k)$ to $(10h-7,\pi(j,k))$ for each $(j,k)\in A$, each of at most $26h-23$ steps.
+
+The first coordinate is the **depth**, and these paths form a switchboard of size $h$, which the paper calls a 3-dimensional crossbar switch. The case $h\ge4$ is all we need, since [14 Loops take up slack](#step-bl-linkers) uses $h=n$. The three rounds are Lemma 3.6, the rearrangement theorem cited from Leighton's book.
+
+### Uses
+
+No earlier card: this is a statement about paths in a grid.
+
+### Proof
+
+1. **Spreading (Lemmas 3.3, 3.4).** Disjoint paths of at most $4(h-1)$ steps lead from $(0,j,k)$ to $(2h-2,2j,2k)$. At depth 0 they use no node with both other coordinates below $h$ except their own starts, and at depth $2h-2$ only their ends (More).
+2. **Rearranging an array (Lemma 3.6).** Any permutation of $A$ is a permutation within each row, then within each column, then within each row (More).
+3. **One row (Lemma 3.5).** In a grid of depth $0,\dots,2h-1$, width $0,\dots,2h-1$ and two layers, disjoint paths of at most $4h+3\le6h-5$ steps lead from $(0,2j,0)$ to $(2h-1,2\sigma(j),0)$ for any permutation $\sigma$ of $\{0,\dots,h-1\}$. At depth 0 and depth $2h-1$ they use only their own ends (More).
+4. **Three rounds (Lemma 3.7).** The points now sit at even coordinates $(2j,2k)$. Row $k$ gets the two layers $2k$, $2k+1$ of the third coordinate, and column $j$ the two layers $2j$, $2j+1$ of the second. Route the first row round at depths $2h-2,\dots,4h-3$, the column round at $4h-3,\dots,6h-4$ and the second row round at $6h-4,\dots,8h-5$, each by step 3. Rounds of the same kind use disjoint layers. Two rounds meet only at one depth, where step 3 uses only the ends. This takes at most $3(6h-5)=18h-15$ steps and stays within $\{0,\dots,3h-3\}$ in the other two coordinates.
+5. **Gathering.** Step 1 run backwards, from depth $8h-5$ to $10h-7$, takes $(8h-5,2a,2b)$ to $(10h-7,a,b)$.
+6. **Total.** $4(h-1)+(18h-15)+4(h-1)$ steps, which is $26h-23$.
+
+<More title="The routings of steps 1–3">
+
+**Lemma 3.3.** In the plane, path $j$ ($0\le j < h$) goes from $(0,j)$ along the first coordinate to $(h-1-j,j)$, then along the second to $(h-1-j,2j)$, then along the first to $(h-1,2j)$: $(h-1)+j\le2(h-1)$ steps. Path $j$ uses column $j$ up to row $h-1-j$, that row between columns $j$ and $2j$, and column $2j$ from that row on. Take $j < j'$. Path $j'$ turns at the earlier row $h-1-j'$, where path $j$ is only in column $j < j'$. Before its turn, path $j'$ is in column $j'\ne j$ and has not reached the rows where path $j$ uses row $h-1-j$ or column $2j$. After its turn it is in column $2j'$, which is neither $j$ nor $2j$ and lies beyond $2j$. So the paths are disjoint. The last row holds only the ends.
+
+**Lemma 3.4.** Apply Lemma 3.3 in each plane with fixed third coordinate $k$, from depth 0 to $h-1$, taking $(0,j,k)$ to $(h-1,2j,k)$; then in each plane with fixed second coordinate $2j$, from depth $h-1$ to $2h-2$, taking $(h-1,2j,k)$ to $(2h-2,2j,2k)$. At depth $h-1$ the first family uses only its ends, and the second family uses its ends and nodes with third coordinate at least $h$, so they meet only at the ends.
+
+**Lemma 3.5.** Coordinates (depth, width, layer). Path $j$ turns at depth $r=j+2$ and ends through the column $c=2\sigma(j)+1$:
+
+$$\begin{aligned}&(0,2j,0)\to(1,2j,0)\to(1,2j,1)\\ &\to(r,2j,1)\to(r,2j,0)\to(r,c,0)\\ &\to(r,c,1)\to(2h-2,c,1)\\ &\to(2h-2,c,0)\to(2h-2,c-1,0)\\ &\to(2h-1,c-1,0).\end{aligned}$$
+
+Each straight part runs along one coordinate. In layer 1, path $j$ uses only column $2j$ and column $c$, which no other path uses. In layer 0 it uses its own depth $r$ (at most $h+1 < 2h-2$, since $h\ge4$), and otherwise only columns $2j$ (depths 0, 1) and $c-1$, $c$ (depths $2h-2$, $2h-1$). The length is $(2h-1)+4+|c-2j|+1\le4h+3$.
+
+**Lemma 3.6.** Build a bipartite multigraph with the $h$ rows as left vertices and the $h$ rows again as right vertices, with one edge from the row of each point to the row of its target. Every vertex has degree $h$, so by König's theorem the edges split into $h$ perfect matchings $M_1,\dots,M_h$. Round 1: in each row, move the point whose edge lies in $M_c$ to column $c$. Now each column holds one point for each target row. Round 2: in each column, move every point to its target row. Round 3: in each row, move every point to its target column.
+
+</More>
+
+### Where in the paper
+
+Lemmas 3.3–3.8, pp. 36–37. Lemmas 3.3 and 3.5 are proved by Figs. 9 and 10 alone. Lemma 3.6 is cited from Leighton's book on parallel algorithms (Theorem 1.16). The paper credits the method to 3D VLSI routing <Cite k="leighton1986three" />, but that paper has no such lemma.
+
+### Rating
+
+3: six lemmas, two of them proved in the paper only by a figure and one by a citation. The More gives explicit routings.
+
+### Our note
+
+A typo: Lemma 3.8 states the last layer as $10h-6$ while its proof reaches $10h-7$. The routings for Lemmas 3.3 and 3.5 in the More are ours. Ours for Lemma 3.5 has at most $4h+3$ steps, within the paper's $6h-5$ for $h\ge4$, and it uses no node at the first and last depth except the ends, which the paper's sharing of depths in Lemma 3.7 needs. The argument for Lemma 3.6 is the standard one by König's theorem.

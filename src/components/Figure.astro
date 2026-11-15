@@ -1,0 +1,37 @@
+---
+/**
+ * A figure with a caption. Put an <img>, inline <svg> or a widget inside.
+ * <Figure caption="…" size="wide">…</Figure>   size: prose (default) | wide | full
+ */
+interface Props {
+  caption?: string;
+  size?: 'prose' | 'wide' | 'full';
+  id?: string;
+}
+const { caption, size = 'prose', id } = Astro.props;
+---
+
+<figure class:list={['fig', size !== 'prose' && size]} id={id}>
+  <slot />
+  {(caption || Astro.slots.has('caption')) && (
+    <figcaption class="ui">
+      {caption}
+      <slot name="caption" />
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .fig {
+    margin: var(--s-6) 0;
+  }
+  figcaption {
+    color: var(--fg-muted);
+    margin-top: var(--s-3);
+    max-width: var(--w-prose);
+  }
+  .fig.wide figcaption,
+  .fig.full figcaption {
+    margin-inline: auto;
+  }
+</style>

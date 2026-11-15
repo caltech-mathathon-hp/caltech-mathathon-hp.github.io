@@ -1,0 +1,15 @@
+{
+  "id": "hex-bound",
+  "order": 630,
+  "group": "Hexagonal lattice (2D)",
+  "title": "At the upper bound",
+  "lattice": "hexagonal",
+  "sequence": "HPPPPHHPPPPHHPPPPH",
+  "best": 4,
+  "optimal": true,
+  "bestKind": "proved",
+  "bestSource": "Each contact uses a free side of two H’s. The two end H’s have two free sides and the other four have one: eight in all, so at most 4 contacts. The solution has 4.",
+  "intro": "The upper bound is 4 contacts. Up to rotations and reflections, one fold reaches it.",
+  "hint": "The two end H’s each touch two H’s; every other H touches one.",
+  "solution": "RRULLLULLDRDLDRRU"
+}

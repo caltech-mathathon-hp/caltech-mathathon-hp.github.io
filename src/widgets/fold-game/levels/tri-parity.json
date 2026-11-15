@@ -1,0 +1,15 @@
+{
+  "id": "tri-parity",
+  "order": 310,
+  "group": "Triangular lattice (2D)",
+  "title": "Odd and even",
+  "lattice": "triangular",
+  "sequence": "HPHPHPHPH",
+  "best": 7,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "On the square lattice this string has no contact. The triangular lattice has odd cycles (triangles), so the parity argument does not apply.",
+  "hint": "An H, a P and an H can form a triangle. Then the two H’s touch.",
+  "solution": "04044315"
+}

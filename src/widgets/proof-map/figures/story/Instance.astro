@@ -1,0 +1,54 @@
+---
+/**
+ * Card "Items and bins" (BL §2, MODIFIED BIN PACKING). Left: items u₁, u₂, … drawn as bars of
+ * dominoes, since every size is even. Right: K empty bins of size B. The bar lengths are only drawn;
+ * no instance is meant.
+ */
+import '../fig.css';
+import Tx from '../Tx.astro';
+import { N } from '../notation';
+import { itemColor, hbrace } from '../lib';
+import { ITEMS, CAP, domino } from './items';
+
+const p = 9; // one node
+const ix = 36;
+const itemY = (k: number) => 52 + k * 27;
+const bx = 196;
+const binY = [60, 100, 156];
+const binName = ['bin 1', 'bin 2', `bin ${N.K}`];
+const binW = CAP * p;
+---
+
+<svg class="pmf" viewBox="0 0 320 196" role="img" aria-labelledby="pmf-inst-t">
+  <title id="pmf-inst-t">Items u1, u2, u3, u4 and more, each drawn as a bar of dominoes of two nodes, since every size is even; the first bar is marked with its size s(u1). Next to them, K empty bins, each of size B: bin 1, bin 2, and so on to bin K. The item sizes add up to K times B.</title>
+  <text class="pmf-label-strong" x="16" y="22">items</text>
+  {
+    ITEMS.map((size, k) => (
+      <g>
+        <Tx x="16" y={itemY(k) + 4} t={N.item(k + 1)} c="pmf-label-strong" style={`fill:${itemColor(k)}`} />
+        {domino(size).map((d) => (
+          <rect x={ix + d.x * p} y={itemY(k) - 5} width={d.w * p - 1.6} height="10" rx="2" style={`fill:${itemColor(k)}`} />
+        ))}
+      </g>
+    ))
+  }
+  <Tx x={ix + ITEMS[0] * p + 6} y={itemY(0) + 4} t={N.size(N.item(1))} />
+  <text class="pmf-label" x="19" y={itemY(ITEMS.length) + 2}>⋮</text>
+
+  <Tx x={bx - 4} y="22" t={`${N.K} bins`} c="pmf-label-strong" />
+  <path class="pmf-brace" d={hbrace(bx, bx + binW - 1.6, binY[0] - 12, -1)} />
+  <Tx x={bx + binW / 2} y={binY[0] - 22} t={N.B} a="middle" />
+  {
+    binY.map((y, b) => (
+      <g>
+        <rect class="pmf-face" x={bx - 4} y={y - 9} width={binW + 6.4} height="18" rx="4" />
+        {Array.from({ length: CAP / 2 }, (_, u) => (
+          <rect class="pmf-cell" x={bx + u * 2 * p} y={y - 5} width={2 * p - 1.6} height="10" rx="2" stroke-dasharray="2 2" />
+        ))}
+        <Tx x={bx - 10} y={y + 4} t={binName[b]} a="end" />
+      </g>
+    ))
+  }
+  <text class="pmf-label" x={bx + binW / 2} y={(binY[1] + binY[2]) / 2 + 4} text-anchor="middle">⋮</text>
+  <Tx x="16" y="188" t={`sizes even, adding up to ${N.K} · ${N.B}`} />
+</svg>

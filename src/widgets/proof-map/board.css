@@ -1,0 +1,1176 @@
+/*
+ * Proof board (ProofBoard.astro) and its step popup. Class prefix pb-.
+ * Colours, fonts and sizes only from tokens.css. Difficulty: --diff-<d> (lines, pips),
+ * --diff-<d>-weak (tints), --diff-<d>-ink (text on those tints).
+ *
+ * Layout is driven by the width of the board (container queries), so it adapts to the column
+ * it is placed in:  < 46rem  one column in reading order;  ≥ 46rem  the two directions side by side.
+ * A card puts its picture beside its text once the card is at least 34rem wide (the picture then
+ * still renders at about its drawn size); narrower cards stack picture and text.
+ */
+
+.pb {
+  --pb-gap: var(--s-6); /* between the two directions */
+  --pb-line: var(--rule-strong); /* connectors */
+  container: pb / inline-size;
+  max-width: var(--w-page);
+  margin: var(--s-5) auto var(--s-6);
+  font-family: var(--font-sans);
+  color: var(--fg);
+}
+
+/* ---------- Difficulty ---------- */
+.pb-d1 {
+  --pb-d: var(--diff-1);
+  --pb-dw: var(--diff-1-weak);
+  --pb-di: var(--diff-1-ink);
+}
+.pb-d2 {
+  --pb-d: var(--diff-2);
+  --pb-dw: var(--diff-2-weak);
+  --pb-di: var(--diff-2-ink);
+}
+.pb-d3 {
+  --pb-d: var(--diff-3);
+  --pb-dw: var(--diff-3-weak);
+  --pb-di: var(--diff-3-ink);
+}
+.pb-diff {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--pb-di);
+  white-space: nowrap;
+}
+.pb-pips {
+  display: inline-flex;
+  gap: 3px;
+}
+.pb-pips i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--pb-d);
+}
+.pb-pips i.on {
+  background: var(--pb-d);
+}
+
+/* ---------- Top line: hint and legend ---------- */
+.pb-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-5);
+  margin-bottom: var(--s-4);
+}
+.pb-hint {
+  margin: 0;
+  color: var(--fg-muted);
+}
+.pb-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pb-legend li {
+  margin: 0;
+}
+
+/* ---------- Board ---------- */
+.pb-board {
+  display: grid;
+}
+.pb-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+.pb-item {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+}
+
+/* Setup and conclusion rows. */
+.pb-row > .pb-lane-head {
+  text-align: center;
+}
+
+/* The two directions: each a tinted band with its header (common region). */
+.pb-lanes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-5) var(--pb-gap);
+}
+.pb-lane {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-3);
+  background: var(--bg-sunk);
+  border-radius: var(--radius-lg);
+}
+.pb-lane-head {
+  padding: var(--s-1) var(--s-2) var(--s-3);
+}
+.pb-lane-title {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  font-weight: 650;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.005em;
+}
+.pb-lane-note {
+  margin: var(--s-1) 0 0;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-ui);
+  color: var(--fg-muted);
+}
+
+/* Connectors (quiet): idea ↓ setup → split into the two directions → merge into the conclusion. */
+.pb-down,
+.pb-split,
+.pb-merge {
+  position: relative;
+  height: var(--s-6);
+}
+.pb-split {
+  height: var(--s-8);
+}
+/* The label on the split ("Two directions to prove"), over the junction of the strokes. */
+.pb-fork {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.1em 0.7em;
+  background: var(--bg);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+.pb-down i,
+.pb-split i,
+.pb-merge i {
+  position: absolute;
+  border: 0 solid var(--pb-line);
+}
+.pb-down i,
+.pb-split i:nth-child(1),
+.pb-merge i:nth-child(1) {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  border-left-width: 1.5px;
+}
+.pb-split i:nth-child(2),
+.pb-merge i:nth-child(2) {
+  display: none;
+}
+/* Arrowhead at the bottom of the vertical stroke. */
+.pb-down i::after,
+.pb-split i:nth-child(1)::after,
+.pb-merge i:nth-child(1)::after,
+.pb-split i:nth-child(2)::before,
+.pb-split i:nth-child(2)::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: -5.75px;
+  border: 5px solid transparent;
+  border-bottom: 0;
+  border-top: 6px solid var(--pb-line);
+}
+
+/* Arrow between consecutive cards of a row. In one column it points down. */
+.pb-hop {
+  display: block;
+  position: relative;
+  height: var(--s-5);
+  margin-top: calc(-1 * var(--s-3));
+}
+.pb-hop::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 3px;
+  bottom: 3px;
+  border-left: 1.5px solid var(--pb-line);
+}
+.pb-hop::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 4.25px);
+  bottom: 2px;
+  border: 5px solid transparent;
+  border-bottom: 0;
+  border-top: 6px solid var(--pb-line);
+}
+
+@container pb (min-width: 46rem) {
+  .pb-lanes {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .pb-row .pb-cards {
+    grid-template-columns: repeat(var(--pb-n, 2), minmax(0, 1fr));
+    column-gap: var(--pb-gap);
+  }
+  .pb-row[data-count='1'] .pb-cards {
+    grid-template-columns: minmax(0, calc((100% - var(--pb-gap)) / 2));
+    justify-content: center;
+  }
+  /* The idea: one card, wider than a lane, so its picture sits beside its text. */
+  .pb-row-top[data-count='1'] .pb-cards {
+    grid-template-columns: minmax(0, 46rem);
+  }
+  .pb-row[data-count='3'] {
+    --pb-n: 3;
+  }
+  .pb-row[data-count='4'] {
+    --pb-n: 4;
+  }
+  /* The hop arrow sits in the gap, pointing right. */
+  .pb-hop {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    width: var(--pb-gap);
+    height: 12px;
+    margin: -6px 0 0;
+  }
+  .pb-hop::before {
+    left: 6px;
+    right: 8px;
+    top: 50%;
+    bottom: auto;
+    border-left: 0;
+    border-top: 1.5px solid var(--pb-line);
+  }
+  .pb-hop::after {
+    left: auto;
+    right: 4px;
+    top: 50%;
+    bottom: auto;
+    margin-top: -4.25px;
+    border: 5px solid transparent;
+    border-right: 0;
+    border-left: 6px solid var(--pb-line);
+  }
+  /* Split: one stroke down from the setup row, then a bracket to the centre of each direction. */
+  .pb-split i:nth-child(1) {
+    bottom: 50%;
+  }
+  .pb-split i:nth-child(1)::after {
+    display: none;
+  }
+  .pb-split i:nth-child(2) {
+    display: block;
+    top: 50%;
+    bottom: 0;
+    left: calc((100% - var(--pb-gap)) / 4);
+    right: calc((100% - var(--pb-gap)) / 4);
+    border-width: 1.5px 1.5px 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+  .pb-split i:nth-child(2)::before {
+    left: -6.5px;
+  }
+  .pb-split i:nth-child(2)::after {
+    left: auto;
+    right: -6.5px;
+  }
+  /* Merge: a bracket from the centre of each direction, then one stroke down to the conclusion. */
+  .pb-merge i:nth-child(1) {
+    top: 50%;
+  }
+  .pb-merge i:nth-child(2) {
+    display: block;
+    top: 0;
+    bottom: 50%;
+    left: calc((100% - var(--pb-gap)) / 4);
+    right: calc((100% - var(--pb-gap)) / 4);
+    border-width: 0 1.5px 1.5px;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+  }
+}
+
+/* ---------- Groups of steps (ProofBoard `groups`) ---------- */
+/* Closed: a stack of cards (two offset edges behind) with the group's title, caption and step titles.
+   Open: the same box as a header, the step cards below it, tied by a rule on the left. */
+.pb-group {
+  position: relative;
+}
+.pb-group-sum {
+  display: block;
+  list-style: none;
+  margin: 0 8px 8px 0;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-md);
+  box-shadow:
+    4px 4px 0 -1px var(--bg-elev),
+    4px 4px 0 0 var(--rule-strong),
+    8px 8px 0 -1px var(--bg-elev),
+    8px 8px 0 0 var(--rule);
+  cursor: pointer;
+  transition: border-color 140ms;
+}
+.pb-group-sum::-webkit-details-marker {
+  display: none;
+}
+.pb-group-sum:hover {
+  border-color: var(--accent);
+}
+.pb-group-sum:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.pb-group-in {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-4);
+}
+.pb-group-meta {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+.pb-group-title {
+  font-size: var(--fs-base);
+  font-weight: 650;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.008em;
+  text-wrap: balance;
+}
+.pb-group-cap {
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+.pb-group-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-2);
+  margin-top: var(--s-1);
+}
+.pb-group-li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  background: var(--bg-sunk);
+  font-size: var(--fs-xs);
+  line-height: 1.3;
+  color: var(--fg);
+}
+.pb-group-li::before {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pb-d);
+}
+.pb-group-li b {
+  font-weight: 650;
+  color: var(--fg-muted);
+}
+.pb-group-act {
+  margin-top: var(--s-1);
+  font-size: var(--fs-sm);
+  font-weight: 650;
+  color: var(--accent);
+}
+.pb-group-act::before {
+  content: '';
+  display: inline-block;
+  width: 0.45em;
+  height: 0.45em;
+  margin: 0 0.6em 0.12em 0.1em;
+  border: solid currentColor;
+  border-width: 0 1.7px 1.7px 0;
+  transform: rotate(-45deg);
+  transition: transform 140ms;
+}
+.pb-group[open] .pb-group-act::before {
+  transform: rotate(45deg);
+}
+.pb-group:not([open]) .pb-group-hide,
+.pb-group[open] .pb-group-show,
+.pb-group[open] .pb-group-list {
+  display: none;
+}
+.pb-group[open] > .pb-group-sum {
+  margin: 0;
+  box-shadow: none;
+  background: transparent;
+  border-style: dashed;
+}
+.pb-group-cards {
+  margin: var(--s-3) 0 0 var(--s-2);
+  padding-left: var(--s-3);
+  border-left: 2px solid var(--rule-strong);
+}
+/* The button that opens or closes every group. */
+.pb-expand[hidden] {
+  display: none;
+}
+.pb-expand {
+  margin-inline-end: auto;
+}
+
+/* ---------- Card ---------- */
+.pb-card {
+  container: pbc / inline-size;
+  display: block;
+  height: 100%;
+  color: var(--fg);
+  text-decoration: none;
+  background: var(--bg-elev);
+  border: 1px solid color-mix(in srgb, var(--pb-d) 40%, var(--rule));
+  border-left: 5px solid var(--pb-d);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition:
+    border-color 140ms,
+    box-shadow 140ms,
+    transform 140ms;
+}
+.pb-card:hover {
+  color: var(--fg);
+  border-color: var(--pb-d);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.pb-card:active {
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+.pb-card:focus-visible {
+  outline: 2.5px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-md);
+}
+/* The card of the step last shown, when the popup closes. */
+.pb-card.is-back {
+  animation: pb-back 1.8s ease-out;
+}
+@keyframes pb-back {
+  0%,
+  40% {
+    box-shadow:
+      0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent),
+      var(--shadow-md);
+  }
+  100% {
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.pb-card-in {
+  display: grid;
+}
+.pb-card-fig {
+  display: block;
+  padding: var(--s-3) var(--s-3) 0;
+}
+.pb-card-fig .pmf,
+.pb-card-fig svg {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  margin-inline: auto;
+  pointer-events: none; /* no tooltip from the figure's <title>; the card is the target */
+}
+.pb-card-text {
+  display: block;
+  padding: var(--s-3) var(--s-4) var(--s-4);
+}
+.pb-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2);
+  margin-bottom: var(--s-2);
+}
+.pb-num {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: var(--bg-sunk);
+  border: 1px solid var(--rule);
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  line-height: 1;
+}
+.pb-card-title {
+  display: block;
+  font-size: var(--fs-base);
+  font-weight: 650;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.008em;
+  text-wrap: balance;
+}
+.pb-card-cap {
+  display: block;
+  margin-top: var(--s-1);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+  color: var(--fg-muted);
+  text-wrap: pretty;
+}
+
+/* Phones: the figures use a 320-unit viewBox, so give them at least 320px (labels stay legible). */
+@container pb (max-width: 30rem) {
+  .pb-lane {
+    padding-inline: var(--s-1);
+  }
+  .pb-group-cards {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+  }
+  .pb-card-fig {
+    padding-inline: var(--s-1);
+  }
+}
+
+/* Wide card: picture beside the text. */
+@container pbc (min-width: 34rem) {
+  .pb-card-in {
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  .pb-card-nofig .pb-card-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pb-card-fig {
+    padding: var(--s-3) 0 var(--s-3) var(--s-3);
+  }
+  .pb-card-text {
+    padding: var(--s-3) var(--s-4) var(--s-3) var(--s-4);
+  }
+}
+
+/* HP strings and math in captions (inline.ts). */
+.pb-seq {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.pb-H {
+  color: var(--h);
+  font-weight: 700;
+}
+.pb-P {
+  color: var(--p);
+}
+.pb-seq-exp {
+  font-size: 0.75em;
+  margin-left: 0.04em;
+}
+.pb-seq-exp .katex {
+  font-size: 1em;
+}
+
+/* ================================================================
+   The popup: one <dialog>, one step shown at a time
+   ================================================================ */
+:root:has(.pb-dialog[open]) {
+  overflow: hidden; /* scroll lock */
+  scrollbar-gutter: stable;
+}
+.pb-dialog {
+  box-sizing: border-box;
+  width: min(72rem, 100vw - 2 * var(--s-5));
+  max-width: none;
+  height: min(50rem, 100dvh - 2 * var(--s-5));
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.pb-dialog::backdrop {
+  background: var(--scrim);
+}
+.pb-dlg {
+  display: grid;
+  /* minmax(0, 1fr): the column is the dialog's width, so long titles in the bars never widen it. */
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100%;
+}
+
+/* Top bar: where you are, and close. */
+.pb-dlg-top {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4);
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg-elev);
+}
+.pb-mini {
+  flex: none;
+  overflow: visible;
+}
+.pb-mini-b {
+  fill: var(--pb-dw);
+  stroke: var(--pb-d);
+  stroke-width: 0.8;
+  cursor: pointer;
+}
+.pb-mini-b:hover {
+  fill: color-mix(in srgb, var(--pb-d) 45%, var(--pb-dw));
+}
+.pb-mini-b.is-cur {
+  fill: var(--pb-d);
+  stroke: var(--fg);
+  stroke-width: 1.3;
+}
+.pb-where {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.pb-where-lane {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pb-where-n {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.pb-close {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  justify-content: center;
+}
+
+/* Scrolling body. */
+.pb-dlg-scroll {
+  container: pbd / inline-size;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.pb-js .pb-step {
+  display: none;
+}
+.pb-js .pb-step.is-active {
+  display: block;
+}
+.pb-step-grid {
+  display: grid;
+  gap: var(--s-5);
+  padding: var(--s-5) var(--s-4) var(--s-6);
+}
+.pb-step-fig {
+  padding: var(--s-3);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+}
+.pb-step-fig > svg {
+  display: block;
+  width: 100%;
+  max-width: 30rem;
+  height: auto;
+  margin-inline: auto;
+}
+.pb-step-main {
+  min-width: 0;
+  max-width: 40rem;
+}
+
+/* Picture beside the text, kept in view while reading (spatial contiguity). */
+@container pbd (min-width: 50rem) {
+  .pb-step-grid {
+    grid-template-columns: minmax(0, 27rem) minmax(0, 1fr);
+    gap: var(--s-6);
+    padding: var(--s-6) var(--s-6) var(--s-7);
+    align-items: start;
+  }
+  .pb-step-grid.pb-step-nofig {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+  .pb-step-fig {
+    position: sticky;
+    top: var(--s-6);
+  }
+}
+/* Phones: the figures use a 320-unit viewBox, so give them at least 320px. */
+@container pbd (max-width: 31.99rem) {
+  .pb-step-fig {
+    padding: var(--s-2) var(--s-1);
+  }
+}
+@container pbd (min-width: 32rem) and (max-width: 49.99rem) {
+  .pb-step-grid {
+    padding-inline: var(--s-6);
+  }
+  .pb-step-fig {
+    max-width: 28rem;
+  }
+}
+
+/* Head of a step: number, difficulty, source; title; the card's sentence. */
+.pb-step-head {
+  margin-bottom: var(--s-5);
+}
+.pb-step-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-3);
+  margin: 0 0 var(--s-2);
+}
+.pb-step-src {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.pb-step-title {
+  margin: 0;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-tight);
+}
+.pb-step-title:focus {
+  outline: none;
+}
+.pb-step-cap {
+  margin: var(--s-2) 0 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+  color: var(--fg-muted);
+}
+
+/* Sections of the body (StepBody.astro). */
+.pb-step-body {
+  font-family: var(--font-serif);
+  font-size: var(--fs-base);
+  line-height: var(--lh-prose);
+}
+.pb-sec {
+  margin: 0 0 var(--s-5);
+}
+.pb-sec:last-child {
+  margin-bottom: 0;
+}
+.pb-sec-h {
+  margin: 0 0 var(--s-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.pb-sec-body > :first-child {
+  margin-top: 0;
+}
+.pb-sec-body > :last-child {
+  margin-bottom: 0;
+}
+.pb-sec p {
+  margin-bottom: var(--s-3);
+}
+
+/* Intuition: first and prominent. */
+.pb-sec-intuition .pb-sec-h {
+  color: var(--accent);
+}
+.pb-sec-intuition .pb-sec-body {
+  font-size: var(--fs-lg);
+  line-height: 1.55;
+}
+
+/* Example: set apart on a sunk panel. */
+.pb-sec-example {
+  padding: var(--s-4) var(--s-5);
+  background: var(--bg-sunk);
+  border-radius: var(--radius-md);
+}
+
+/* Statement: theorem style. */
+.pb-sec-statement {
+  padding: var(--s-4) var(--s-5);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-md);
+}
+.pb-sec-statement .pb-sec-h {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--fg);
+}
+.pb-sec-statement .pb-sec-body {
+  font-style: italic;
+}
+/* A <Theorem> inside brings its own box. */
+.pb-sec-statement:has(.thm) {
+  padding: 0;
+  background: none;
+  border: 0;
+}
+.pb-sec-statement:has(.thm) .pb-sec-body {
+  font-style: normal;
+}
+.pb-sec-statement .thm {
+  margin: 0;
+}
+
+/* Why it is hard: tinted by the step's difficulty. */
+.pb-sec-hard {
+  padding: var(--s-4) var(--s-5);
+  background: var(--pb-dw);
+  border-left: 3px solid var(--pb-d);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.pb-sec-hard .pb-sec-h {
+  color: var(--pb-di);
+}
+
+/* Our note: the team's remark, not the paper's. */
+.pb-sec-note {
+  padding: var(--s-3) var(--s-5);
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-elev));
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: var(--fs-sm);
+}
+.pb-sec-note .pb-sec-h {
+  color: var(--accent);
+}
+
+/* The back of a step (StepBody.astro): proof, sources and notes, folded under one toggle. */
+.pb-back {
+  margin: var(--s-5) 0 0;
+  border-top: 1px solid var(--rule-strong);
+}
+.pb-back-sum {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-3);
+  min-height: 2.75rem;
+  padding: var(--s-3) 0;
+  cursor: pointer;
+  list-style: none;
+  color: var(--accent);
+}
+.pb-back-sum::-webkit-details-marker {
+  display: none;
+}
+.pb-back-k {
+  font-size: var(--fs-sm);
+  font-weight: 650;
+}
+.pb-back-k::before {
+  content: '';
+  display: inline-block;
+  width: 0.45em;
+  height: 0.45em;
+  margin: 0 0.6em 0.12em 0.1em;
+  border: solid currentColor;
+  border-width: 0 1.7px 1.7px 0;
+  transform: rotate(-45deg);
+  transition: transform 140ms;
+}
+.pb-back[open] .pb-back-k::before {
+  transform: rotate(45deg);
+}
+.pb-back-list {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.pb-back-sum:hover .pb-back-k {
+  color: var(--accent-hover);
+}
+.pb-back-sum:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+.pb-back-body {
+  padding-top: var(--s-3);
+}
+
+/* Prose components inside a popup. */
+.pb-step-body .katex-display {
+  margin: var(--s-3) 0;
+}
+.pb-step-body .fig {
+  margin: var(--s-4) 0;
+}
+.pb-step-body .thm,
+.pb-step-body .callout {
+  margin: var(--s-4) 0;
+}
+.pb-dialog .pb-step-body .margin-note {
+  float: none;
+  width: auto;
+  margin: 0 0 var(--s-4);
+}
+
+/* <More> inside a popup (More.astro): a quiet toggle under the text it expands. The open body hangs
+   from a rule, upright and a little smaller, also inside the italic Statement box. */
+.pb-dialog .pb-step-body .more {
+  margin: var(--s-3) 0 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  font-style: normal;
+}
+.pb-dialog .pb-step-body .more > summary {
+  min-height: 2.75rem;
+  padding: var(--s-2) 0;
+  line-height: var(--lh-ui);
+}
+.pb-dialog .pb-step-body .more > summary:hover {
+  color: var(--accent-hover);
+}
+.pb-dialog .pb-step-body .more-body {
+  margin: 0 0 var(--s-1) 0.2em;
+  padding: 0 0 0 var(--s-4);
+  border-left: 2px solid var(--rule-strong);
+  font-size: calc((var(--fs-sm) + var(--fs-base)) / 2);
+}
+.pb-dialog .pb-step-body .more-body p,
+.pb-dialog .pb-step-body .more-body ul {
+  margin-bottom: var(--s-3);
+}
+.pb-dialog .pb-step-body .more-body > :last-child {
+  margin-bottom: 0;
+}
+
+/* Bottom bar: previous and next, in reading order. */
+.pb-dlg-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  padding-bottom: max(var(--s-2), env(safe-area-inset-bottom));
+  border-top: 1px solid var(--rule);
+  background: var(--bg-elev);
+}
+.pb-go {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 45%;
+  min-height: 2.75rem;
+  padding: 0.4em 0.8em;
+  line-height: 1.2;
+}
+.pb-go:disabled {
+  visibility: hidden;
+}
+.pb-go-arrow {
+  flex: none;
+  font-size: 1.1em;
+}
+.pb-go-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  text-align: left;
+}
+.pb-next .pb-go-text {
+  text-align: right;
+}
+.pb-go-k {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.pb-go-t {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.pb-go-done {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.pb-go-done:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+.pb-go-done .pb-go-k,
+.pb-go-done .pb-go-arrow {
+  display: none;
+}
+.pb-keys {
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--fg-subtle);
+  white-space: nowrap;
+}
+.pb-keys kbd {
+  font-family: var(--font-sans);
+  color: var(--fg-muted);
+}
+@media (max-width: 48rem), (hover: none) {
+  .pb-keys {
+    display: none;
+  }
+}
+
+/* Phone: a full-screen sheet. */
+@media (max-width: 40rem) {
+  .pb-dialog {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border: 0;
+    border-radius: 0;
+  }
+  .pb-dlg-top {
+    padding-top: max(var(--s-2), env(safe-area-inset-top));
+  }
+  .pb-step-title {
+    font-size: var(--fs-h3);
+  }
+  .pb-sec-intuition .pb-sec-body {
+    font-size: calc((var(--fs-base) + var(--fs-lg)) / 2);
+  }
+  .pb-sec-example,
+  .pb-sec-statement,
+  .pb-sec-hard {
+    padding: var(--s-3) var(--s-4);
+  }
+  .pb-go {
+    max-width: 48%;
+  }
+}
+
+/* Motion: short, and none when the reader asks for less. */
+@media (prefers-reduced-motion: no-preference) {
+  .pb-dialog[open] {
+    animation: pb-pop 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .pb-dialog[open]::backdrop {
+    animation: pb-fade 180ms ease-out;
+  }
+  .pb-step.is-active[data-enter='next'] {
+    animation: pb-from-right 170ms ease-out;
+  }
+  .pb-step.is-active[data-enter='prev'] {
+    animation: pb-from-left 170ms ease-out;
+  }
+  @media (max-width: 40rem) {
+    .pb-dialog[open] {
+      animation-name: pb-sheet;
+      animation-duration: 220ms;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pb-card,
+  .pb-card:hover {
+    transition: none;
+    transform: none;
+  }
+  .pb-card.is-back {
+    animation: none;
+    outline: 2.5px solid var(--accent);
+    outline-offset: 3px;
+  }
+}
+@keyframes pb-pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+}
+@keyframes pb-sheet {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+@keyframes pb-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pb-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+}
+@keyframes pb-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+}
+
+/* ---------- Without JavaScript: the steps follow the board as ordinary sections ---------- */
+.pb:not(.pb-js) .pb-dialog {
+  display: block;
+  position: static;
+  width: auto;
+  height: auto;
+  margin: var(--s-7) 0 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  background: none;
+}
+.pb:not(.pb-js) .pb-dlg-top,
+.pb:not(.pb-js) .pb-dlg-nav {
+  display: none;
+}
+.pb:not(.pb-js) .pb-dlg-scroll {
+  overflow: visible;
+}
+.pb:not(.pb-js) .pb-step {
+  border-top: 1px solid var(--rule);
+}

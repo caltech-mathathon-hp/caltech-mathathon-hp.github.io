@@ -1,0 +1,15 @@
+{
+  "id": "square-parity",
+  "order": 120,
+  "group": "Square lattice (2D)",
+  "title": "Odd and even",
+  "lattice": "square",
+  "sequence": "HPHPHPHPH",
+  "best": 0,
+  "optimal": true,
+  "bestKind": "proved",
+  "bestSource": "Colour the lattice like a chessboard: every step changes colour, so H’s at odd positions all sit on one colour, and two neighbouring nodes never share a colour.",
+  "intro": "Every H of this string sits at an odd position (1, 3, 5, 7, 9). Try to make a single contact.",
+  "hint": "The (i) next to the upper bound explains why.",
+  "solution": "RULLDDRR"
+}

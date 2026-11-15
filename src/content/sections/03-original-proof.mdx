@@ -1,0 +1,80 @@
+---
+title: The original proof
+slug: original-proof
+navTitle: Original proof
+kicker: Part I
+lede: How Berger and Leighton (1998) reduce bin packing to HP folding on the cubic lattice.
+summary: Berger and Leighton's reduction from bin packing to HP folding, in fifteen cards, each with its proof.
+order: 3
+---
+
+import ProofBoard from '../../widgets/proof-map/ProofBoard.astro';
+
+<Theorem kind="Theorem" source="Berger & Leighton 1998" status="cited">
+Deciding whether an HP string has a fold on the cubic lattice $\mathbb Z^3$ with at least a given number of contacts is NP-complete.
+</Theorem>
+
+NP-complete means two things: a proposed fold is quick to check, and folding is at least as hard as any puzzle with that property. For the second it is enough to translate one puzzle already known to be NP-complete, quickly, into folding questions with the same answers. Such a translation is called a reduction, and <Cite k="berger1998protein" /> reduce bin packing to folding.
+
+Read the captions of the cards and stacks in order for the whole argument. Seven cards carry the main line, and the technical steps sit in three stacks that open in place. Each card opens on the idea of its step and its claim in words, with the exact statement, the proof and our notes under "The details". Each card carries one to three dots for how hard its step is to check. Three steps get three dots. In [8 Walls run straight](#step-bl-walls) a footnote of the paper is false as written, and the claim needs another argument. [10 Folding the frame](#step-bl-frame) and [13 Untangling the linkers](#step-bl-crossbar) are simply long.
+
+<div class="full"><ProofBoard map="bl" lanes={{ setup: { title: 'Setting up the reduction', note: '§2, §3.1, §3.2.2' }, left: { title: 'A perfect fold gives a packing', note: '§3.2.4 · about 1½ pages' }, right: { title: 'A packing gives a perfect fold', note: '§3.2.3 · about 3½ pages' }, end: { title: 'Both directions together', note: '§§2–3' } }} groups={{ forced: { title: 'Rods and walls are forced', caption: "A perfect fold has almost no freedom: counting puts the rods on the edges and the ribbons on the faces. The rod lengths leave no slack, so the walls run straight across the front face and cut it into equal strips." }, frame: { title: 'Folding all but the items', caption: "Given a packing, we first fold everything that does not depend on it: the pieces that fill ten edges, five faces and the inside, then the walls that cut the front face into strips. The paper gives only where these routes start and end, so this is the longest part to check." }, links: { title: 'Joining the scattered items', caption: "Consecutive items in the string are joined by long runs of P's, which must cross in front of the cube because the packing scatters the items. The hardest idea of the proof is a switchboard of paths that lets them pass each other, and loops use up their fixed length." } }} /></div>
+
+## Glossary
+
+Each word is defined on the card where it first appears, and this table collects them in that order. The last column gives the paper's name where it differs.
+
+| Word | Meaning | In the paper |
+|---|---|---|
+| perfect fold | a fold whose H's fill an $n\times n\times n$ cube | the H's form a cube |
+| packing | a split of the items into $K$ groups that each add up to exactly $B$ | a solution |
+| open side | a side of an H with no H across it | missing H–H bond |
+| rod | a piece such as <Seq s="(PHP)^3" />, whose H's each sit between two P's; its length is its number of H's | $k$-string |
+| ribbon | a piece such as <Seq s="(PHHP)^3" />, whose H's come two at a time, each with one P beside it | — |
+| core | a run of $(n-2)^3+2$ H's with a P at each end, which fills the inside and two face nodes | — |
+| face ribbon | one of the five ribbons that fill five faces; one is two H's short | — |
+| corner rod | the rod of $9n-10$ H's, which passes every corner and covers nine edges | — |
+| free edges | the two edges that the corner rod and a second rod leave empty | unfilled edges |
+| front face | the face between the free edges, which holds the walls and the strips | same |
+| wall | a ribbon as long as a row of the front face, $n-2$ H's | — |
+| short rod, long rod | the rods of length $q$ and $2q+1$ on the free edges | $q$-string, $(2q+1)$-string |
+| period | a short rod, a wall, a long rod, a wall and a short rod | — |
+| strip | the $2q-1$ rows between the two walls of a period, $T$ nodes | bin $B_1,\dots,B_q$ |
+| spaced rod | a rod of $q$ H's with $2q+6$ P's between each two, which fills the gaps the periods leave | special $q$-string |
+| padding | a ribbon of $T-B$ H's, which leaves $B$ nodes of its strip free | $(T-B)$-item-string |
+| plug | a ribbon of $B$ H's, which fills a strip no bin needs | $B$-item-string |
+| item ribbon | a ribbon with as many H's as the size of its item | $s(u)$-item-string |
+| linker | the run of $52n+2$ P's before each padding, plug and item ribbon | connecting string of $cn+2$ P's |
+| $q$ | the number of strips, twice the larger of $K$ and $\lceil B^{1/3}\rceil$ | same |
+| $n$ | the side of the cube, $q(2q+1)+2$ | same |
+| $T$ | the number of nodes in a strip, $(2q-1)(n-2)$ | same |
+| frame | the corner rod, a second rod, the face ribbons and the core, which fill all of the cube but the front face | — |
+| snake | a path that fills a face or a strip row by row, back and forth | — |
+| band | a strip with its two walls, $2q+1$ rows | — |
+| even node | a node whose three coordinates add up to an even number | same |
+| switchboard | disjoint paths in front of the cube that lead from a grid of points to a parallel grid in any order | 3-dimensional crossbar switch |
+
+Under "The details", the cards also use the paper's terms: an **H–H pair** is two H's on neighbouring nodes, consecutive in the string or not; a **lone H** is an H of a rod; the **skeleton** is the set of corners and edge nodes; and the **tenth-edge rod** is the second rod, of $n-2$ H's.
+
+## Pairs and contacts
+
+Berger and Leighton count every pair of H's on neighbouring nodes, including pairs that are consecutive in the string (p. 31), and the exact statements under "The details" do the same. The rest of this site counts contacts, which leave consecutive pairs out. In every fold of a string, the two counts differ by the number of <Seq s="HH" /> in the string. So asking for $m$ pairs is the same as asking for $m$ minus that number of contacts.
+
+## Our audit notes
+
+We checked every step against the paper. The note at the end of each card says what we added, corrected or could not find there. Page numbers refer to the RECOMB '98 proceedings, pp. 30–39. In short:
+
+- [2 Why bin packing](#step-bl-problems): a proof that bin packing with even sizes stays NP-complete with small numbers, which the paper only asserts.
+- [3 Why a cube](#step-bl-cube): the paper's uncited "classic result" is the Loomis–Whitney inequality, and its equality case needs one more condition.
+- [4 Spelling the string](#step-bl-string): the construction needs $B$ even, which the paper does not say.
+- [5 The counts match](#step-bl-local-rules): the paper shows that the H's of <Seq s="HPPH" /> are neighbours only on faces; we check edges and corners too, and state two rules the paper uses but does not state.
+- [6 Two edges stay free](#step-bl-skeleton): a count in place of the paper's short argument for the corner rod.
+- [7 One length per edge](#step-bl-free-edges): the edge with the spaced rod, and the bound $2q+8 < n$ in place of $2q+6 < n$.
+- [8 Walls run straight](#step-bl-walls): footnote 7 makes a claim that is false as written, but the conclusion holds for another reason.
+- [9 Reading off a packing](#step-bl-packing): a check of the paper's "without loss of generality" for the ends of the core.
+- [10 Folding the frame](#step-bl-frame): the hardest part to check, so we wrote out the routes the paper leaves to the reader.
+- [11 Building the walls](#step-bl-build-walls): "since $q+1$ is odd" should be about $2q+1$.
+- [12 Filling the strips](#step-bl-fill-strips): a typo, $q-k$ for $q-K$.
+- [13 Untangling the linkers](#step-bl-crossbar): a typo, $10h-6$ for $10h-7$, and explicit paths for the two lemmas the paper proves only by figures.
+- [14 Loops take up slack](#step-bl-linkers): the first linker starts at the spaced rod, which the paper does not mention.
+- [15 Folding is NP-complete](#step-bl-conclusion): why bin packing must stay hard with small numbers.

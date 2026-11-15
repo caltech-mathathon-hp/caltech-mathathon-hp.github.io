@@ -1,0 +1,63 @@
+---
+title: The counts match
+caption: 'The string has exactly as many H''s between P''s as the cube has edge and corner nodes, so the rods fill the edges and the ribbons the faces. Two H''s with PP between them always touch, which makes every rod and every wall an unbroken path.'
+lane: left
+group: forced
+order: 1
+difficulty: 2
+figure: bl-blocks
+source: 'Facts 3.9–3.11, p. 37; §3.2.1, pp. 32–33'
+---
+
+import RodAndRibbon from '../../../widgets/proof-map/figures/RodAndRibbon.astro';
+
+### The idea
+
+We now read a packing off a perfect fold of $S$. As [4 Spelling the string](#step-bl-string) showed, the P's next to an H limit where it can sit: an H between two P's on an edge or at a corner, an H with one P beside it on the surface. Counting turns these limits into exact places. The string has exactly as many H's between two P's as the cube has edge and corner nodes, so the rods fill those nodes and nothing else does. The H's with no P beside them are the inner H's of the core, and there are exactly as many of them as the cube has inside nodes. The ribbons and the core's two end H's are what is left, and they fill the faces.
+
+One more fact holds the pieces together: in <Seq s="HPPH" /> the two H's are neighbours in the fold. The first step, from H to P, crosses the surface of the cube. The walk ends inside the cube again, so one of the other two steps must cross back, and the two cancel. That leaves a single step between the two H's. Consecutive H's of a rod are joined in this way, and so is each wall to the rods on either side of it. Every rod therefore runs as an unbroken path along the edges, and every ribbon as a path in one face.
+
+### Statement
+
+In a perfect fold, the rods fill the edges and corners, the inner H's of the core fill the inside, and the ribbons with the core's two end H's fill the faces. Each rod is a path along the edges, and each ribbon a path in one face.
+
+### Exact statement
+
+A node of the cube is a **corner**, an **edge node**, a **face node** or an **interior node** if it lies on 3, 2, 1 or 0 faces of the cube. The **skeleton** is the set of corners and edge nodes: $12(n-2)+8=12n-16$ nodes. The **surface** is the skeleton with the face nodes. In a perfect fold of $S$:
+
+- **(a)** an H next to a P in the string lies on the surface (Fact 3.10);
+- **(b)** a lone H lies on the skeleton (Fact 3.9);
+- **(c)** two H's separated by <Seq s="PP" /> in the string, as in <Seq s="HPPH" />, lie on neighbouring nodes (Fact 3.11);
+- **(d)** the lone H's fill the skeleton, the inner $(n-2)^3$ H's of the core fill the interior, and the ribbon H's and the two end H's of the core fill the face nodes;
+- **(e)** every node outside the cube next to it holds a P, except one node next to each corner.
+
+So the H's of a rod form a path in the skeleton, and the H's of a ribbon form a path of face nodes, which lies in one face.
+
+### Uses
+
+[4 Spelling the string](#step-bl-string): the counts of lone, ribbon and core H's, and the fact that no P of $S$ has an H on both sides.
+
+### Proof
+
+The cube holds $n^3$ H's on its $n^3$ nodes, so every node of the cube holds an H and every P lies outside.
+
+1. **(a)** An interior node has all six neighbours in the cube, so an H there has no P beside it.
+2. **(b)** A lone H has two P's beside it, on two nodes outside the cube. A face node has one neighbour outside the cube and an interior node none.
+3. **(c)** Let the H's be at $u$ and $v$ and the P's at $p$ and $p'$. The step from $u$ to $p$ leaves the cube, so it moves one coordinate past a boundary. Since $v$ is in the cube, one of the steps $p\to p'$, $p'\to v$ moves that coordinate back. The two cancel, so $u$ and $v$ differ by at most one step, and $u\ne v$.
+4. **(d)** By (b) the $12n-16$ lone H's lie on the $12n-16$ nodes of the skeleton, so they fill it. By (a) only H's with no P beside them can be interior, and these are the $(n-2)^3$ inner H's of the core, as many as there are interior nodes. So they fill the interior, and the remaining H's fill the face nodes.
+5. **(e)** A node outside the cube next to it is next to exactly one node of the cube. Each P beside an H lies on such a node next to that H, and no P of $S$ has an H on both sides. By (d), an H on a face node has one P beside it and one neighbour outside; an H on an edge node has two of each; an H on a corner has two P's and three neighbours outside. So all those nodes are taken, except one beside each corner.
+6. A rod's H's lie on the skeleton by (b), and consecutive ones are neighbours by (c). A ribbon's H's lie on face nodes by (d), consecutive ones are neighbours (directly or by (c)), and two neighbouring face nodes lie on the same face.
+
+<Figure caption="A rod along an edge and a ribbon on a face, after Figs. 1–2 of the paper."><RodAndRibbon /></Figure>
+
+### Where in the paper
+
+Facts 3.9–3.11, p. 37, are stated as "proved above", in the intuition of §3.2.1, pp. 32–33. The count $12n-16$ is on p. 37. Rules (d) and (e) are used on pp. 37–38 without being stated.
+
+### Rating
+
+2: three local checks and a count. The check of (c) at edges and corners is not in the paper.
+
+### Our note
+
+The paper's reason for (c) is that two of the three steps are orthogonal to the surface (p. 32). That covers face nodes only. Proof step 3 covers edge nodes and corners too: a walk of three steps that leaves the cube and comes back cannot end at distance 3, so it ends at a neighbour. Rules (d) and (e) are our statements of what the paper uses on pp. 37–38.

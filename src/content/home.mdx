@@ -1,0 +1,93 @@
+---
+lede: Fold a string of H’s and P’s into a grid so that as many H’s as possible touch. Berger and Leighton proved in 1998 that finding the best fold is NP-complete. This site explains their proof and asks for a simpler one.
+---
+
+import FoldGame from '../widgets/fold-game/FoldGame.tsx';
+import Equivalence from '../widgets/proof-map/figures/Equivalence.astro';
+import '../widgets/proof-map/figures/fig.css';
+
+{/* The front page text, rendered by src/pages/index.astro under the title and the lede above.
+    The game's string is the playground level "A core with loops" (cube-loops.json): its best
+    fold has 8 contacts, and only the 2×2×2 cube of H's reaches 8. */}
+
+Try it with a string of sixteen letters, <Seq s="PHHPPHHPPHHPPHHP" />. Place the letters one at a
+time, each on a free node of the grid next to the one before. Two H's that end up
+side by side without being neighbours in the string make a **contact**. Make as many contacts as
+you can. The best fold has 8.
+
+<div class="wide">
+  <FoldGame client:visible compact lattice="cubic" sequence="PHHPPHHPPHHPPHHP" />
+</div>
+
+## The HP model
+
+The game you just played is the **HP model** of protein folding, due to <Cite k="dill1985theory" />. A protein is
+a chain of amino acids. Some of them are hydrophobic (H): they avoid water, so in water the chain
+folds until they huddle together inside. The others are polar (P) and do not mind water. The model
+keeps only this effect. A **fold** puts the string on the cubic lattice, the 3D grid of points with
+integer coordinates, with consecutive letters on neighbouring nodes and no node used twice. A fold
+is better the more contacts it has.
+
+If you reached 8, look at your H's: they fill a 2×2×2 cube, and every P is outside it. There is no
+other way to reach 8: eight nodes of the grid have at most twelve neighbouring pairs, and only a
+cube has twelve. Four of those pairs are neighbours in the string already, which leaves 8 contacts.
+Keep this picture of a cube of H's with the P's outside, because the whole proof is built on it.
+
+## Why the best fold is hard to find
+
+For a string this short, a computer can try every fold. For longer strings this stops working,
+because the number of folds grows exponentially: a string of 100 letters has more than $10^{60}$
+of them. Many possibilities alone do not make a problem hard, though. A road map also has
+exponentially many routes between two towns, yet a shortest one is found in a fraction of a
+second, because it can be built from shortest routes to the towns along the way. Folding seems to
+have no such shortcut, and <Cite k="berger1998protein" /> proved a precise version of this.
+
+<Theorem kind="Theorem" source="Berger & Leighton 1998" status="cited">
+Given an HP string and a number $m$, deciding whether the string has a fold on the cubic lattice with at least $m$ contacts is NP-complete.
+</Theorem>
+
+The theorem asks a yes-or-no question about $m$ rather than for the best fold, because that is the
+form the theory of NP-completeness deals with. Finding the best fold is at least as hard, since it
+answers the question for every $m$ at once.
+
+NP-complete means two things. First, folding is in **NP**: a proposed answer can be checked in
+polynomial time, that is, in a number of steps bounded by a fixed power of the length of the
+string. For folding this is easy to see. Given a fold, we walk along it, check that no node is used
+twice and count its contacts, a few steps per letter. So the hard part is finding a fold with $m$
+contacts, not checking one. Second, every problem in NP can be translated quickly into folding.
+Berger and Leighton show this by translating bin packing into folding. Bin packing was already
+known to be NP-complete, so every problem in NP translates into it, and from there into folding. A
+fast method for folding would therefore solve every problem in NP fast. Whether that is possible is
+the P versus NP question, open since 1971, and most researchers believe it is not.
+
+## How the proof works
+
+Bin packing gives us some items, each with a size, and some bins of equal size, and asks whether
+the items fill the bins exactly. For each such puzzle Berger and Leighton write down one HP string
+with a cube's worth of H's, and they set $m$ to the number of contacts it has when its H's fill a
+cube. As with your string of sixteen letters, no other shape of the H's reaches $m$. Call a fold
+**perfect** when its H's fill a cube. They build the string so that it has a perfect fold exactly
+when the items fit.
+
+<Figure caption="A packing of the items gives a perfect fold of the string built from them, and a perfect fold gives a packing.">
+  <div class="home-fig"><Equivalence /></div>
+</Figure>
+
+The P's do the work. In a perfect fold every P lies outside the cube, so an H between two P's needs
+two neighbours outside the cube and can only sit on an edge or at a corner. An H with a P on one
+side sits on the surface, and only an H with no P beside it can go inside. By choosing where the
+P's go, Berger and Leighton turn filling the cube into a jigsaw in which almost every piece has one
+place: rods of lone H's along the edges, ribbons of doubled H's on the faces, and one long run of
+H's inside. On one face, the front face, some ribbons run straight across as walls and cut out
+strips that act as the bins. The only freedom left is which strip each item's ribbon goes into, so
+the string folds perfectly exactly when the items fit.
+
+[The original proof](original-proof/) goes through the argument in fifteen cards. Each opens on
+the idea of its step in words, with the exact statement and the proof behind it.
+
+## Is there a simpler proof?
+
+Berger and Leighton's proof is long. It writes out the intended fold in coordinates and needs six
+routing lemmas to join its pieces. <Cite k="demaine2012geometric" /> lists a simpler proof as an
+open problem, and the survey by <Cite k="istrail2009combinatorial" /> calls the known hardness
+proofs "quite involved".

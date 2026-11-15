@@ -1,0 +1,12 @@
+{
+  "id": "three-bins",
+  "order": 30,
+  "title": "Three bins",
+  "bins": 3,
+  "capacity": 8,
+  "items": [4, 2, 4, 6, 2, 6],
+  "answer": "yes",
+  "intro": "Three bins of 8 and six items.",
+  "hint": "Each 6 needs a 2, so the two 4’s share a bin.",
+  "solution": [2, 0, 2, 0, 1, 1]
+}

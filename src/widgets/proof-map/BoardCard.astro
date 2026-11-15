@@ -1,0 +1,52 @@
+---
+/**
+ * One card of the proof board: picture, number, difficulty, title, one-sentence caption.
+ * The whole card is a link to its step (#step-<map>-<step>); board.client.ts opens it in the popup.
+ * The picture is decorative here (aria-hidden): the popup shows it again with its description.
+ * Used only by ProofBoard.astro.
+ */
+import Pips from './Pips.astro';
+import UniqueIds from './UniqueIds.astro';
+import { inline } from './inline';
+import type { BoardFigure } from './figures/index';
+
+interface Props {
+  id: string;
+  n: number;
+  title: string;
+  caption: string;
+  difficulty: 1 | 2 | 3;
+  fig?: BoardFigure;
+}
+const { id, n, title, caption, difficulty, fig } = Astro.props;
+---
+
+<a
+  class:list={['pb-card', `pb-d${difficulty}`, !fig && 'pb-card-nofig']}
+  href={`#${id}`}
+  id={`${id}-card`}
+  data-step={id}
+  aria-haspopup="dialog"
+  aria-labelledby={`${id}-cn ${id}-ct`}
+  aria-describedby={`${id}-cc ${id}-cd`}
+>
+  <span class="pb-card-in">
+  {
+    fig && (
+      <span class="pb-card-fig" aria-hidden="true">
+        <UniqueIds suffix="card">
+          <fig.component {...(fig.props ?? {})} />
+        </UniqueIds>
+      </span>
+    )
+  }
+  <span class="pb-card-text">
+    <span class="pb-card-meta">
+      <span class="pb-num" id={`${id}-cn`}><span class="visually-hidden">Step </span>{n}</span>
+      <Pips d={difficulty} id={`${id}-cd`} />
+    </span>
+    <span class="pb-card-title" id={`${id}-ct`}>{title}</span>
+    <span class="pb-card-cap" id={`${id}-cc`} set:html={inline(caption)} />
+  </span>
+  </span>
+</a>

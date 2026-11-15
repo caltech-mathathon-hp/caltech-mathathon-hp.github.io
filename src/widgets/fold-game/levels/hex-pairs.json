@@ -1,0 +1,14 @@
+{
+  "id": "hex-pairs",
+  "order": 620,
+  "group": "Hexagonal lattice (2D)",
+  "title": "Four HH pairs",
+  "lattice": "hexagonal",
+  "sequence": "PHHPPHHPPHHPPHHP",
+  "best": 3,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (the game’s solver, engine/solve.ts).",
+  "intro": "The string of the cubic level “A core with loops”. Its best fold has 8 contacts there and 3 here.",
+  "solution": "RRRDLLLDRRRDLLL"
+}

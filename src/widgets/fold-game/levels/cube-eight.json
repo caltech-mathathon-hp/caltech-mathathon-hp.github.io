@@ -1,0 +1,15 @@
+{
+  "id": "cube-eight",
+  "order": 20,
+  "group": "Cubic lattice (3D)",
+  "title": "Eight H’s",
+  "lattice": "cubic",
+  "sequence": "HHHHHHHH",
+  "best": 5,
+  "optimal": true,
+  "bestKind": "proved",
+  "bestSource": "Eight nodes have at most 12 neighbouring pairs, and only as a 2×2×2 cube; 7 of them are consecutive in the string. Exhaustive search agrees (scripts/hp-optimum.ts).",
+  "intro": "Eight H’s and no P’s. The best fold has 3 contacts on the square lattice and 5 here.",
+  "hint": "Go around a square, step forward, and go around the square in front of it.",
+  "solution": "RULFRDL"
+}

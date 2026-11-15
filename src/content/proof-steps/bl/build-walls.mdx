@@ -1,0 +1,72 @@
+---
+title: Building the walls
+caption: 'The wall part of the string repeats one pattern per strip. Each repeat runs along one free edge, across the front face, along the other free edge and back across, so its two walls enclose a strip.'
+lane: right
+group: frame
+order: 2
+difficulty: 2
+figure: bl-build-walls
+source: '“Packing the front face: making the bins”, pp. 34–35, Fig. 8'
+---
+
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+Hold the cube as before, with the front face towards us and its free edges upright. We put the long rods on the left free edge and the short rods on the right ([7 One length per edge](#step-bl-free-edges)), and the rows of the face run across from one to the other. Because $n-2=q(2q+1)$, the rows between the top and bottom edges of the cube split into $q$ **bands** of $2q+1$ rows, one band per period. Each band holds a wall in its top row, a wall in its bottom row and the $2q-1$ rows of a strip in between.
+
+Each period draws the outline of its band, starting with the top band. A short rod climbs the right edge to the band's top row, and a wall crosses that row to the left. The long rod runs down the whole left side of the band, the second wall crosses back along the bottom row, and a second short rod climbs the right edge again. The two short rods have $2q$ H's for $2q+1$ rows, so the second stops one node below the first and leaves a one-node gap on the right edge. A run of P's in front of the right edge then leads down to the next band. Last comes the spaced rod: its runs of P's are long enough to reach from one gap to the next, and its $q$ H's fill the gaps.
+
+### Statement
+
+The wall part folds so that its walls cut the front face into $q$ strips of $T$ nodes. No P lies in front of a strip or more than three steps out in front of the cube, which leaves room for the linkers.
+
+### Exact statement
+
+Continue the fold of [10 Folding the frame](#step-bl-frame). Write $E_1$ for the free edge $(0,j,0)$ and $E_2$ for $(n-1,j,0)$, $1\le j\le n-2$, and let $t_p=n-2-(p-1)(2q+1)$ for $p=1,\dots,q$. The wall part of $S$ folds so that:
+
+1. period $p$ takes the rows $t_p-2q,\dots,t_p$: its $(2q+1)$-rod fills them on $E_1$, its two $q$-rods fill them on $E_2$ except row $t_p-q$, and its walls fill rows $t_p$ and $t_p-2q$ of the front face;
+2. the spaced rod fills the nodes $(n-1,t_p-q,0)$ left on $E_2$;
+3. the face nodes left form $q$ **strips**, the rows $t_p-2q+1,\dots,t_p-1$, each of $T=(2q-1)(n-2)$ nodes;
+4. every P lies outside the cube, none has $k\le-4$, and none lies at $(i,j,k)$ with $k<0$, $1\le i\le n-2$ and $j$ a row of a strip;
+5. the last P lies at $(n-1,n-2-q,-1)$.
+
+### Uses
+
+[4 Spelling the string](#step-bl-string): the wall part. [10 Folding the frame](#step-bl-frame): the free part and the P's already placed.
+
+### Proof
+
+1. **Rows.** Since $n-2=q(2q+1)$, the $q$ periods of $2q+1$ rows each take all rows $1,\dots,n-2$, period 1 at the top.
+2. **Rods.** A rod's H's go along the edge one row at a time. The two P's between consecutive H's sit on the same side of the edge, in front ($k=-1$) or beside it ($i=-1$ on $E_1$, $i=n$ on $E_2$), so the sides alternate. A $q$-rod ($q$ even) leaves on the side where it entered. A $(2q+1)$-rod leaves on the other side.
+3. **First wall.** The first $q$-rod of period $p$ runs up $E_2$ through rows $t_p-q+1,\dots,t_p$, entering and leaving in front. The wall then fills row $t_p$ from $(n-2,t_p,0)$ to $(1,t_p,0)$, each H with its P in front. The $(2q+1)$-rod runs down $E_1$ from row $t_p$ to row $t_p-2q$. It enters in front, so it leaves beside the edge, at $(-1,t_p-2q,0)$.
+4. **Second wall.** Six P's lead from there around the rod's P in front of the edge to $(1,t_p-2q,-1)$ (More), and the wall fills row $t_p-2q$ from $(1,t_p-2q,0)$ to $(n-2,t_p-2q,0)$. The second $q$-rod runs up $E_2$ through rows $t_p-2q,\dots,t_p-q-1$ and leaves in front. Row $t_p-q$ of $E_2$ stays open.
+5. **Joints.** <Seq s="P^{2q}" /> runs at $k=-2$ in front of $E_2$ to the next period. After the last period it makes a loop out to the right and back. The spaced rod then fills the $q$ open nodes from the bottom up, with runs <Seq s="P^{2q+6}" /> at distance 3 from the cube, alternately beside $E_2$ and in front of it (More). Its last P is $(n-1,n-2-q,-1)$, which proves (5).
+6. **Strips.** The rows between the two walls of a period are $t_p-2q+1,\dots,t_p-1$, and the walls of consecutive periods are in neighbouring rows. So the face nodes left are $q$ strips of $2q-1$ rows of $n-2$ nodes. This proves (1)–(3).
+7. **Room in front.** The P's of this part with $k<0$ and $1\le i\le n-2$ are the P's of the walls, in wall rows, and the six P's of step 4, also in wall rows. All other P's have $i\in\{-1,0,n-1\}$ or $i\ge n$, and all have $k\ge-3$. With [10 Folding the frame](#step-bl-frame), (4) follows.
+
+<More title="Coordinates of the runs of P's">
+
+Write $b=t_p-2q$.
+
+**Six P's** (step 4), from the $(2q+1)$-rod's last H $(0,b,0)$: $(-1,b,0)$, $(-1,b,-1)$, $(-1,b,-2)$, $(0,b,-2)$, $(1,b,-2)$, $(1,b,-1)$, then the wall's first H $(1,b,0)$. The route goes around $(0,b,-1)$, a P of the rod.
+
+**<Seq s="P^{2q}" /> between periods**, from the second $q$-rod's last P $(n-1,t_p-q-1,-1)$: $(n-1,j,-2)$ for $j=t_p-q-1$ down to $t_p-3q$, then the next period's first P $(n-1,t_{p+1}-q+1,-1)$; note $t_p-3q=t_{p+1}-q+1$. These rows lie strictly between the open rows $t_p-q$ and $t_{p+1}-q$.
+
+**<Seq s="P^{2q}" /> after the last period.** The last $q$-rod ends at $(n-1,q,0)$, with its P at $(n-1,q,-1)$, and the first spaced H goes to the open node $(n-1,q+1,0)$. The run is $(n-1+x,q,-1)$ for $x=1,\dots,q$, then $(n-1+x,q+1,-1)$ for $x=q,\dots,1$, and the spaced rod's first P is $(n-1,q+1,-1)$.
+
+**<Seq s="P^{2q+6}" /> of the spaced rod**, between open rows $s$ and $s'=s+2q+1$. Beside $E_2$: $(n,s,0)$, $(n+1,s,0)$, then $(n+2,j,0)$ for $s\le j\le s'$, then $(n+1,s',0)$, $(n,s',0)$. In front: $(n-1,s,-1)$, $(n-1,s,-2)$, then $(n-1,j,-3)$ for $s\le j\le s'$, then $(n-1,s',-2)$, $(n-1,s',-1)$. Each has $2q+6$ P's, and the nodes at $k=-2$ are free because the open rows are not used by the runs between periods. The first spaced H entered from the front, so the runs alternate beside, in front, beside, …; there are $q-1$ runs, an odd number, so the last one is beside $E_2$ and the last P is in front, at $(n-1,n-2-q,-1)$.
+
+</More>
+
+### Where in the paper
+
+“Packing the front face: making the bins”, pp. 34–35, with Fig. 8. The paper gives the pieces of a period, the six P's, the runs at distance 2 and 3, and the last P. It says the run after the last period moves "away distance $q$ from the cube and then" back.
+
+### Rating
+
+2: coordinates with details to check. Every route is short, and the More lists them.
+
+### Our note
+
+The paper says four P's are needed "since $q+1$ is odd". The count that matters is the odd length $2q+1$ of the rod: it makes the rod leave beside the edge rather than in front of it (proof step 2). The routes in the More are ours, written to match the ends the paper gives.

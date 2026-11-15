@@ -1,0 +1,48 @@
+---
+/**
+ * Claim-status badge, following the project's labelling rule:
+ * <Status kind="proved" />  proved | computed | cited | conjecture | draft | lean | open
+ */
+interface Props {
+  kind: 'proved' | 'computed' | 'cited' | 'conjecture' | 'draft' | 'lean' | 'open';
+  label?: string;
+}
+const { kind, label } = Astro.props;
+const text: Record<Props['kind'], string> = {
+  proved: 'Proved',
+  computed: 'Computed',
+  cited: 'Cited',
+  conjecture: 'Conjecture',
+  draft: 'Draft',
+  lean: 'Lean-verified',
+  open: 'Open',
+};
+---
+
+<span class={`status ${kind}`}>{label ?? text[kind]}</span>
+
+<style>
+  .status {
+    --c: var(--fg-muted);
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    padding: 0.32em 0.55em;
+    border-radius: 999px;
+    color: var(--c);
+    border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+    background: color-mix(in srgb, var(--c) 9%, transparent);
+    vertical-align: 0.12em;
+    white-space: nowrap;
+  }
+  .proved { --c: var(--st-proved); }
+  .computed { --c: var(--st-computed); }
+  .cited { --c: var(--st-cited); }
+  .conjecture { --c: var(--st-conjecture); }
+  .draft { --c: var(--st-draft); }
+  .lean { --c: var(--st-lean); }
+  .open { --c: var(--diff-3); }
+</style>

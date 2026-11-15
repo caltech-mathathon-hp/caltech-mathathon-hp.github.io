@@ -1,0 +1,14 @@
+{
+  "id": "hex-20",
+  "order": 640,
+  "group": "Hexagonal lattice (2D)",
+  "title": "The 20-letter test string",
+  "lattice": "hexagonal",
+  "sequence": "HPHPPHHPHPPHPHHPPHPH",
+  "best": 4,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (the game’s solver, engine/solve.ts).",
+  "intro": "The best fold of this string has 4 contacts here, against 9 on the square lattice.",
+  "solution": "RRURULULULLDRDLDRRU"
+}

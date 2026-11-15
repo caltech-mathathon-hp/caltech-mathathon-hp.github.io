@@ -1,0 +1,564 @@
+# Curation overlay for the papers map and the list of papers (Context page).
+#
+# scripts/build_papers.py merges this file with the facts in ../literature/
+# (INDEX.md: year, relevance, reading status; refs.bib: authors, title, DOI/URL;
+# notes/<key>.md) and writes src/data/papers/papers.json. Run, from site/:
+#
+#     python3 scripts/build_papers.py          # regenerate papers.json
+#     python3 scripts/build_papers.py --check  # validate only
+#
+# What lives here: judgement and reader-facing wording, not facts.
+#   - themes (the lanes of the timeline and the groups of the list, in display order),
+#   - per paper:
+#       themes     first = lane and list group
+#       gist       one clause on what the paper shows; the line a reader sees by default
+#                  (under about 100 characters)
+#       takeaway   more detail, shown on demand after the gist; must not repeat the gist
+#       why        why it matters for this problem, shown on demand
+#       relations  to other papers; optional venue / statusNote overrides
+#   - extra papers that are in refs.bib but not in INDEX.md.
+# Every fact must be supported by literature/notes/ or literature/topics/.
+# Keep quotations out of this file: the Context page allows at most one quote.
+# Write for a reader: short plain sentences, no abbreviations, "we" for the team
+# (see .claude/skills/unslop/SKILL.md at the repo root).
+#
+# Relation kinds (A -> B, stored on A):
+#   reduces-from  A's hardness proof reduces from the problem of B
+#   builds-on     A uses a result, gadget or technique of B
+#   extends       A strengthens or generalizes B
+#   variant-of    A studies a variant of the problem in B
+#   refutes       A finds an error in B
+#   surveys       A surveys or restates B
+#   formalizes    A formalizes something from B
+#   answers       A answers a question left open in B
+#   discusses     A discusses or critiques B without changing its result
+
+# ---------------------------------------------------------------- themes (lanes, in order)
+
+[[themes]]
+id = "core"
+label = "The hardness proofs"
+short = "Hardness proofs"
+color = "--h"
+description = "The two 1998 proofs that two-letter HP folding is NP-complete."
+
+[[themes]]
+id = "variants"
+label = "Folding variants"
+short = "Variants"
+color = "--p"
+description = "Hardness with another alphabet, energy, lattice or angle rule, a given region, or a restricted set of folds."
+
+[[themes]]
+id = "sources"
+label = "Source problems and gadgets"
+short = "Sources & gadgets"
+color = "--diff-1"
+description = "Problems a reduction can start from, and constructions the proofs borrow."
+
+[[themes]]
+id = "approx"
+label = "Approximation"
+short = "Approximation"
+color = "--bond"
+description = "Algorithms that reach a fixed fraction of the optimal score."
+
+[[themes]]
+id = "design"
+label = "Inverse folding and sequence design"
+short = "Inverse folding"
+color = "--st-conjecture"
+description = "Given a shape, choose the H/P string. One published hardness proof in this area is wrong."
+
+[[themes]]
+id = "formal"
+label = "Formalization"
+short = "Formalization"
+color = "--st-lean"
+description = "The HP model in Lean, and NP-completeness in Lean, Coq and Isabelle."
+
+[[themes]]
+id = "background"
+label = "Surveys and background"
+short = "Background"
+color = "--st-cited"
+description = "The origin of the model, surveys and lectures that restate the proofs, and a classical inequality."
+
+# ---------------------------------------------------------------- wording
+
+# Whole-word replacements applied to venues (from the INDEX "ref" column) and to the texts.
+[abbreviations.venue]
+"JCB" = "J. Comput. Biol."
+"DAM" = "Discrete Appl. Math."
+"SICOMP" = "SIAM J. Comput."
+"CGTA" = "Comput. Geom."
+"JBCB" = "J. Bioinform. Comput. Biol."
+"IPL" = "Inf. Process. Lett."
+"IJCGA" = "Int. J. Comput. Geom. Appl."
+"Bull Math Biol" = "Bull. Math. Biol."
+"Protein Eng" = "Protein Eng."
+"OCW" = "MIT OpenCourseWare"
+
+[abbreviations.text]
+"BL" = "Berger–Leighton"
+"HC" = "Hamiltonian cycle"
+"25-pp" = "25-page"
+"SAWs" = "self-avoiding walks"
+"TMs" = "Turing machines"
+"TM" = "Turing machine"
+"OLA" = "optimal linear arrangement"
+"3DM" = "3-dimensional matching"
+"FO" = "first-order"
+"P3SAT" = "planar 3SAT"
+"Karp 21" = "all 21 of Karp's problems"
+
+# ---------------------------------------------------------------- papers
+
+# ----- the hardness proofs
+
+[papers.berger1998protein]
+themes = ["core"]
+badge = "3D cubic lattice"
+gist = "HP folding on the cubic lattice is NP-complete, by reduction from bin packing."
+takeaway = "The string is built so that a perfect fold puts its H's in a cube and its pieces into bins on one face. That a perfect fold gives a packing takes 1.5 pages of counting. Building the fold from a packing takes explicit coordinates and six routing lemmas. The journal version has the same proof as the conference version."
+why = "The base paper of this project. Most of its length goes into the explicit fold and the routing of the linkers, the runs of P's that join the pieces."
+relations = [
+  { to = "garey1979computers", kind = "reduces-from", note = "Reduces from an exact, even-size form of Garey and Johnson's bin packing. Its strong NP-completeness follows from 3-PARTITION." },
+  { to = "loomis1949inequality", kind = "builds-on", note = "The cube lemma (Fact 3.1) is cited as a classic result without a source. Its inequality is Theorem 2 of Loomis and Whitney; the equality case is not in that paper." },
+  { to = "leighton1986three", kind = "builds-on", note = "Cited for general methods of 3D wire routing. The routing lemmas (3.3–3.8) are Berger and Leighton's own." },
+  { to = "dill1985theory", kind = "builds-on", note = "Studies the HP model, which the paper credits to Dill." },
+  { to = "hart1996fast", kind = "answers", note = "Hart and Istrail had listed the complexity of HP folding as open and conjectured NP-hardness." },
+]
+
+[papers.crescenzi1998complexity]
+themes = ["core"]
+badge = "2D square lattice"
+gist = "HP folding on the square lattice is NP-complete, by reduction from Hamiltonian path."
+takeaway = "A Hadamard code makes every non-edge of the graph cost extra losses. The proof that a fold within the loss budget gives a Hamiltonian path takes 11 pages of the journal version and 25 pages of appendices. A 3D version is sketched in one paragraph."
+why = "The only proof for the square lattice. Its target is a budget of losses instead of a perfect fold."
+relations = [
+  { to = "trevisan1997when", kind = "builds-on", note = "Trevisan's Hadamard-code embedding turns non-adjacent vertices into extra losses." },
+  { to = "berger1998protein", kind = "variant-of", note = "The same question on the square lattice, proved independently. The paper credits Berger and Leighton with the 3D case." },
+  { to = "hart1996fast", kind = "answers", note = "Hart and Istrail had listed the complexity of HP folding as open and conjectured NP-hardness." },
+]
+
+# ----- variants
+
+[papers.paterson1996complexity]
+themes = ["variants", "sources"]
+gist = "String folding with an unbounded alphabet is NP-complete in 2D and 3D."
+takeaway = "Only identical letters bond. The 2D proof reduces from planar 3SAT, the 3D proof from 3SAT."
+why = "The predecessor of both proofs. Its gadgets are rigid because only identical letters bond. Two letters cannot provide that."
+relations = [
+  { to = "lichtenstein1982planar", kind = "reduces-from", note = "The 2D proof reduces from planar 3SAT. The 3D proof reduces from 3SAT." },
+  { to = "crescenzi1998complexity", kind = "variant-of", note = "Unbounded alphabet. The two-letter HP case was its open problem." },
+  { to = "berger1998protein", kind = "variant-of", note = "Its 3D proof uses the principle behind Berger and Leighton's perfect fold: a maximal score forces rigid gadgets." },
+]
+
+[papers.nayak1998spatial]
+themes = ["variants", "approx"]
+gist = "With about 10³⁰⁰ letters, string folding is NP-hard and MAX SNP-hard."
+takeaway = "On the cubic lattice, under randomized reductions. Each letter becomes a random codeword (a spatial code). Hardness of approximation for HP folding is left open."
+why = "Shows how far generic methods go. The authors write that two letters would need a new idea."
+relations = [
+  { to = "paterson1996complexity", kind = "builds-on", note = "The single-string result adapts Paterson and Przytycka's 3D reduction so that it preserves gaps." },
+  { to = "berger1998protein", kind = "variant-of", note = "A finite alphabet of about 10³⁰⁰ letters on the cubic lattice." },
+]
+
+[papers.atkins1999intractability]
+themes = ["variants"]
+gist = "Folding with 12 letters on the cubic lattice is NP-complete."
+takeaway = "The contact energies form a designed 12×12 table, with bonds between different letters. The reduction is from Hamiltonian path. The appendix proves the cube lemma, including the case of equality."
+why = "A deterministic proof with a finite alphabet. It proves the cube lemma that Berger and Leighton cite without proof."
+relations = [
+  { to = "berger1998protein", kind = "variant-of", note = "Twelve letters instead of two, on the cubic lattice. Its appendix proves the cube lemma, which Berger and Leighton only cite." },
+  { to = "hart1997robust", kind = "answers", note = "Hart and Istrail asked for hardness with contact energies and a finite alphabet." },
+]
+
+[papers.hart1997robust]
+themes = ["variants"]
+gist = "With an unbounded alphabet, folding is NP-complete on every finitely representable lattice."
+takeaway = "Theorem 1 extends Unger and Moult's reduction from optimal linear arrangement. Theorem 2 proves hardness on the cubic lattice for a class of distance potentials, by reduction from Hamiltonian path. The paper does not mention the HP model, and it asks for hardness with contact energies and a finite alphabet."
+why = "Hardness that survives a change of lattice. Nothing follows for the two-letter HP model."
+relations = [
+  { to = "unger1993finding", kind = "extends", note = "Theorem 1 extends Unger and Moult's result to every finitely representable lattice." },
+  { to = "ngo1992computational", kind = "discusses", note = "Discussed as related work. Berger and Leighton describe the paper as a generalization of it." },
+]
+
+[papers.unger1993finding]
+themes = ["variants"]
+gist = "An early NP-hardness proof for a lattice model whose potential is part of the input."
+takeaway = "The reduction is from optimal linear arrangement. The potential forces part of the chain onto a line. The authors could not prove hardness for an HP-like model on the square lattice."
+why = "Hardness comes easily once the energy can pin down the geometry. The H/P energy cannot do that."
+relations = [
+  { to = "berger1998protein", kind = "variant-of", note = "A non-HP lattice model. Berger and Leighton list it as earlier work." },
+]
+
+[papers.ngo1992computational]
+themes = ["variants"]
+gist = "Folding a path on the diamond lattice under angle rules is NP-complete."
+takeaway = "The reduction is from PARTITION. Runs of the chain encode the numbers, and the chain length is exponential in the size of the instance."
+why = "Chain lengths encode numbers, as in Berger and Leighton. Here the numbers are in binary, so the hardness is only weak."
+relations = [
+  { to = "berger1998protein", kind = "variant-of", note = "Diamond-lattice paths with turn rules. Berger and Leighton note that it ignores compactness and has many parameters." },
+]
+
+[papers.fraenkel1993complexity]
+themes = ["variants"]
+gist = "Re-embedding a graph of charges at low energy is NP-complete, in 2D and 3D."
+takeaway = "The given edge lengths of the graph must be kept, so the object folded is a graph, not a chain. The reduction is from 3-dimensional matching."
+why = "It folds a graph instead of a string, which gives the reduction more control over the shape."
+relations = [
+  { to = "berger1998protein", kind = "variant-of", note = "Folds a graph of charged atoms instead of a string, as Berger and Leighton point out." },
+]
+
+[papers.aichholzer2003long]
+themes = ["variants"]
+gist = "2D HP strings of every length divisible by 4 whose optimal fold is unique."
+takeaway = "Whether folding stays NP-hard for such strings is open."
+why = "These are rigid gadgets in the HP model itself. The known hardness proofs produce many optimal folds, so they do not cover such strings."
+relations = [
+  { to = "berger1998protein", kind = "discusses", note = "Requiring a unique optimal fold defeats the known hardness proofs." },
+  { to = "crescenzi1998complexity", kind = "discusses", note = "Requiring a unique optimal fold defeats the known hardness proofs." },
+]
+
+[papers.demaine2022computational]
+themes = ["variants"]
+gist = "Fixed-angle HP folding is strongly NP-complete in 2D, even with only two H's."
+takeaway = "In 3D the fixed-angle case follows from Abel et al. together with the cube lemma."
+why = "Fixing the angles makes hardness easy. In the original proofs every angle is free."
+relations = [
+  { to = "crescenzi1998complexity", kind = "variant-of", note = "Fixed-angle HP chains on the square grid, strongly NP-complete even with two H's." },
+  { to = "abel2013finding", kind = "builds-on", note = "The 3D fixed-angle case follows from Abel et al. together with the cube lemma." },
+]
+
+[papers.abel2013finding]
+themes = ["variants", "sources"]
+gist = "Filling a cube with a chain whose turns are prescribed is NP-hard."
+takeaway = "With every residue an H, this gives NP-hardness of fixed-angle HP folding in 3D."
+why = "The target is Berger and Leighton's perfect cube, with every turn given."
+statusNote = "We know it through Demaine et al. (2022)."
+relations = [
+  { to = "berger1998protein", kind = "variant-of", note = "Fill the n×n×n cube with a chain whose turns are given. With every residue an H, this is fixed-angle HP folding." },
+]
+
+[papers.feng2022bicolored]
+themes = ["variants"]
+gist = "Folding a two-coloured path into a given grid graph with the most contacts is NP-hard."
+takeaway = "The reductions, from Hamiltonian path in grid graphs, take about three pages, because the region to fill is part of the input."
+why = "The reduction is short once the region is given. Forcing the region with the H/P energy alone is the hard part."
+relations = [
+  { to = "itai1982hamilton", kind = "reduces-from", note = "Short reductions from Hamiltonian path in grid graphs." },
+  { to = "crescenzi1998complexity", kind = "variant-of", note = "The host region is part of the input. Their introduction contrasts this with the Hadamard-code proof." },
+]
+
+[papers.manuch2008fitting]
+themes = ["variants"]
+gist = "Fitting a given off-lattice chain to the cubic lattice as closely as possible is NP-complete."
+takeaway = "Closeness is measured by the root-mean-square deviation of the coordinates."
+why = "A related lattice problem with a given chain and no HP energy."
+
+[papers.bahi2013protein]
+themes = ["variants"]
+gist = "A modelling critique of the 2D proof. It claims no mathematical error."
+takeaway = "The proof ranges over all self-avoiding walks. Pivot moves from the straight chain reach only some of them."
+why = "A reminder to state the set of folds exactly: all self-avoiding walks on the lattice."
+relations = [
+  { to = "crescenzi1998complexity", kind = "discusses", note = "The proof ranges over all self-avoiding walks, including folds that pivot moves from the straight chain cannot reach. Correctness is not disputed." },
+]
+
+# ----- source problems and gadgets
+
+[papers.itai1982hamilton]
+themes = ["sources"]
+gist = "Hamiltonian path and cycle are NP-complete in grid graphs."
+takeaway = "In rectangular grid graphs, Hamiltonian paths between two given vertices are decided in polynomial time."
+why = "A source problem without numbers. A Hamiltonian path of a grid graph is a self-avoiding walk that fills a region exactly. We found no reduction from it to HP folding."
+relations = [
+  { to = "plesnik1979np", kind = "reduces-from", note = "Lemma 2.1 starts from Hamiltonicity of planar digraphs of low degree." },
+]
+
+[papers.garey1979computers]
+themes = ["sources", "background"]
+gist = "The standard catalogue of NP-complete problems. It proves 3-PARTITION strongly NP-complete."
+takeaway = "Theorem 4.4 covers 3-PARTITION with sizes strictly between B/4 and B/2. The book's bin packing asks for bins filled to at most the capacity. Berger and Leighton modify it to exact filling with even sizes."
+why = "Strong NP-completeness matters here. Item sizes become lengths in the string, so the numbers have to be written in unary."
+relations = [
+  { to = "garey1975complexity", kind = "extends", note = "Proves 3-PARTITION strongly NP-complete (Theorem 4.4) and credits the 1975 paper, which proved a form without the size bounds." },
+]
+
+[papers.garey1975complexity]
+themes = ["sources"]
+gist = "A scheduling result that is the first hardness proof for 3-PARTITION."
+takeaway = "The paper never names 3-PARTITION. Its Theorem 3.5 is 3-PARTITION without the size bounds, stated for scheduling. Section 4 notes that the numbers in the proof stay polynomially bounded, so the hardness is strong."
+why = "The original source when the sizes in a reduction become lengths."
+
+[papers.garey1976planar]
+themes = ["sources"]
+gist = "Hamiltonian cycle is NP-complete in cubic, 3-connected planar graphs."
+why = "Bounded degree and planarity make it easier to draw the graph in a lattice."
+
+[papers.plesnik1979np]
+themes = ["sources"]
+gist = "Hamiltonian cycle is NP-complete in directed planar graphs of degree at most 3."
+why = "The first link in the chain of reductions that ends at Hamiltonicity in grid graphs."
+
+[papers.lichtenstein1982planar]
+themes = ["sources"]
+gist = "Planar 3SAT is NP-complete."
+why = "Planar SAT lets gadgets be laid out in the plane. Paterson and Przytycka use it for 2D string folding."
+
+[papers.papadimitriou1984two]
+themes = ["sources"]
+gist = "Hamiltonian path stays NP-complete in grid graphs of maximum degree 3."
+takeaway = "Theorem 2. The paper states no cycle version with this degree bound."
+why = "With degree at most 3, every vertex keeps a free lattice side, room for a P (our remark). The paper uses that side in its Theorem 3."
+relations = [
+  { to = "itai1982hamilton", kind = "extends", note = "Hamiltonian path, restricted to grid graphs of maximum degree 3 (Theorem 2)." },
+]
+
+[papers.leighton1986three]
+themes = ["sources"]
+gist = "Layout of graphs in three-dimensional grids, with bounds on volume and wire length."
+takeaway = "Berger and Leighton cite it for general methods of 3D wire routing. They use no lemma from it; their routing lemmas are their own."
+why = "The routing is the part of Berger and Leighton's proof that a simpler proof would most like to avoid."
+
+[papers.trevisan1997when]
+themes = ["sources"]
+gist = "Embeds a graph by codewords whose Hamming distance tells whether two vertices are adjacent."
+why = "Crescenzi et al. use this embedding in the 2D proof."
+
+[papers.umans1997hamiltonian]
+themes = ["sources"]
+gist = "Hamiltonian cycle is polynomial in solid grid graphs, those without holes."
+takeaway = "The algorithm merges the cycles of a 2-factor. The paper says nothing about Hamiltonian paths."
+why = "A reduction that encodes Hamiltonian cycle as filling a region therefore needs holes or obstacles (our remark)."
+relations = [
+  { to = "itai1982hamilton", kind = "answers", note = "Settles an open question of Itai et al.: on grid graphs without holes, Hamiltonian cycle is polynomial." },
+]
+
+[papers.demaine2007jigsaw]
+themes = ["sources"]
+gist = "Packing polyominoes is NP-complete, and equivalent to jigsaw and edge-matching puzzles."
+why = "Packing polyominoes is close to placing items in bins."
+
+[papers.arkin2009not]
+themes = ["sources"]
+gist = "Maps which classes of square, triangular and hexagonal grid graphs have a hard Hamiltonian cycle."
+why = "Relevant if a reduction targets a lattice other than the square one."
+
+[papers.deberg2012optimal]
+themes = ["sources"]
+gist = "The usual citation for planar monotone rectilinear 3SAT."
+takeaway = "We have not checked the attribution."
+why = "This form of 3SAT has a layout that suits gadgets on a grid."
+
+[papers.demaine2017hamiltonicity]
+themes = ["sources"]
+gist = "Hamiltonian cycle is NP-complete in polygonal square grid graphs and thin hexagonal grid graphs."
+takeaway = "These are two cases that Arkin et al. left open."
+why = "Thin grid graphs stay hard. They might correspond to narrow forced corridors in a fold (our idea)."
+relations = [
+  { to = "arkin2009not", kind = "answers", note = "Settles two cases that Arkin et al. left open." },
+]
+
+[papers.mithardness2024asp]
+themes = ["sources"]
+gist = "Hamiltonicity in grid graphs of maximum degree 3 is ASP-complete."
+takeaway = "The introduction maps the known hardness results for Hamiltonicity."
+why = "Its reductions are parsimonious, which could give #P-hardness of counting optimal folds (our idea)."
+relations = [
+  { to = "papadimitriou1984two", kind = "extends", note = "Adds the cycle version for maximum degree 3, and ASP-completeness." },
+  { to = "itai1982hamilton", kind = "surveys", note = "Its introduction maps the hardness results for Hamiltonicity." },
+  { to = "garey1976planar", kind = "surveys", note = "Its introduction maps the hardness results for Hamiltonicity." },
+  { to = "plesnik1979np", kind = "surveys", note = "Its introduction maps the hardness results for Hamiltonicity." },
+]
+
+# ----- approximation
+
+[papers.hart1996fast]
+themes = ["approx"]
+gist = "Simple folding algorithms that reach 1/4 of the optimal score in 2D and 3/8 in 3D."
+takeaway = "The ratios are asymptotic, and the algorithms run in linear or quadratic time. They rest on a parity bound: the lattices are bipartite, so an H can touch only H's at positions of the other parity. In 2D a fold has at most 2X + T contacts, where X counts the H's of the smaller parity class and T the ends of the string that are H's of that class. The paper lists the complexity of HP folding as open and conjectures that it is NP-hard."
+why = "A fold meets the parity bound only if every free side of the smaller class touches an H. This is the 2D counterpart of Berger and Leighton's perfect fold."
+
+# ----- inverse folding and sequence design
+
+[papers.hart1997computational]
+themes = ["design"]
+gist = "Claims that canonical HP sequence design is NP-complete in 2D and 3D."
+takeaway = "Berman et al. later showed that the 2D reduction is wrong."
+why = "A published hardness proof in this area that did not hold."
+
+[papers.berman2004protein]
+themes = ["design"]
+gist = "Canonical inverse folding is polynomial in 2D and NP-complete in 3D."
+takeaway = "Hart's 2D reduction is wrong. The 3D problem has a PTAS."
+why = "It corrects a published proof, and gives a problem whose 2D and 3D versions differ in complexity."
+relations = [
+  { to = "hart1997computational", kind = "refutes", note = "The 2D reduction is not correct. 2D canonical inverse folding is solvable in O(K|V|) time." },
+]
+
+[papers.kleinberg1999efficient]
+themes = ["design"]
+gist = "The sequence-design problem of Sun et al. is solvable in polynomial time."
+why = "Sequence design can be easy while folding is hard."
+relations = [
+  { to = "hart1997computational", kind = "answers", note = "Solves the Sun et al. design model in polynomial time, answering an open question of Hart." },
+]
+
+# ----- formalization
+
+[papers.kreuzer2023verification]
+themes = ["formal"]
+gist = "Isabelle proofs that NP-hardness reductions for two lattice problems are correct."
+takeaway = "The problems are the closest and the shortest vector problem. Running time is argued on paper. The formalization found and fixed problems in the published proofs."
+why = "A precedent for proving the correctness of a reduction formally and arguing its running time in prose."
+relations = [
+  { to = "wimmers2019polynomial", kind = "builds-on", note = "Its Isabelle entry takes its definition of reductions from poly-reductions (from a search result; we have not opened the entry)." },
+]
+
+[papers.kjoshanssen2024ptyche]
+themes = ["formal"]
+gist = "The HP model in Lean 4: folds, the contact score and score bounds."
+takeaway = "It also has a verified search for optimal folds. It is the only formalization of the model we found, and it has no hardness results."
+why = "A possible base for Lean definitions of the model."
+relations = [
+  { to = "dill1985theory", kind = "formalizes", note = "Folds, contact score and score bounds of Dill's HP model in Lean 4. No NP-hardness." },
+  { to = "mathlib2026computability", kind = "builds-on", note = "A Lean 4 library built on Mathlib." },
+]
+
+[papers.cslibfrontier2026complexity]
+themes = ["formal"]
+gist = "Polynomial-time reductions in Lean, with about 40 problems proved NP-complete."
+takeaway = "It has a tactic for proofs of polynomial running time. The build is heavy."
+why = "The most usable Lean framework for polynomial-time reductions we found. It is large, written with AI assistance, and not ours."
+relations = [
+  { to = "cslib2026computability", kind = "builds-on", note = "Adds NP, reductions and NP-completeness on top of CSLib." },
+  { to = "mathlib2026computability", kind = "builds-on", note = "Depends on Mathlib." },
+]
+
+[papers.mathlib2026computability]
+themes = ["formal"]
+venue = "Lean 4 library (mathlib4)"
+gist = "Lean's main library has polynomial-time Turing machines, but no NP."
+takeaway = "It has no polynomial-time reductions. The grid ℤ² can be built as a product of graphs."
+why = "This is what Lean work can build on without other libraries."
+
+[papers.cslib2026computability]
+themes = ["formal"]
+venue = "Lean 4 library (leanprover/cslib)"
+gist = "The official Lean library for computer science. It has no NP."
+takeaway = "It has polynomial-time Turing machines. Its cost monad counts steps by annotations that Lean does not check."
+why = "Costs that are annotations cannot back a claim of verified running time."
+relations = [
+  { to = "mathlib2026computability", kind = "builds-on", note = "A complexity library built on Mathlib." },
+]
+
+[papers.senellart2026descriptive]
+themes = ["formal"]
+gist = "NP-completeness in Lean through logic, for Cook–Levin and all 21 of Karp's problems."
+takeaway = "NP is defined logically. Hardness is shown by first-order reductions, which are automatically polynomial-time."
+why = "NP-completeness without machines or running-time proofs."
+relations = [
+  { to = "mathlib2026computability", kind = "builds-on", note = "Built on Mathlib's model theory." },
+]
+
+[papers.solresol2026nphardness]
+themes = ["formal"]
+gist = "P, NP and reductions on Mathlib's Turing machines, with SAT and MaxCut NP-complete."
+takeaway = "About 54,000 lines, built with AI."
+why = "A measure of what NP-hardness on Mathlib's Turing machines costs."
+relations = [
+  { to = "mathlib2026computability", kind = "builds-on", note = "Builds P, NP and reductions on Mathlib's TM2 machines." },
+]
+
+[papers.rbarish2026npcompleteness]
+themes = ["formal"]
+venue = "Lean 4 repository (NPCompleteness-Lean4)"
+gist = "Turing machines in core Lean, with SAT and planar 3SAT proved NP-complete."
+why = "It was written by AI and, according to its README, has not been reviewed by a person."
+relations = [
+  { to = "lichtenstein1982planar", kind = "formalizes", note = "Proves planar 3SAT, including Lichtenstein's version, NP-complete in Lean." },
+]
+
+[papers.gaher2021mechanising]
+themes = ["formal"]
+gist = "The Cook–Levin theorem in Coq."
+takeaway = "Running time is measured in a lambda calculus, with certified extraction from Coq functions."
+why = "Time is measured in a functional model instead of on Turing machines."
+
+[papers.balbach2023cook]
+themes = ["formal"]
+gist = "The Cook–Levin theorem in Isabelle, with running-time proofs for multi-tape Turing machines."
+why = "Shows what running-time proofs at the level of Turing machines cost."
+
+[papers.wimmers2019polynomial]
+themes = ["formal"]
+gist = "An unfinished Isabelle catalogue of Karp reductions."
+takeaway = "SAT to independent set, vertex cover and set cover, and vertex cover to Hamiltonian cycle. No longer active."
+why = "Earlier work on formal reductions in Isabelle."
+
+# ----- surveys and background
+
+[papers.istrail2009combinatorial]
+themes = ["background", "approx"]
+gist = "The standard survey of the mathematics of lattice HP models."
+takeaway = "It restates both hardness theorems without proofs and lists hardness on the hexagonal lattice as open. Its Theorem 3.7 states the 2D parity bound without the term for H's at the ends of the string; that form fails for HPPHPHPH (our check)."
+why = "It describes both proofs as involved and gives no simpler one. Its list of hardness results ends in 1999."
+relations = [
+  { to = "berger1998protein", kind = "surveys", note = "Theorem 4.10: the 3D result, from bin packing, with the cube lemma." },
+  { to = "crescenzi1998complexity", kind = "surveys", note = "Theorem 4.9: the 2D result, which the survey describes as a reduction from Hamiltonian cycle with Trevisan codes." },
+  { to = "hart1996fast", kind = "surveys", note = "Approximation algorithms and the parity bound (Theorems 3.6–3.8). Theorem 3.7 drops the term for H's at the ends of the string." },
+  { to = "ngo1992computational", kind = "surveys", note = "Listed among the hardness theorems (Theorem 4.1)." },
+  { to = "fraenkel1993complexity", kind = "surveys", note = "Listed among the hardness theorems (Theorem 4.2)." },
+  { to = "unger1993finding", kind = "surveys", note = "Listed among the hardness theorems (Theorem 4.3)." },
+  { to = "paterson1996complexity", kind = "surveys", note = "Listed among the hardness theorems." },
+  { to = "hart1997robust", kind = "surveys", note = "Listed among the hardness theorems (Theorem 4.5)." },
+  { to = "nayak1998spatial", kind = "surveys", note = "Listed among the hardness theorems." },
+  { to = "atkins1999intractability", kind = "surveys", note = "Listed among the hardness theorems (Theorem 4.8)." },
+]
+
+[papers.demaine2012geometric]
+themes = ["background", "approx"]
+gist = "MIT lectures on folding that pose a simpler hardness proof as an open problem."
+takeaway = "Demaine skips both hardness proofs as complicated. His open problems are a simpler or cleaner proof, APX-hardness, and a (1+ε)-approximation."
+why = "States the open problem this project takes up."
+relations = [
+  { to = "berger1998protein", kind = "surveys", note = "Summarizes the 3D reduction from bin packing and asks for a simpler proof." },
+  { to = "crescenzi1998complexity", kind = "surveys", note = "Summarizes the 2D reduction from Hamiltonicity and asks for a simpler proof." },
+]
+
+[papers.demaine2007geometric]
+themes = ["background"]
+gist = "The standard book on folding algorithms. Section 9.3 covers the HP model."
+takeaway = "We have not seen the text."
+why = "The book version of Demaine's lectures. We do not know whether it sketches either proof."
+
+[papers.chandru2003algorithmics]
+themes = ["background"]
+gist = "A 2003 survey of algorithms for folding on lattices."
+takeaway = "It calls the hardness proofs involved and sketches the construction of Berger and Leighton. The proof that a perfect fold gives a packing is left out, and the 2D proof is only named."
+why = "A second survey that restates the 3D proof without simplifying it."
+relations = [
+  { to = "berger1998protein", kind = "surveys", note = "Sketches the construction and leaves out the proof that a perfect fold gives a packing." },
+]
+
+[papers.loomis1949inequality]
+themes = ["background"]
+gist = "Bounds the size of a set by the sizes of its projections onto the coordinate planes."
+takeaway = "Theorem 2 is the discrete form: for a set S of unit cubes, |S|² is at most the product of the sizes of its three projections. The paper has no case of equality."
+why = "Berger and Leighton's cube lemma says that n³ H's have the most contacts exactly when they fill a cube. They give no source. Its inequality is this one; the case of equality is proved by Atkins and Hart."
+
+# ---------------------------------------------------------------- papers in refs.bib but not in INDEX.md
+
+[extra.dill1985theory]
+relevance = 1
+status = "todo"
+statusNote = "We know it through Berger and Leighton's references."
+
+[papers.dill1985theory]
+themes = ["background"]
+gist = "Introduces the HP model."
+takeaway = "Hydrophobic residues drive folding by gathering in a compact core."
+why = "The origin of the model that both hardness proofs study."

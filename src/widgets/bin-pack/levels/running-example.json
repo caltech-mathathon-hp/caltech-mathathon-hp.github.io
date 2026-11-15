@@ -1,0 +1,12 @@
+{
+  "id": "running-example",
+  "order": 50,
+  "title": "The running example",
+  "bins": 2,
+  "capacity": 10,
+  "items": [6, 2, 8, 4],
+  "answer": "yes",
+  "intro": "The instance of the proof figures, in their colours. Berger and Leighton turn it into a string whose best fold is a cube of 80 × 80 × 80 H’s.",
+  "hint": "The 8 needs the 2.",
+  "solution": [0, 1, 1, 0]
+}

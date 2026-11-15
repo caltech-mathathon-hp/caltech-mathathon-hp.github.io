@@ -1,0 +1,12 @@
+{
+  "id": "dead-end",
+  "order": 20,
+  "title": "A dead end",
+  "bins": 2,
+  "capacity": 12,
+  "items": [6, 4, 8, 6],
+  "answer": "yes",
+  "intro": "Two bins of 12. Some first moves leave no way to finish.",
+  "hint": "The 8 needs a 4 beside it.",
+  "solution": [1, 0, 0, 1]
+}

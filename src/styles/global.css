@@ -1,0 +1,287 @@
+/*
+ * Global element styles and the page grid. Colours, fonts and sizes come from tokens.css.
+ *
+ * Page grid: every section page is a column of blocks. Plain prose is --w-prose wide.
+ * Give a block the class `wide` (up to --w-wide) or `full` (edge to edge, with gutters)
+ * to let a figure or widget break out of the reading column.
+ */
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + var(--s-4));
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-serif);
+  font-size: var(--fs-base);
+  line-height: var(--lh-prose);
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+canvas,
+video {
+  max-width: 100%;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+a:hover {
+  color: var(--accent-hover);
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--accent-weak);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-sans);
+  line-height: var(--lh-tight);
+  font-weight: 650;
+  letter-spacing: -0.012em;
+  color: var(--fg);
+  text-wrap: balance;
+}
+h1 {
+  font-size: var(--fs-h1);
+  letter-spacing: -0.022em;
+  margin: 0;
+}
+h2 {
+  font-size: var(--fs-h2);
+  margin: var(--s-7) 0 var(--s-4);
+}
+h3 {
+  font-size: var(--fs-h3);
+  margin: var(--s-6) 0 var(--s-3);
+}
+h4 {
+  font-size: var(--fs-base);
+  margin: var(--s-5) 0 var(--s-2);
+}
+
+p {
+  margin: 0 0 var(--s-4);
+  text-wrap: pretty;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: var(--s-7) 0;
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+}
+:not(pre) > code {
+  background: var(--bg-sunk);
+  padding: 0.08em 0.32em;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: var(--bg-sunk);
+  padding: var(--s-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  line-height: 1.5;
+}
+kbd {
+  border: 1px solid var(--rule-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  padding: 0.05em 0.35em;
+  font-size: 0.78em;
+  background: var(--bg-elev);
+}
+
+ul,
+ol {
+  padding-left: 1.4em;
+  margin: 0 0 var(--s-4);
+}
+li {
+  margin-bottom: var(--s-1);
+}
+li::marker {
+  color: var(--fg-muted);
+}
+
+blockquote {
+  margin: var(--s-5) 0;
+  padding-left: var(--s-4);
+  border-left: 3px solid var(--rule-strong);
+  color: var(--fg-muted);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+  margin: var(--s-5) 0;
+}
+th,
+td {
+  text-align: left;
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+th {
+  font-weight: 600;
+  border-bottom: 1.5px solid var(--rule-strong);
+}
+
+/* KaTeX: keep display math from overflowing on phones. */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: var(--s-1) 0;
+}
+.katex {
+  font-size: 1.04em;
+}
+
+/* ---------- Page grid ---------- */
+.flow {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--gutter), 1fr)
+    [wide-start] minmax(0, calc((var(--w-wide) - var(--w-prose)) / 2))
+    [prose-start] min(var(--w-prose), 100% - 2 * var(--gutter)) [prose-end]
+    minmax(0, calc((var(--w-wide) - var(--w-prose)) / 2)) [wide-end]
+    minmax(var(--gutter), 1fr) [full-end];
+}
+.flow > * {
+  grid-column: prose;
+}
+.flow > .wide {
+  grid-column: wide;
+}
+.flow > .full {
+  grid-column: full;
+  padding-inline: var(--gutter);
+}
+
+/* ---------- Page head (front page and section pages) ---------- */
+.page-head {
+  margin-bottom: var(--s-6);
+}
+.page-head .kicker {
+  margin: 0 0 var(--s-2);
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: var(--fs-xs);
+}
+.page-head .lede {
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  color: var(--fg-muted);
+  margin: var(--s-4) 0 0;
+}
+
+/* ---------- Utility ---------- */
+.ui {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+}
+.muted {
+  color: var(--fg-muted);
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Buttons shared by all widgets. */
+.btn {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 0.55em 0.9em;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-elev);
+  color: var(--fg);
+  cursor: pointer;
+  transition: background-color 120ms, border-color 120ms;
+}
+.btn:hover {
+  border-color: var(--fg-subtle);
+  background: var(--bg-sunk);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+.btn.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+.btn.ghost {
+  border-color: transparent;
+  background: transparent;
+}
+.btn.ghost:hover {
+  background: var(--bg-sunk);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

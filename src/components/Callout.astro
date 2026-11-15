@@ -1,0 +1,43 @@
+---
+/**
+ * A boxed remark in the prose.
+ * <Callout kind="hard" title="Lemma 3.12">…</Callout>
+ * kinds: note (default) | idea | hard | warning
+ */
+interface Props {
+  kind?: 'note' | 'idea' | 'hard' | 'warning';
+  title?: string;
+}
+const { kind = 'note', title } = Astro.props;
+const defaults = { note: 'Note', idea: 'Idea', hard: 'Hard step', warning: 'Caution' };
+---
+
+<aside class={`callout ${kind}`}>
+  <p class="callout-title ui">{title ?? defaults[kind]}</p>
+  <div class="callout-body"><slot /></div>
+</aside>
+
+<style>
+  .callout {
+    --c: var(--accent);
+    margin: var(--s-5) 0;
+    padding: var(--s-4) var(--s-5);
+    border-left: 3px solid var(--c);
+    background: color-mix(in srgb, var(--c) 6%, var(--bg-elev));
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+  .callout.idea { --c: var(--diff-1); }
+  .callout.hard { --c: var(--diff-3); }
+  .callout.warning { --c: var(--diff-2); }
+  .callout-title {
+    margin: 0 0 var(--s-2);
+    font-weight: 650;
+    color: var(--c);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: var(--fs-xs);
+  }
+  .callout-body :global(> :last-child) {
+    margin-bottom: 0;
+  }
+</style>

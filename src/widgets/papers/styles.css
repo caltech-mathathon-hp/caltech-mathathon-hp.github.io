@@ -1,0 +1,771 @@
+/*
+ * Papers map (PapersMap.tsx) and the static list of papers (PapersList.astro).
+ * Class prefix pp-. Colours come from tokens.css only, so dark mode follows the tokens.
+ * A paper's theme colour arrives as the custom property --c (set inline from papers.json).
+ */
+
+.pp {
+  container: pp / inline-size;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+  color: var(--fg);
+  margin-block: var(--s-5) var(--s-6);
+}
+
+.pp-dot {
+  display: inline-block;
+  flex: none;
+  width: 0.62em;
+  height: 0.62em;
+  border-radius: 50%;
+  background: var(--c, var(--fg-muted));
+}
+.pp-chip-n {
+  color: var(--fg-subtle);
+  font-size: 0.9em;
+  font-weight: 450;
+  font-variant-numeric: tabular-nums;
+}
+.pp-muted {
+  color: var(--fg-muted);
+}
+
+/* ---------- theme chips */
+.pp-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  margin-bottom: var(--s-3);
+}
+.pp-toolbar-label {
+  font-size: var(--fs-xs);
+  color: var(--fg-subtle);
+  margin-right: var(--s-1);
+}
+.pp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  font: inherit;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  line-height: 1;
+  padding: 0.45em 0.75em;
+  border-radius: 999px;
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-elev);
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: background-color 120ms, border-color 120ms, color 120ms;
+}
+.pp-chip:hover {
+  border-color: var(--fg-subtle);
+  color: var(--fg);
+}
+.pp-chip[aria-pressed='true'] {
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 14%, var(--bg-elev));
+  color: var(--fg);
+}
+.pp-chip-reset {
+  border-style: dashed;
+}
+.pp-chip:focus-visible,
+.pp-row:focus-visible,
+.pp-rel-link:focus-visible,
+.pp-card-title:focus-visible,
+.pp-ref-show:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.pp-card-title:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ---------- timeline */
+.pp-svgwrap {
+  position: relative;
+}
+.pp-frame {
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.pp-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--font-sans);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pp-lane-bg {
+  fill: transparent;
+}
+.pp-lane-core .pp-lane-bg {
+  fill: var(--h-weak);
+  fill-opacity: 0.45;
+}
+.pp-lane-rule {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+.pp-lane-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  fill: var(--fg);
+}
+.pp-lane-count {
+  font-size: 11.5px;
+  fill: var(--fg-subtle);
+}
+.pp-grid {
+  stroke: var(--rule);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+}
+.pp-axis {
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+.pp-tick {
+  font-size: 11.5px;
+  fill: var(--fg-muted);
+  text-anchor: middle;
+  font-variant-numeric: tabular-nums;
+}
+.pp-break path {
+  fill: none;
+  stroke: var(--fg-subtle);
+  stroke-width: 1.25;
+}
+.pp-break-bg {
+  fill: var(--bg-elev);
+}
+
+.pp-arc {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+.pp-arc-soft {
+  stroke-dasharray: 4 3.5;
+}
+.pp-arc-alarm {
+  stroke: var(--invalid);
+}
+
+.pp-mark {
+  cursor: pointer;
+  outline: none;
+  transition: opacity 150ms;
+}
+.pp-hit {
+  fill: transparent;
+}
+.pp-dotmark {
+  fill: var(--c);
+  stroke: var(--bg-elev);
+  stroke-width: 1.5;
+  transition: stroke 120ms;
+}
+.pp-mark.rel-1 .pp-dotmark {
+  fill-opacity: 0.6;
+}
+.pp-mark.rel-2 .pp-dotmark {
+  fill-opacity: 0.82;
+}
+.pp-halo {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 1.5;
+  stroke-opacity: 0.4;
+}
+.pp-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0;
+}
+.pp-mark:hover .pp-dotmark,
+.pp-mark.pp-hl .pp-dotmark {
+  stroke: var(--fg);
+}
+.pp-mark.pp-selected .pp-ring {
+  opacity: 1;
+  stroke: var(--fg);
+}
+.pp-mark:focus-visible .pp-ring {
+  opacity: 1;
+  stroke: var(--accent);
+}
+.pp-dim {
+  opacity: 0.16;
+}
+
+.pp-label {
+  font-size: 12px;
+  font-weight: 520;
+  fill: var(--fg-muted);
+  paint-order: stroke;
+  stroke: var(--bg-elev);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition: opacity 150ms;
+}
+.pp-label-strong {
+  font-weight: 650;
+  fill: var(--fg);
+}
+.pp-label-badge {
+  font-size: 11px;
+  font-weight: 450;
+  fill: var(--fg-muted);
+}
+.pp-lane-core .pp-lane-name {
+  fill: var(--fg);
+}
+
+.pp-readout {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-2) var(--s-4);
+  min-height: 2.4em;
+  border-top: 1px solid var(--rule);
+  font-size: var(--fs-xs);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.pp-readout .pp-dot {
+  align-self: center;
+}
+.pp-readout-name {
+  font-weight: 600;
+  color: var(--fg);
+}
+.pp-readout-title {
+  color: var(--fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.pp-readout-n {
+  margin-left: auto;
+  padding-left: var(--s-3);
+  color: var(--fg-subtle);
+  font-variant-numeric: tabular-nums;
+}
+.pp-readout-idle {
+  color: var(--fg-subtle);
+}
+
+.pp-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-5);
+  margin-top: var(--s-2);
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.pp-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+.pp-legend-dot {
+  fill: var(--fg-muted);
+}
+.pp-legend .pp-arc {
+  opacity: 1;
+}
+.pp-legend-axis {
+  color: var(--fg-subtle);
+}
+
+/* ---------- details card */
+.pp-panel {
+  margin-top: var(--s-4);
+}
+.pp-hint {
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--s-3) var(--s-5);
+  color: var(--fg-muted);
+}
+.pp-hint p {
+  margin: var(--s-2) 0;
+}
+.pp-hint-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.pp-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--s-4) var(--s-5) var(--s-3);
+}
+.pp-card-compact {
+  padding: var(--s-3) var(--s-4) var(--s-2);
+  box-shadow: none;
+}
+.pp-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--s-3);
+}
+.pp-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-1) var(--s-3);
+  margin: 0;
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.pp-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.pp-close {
+  padding: 0.4em;
+  margin: -0.3em -0.5em 0 0;
+}
+.pp-close path {
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.pp-card-title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  margin: var(--s-2) 0 var(--s-1);
+}
+.pp-card-compact .pp-card-title {
+  font-size: 1.0625rem;
+}
+.pp-card-by {
+  margin: 0 0 var(--s-3);
+  color: var(--fg-muted);
+}
+.pp-card-venue {
+  font-style: italic;
+}
+.pp-card-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: var(--s-2) var(--s-6);
+}
+.pp-card-compact .pp-card-cols {
+  grid-template-columns: minmax(0, 1fr);
+}
+.pp-card-main p {
+  margin: 0 0 var(--s-3);
+}
+.pp-card-take {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+.pp-card-sub {
+  display: block;
+  margin: 0 0 0.2em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-subtle);
+}
+.pp-card-sub .pp-chip-n {
+  letter-spacing: 0;
+}
+.pp-card-status {
+  font-size: var(--fs-xs);
+  color: var(--fg-subtle);
+}
+.pp-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-5);
+}
+.pp-card-rel {
+  border-left: 1px solid var(--rule);
+  padding-left: var(--s-5);
+  margin-bottom: var(--s-3);
+}
+.pp-card-compact .pp-card-rel {
+  border-left: 0;
+  padding-left: 0;
+  border-top: 1px solid var(--rule);
+  padding-top: var(--s-2);
+}
+.pp-rel-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--s-1) 0 0;
+  display: grid;
+  gap: var(--s-2);
+}
+.pp-rel-kind {
+  color: var(--fg-muted);
+}
+.pp-rel-alarm .pp-rel-kind {
+  color: var(--invalid);
+  font-weight: 600;
+}
+.pp-rel-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 550;
+  color: var(--accent);
+  cursor: pointer;
+  text-align: left;
+}
+.pp-rel-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.pp-rel-note {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--fg-subtle);
+  line-height: 1.4;
+}
+
+/* ---------- list view (narrow containers) */
+.pp-listview {
+  display: none;
+}
+.pp-lgroup {
+  border-bottom: 1px solid var(--rule);
+}
+.pp-lgroup:first-child {
+  border-top: 1px solid var(--rule);
+}
+.pp-rows[hidden] {
+  display: none;
+}
+.pp-lhead {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  width: 100%;
+  margin: 0;
+  padding: 0.45em 0.3em;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: left;
+  cursor: pointer;
+}
+.pp-lhead:hover {
+  background: var(--bg-sunk);
+}
+.pp-lhead:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.pp-lchev {
+  width: 0.45em;
+  height: 0.45em;
+  margin-right: 0.15em;
+  border-right: 1.5px solid var(--fg-muted);
+  border-bottom: 1.5px solid var(--fg-muted);
+  transform: rotate(-45deg);
+  transition: transform 120ms;
+}
+.pp-lhead[aria-expanded='true'] .pp-lchev {
+  transform: rotate(45deg);
+}
+.pp-rows {
+  list-style: none;
+  margin: 0 0 var(--s-2);
+  padding: 0;
+}
+.pp-rows > li + li {
+  border-top: 1px solid var(--rule);
+}
+.pp-row {
+  display: grid;
+  grid-template-columns: 2.7em 1.1em minmax(0, 1fr);
+  align-items: start;
+  gap: 0.5em;
+  width: 100%;
+  padding: 0.55em 0.3em;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pp-row:hover {
+  background: var(--bg-sunk);
+}
+.pp-row-open {
+  background: var(--accent-weak);
+}
+.pp-row-open:hover {
+  background: var(--accent-weak);
+}
+.pp-row-year {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.12em;
+}
+.pp-row-mark {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.32em;
+}
+.pp-row-mark span {
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  background: var(--c);
+}
+.pp-row-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pp-row-name {
+  font-weight: 600;
+}
+.pp-row-badge {
+  font-weight: 400;
+  color: var(--fg-muted);
+}
+.pp-row-title {
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.pp-lcard {
+  padding: var(--s-1) 0 var(--s-3);
+}
+
+@container pp (max-width: 679.98px) {
+  .pp-chart {
+    display: none;
+  }
+  .pp-listview {
+    display: block;
+  }
+  .pp-toolbar-label {
+    flex-basis: 100%;
+  }
+}
+
+/* ---------- list of all papers (PapersList.astro) */
+.pp-refs {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+}
+.pp-refs p {
+  margin: 0;
+}
+.pp-refs-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1) var(--s-4);
+  margin-bottom: var(--s-5) !important;
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.pp-refs-key .pp-ref-mark {
+  display: inline;
+  margin-right: 0.2em;
+}
+.pp-refs-theme + .pp-refs-theme {
+  margin-top: var(--s-6);
+}
+.pp-refs-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0 0 var(--s-1);
+}
+.pp-refs-head .pp-chip-n {
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+}
+.pp-refs-desc {
+  margin-bottom: var(--s-2) !important;
+  color: var(--fg-muted);
+}
+.pp-refs-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pp-ref {
+  display: grid;
+  grid-template-columns: 1.4em minmax(0, 1fr);
+  column-gap: var(--s-1);
+  padding: var(--s-2) var(--s-2);
+  margin-inline: calc(-1 * var(--s-2));
+  border-radius: var(--radius-sm);
+  transition: background-color 600ms;
+  scroll-margin-top: calc(var(--header-h) + var(--s-4));
+}
+.pp-ref + .pp-ref {
+  border-top: 1px solid var(--rule);
+}
+.pp-ref:target {
+  background: var(--accent-weak);
+}
+.pp-ref-mark {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: inherit;
+  white-space: nowrap;
+}
+.pp-ref-cite {
+  color: var(--fg);
+}
+.pp-ref-by {
+  font-weight: 600;
+}
+a.pp-ref-title {
+  color: inherit;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 0.15em;
+}
+a.pp-ref-title:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+/* The gist is the summary of a disclosure; the chevron after it turns when the entry opens. */
+.pp-ref-gist {
+  display: block;
+  width: fit-content;
+  margin-top: 0.1em;
+  color: var(--fg-muted);
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--radius-sm);
+}
+.pp-ref-gist::-webkit-details-marker {
+  display: none;
+}
+.pp-ref-tail {
+  white-space: nowrap;
+}
+.pp-ref-tail::after {
+  content: '';
+  display: inline-block;
+  width: 0.38em;
+  height: 0.38em;
+  margin-left: 0.5em;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-0.2em) rotate(45deg);
+  transition: transform 120ms;
+}
+.pp-ref-more[open] > .pp-ref-gist .pp-ref-tail::after {
+  transform: translateY(0.05em) rotate(-135deg);
+}
+.pp-ref-gist:hover,
+.pp-ref-more[open] > .pp-ref-gist {
+  color: var(--fg);
+}
+.pp-ref-gist:focus-visible,
+.pp-ref-show:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.pp-ref-detail {
+  display: grid;
+  gap: var(--s-2);
+  margin: var(--s-2) 0 var(--s-1);
+  padding-left: var(--s-3);
+  border-left: 2px solid var(--rule);
+}
+.pp-ref-why {
+  color: var(--fg-muted);
+}
+.pp-ref-label {
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+.pp-ref-rel {
+  font-size: var(--fs-xs);
+}
+.pp-ref-rel ul {
+  margin: var(--s-1) 0 0;
+  padding-left: var(--s-4);
+}
+.pp-ref-rel li {
+  margin: 0.2em 0;
+  color: var(--fg-muted);
+}
+.pp-ref-rel a {
+  font-weight: 550;
+}
+.pp-ref-note {
+  display: block;
+  color: var(--fg-subtle);
+}
+.pp-ref-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-3);
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.pp-ref-show {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+}
+.pp-ref-show:hover {
+  text-decoration: underline;
+}
+.pp-ref-show[hidden] {
+  display: none;
+}
+
+/* Phones: below this width the map turns into a second copy of the list that follows it, so
+   the page shows only the list (and drops its "Show on the map" buttons). */
+@media (max-width: 46.49rem) {
+  #papers-map,
+  .pp-ref-show {
+    display: none !important;
+  }
+}

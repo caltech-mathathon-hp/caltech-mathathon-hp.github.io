@@ -1,0 +1,14 @@
+{
+  "id": "diamond-20",
+  "order": 540,
+  "group": "Diamond lattice (3D)",
+  "title": "The 20-letter test string",
+  "lattice": "diamond",
+  "sequence": "HPHPPHHPHPPHPHHPPHPH",
+  "best": 6,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (the game’s solver, engine/solve.ts).",
+  "intro": "The best fold of this string has 6 contacts here, against 11 on the cubic lattice.",
+  "solution": "0301203023030210303"
+}

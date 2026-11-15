@@ -1,0 +1,19 @@
+---
+/**
+ * Difficulty marker of the proof board: one to three filled pips and the word, coloured by
+ * --diff-<d> (board.css), so colour is never the only cue.
+ *   <Pips d={2} />            → ●●○ Needs care
+ *   <Pips d={2} id="…" />     the id goes on the whole marker (for aria-describedby)
+ */
+interface Props {
+  d: 1 | 2 | 3;
+  id?: string;
+}
+const { d, id } = Astro.props;
+const DIFF = { 1: 'Routine', 2: 'Needs care', 3: 'Hard' } as const;
+---
+
+<span class={`pb-diff pb-d${d}`} id={id}>
+  <span class="pb-pips" aria-hidden="true"><i class="on"></i><i class:list={[d >= 2 && 'on']}></i><i class:list={[d >= 3 && 'on']}></i></span>
+  <span class="pb-diff-word">{DIFF[d]}</span>
+</span>

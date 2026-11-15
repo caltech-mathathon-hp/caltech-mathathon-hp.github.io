@@ -1,0 +1,15 @@
+{
+  "id": "cube-loops",
+  "order": 30,
+  "group": "Cubic lattice (3D)",
+  "title": "A core with loops",
+  "lattice": "cubic",
+  "sequence": "PHHPPHHPPHHPPHHP",
+  "best": 8,
+  "optimal": true,
+  "bestKind": "proved",
+  "bestSource": "The eight H’s have at most 12 neighbouring pairs (a 2×2×2 cube), and 4 of them are consecutive in the string. Exhaustive search agrees (scripts/hp-optimum.ts).",
+  "intro": "Four HH pairs joined by PP loops. An optimal fold packs the eight H’s into a cube and keeps every P outside it.",
+  "hint": "Each HH pair is one edge of the cube. A PP loop leaves the cube and comes back next to where it left.",
+  "solution": "RRRULLLFRRRDLLL"
+}

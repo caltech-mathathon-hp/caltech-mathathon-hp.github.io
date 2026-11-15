@@ -1,0 +1,30 @@
+---
+title: Lean formalization
+slug: lean
+navTitle: Lean
+kicker: Part IV
+lede: The plan for proving in Lean that HP folding on the cubic lattice is NP-complete.
+summary: The plan for a Lean formalization and the status of each part.
+order: 6
+status: draft
+---
+
+import LeanStatus from '../../widgets/lean/LeanStatus.astro';
+
+The table lists what will be proved in Lean, what will be argued on paper, and the status of
+each part.
+
+<LeanStatus />
+
+## Scope
+
+We found no formalized hardness result for HP folding in any proof assistant. The only Lean library
+for the HP model, Ptyche by <Cite k="kjoshanssen2024ptyche" />, has the definitions and score
+bounds, but no hardness. Mathlib has no notion of NP or of polynomial-time reductions; see
+<Cite k="mathlib2026computability" />.
+
+We plan to follow the approach of <Cite k="kreuzer2023verification" />. The definitions and the
+correctness of the reduction (*a perfect fold exists if and only if the instance has a
+solution*) will be proved in Lean, together with a bound on the length of the string. The
+polynomial running time of the reduction will be argued on paper. A statement on this site carries
+the label <Status kind="lean" /> only if it passes every check listed above.

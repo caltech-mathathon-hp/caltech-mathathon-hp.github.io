@@ -1,0 +1,15 @@
+{
+  "id": "diamond-first-contact",
+  "order": 510,
+  "group": "Diamond lattice (3D)",
+  "title": "A first contact",
+  "lattice": "diamond",
+  "sequence": "HPPPPH",
+  "best": 1,
+  "optimal": true,
+  "bestKind": "proved",
+  "bestSource": "The string has two H’s, so it has at most one contact.",
+  "intro": "Each node has four neighbours, and the shortest cycle is a hexagon. Make the two H’s touch.",
+  "hint": "The six letters go around one hexagon.",
+  "solution": "03103"
+}

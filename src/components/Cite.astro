@@ -1,0 +1,31 @@
+---
+/**
+ * A citation that links to the paper's card on the Context page.
+ * <Cite k="berger1998protein" />            → Berger & Leighton (1998)
+ * <Cite k="berger1998protein" at="Lemma 3.12" />
+ * Keys are those of literature/refs.bib (as in src/data/papers/papers.json).
+ */
+import data from '../data/papers/papers.json';
+import { shortAuthors, type PapersData } from '../data/papers/types';
+import { withBase } from '../lib/url';
+
+interface Props {
+  k: string;
+  at?: string;
+}
+const { k, at } = Astro.props;
+const paper = (data as PapersData).papers.find((p) => p.key === k);
+if (!paper) console.warn(`[Cite] unknown key: ${k}`);
+const label = paper ? `${shortAuthors(paper)} (${paper.year}${at ? `, ${at}` : ''})` : `[${k}]`;
+---
+
+<a class:list={['cite', !paper && 'missing']} href={withBase(`/context/#paper-${k}`)} title={paper?.title}>{label}</a>
+
+<style>
+  .cite {
+    text-decoration-style: dotted;
+  }
+  .missing {
+    color: var(--invalid);
+  }
+</style>

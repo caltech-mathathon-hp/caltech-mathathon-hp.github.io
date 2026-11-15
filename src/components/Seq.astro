@@ -1,0 +1,57 @@
+---
+/**
+ * An HP string with coloured letters: <Seq s="PHHPHP" />.
+ * Any other characters (brackets, exponents written as ^k, spaces) are kept as they are.
+ * `^k` or `^{k}` is shown as a superscript: <Seq s="(PHP)^k" />.
+ */
+interface Props {
+  s: string;
+}
+const { s } = Astro.props;
+type Tok = { t: 'H' | 'P' | 'txt' | 'sup'; v: string };
+const toks: Tok[] = [];
+for (let i = 0; i < s.length; i++) {
+  const c = s[i];
+  if (c === '^') {
+    let j = i + 1;
+    let v = '';
+    if (s[j] === '{') {
+      j++;
+      while (j < s.length && s[j] !== '}') v += s[j++];
+      i = j;
+    } else {
+      while (j < s.length && /[0-9a-zA-Z+\-]/.test(s[j])) v += s[j++];
+      i = j - 1;
+    }
+    toks.push({ t: 'sup', v });
+  } else if (c === 'H' || c === 'P') toks.push({ t: c, v: c });
+  else toks.push({ t: 'txt', v: c });
+}
+---
+
+<span class="seq" aria-label={s}>{
+  toks.map((k) =>
+    k.t === 'sup' ? <sup>{k.v}</sup> : k.t === 'txt' ? <span>{k.v}</span> : <span class={k.t}>{k.v}</span>,
+  )
+}</span>
+
+<style>
+  .seq {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .H {
+    color: var(--h);
+    font-weight: 700;
+  }
+  .P {
+    color: var(--p);
+  }
+  sup {
+    font-size: 0.72em;
+    margin-left: 0.05em;
+    color: var(--fg-muted);
+  }
+</style>

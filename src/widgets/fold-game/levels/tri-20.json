@@ -1,0 +1,14 @@
+{
+  "id": "tri-20",
+  "order": 320,
+  "group": "Triangular lattice (2D)",
+  "title": "The 20-letter test string",
+  "lattice": "triangular",
+  "sequence": "HPHPPHHPHPPHPHHPPHPH",
+  "best": 15,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "Each node has six neighbours. The best fold of this string has 15 contacts here, against 9 on the square lattice.",
+  "solution": "0402111513030003134"
+}

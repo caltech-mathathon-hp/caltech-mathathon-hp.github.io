@@ -1,0 +1,32 @@
+---
+/**
+ * DEV ONLY: test bench for the 3D renderer of the folding game (Three3D.tsx).
+ * Not routed. To use it, copy it to src/pages/dev/fold3d.astro and change the imports to
+ * '../../layouts/BaseLayout.astro' and '../../widgets/fold-game/render/Three3DHarness.tsx'.
+ * Do not publish it.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Harness from './Three3DHarness.tsx';
+---
+
+<BaseLayout title="3D renderer (dev)">
+  <article class="flow dev">
+    <h1>3D renderer test bench</h1>
+    <p class="ui muted">
+      Click the ghost spheres or focus the view and use the arrow keys (screen plane) and W / S (away / toward).
+      Backspace or Z undoes. Drag to rotate, scroll or pinch to zoom, right-drag to pan.
+    </p>
+    <div class="wide">
+      <Harness client:only="preact" />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .dev {
+    padding-top: var(--s-6);
+  }
+  .dev h1 {
+    margin-bottom: var(--s-3);
+  }
+</style>

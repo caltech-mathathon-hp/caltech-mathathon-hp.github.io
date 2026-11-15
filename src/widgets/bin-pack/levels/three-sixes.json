@@ -1,0 +1,12 @@
+{
+  "id": "three-sixes",
+  "order": 40,
+  "title": "Three sixes",
+  "bins": 2,
+  "capacity": 10,
+  "items": [6, 6, 6, 2],
+  "answer": "no",
+  "intro": "The sizes add up to 2 × 10 = 20. Pack the items, or answer no if you think no packing exists.",
+  "hint": "Look at the three 6’s.",
+  "why": "6 + 6 = 12 is more than 10, so a bin holds at most one 6. Three 6’s would need three bins."
+}

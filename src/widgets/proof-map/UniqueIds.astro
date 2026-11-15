@@ -1,0 +1,29 @@
+---
+/**
+ * Renders its slot with every id suffixed, so one figure can appear twice on a page (on its card
+ * and in its popup) without duplicate ids. References to those ids are rewritten to match:
+ * url(#…), href="#…" and aria-labelledby / aria-describedby. Used by BoardCard.astro:
+ *
+ *   <UniqueIds suffix="card"><Figure /></UniqueIds>
+ */
+interface Props {
+  suffix: string;
+}
+const { suffix } = Astro.props;
+let html = await Astro.slots.render('default');
+const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));
+if (ids.size) {
+  const any = [...ids].map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const ref = (s: string) => (ids.has(s) ? `${s}-${suffix}` : s);
+  html = html
+    .replace(new RegExp(`(\\sid=")(${any})"`, 'g'), (_, a: string, id: string) => `${a}${ref(id)}"`)
+    .replace(new RegExp(`url\\(#(${any})\\)`, 'g'), (_, id: string) => `url(#${ref(id)})`)
+    .replace(new RegExp(`((?:xlink:)?href="#)(${any})"`, 'g'), (_, a: string, id: string) => `${a}${ref(id)}"`)
+    .replace(
+      /(aria-(?:labelledby|describedby)=")([^"]+)"/g,
+      (_, a: string, list: string) => `${a}${list.split(/\s+/).map(ref).join(' ')}"`,
+    );
+}
+---
+
+<Fragment set:html={html} />

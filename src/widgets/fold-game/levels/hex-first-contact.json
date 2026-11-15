@@ -1,0 +1,15 @@
+{
+  "id": "hex-first-contact",
+  "order": 610,
+  "group": "Hexagonal lattice (2D)",
+  "title": "A first contact",
+  "lattice": "hexagonal",
+  "sequence": "HPPPPH",
+  "best": 1,
+  "optimal": true,
+  "bestKind": "proved",
+  "bestSource": "The string has two H’s, so it has at most one contact.",
+  "intro": "Each node has three neighbours, and the shortest cycle is a hexagon. Make the two H’s touch.",
+  "hint": "The six letters go around one hexagon.",
+  "solution": "RRULL"
+}

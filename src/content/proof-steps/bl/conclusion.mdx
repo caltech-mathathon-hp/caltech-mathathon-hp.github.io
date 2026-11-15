@@ -1,0 +1,50 @@
+---
+title: Folding is NP-complete
+caption: 'The two directions together show that the string folds perfectly exactly when the items fit. The string is quick to write because bin packing stays hard with sizes in tally marks, and a fold is quick to check.'
+lane: end
+order: 1
+difficulty: 1
+source: '§§2–3, pp. 31–32, footnotes 1–2'
+---
+
+### The idea
+
+The two directions together show that $S$ has a perfect fold exactly when the items fit. A perfect fold is a fold with the most contacts possible ([3 Why a cube](#step-bl-cube)), so a program that answers folding questions also solves the packing puzzle. NP-complete asks for two more things.
+
+First, the translation must be fast. $S$ has about $n^3$ letters, and $n^3$ grows like $K^6+B^2$. With every size written in tally marks ([2 Why bin packing](#step-bl-problems)), that is at most a fixed power of the puzzle's length, so we can write $S$ down quickly.
+
+Second, a proposed fold must be quick to check. It lists one node per letter, and we can check quickly that consecutive letters are neighbours, that no node is used twice, and that there are enough contacts.
+
+### Statement
+
+Deciding whether an HP string has a fold on the cubic lattice with at least a given number of contacts is NP-complete.
+
+### Exact statement
+
+Deciding whether an HP string has a fold in $\mathbb Z^3$ with at least $m$ H–H pairs is NP-complete. So is the same question with contacts in place of pairs, and the question whether a string with $n^3$ H's has a perfect fold.
+
+### Uses
+
+[2 Why bin packing](#step-bl-problems): bin packing stays NP-complete with its numbers in unary. [3 Why a cube](#step-bl-cube). [4 Spelling the string](#step-bl-string): the length of $S$. [9 Reading off a packing](#step-bl-packing) and [14 Loops take up slack](#step-bl-linkers): the two directions.
+
+### Proof
+
+1. **Equivalence.** The left lane, ending in [9 Reading off a packing](#step-bl-packing), shows that a perfect fold of $S$ gives a packing. The right lane, ending in [14 Loops take up slack](#step-bl-linkers), shows that a packing gives a perfect fold. By [3 Why a cube](#step-bl-cube), $S$ has a perfect fold exactly when it has a fold with at least $m=3n^2(n-1)$ H–H pairs. So the packing puzzle has a solution exactly when $S$ has a fold with at least $m$ H–H pairs.
+2. **Size.** Write $N$ for the size of the puzzle with every number in unary, so $K$, $B$ and $|U|$ are at most $N$. Then $q=2\max(K,\lceil B^{1/3}\rceil)=O(N)$, $n=q(2q+1)+2=O(K^2+B^{2/3})$ and $n^3=O(K^6+B^2)$. By [4 Spelling the string](#step-bl-string), $S$ has $n^3+O(n^2+n|U|)$ letters, which is $O(N^6)$, and it can be written down letter by letter in that time.
+3. **Why unary.** With its numbers in binary, $B$ could be exponential in the length of the input, and so could $S$. The reduction runs in polynomial time only because bin packing stays NP-complete with its numbers in unary.
+4. **In NP.** A fold of a string of length $L$ can be shifted to use coordinates between $0$ and $L$. Given such a fold, checking that consecutive letters are neighbours and that no node is used twice, and counting the H–H pairs, takes time polynomial in $L$.
+5. **Contacts.** In every fold, the number of contacts is the number of H–H pairs minus the number of <Seq s="HH" /> in the string. So a fold has at least $m$ pairs exactly when it has at least $m$ minus that number of contacts.
+
+The perfect-fold question is NP-hard by steps 1–3, folding is NP-hard by steps 1–3 with $m=3n^2(n-1)$, all three questions are in NP by step 4, and step 5 carries hardness from pairs to contacts.
+
+### Where in the paper
+
+§2, p. 31: the problems. §3, p. 31, footnote 1: the problems are NP-hard, and in NP by a "simple fact". Footnote 2, p. 32, calls the polynomial length "obvious from the construction".
+
+### Rating
+
+1: putting the cards together, a size bound and a direct check.
+
+### Our note
+
+Small numbers are needed because each item size becomes the length of a ribbon, so the string grows with the sizes themselves, not with their digits. This is why the paper needs bin packing to be strongly NP-complete. The paper says this in footnote 2 but does not bound the length; [4 Spelling the string](#step-bl-string) counts it.

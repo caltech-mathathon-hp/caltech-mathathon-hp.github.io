@@ -1,0 +1,419 @@
+---
+/**
+ * The proof as a board of picture cards; each card opens its step in a popup.
+ *
+ *   import ProofBoard from '../../widgets/proof-map/ProofBoard.astro';
+ *   <ProofBoard map="bl" lanes={{ left: { title: '…', note: '…' }, right: { title: '…', note: '…' } }} />
+ *
+ * Cards come from src/content/proof-steps/<map>/*.mdx (schema in src/content.config.ts): the frontmatter
+ * is the card (title, caption, lane, order, difficulty, figure, source), the MDX body is the popup, cut
+ * into sections at its `###` headings by StepBody.astro. Lanes: top (the idea of the proof, one wide
+ * card), setup (a row), left and right (the two directions, side by side), end (the conclusion). Cards
+ * are numbered in reading order: top, setup, left, right, end. `lanes.top`, `lanes.setup` and
+ * `lanes.end` are optional: with a title they get a header on the board; either way the popup names
+ * them (default "The idea", "Setup", "Conclusion").
+ *
+ * Groups: cards with the same `group` key (consecutive in one lane) fold into one stack on the board,
+ * so the board shows the main line of the proof first. The stack shows the group's title and caption
+ * (from the `groups` prop) and the titles of its steps; it opens in place to show their cards.
+ * `fork` labels the split into the two lanes (default "Two directions to prove").
+ *
+ * All popups live in one native <dialog>, rendered at build time. board.client.ts opens it, moves
+ * between steps (Previous / Next, ← →) and keeps #step-<map>-<step> in the URL. Without JavaScript the
+ * cards are plain links and the steps appear in full below the board.
+ * Styles: board.css (prefix pb-); figures: figures/fig.css (prefix pmf-).
+ */
+import { getCollection, render } from 'astro:content';
+import { figures } from './figures/index';
+import { inline } from './inline';
+import BoardCard from './BoardCard.astro';
+import Pips from './Pips.astro';
+import StepBody from './StepBody.astro';
+import Seq from '../../components/Seq.astro';
+import Status from '../../components/Status.astro';
+import Callout from '../../components/Callout.astro';
+import Theorem from '../../components/Theorem.astro';
+import Aside from '../../components/Aside.astro';
+import Figure from '../../components/Figure.astro';
+import Cite from '../../components/Cite.astro';
+import './figures/fig.css';
+import './board.css';
+
+interface Lane {
+  title: string;
+  note?: string;
+}
+interface Group {
+  title: string;
+  caption: string;
+}
+interface Props {
+  map: string;
+  lanes?: { top?: Lane; setup?: Lane; left?: Lane; right?: Lane; end?: Lane };
+  groups?: Record<string, Group>;
+  fork?: string;
+}
+const { map, lanes = {}, groups = {}, fork = 'Two directions to prove' } = Astro.props;
+const DIFF = { 1: 'routine', 2: 'needs care', 3: 'hard' } as const;
+
+const entries = await getCollection('proofSteps', (e) => e.id.startsWith(`${map}/`));
+if (entries.length === 0) throw new Error(`[ProofBoard] no cards in src/content/proof-steps/${map}/`);
+const LANES = ['top', 'setup', 'left', 'right', 'end'] as const;
+type LaneKey = (typeof LANES)[number];
+const laneOrder = (l: string) => LANES.indexOf(l as LaneKey);
+entries.sort((a, b) => laneOrder(a.data.lane) - laneOrder(b.data.lane) || a.data.order - b.data.order);
+
+const LANE_NAME: Record<LaneKey, string> = {
+  top: lanes.top?.title ?? 'The idea',
+  setup: lanes.setup?.title ?? 'Setup',
+  left: lanes.left?.title ?? 'First direction',
+  right: lanes.right?.title ?? 'Second direction',
+  end: lanes.end?.title ?? 'Conclusion',
+};
+
+const steps = await Promise.all(
+  entries.map(async (e, i) => {
+    const slug = e.id.slice(map.length + 1);
+    const fig = e.data.figure ? figures[e.data.figure] : undefined;
+    if (e.data.figure && !fig) throw new Error(`[ProofBoard] ${e.id}: no figure "${e.data.figure}" in figures/index.ts`);
+    const { Content } = await render(e);
+    return { ...e.data, slug, id: `step-${map}-${slug}`, n: i + 1, fig, Content };
+  }),
+);
+type Step = (typeof steps)[number];
+const inLane = (l: LaneKey) => steps.filter((s) => s.lane === l);
+const top = inLane('top');
+const setup = inLane('setup');
+const left = inLane('left');
+const right = inLane('right');
+const end = inLane('end');
+const total = steps.length;
+const prose = { Seq, Status, Callout, Theorem, Aside, Figure, Cite };
+const cardProps = (s: Step) => ({
+  id: s.id,
+  n: s.n,
+  title: s.title,
+  caption: s.caption,
+  difficulty: s.difficulty,
+  fig: s.fig,
+});
+
+/* Mini board in the popup: one small block per card, laid out like the board. */
+const MW = 12; // block width
+const MH = 6; // block height
+const MG = 3; // gap
+const miniW = 2 * MW + MG;
+const mini: { s: Step; x: number; y: number; w: number }[] = [];
+let my = 0;
+const miniRow = (list: Step[]) => {
+  if (!list.length) return;
+  if (list.length === 1) mini.push({ s: list[0], x: (miniW - MW) / 2, y: my, w: MW });
+  else {
+    const w = (miniW - (list.length - 1) * MG) / list.length;
+    list.forEach((s, k) => mini.push({ s, x: k * (w + MG), y: my, w }));
+  }
+  my += MH + MG + 2;
+};
+miniRow(top);
+miniRow(setup);
+left.forEach((s, k) => mini.push({ s, x: 0, y: my + k * (MH + MG), w: MW }));
+right.forEach((s, k) => mini.push({ s, x: MW + MG, y: my + k * (MH + MG), w: MW }));
+const laneRows = Math.max(left.length, right.length);
+if (laneRows) my += laneRows * (MH + MG) + 2;
+miniRow(end);
+const miniH = my - MG - 2;
+const hasLanes = left.length > 0 || right.length > 0;
+
+/* A lane as a sequence of single cards and groups. */
+type Seg = { kind: 'step'; s: Step } | { kind: 'group'; key: string; g: Group; list: Step[] };
+const segments = (list: Step[]): Seg[] => {
+  const out: Seg[] = [];
+  const seen = new Set<string>();
+  for (const s of list) {
+    const key = s.group;
+    const g = key ? groups[key] : undefined;
+    if (key && !g) console.warn(`[ProofBoard] ${s.id}: no group "${key}" in the groups prop; shown on its own`);
+    const last = out[out.length - 1];
+    if (key && g && last?.kind === 'group' && last.key === key) last.list.push(s);
+    else if (key && g) {
+      if (seen.has(key)) throw new Error(`[ProofBoard] group "${key}" is split: its cards must be consecutive in their lane`);
+      seen.add(key);
+      out.push({ kind: 'group', key, g, list: [s] });
+    } else out.push({ kind: 'step', s });
+  }
+  return out;
+};
+const hasGroups = steps.some((s) => s.group && groups[s.group]);
+---
+
+<div class="pb" data-map={map} data-total={total}>
+  <script is:inline>
+    document.currentScript.parentElement.classList.add('pb-js');
+  </script>
+
+  <div class="pb-top ui">
+    <p class="pb-hint">Open a card to read its step.</p>
+    {
+      hasGroups && (
+        <button
+          class="btn ghost pb-expand"
+          type="button"
+          data-expand
+          data-more={`Show all ${total} steps`}
+          data-less="Show the main steps only"
+          hidden
+        >
+          Show all {total} steps
+        </button>
+      )
+    }
+    <ul class="pb-legend" aria-label="Difficulty (our rating)">
+      <li><Pips d={1} /></li>
+      <li><Pips d={2} /></li>
+      <li><Pips d={3} /></li>
+    </ul>
+  </div>
+
+  <div class="pb-board">
+    {
+      top.length > 0 && (
+        <section class="pb-row pb-row-top" data-count={top.length} aria-label={LANE_NAME.top}>
+          {lanes.top && (
+            <header class="pb-lane-head">
+              <h3 class="pb-lane-title">{lanes.top.title}</h3>
+              {lanes.top.note && <p class="pb-lane-note">{lanes.top.note}</p>}
+            </header>
+          )}
+          <ol class="pb-cards" role="list">
+            {top.map((s) => (
+              <li class="pb-item">
+                <BoardCard {...cardProps(s)} />
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    {top.length > 0 && (setup.length > 0 || hasLanes) && <div class="pb-down" aria-hidden="true"><i></i></div>}
+
+    {
+      setup.length > 0 && (
+        <section class="pb-row pb-row-setup" data-count={setup.length} aria-label={LANE_NAME.setup}>
+          {lanes.setup && (
+            <header class="pb-lane-head">
+              <h3 class="pb-lane-title">{lanes.setup.title}</h3>
+              {lanes.setup.note && <p class="pb-lane-note">{lanes.setup.note}</p>}
+            </header>
+          )}
+          <ol class="pb-cards" role="list">
+            {setup.map((s, k) => (
+              <li class="pb-item">
+                {k > 0 && <span class="pb-hop" aria-hidden="true" />}
+                <BoardCard {...cardProps(s)} />
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    {
+      setup.length > 0 && hasLanes && (
+        <div class="pb-split" aria-hidden="true">
+          <i></i>
+          <i></i>
+          {fork && <span class="pb-fork">{fork}</span>}
+        </div>
+      )
+    }
+
+    {
+      hasLanes && (
+        <div class="pb-lanes">
+          {(['left', 'right'] as const).map((key) => {
+            const list = key === 'left' ? left : right;
+            const head = lanes[key];
+            if (!list.length) return null;
+            return (
+              <section class={`pb-lane pb-lane-${key}`} aria-labelledby={`pb-${map}-${key}`}>
+                <header class="pb-lane-head">
+                  <h3 class="pb-lane-title" id={`pb-${map}-${key}`}>
+                    {LANE_NAME[key]}
+                  </h3>
+                  {head?.note && <p class="pb-lane-note">{head.note}</p>}
+                </header>
+                <ol class="pb-cards" role="list">
+                  {segments(list).map((seg) =>
+                    seg.kind === 'step' ? (
+                      <li class="pb-item">
+                        <BoardCard {...cardProps(seg.s)} />
+                      </li>
+                    ) : (
+                      <li class="pb-item pb-item-group">
+                        <details class="pb-group" data-group={seg.key}>
+                          <summary class="pb-group-sum">
+                            <span class="pb-group-in">
+                              <span class="pb-group-meta ui">
+                                Steps {seg.list[0].n}–{seg.list[seg.list.length - 1].n}
+                              </span>
+                              <span class="pb-group-title">{seg.g.title}</span>
+                              <span class="pb-group-cap" set:html={inline(seg.g.caption)} />
+                              <span class="pb-group-list ui">
+                                {seg.list.map((s) => (
+                                  <span class={`pb-group-li pb-d${s.difficulty}`}>
+                                    <b>{s.n}</b> {s.title}
+                                    <span class="visually-hidden"> ({DIFF[s.difficulty]})</span>
+                                  </span>
+                                ))}
+                              </span>
+                              <span class="pb-group-act ui">
+                                <span class="pb-group-show">Show these {seg.list.length} steps</span>
+                                <span class="pb-group-hide">Hide these steps</span>
+                              </span>
+                            </span>
+                          </summary>
+                          <ol class="pb-cards pb-group-cards" role="list">
+                            {seg.list.map((s) => (
+                              <li class="pb-item">
+                                <BoardCard {...cardProps(s)} />
+                              </li>
+                            ))}
+                          </ol>
+                        </details>
+                      </li>
+                    ),
+                  )}
+                </ol>
+              </section>
+            );
+          })}
+        </div>
+      )
+    }
+
+    {end.length > 0 && hasLanes && <div class="pb-merge" aria-hidden="true"><i></i><i></i></div>}
+
+    {
+      end.length > 0 && (
+        <section class="pb-row pb-row-end" data-count={end.length} aria-label={LANE_NAME.end}>
+          {lanes.end && (
+            <header class="pb-lane-head">
+              <h3 class="pb-lane-title">{lanes.end.title}</h3>
+              {lanes.end.note && <p class="pb-lane-note">{lanes.end.note}</p>}
+            </header>
+          )}
+          <ol class="pb-cards" role="list">
+            {end.map((s, k) => (
+              <li class="pb-item">
+                {k > 0 && <span class="pb-hop" aria-hidden="true" />}
+                <BoardCard {...cardProps(s)} />
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+  </div>
+
+  <dialog class="pb-dialog" aria-labelledby={`${steps[0].id}-title`}>
+    <div class="pb-dlg">
+      <header class="pb-dlg-top ui">
+        <svg
+          class="pb-mini"
+          viewBox={`-1.5 -1.5 ${miniW + 3} ${miniH + 3}`}
+          width={(miniW + 3) * 1.6}
+          height={(miniH + 3) * 1.6}
+          aria-hidden="true"
+        >
+          {
+            mini.map(({ s, x, y, w }) => (
+              <rect class={`pb-mini-b pb-d${s.difficulty}`} x={x} y={y} width={w} height={MH} rx="1.5" data-goto={s.id}>
+                <title>
+                  {s.n} {s.title}
+                </title>
+              </rect>
+            ))
+          }
+        </svg>
+        <p class="pb-where">
+          <span class="pb-where-lane" data-where-lane>{LANE_NAME[steps[0].lane]}</span>
+          <span class="pb-where-n" data-where-n>1 of {total}</span>
+        </p>
+        <button class="btn ghost pb-close" type="button" data-close aria-label="Close" title="Close (Esc)">
+          <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+            <path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"></path>
+          </svg>
+        </button>
+      </header>
+
+      <div class="pb-dlg-scroll">
+        {
+          steps.map((s) => (
+            <article
+              class={`pb-step pb-d${s.difficulty}`}
+              id={s.id}
+              data-n={s.n}
+              data-lane={LANE_NAME[s.lane]}
+              data-title={s.title}
+              aria-labelledby={`${s.id}-title`}
+            >
+              <div class:list={['pb-step-grid', !s.fig && 'pb-step-nofig']}>
+                {s.fig && (
+                  <div class="pb-step-fig">
+                    <s.fig.component {...(s.fig.props ?? {})} />
+                  </div>
+                )}
+                <div class="pb-step-main">
+                  <header class="pb-step-head">
+                    <p class="pb-step-meta ui">
+                      <span class="pb-num" aria-hidden="true">
+                        {s.n}
+                      </span>
+                      <Pips d={s.difficulty} />
+                      {s.source && <span class="pb-step-src">{s.source}</span>}
+                    </p>
+                    <h2 class="pb-step-title" id={`${s.id}-title`} tabindex="-1">
+                      <span class="visually-hidden">Step {s.n}: </span>
+                      {s.title}
+                    </h2>
+                    <p class="pb-step-cap" set:html={inline(s.caption)} />
+                  </header>
+                  <div class="pb-step-body">
+                    <StepBody id={s.id}>
+                      <s.Content components={prose} />
+                    </StepBody>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      <footer class="pb-dlg-nav ui">
+        <button class="btn pb-go pb-prev" type="button" data-go="-1">
+          <span class="pb-go-arrow" aria-hidden="true">←</span>
+          <span class="pb-go-text">
+            <span class="pb-go-k">Previous</span>
+            <span class="pb-go-t" data-go-title></span>
+          </span>
+        </button>
+        <p class="pb-keys" aria-hidden="true"><kbd>←</kbd> <kbd>→</kbd> move · <kbd>Esc</kbd> close</p>
+        <button class="btn pb-go pb-next" type="button" data-go="1">
+          <span class="pb-go-text">
+            <span class="pb-go-k">Next</span>
+            <span class="pb-go-t" data-go-title></span>
+          </span>
+          <span class="pb-go-arrow" aria-hidden="true">→</span>
+        </button>
+      </footer>
+    </div>
+    <p class="visually-hidden" aria-live="polite" data-live></p>
+  </dialog>
+</div>
+
+<script>
+  import { initBoards } from './board.client';
+  initBoards();
+</script>

@@ -1,0 +1,61 @@
+---
+title: Why bin packing
+caption: 'We turn an item of size $s$ into $s$ H''s, so the string grows with the sizes, not with their digits. This is allowed because bin packing stays hard even when every size is written in tally marks.'
+lane: setup
+order: 1
+difficulty: 1
+figure: bl-instance
+source: '§2, p. 31'
+---
+
+### The idea
+
+The translation from a puzzle to a string has to be fast, so the string can't be much longer than the puzzle's description. Bin packing suits us. It asks whether items with given sizes can be split into $K$ bins so that each bin holds exactly $B$. An item of size 6 will become a piece with 6 H's, and a bin a region of $B$ nodes of the cube.
+
+The trouble is that the string then grows with the sizes themselves, while the puzzle needs only their digits: a size of $10^{100}$ takes 101 digits to write down but $10^{100}$ H's to spell. Bin packing survives this. It stays hard even when every size is written in tally marks, as $6=111111$. Written that way, the puzzle is at least as long as its sizes, and the number of letters in our string is at most a fixed power of the puzzle's length ([15 Folding is NP-complete](#step-bl-conclusion)).
+
+We also make every size even. Doubling every size and $B$ changes nothing about which items fit together, and even sizes suit the ribbons of [4 Spelling the string](#step-bl-string), which hold their H's two at a time.
+
+### Statement
+
+A **packing** splits the items into $K$ groups whose sizes each add up to exactly $B$. Deciding whether a packing exists stays NP-complete when every size is even and every number is written in tally marks.
+
+### Exact statement
+
+A **fold** of an HP string places its letters on distinct nodes of the cubic lattice $\mathbb Z^3$, with consecutive letters on neighbouring nodes. An **H–H pair** is two H's on neighbouring nodes, consecutive in the string or not. A contact is an H–H pair that is not consecutive, so in every fold of a string the pairs outnumber the contacts by the number of <Seq s="HH" /> in the string.
+
+- **Folding.** Given an HP string and a number $m$, does the string have a fold with at least $m$ H–H pairs?
+- **Bin packing.** Given a set $U$ of items with even sizes $s(u)>0$, a number of bins $K$ and a bin size $B$, with all sizes adding up to $KB$, can $U$ be split into $K$ groups $U_1,\dots,U_K$ whose sizes each add up to exactly $B$? Such a split is a **packing**.
+
+Bin packing in this form is NP-complete even when every number is written in unary, that is, in tally marks.
+
+### Names in the paper
+
+The paper calls folding HP STRING-FOLD and bin packing with even sizes MODIFIED BIN PACKING. It calls an H–H pair an H–H bond. A problem that stays NP-complete when its numbers are written in unary is **strongly NP-complete**. The question whether a string with $n^3$ H's has a perfect fold ([3 Why a cube](#step-bl-cube)) is the paper's PERFECT HP STRING-FOLD.
+
+### Uses
+
+No earlier card.
+
+### Proof
+
+The paper calls the strong NP-completeness "easily shown" and gives no proof. Here is one.
+
+1. Start from 3-PARTITION, which is strongly NP-complete <Cite k="garey1979computers" />: given $3k$ positive integers $a_1,\dots,a_{3k}$ with $B'/4 < a_i < B'/2$ and sum $kB'$, can they be split into $k$ triples of sum $B'$ each?
+2. Make one item of size $2a_i$ for each $i$, and set $K=k$ and $B=2B'$. The sizes are even and add up to $2kB'=KB$.
+3. A split of the items into $K$ sets of size $B$ is a split of the $a_i$ into $k$ sets of sum $B'$. Each such set has exactly three elements, since two of the $a_i$ add up to less than $B'$ and four to more. So the two instances have the same answer.
+4. Every number at most doubles, so an instance written in unary stays polynomial in size.
+
+MODIFIED BIN PACKING is in NP: guess the sets and add.
+
+### Where in the paper
+
+§2, p. 31: the four problems. The paper takes BIN PACKING from Garey and Johnson and says the modified version is "easily shown to be strongly NP-complete".
+
+### Rating
+
+1: three definitions and a direct check.
+
+### Our note
+
+The proof above is ours; the paper gives none. Doubling the numbers of a 3-PARTITION instance gives an instance of MODIFIED BIN PACKING with the same answer, so the claim holds. The instances made this way have $B$ even, which the string needs ([4 Spelling the string](#step-bl-string)).

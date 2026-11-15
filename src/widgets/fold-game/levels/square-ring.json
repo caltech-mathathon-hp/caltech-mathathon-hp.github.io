@@ -1,0 +1,15 @@
+{
+  "id": "square-ring",
+  "order": 130,
+  "group": "Square lattice (2D)",
+  "title": "Close the ring",
+  "lattice": "square",
+  "sequence": "HHPHPPHPHH",
+  "best": 4,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "Both ends are HH. Bring them together and fold the middle so that the inner H’s meet too.",
+  "hint": "The best folds bend the string into a tight U, with the HH ends side by side.",
+  "solution": "RRURULLDL"
+}

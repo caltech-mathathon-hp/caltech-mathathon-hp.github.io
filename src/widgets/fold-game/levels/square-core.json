@@ -1,0 +1,15 @@
+{
+  "id": "square-core",
+  "order": 140,
+  "group": "Square lattice (2D)",
+  "title": "A compact core",
+  "lattice": "square",
+  "sequence": "HPPHPPHHPPHPPH",
+  "best": 6,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "Six H’s, separated by PP loops. Put the H’s in a compact block and the loops outside it.",
+  "hint": "Six H’s fit in a 2×3 block. Every PP loop must leave the block and come back.",
+  "solution": "RULULDLLDRDRU"
+}

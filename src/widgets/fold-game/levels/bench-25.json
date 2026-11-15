@@ -1,0 +1,14 @@
+{
+  "id": "bench-25",
+  "order": 220,
+  "group": "Benchmarks (2D)",
+  "title": "Benchmark 25",
+  "lattice": "square",
+  "sequence": "PPHPPHHPPPPHHPPPPHHPPPPHH",
+  "best": 8,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Benchmark string of Unger and Moult (1993). Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "HH pairs separated by long P loops.",
+  "solution": "RRURDRRRDLLDRDLLULLLURRR"
+}

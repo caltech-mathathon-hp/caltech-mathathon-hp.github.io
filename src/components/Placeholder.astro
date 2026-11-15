@@ -1,0 +1,30 @@
+---
+/** A visible stand-in for a widget or block that is not built yet. */
+interface Props {
+  title: string;
+  size?: 'prose' | 'wide' | 'full';
+}
+const { title, size = 'wide' } = Astro.props;
+---
+
+<div class:list={['ph ui', size !== 'prose' && size]}>
+  <strong>{title}</strong>
+  <div class="muted"><slot /></div>
+</div>
+
+<style>
+  .ph {
+    margin: var(--s-6) 0;
+    padding: var(--s-6) var(--s-5);
+    border: 1.5px dashed var(--rule-strong);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    color: var(--fg-muted);
+    background: var(--bg-sunk);
+  }
+  .ph strong {
+    display: block;
+    color: var(--fg);
+    margin-bottom: var(--s-1);
+  }
+</style>

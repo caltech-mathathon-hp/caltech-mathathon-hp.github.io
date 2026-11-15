@@ -1,0 +1,147 @@
+---
+/**
+ * Card "The cube" (BL Fact 3.1, §3.2.1). Left: a section through the middle of the n×n×n cube,
+ * drawn flat; every node of it is an H. (1) An H inside: its four neighbours in the section and the
+ * two in front and behind (drawn askew, as in the oblique view) are all H's. (2) The H's of a block
+ * PHHP: their P's lie outside the cube, so the H's lie on the surface. Right: where the section is.
+ */
+import '../fig.css';
+import Tx from '../Tx.astro';
+import { N } from '../notation';
+import { oblique, pts, hbrace, type P3, type Pt } from '../lib';
+
+/* ---------- the section ---------- */
+const k = 6; // nodes drawn per side
+const s = 18;
+const x0 = 26;
+const y0 = 46;
+const at = (i: number, j: number): Pt => [x0 + i * s, y0 + j * s];
+const box = { x: x0 - s / 2, y: y0 - s / 2, w: k * s, h: k * s };
+const inner: Pt = [2, 2];
+const nbrs: Pt[] = [
+  [1, 2],
+  [3, 2],
+  [2, 1],
+  [2, 3],
+];
+/* The neighbours in front and behind, along the oblique depth direction of the cube view. */
+const depth: Pt = [8.6, -6.3];
+const [ix, iy] = at(...inner);
+const ghosts: Pt[] = [
+  [ix + depth[0], iy + depth[1]],
+  [ix - depth[0], iy - depth[1]],
+];
+/* A block PHHP on the right side: H's at the surface, P's one step outside. */
+const hs: Pt[] = [at(k - 1, 3), at(k - 1, 4)];
+const ps: Pt[] = [
+  [hs[0][0] + s, hs[0][1]],
+  [hs[1][0] + s, hs[1][1]],
+];
+const ribbon: Pt[] = [[ps[0][0], ps[0][1] - 10], ps[0], hs[0], hs[1], ps[1], [ps[1][0], ps[1][1] + 10]];
+const story = new Set([inner, ...nbrs, [k - 1, 3], [k - 1, 4]].map(([i, j]) => `${i},${j}`));
+const ring: Pt[] = [];
+for (let i = -1; i <= k; i++)
+  for (let j = -1; j <= k; j++) if (i === -1 || j === -1 || i === k || j === k) ring.push(at(i, j));
+const outside = ring.filter(([x, y]) => !ps.some(([px, py]) => px === x && py === y));
+const badge1: Pt = [ix - s / 2, iy - s / 2];
+const badge2: Pt = [ps[0][0] + 13, (ps[0][1] + ps[1][1]) / 2];
+
+/* ---------- the cube, with the plane of the section ---------- */
+const U = 60;
+const pr = oblique(184, 98, U);
+const face = (a: P3[]) => pts(a.map(pr));
+const zc = 0.5;
+const hidden: [P3, P3][] = [
+  [[0, 0, 1], [1, 0, 1]],
+  [[0, 0, 1], [0, 1, 1]],
+  [[0, 0, 0], [0, 0, 1]],
+];
+const planeDots: Pt[] = [];
+for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) planeDots.push(pr([(i + 0.5) / k, (j + 0.5) / k, zc]));
+const f0 = pr([0, 0, 0]);
+const f1 = pr([1, 0, 0]);
+const lx = 168; // legend
+---
+
+<svg class="pmf" viewBox="0 0 320 212" role="img" aria-labelledby="pmf-cube-t">
+  <title id="pmf-cube-t">On the right, a cube of side n made of n³ H's, cut by a plane through its middle. On the left, that section drawn flat: n by n nodes, all H's, framed by the surface of the cube, with the nodes outside the cube around it. Marker 1: an H inside the cube; its four neighbours in the section and the two in front of and behind it are all H's. Marker 2: a block PHHP; its two P's lie outside the cube, so each of its two H's has an open side, where its P sits, and lies on the surface.</title>
+
+  <!-- section -->
+  {outside.map(([x, y]) => <circle class="pmf-dot" cx={x} cy={y} r="1.8" />)}
+  <rect class="pmf-solid" x={box.x} y={box.y} width={box.w} height={box.h} rx="2" />
+  {
+    Array.from({ length: k * k }, (_, n) => {
+      const i = n % k;
+      const j = Math.floor(n / k);
+      if (story.has(`${i},${j}`)) return null;
+      const [x, y] = at(i, j);
+      return <circle class="pmf-h pmf-cube-rest" cx={x} cy={y} r="3.4" />;
+    })
+  }
+  {nbrs.map((q) => <line class="pmf-bond" x1={ix} y1={iy} x2={at(...q)[0]} y2={at(...q)[1]} />)}
+  {ghosts.map(([x, y]) => <line class="pmf-bond" x1={ix} y1={iy} x2={x} y2={y} />)}
+  {ghosts.map(([x, y]) => <circle class="pmf-h pmf-cube-ghost" cx={x} cy={y} r="3.2" />)}
+  {nbrs.map((q) => <circle class="pmf-h" cx={at(...q)[0]} cy={at(...q)[1]} r="4.4" />)}
+  <circle class="pmf-h" cx={ix} cy={iy} r="5" />
+  <polyline class="pmf-chain" points={pts(ribbon)} />
+  {hs.map(([x, y]) => <circle class="pmf-h" cx={x} cy={y} r="4.6" />)}
+  {ps.map(([x, y]) => <circle class="pmf-p" cx={x} cy={y} r="4.2" />)}
+  <path class="pmf-brace" d={hbrace(box.x + 2, box.x + box.w - 2, box.y + box.h + 13, 1)} />
+  <Tx x={box.x + box.w / 2} y={box.y + box.h + 34} t={N.n} a="middle" />
+  <Tx x={box.x} y="18" t="section through the cube" c="pmf-label-strong" />
+  {
+    [badge1, badge2].map(([x, y], n) => (
+      <g>
+        <circle class="pmf-badge" cx={x} cy={y} r="7.5" />
+        <text class="pmf-badge-num" x={x} y={y + 3.8} text-anchor="middle">
+          {n + 1}
+        </text>
+      </g>
+    ))
+  }
+
+  <!-- the cube -->
+  {hidden.map(([a, b]) => <polyline class="pmf-edge-line" stroke-dasharray="3 3" points={pts([pr(a), pr(b)])} />)}
+  <polygon class="pmf-solid pmf-cube-plane" points={face([[0, 0, zc], [1, 0, zc], [1, 1, zc], [0, 1, zc]])} />
+  {planeDots.map(([x, y]) => <circle class="pmf-h pmf-cube-rest" cx={x} cy={y} r="1.7" />)}
+  <polygon class="pmf-solid pmf-cube-glass" points={face([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]])} />
+  <polygon class="pmf-solid-side pmf-cube-glass" points={face([[0, 1, 0], [1, 1, 0], [1, 1, 1], [0, 1, 1]])} />
+  <polygon class="pmf-solid-side pmf-cube-glass" points={face([[1, 0, 0], [1, 0, 1], [1, 1, 1], [1, 1, 0]])} />
+  <path class="pmf-brace" d={hbrace(f0[0] + 1, f1[0] - 1, f0[1] + 5, 1)} />
+  <Tx x={(f0[0] + f1[0]) / 2} y={f0[1] + 24} t={N.n} a="middle" />
+  <Tx x={lx} y="138" t={`the ${N.n}³ H's fill the cube`} c="pmf-label-strong" />
+  {
+    [
+      ['inside: all six', 'neighbours are H'],
+      ['open side at its P,', 'so on the surface'],
+    ].map(([a, b], n) => {
+      const y = 162 + n * 30;
+      return (
+        <g>
+          <circle class="pmf-badge" cx={lx + 7.5} cy={y - 4} r="7.5" />
+          <text class="pmf-badge-num" x={lx + 7.5} y={y - 0.2} text-anchor="middle">
+            {n + 1}
+          </text>
+          <Tx x={lx + 21} y={y} t={a} />
+          <Tx x={lx + 21} y={y + 14} t={b} />
+        </g>
+      );
+    })
+  }
+</svg>
+
+<style>
+  .pmf-cube-rest {
+    opacity: 0.55;
+  }
+  .pmf-cube-ghost {
+    opacity: 0.7;
+  }
+  .pmf-cube-glass {
+    fill-opacity: 0.3;
+    stroke-opacity: 0.8;
+  }
+  .pmf-cube-plane {
+    stroke-width: 1.6;
+  }
+</style>

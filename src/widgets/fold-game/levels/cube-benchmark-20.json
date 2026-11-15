@@ -1,0 +1,15 @@
+{
+  "id": "cube-benchmark-20",
+  "order": 40,
+  "group": "Cubic lattice (3D)",
+  "title": "The 20-letter test string",
+  "lattice": "cubic",
+  "sequence": "HPHPPHHPHPPHPHHPPHPH",
+  "best": 11,
+  "optimal": true,
+  "bestKind": "computed",
+  "bestSource": "Optimum found by exhaustive search (scripts/hp-optimum.ts).",
+  "intro": "A standard test string for folding algorithms (Unger and Moult, 1993). The best fold has 11 contacts here, against 9 on the square lattice.",
+  "hint": "Aim for a compact H-core two layers thick, with the P’s on its surface.",
+  "solution": "RURULLLFLDRBRFDRUUL"
+}

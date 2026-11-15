@@ -1,0 +1,28 @@
+---
+/**
+ * A figure label. Single letters that stand alone (n, q, B, K, the u of u₁ and s(u)) are set as
+ * variables: italic serif (class pmf-v). H and P stay roman, since they are letters of the string.
+ *
+ *   <Tx x={10} y={20} t="n − 2" />   <Tx x={10} y={20} t="bin 1" c="pmf-label-strong" a="middle" />
+ */
+interface Props {
+  x: number | string;
+  y: number | string;
+  t: string;
+  a?: 'start' | 'middle' | 'end';
+  c?: string;
+  style?: string;
+}
+const { x, y, t, a, c = 'pmf-label', style } = Astro.props;
+const parts: { s: string; v: boolean }[] = [];
+let last = 0;
+for (const m of t.matchAll(/(?<![A-Za-z'’])[A-Za-z](?![A-Za-z'’])/g)) {
+  if (m[0] === 'H' || m[0] === 'P' || m[0] === 'a') continue;
+  if (m.index! > last) parts.push({ s: t.slice(last, m.index), v: false });
+  parts.push({ s: m[0], v: true });
+  last = m.index! + 1;
+}
+if (last < t.length) parts.push({ s: t.slice(last), v: false });
+---
+
+<text class={c} x={x} y={y} text-anchor={a} style={style}>{parts.map((p) => (p.v ? <tspan class="pmf-v">{p.s}</tspan> : p.s))}</text>

@@ -1,0 +1,49 @@
+---
+title: Reading off a packing
+caption: 'Strips are bigger than bins and there are more of them, so each strip holds one long ribbon that leaves room for exactly one bin. Bin-sized ribbons close the spare strips, and the items fill the rest, one bin per strip.'
+lane: left
+order: 5
+difficulty: 2
+figure: bl-packing
+source: '“Packing the items into bins”, p. 38'
+---
+
+### The idea
+
+By now a perfect fold has almost no freedom ([5 The counts match](#step-bl-local-rules) to [8 Walls run straight](#step-bl-walls)). Rods fill the edges, the core fills the inside, and the walls cut the front face into $q$ strips. What remains are the five other faces and the strips. The ribbons still to place fill them exactly, together with the two end H's of the core. A ribbon cannot cross a wall or turn round an edge, which means each one stays within a single face or strip.
+
+Now the sizes do the work. A face ribbon is longer than a strip, so the five face ribbons take the five faces. A padding fills more than half a strip, and there are $q$ paddings for $q$ strips, so every strip holds exactly one. That leaves $B$ nodes free in every strip. A plug fills such a gap completely, which means the $q-K$ plugs close $q-K$ strips and nothing else fits there. The item ribbons fill the remaining $K$ strips, $B$ nodes each, and the items that share a strip form one bin.
+
+### Statement
+
+In a perfect fold every strip holds one padding, the spare strips hold one plug each, and the item ribbons fill the other $K$ strips exactly. The items that share a strip form one bin of a packing.
+
+### Exact statement
+
+In a perfect fold, after at most one exchange of two pieces (proof step 4: the core's two end H's and an item ribbon of 2 H's may have to trade places), every strip holds one padding, $q-K$ strips hold one plug each, and the item ribbons fill the other $K$ strips, $B$ nodes each. The items whose ribbons lie in the same strip form the groups $U_1,\dots,U_K$ of a packing, so the puzzle has a solution.
+
+### Uses
+
+[4 Spelling the string](#step-bl-string): the ribbons of the item part and $2(T-B)>T$. [5 The counts match](#step-bl-local-rules): (d) and that a ribbon lies in one face. [8 Walls run straight](#step-bl-walls).
+
+### Proof
+
+1. **Regions.** By (d), the face nodes not used by the walls hold the H's of the face ribbons, of the item part, and the two end H's of the core. These face nodes form five whole faces of $(n-2)^2$ nodes and the $q$ strips of $T$ nodes; call each of these a region. Two face nodes in different regions are not neighbours, since faces meet only along edges and two strips are separated by walls. So each ribbon lies in one region.
+2. **The faces.** The face ribbons have $(n-2)^2$ or $(n-2)^2-2$ H's, more than $T=(2q-1)(n-2)$, so they lie in the five faces, one per face, since two do not fit in one. Four faces are full, and the fifth has 2 free nodes.
+3. **Parity.** Every region has an even number of nodes, and every ribbon an even number of H's. So each region holds 0 or 2 end H's of the core, and both lie in one region.
+4. **The exchange.** If both end H's of the core lie in a strip, then the 2 free nodes of the fifth face hold one ribbon of 2 H's, as nothing else is left to fill them. For the count below, exchange the two: put that ribbon in the strip and the end H's in the fifth face. Each strip still holds pieces of total size $T$.
+5. **Paddings.** The $q$ paddings, of $T-B$ H's each, lie in the strips, since the faces are full and $T-B>2$. A strip cannot hold two, as $2(T-B)>T$. So each strip holds exactly one padding and $B$ more nodes.
+6. **Plugs.** A plug fills the $B$ nodes left in its strip, so the $q-K$ plugs lie in $q-K$ different strips, and those strips hold nothing else.
+7. **Items.** The other $K$ strips hold only item ribbons, of total size $B$ each, and every item ribbon lies in one of them. Numbering these strips $1,\dots,K$ gives the sets $U_1,\dots,U_K$.
+
+### Where in the paper
+
+“Packing the items into bins”, p. 38: the five faces and $q$ bins (our strips), the face ribbons "too long to fit in the bins", one padding per bin since $2(T-B)>T$, and the items filling the $K$ bins left.
+
+### Rating
+
+2: area and parity counts. The paper places the end H's of the core "without loss of generality"; proof step 4 checks that.
+
+### Our note
+
+The two end H's of the core are its only H's on the surface. Every other ribbon and every region has an even number of nodes, so both ends lie in one region. If that region is a strip, they act as an item of size 2, which can trade places with the ribbon of size 2 that fills the two nodes the face ribbons leave open. The conclusion stands.

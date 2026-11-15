@@ -1,0 +1,162 @@
+/*
+ * Design tokens: every colour, font, size and spacing decision of the site lives here.
+ * Components and widgets must use these variables, never raw values, so that the look
+ * can be retuned in this one file (and dark mode works everywhere for free).
+ *
+ * JS widgets (canvas, three.js) read them at runtime with
+ *   getComputedStyle(document.documentElement).getPropertyValue('--h')
+ * and should re-read on the 'themechange' event dispatched on <html>.
+ */
+
+:root {
+  /* ---------- Typography ---------- */
+  --font-serif: 'Source Serif 4 Variable', 'Source Serif Pro', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --fs-xs: 0.8125rem;   /* 13px: labels, badges */
+  --fs-sm: 0.9375rem;   /* 15px: UI text, captions */
+  --fs-base: 1.125rem;  /* 18px: body prose */
+  --fs-lg: 1.3125rem;   /* 21px: lede */
+  --fs-h3: 1.25rem;
+  --fs-h2: 1.625rem;
+  --fs-h1: clamp(2rem, 1.4rem + 2.2vw, 2.875rem);
+
+  --lh-tight: 1.2;
+  --lh-ui: 1.45;
+  --lh-prose: 1.65;
+
+  /* ---------- Layout ---------- */
+  --w-prose: 42rem;   /* reading column */
+  --w-wide: 62rem;    /* figures and widgets that need room */
+  --w-page: 76rem;    /* header, home grid */
+  --gutter: 1rem;     /* side padding on phones */
+  --header-h: 3.5rem;
+
+  /* ---------- Spacing scale ---------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* ---------- Colour: surfaces and text (light) ---------- */
+  --bg: #fbfaf7;          /* page: warm paper white */
+  --bg-elev: #ffffff;     /* cards, widget panels */
+  --bg-sunk: #f2f0eb;     /* code, inset areas, widget canvases */
+  --fg: #1c1c21;          /* body text */
+  --fg-muted: #55555f;    /* secondary text, captions */
+  --fg-subtle: #8b8b95;   /* tertiary, disabled */
+  --rule: #e2ded5;        /* hairlines */
+  --rule-strong: #c9c3b7;
+
+  --accent: #1f4f8f;      /* links, focus, primary actions: deep academic blue */
+  --accent-hover: #163a6b;
+  --accent-weak: #e7eef7; /* accent backgrounds */
+  --on-accent: #ffffff;
+
+  --shadow-sm: 0 1px 2px rgba(28, 28, 33, 0.06);
+  --shadow-md: 0 2px 4px rgba(28, 28, 33, 0.05), 0 8px 24px rgba(28, 28, 33, 0.07);
+
+  /* ---------- Colour: the HP model (used by every widget) ---------- */
+  --h: #c4532f;           /* H, hydrophobic residue: burnt orange, filled */
+  --h-weak: #f6e1d8;
+  --p: #4f7aa3;           /* P, polar residue: slate blue, drawn hollow */
+  --p-weak: #e3ebf3;
+  --bond: #d99a1e;        /* an H–H contact that scores */
+  --backbone: #6d6d78;    /* the chain itself */
+  --lattice: #d8d4cb;     /* lattice points / grid lines */
+  --ghost: #1f4f8f;       /* legal next positions in the game */
+  --invalid: #b3261e;
+
+  /* ---------- Colour: semantic (proof map, badges, callouts) ---------- */
+  /* Difficulty: green / orange / red, kept apart from --h (hue 14) and --bond (hue 40).
+     --diff-<d>: lines, pips, borders (≥ 3:1 on --bg-elev). --diff-<d>-weak: tinted panels.
+     --diff-<d>-ink: text in that colour (≥ 4.5:1 on --bg-elev, --bg-sunk and its -weak tint). */
+  --diff-1: #3f8a5c;      /* routine step */
+  --diff-1-weak: #e3f0e6;
+  --diff-1-ink: #2b6844;
+  --diff-2: #c9771f;      /* needs care */
+  --diff-2-weak: #faebd8;
+  --diff-2-ink: #8d4f0c;
+  --diff-3: #b4343f;      /* where the proof is hard */
+  --diff-3-weak: #f8e2e3;
+  --diff-3-ink: #93232e;
+  /* Behind a modal dialog (the proof board's popup). */
+  --scrim: rgba(28, 28, 33, 0.5);
+
+  --st-proved: #2f7a4d;
+  --st-computed: #1f5f9e;
+  --st-cited: #6b6b75;
+  --st-conjecture: #7a4b9e;
+  --st-draft: #a86f12;
+  --st-lean: #0f6f73;
+
+  /* Items of the running example in the proof figures, and padding. Defined from other
+     tokens, so they follow the theme. */
+  --item-1: var(--st-lean);
+  --item-2: var(--bond);
+  --item-3: var(--st-conjecture);
+  --item-4: color-mix(in srgb, var(--st-conjecture) 45%, var(--h));
+  --item-pad: var(--fg-subtle);
+
+  color-scheme: light;
+}
+
+/* ---------- Dark theme ---------- */
+/* Light is the default. Dark applies only when the reader chooses it (the toggle in the header). */
+:root[data-theme='dark'] {
+  --bg: #131417;
+  --bg-elev: #1b1c20;
+  --bg-sunk: #0e0f11;
+  --fg: #e7e5e0;
+  --fg-muted: #a6a5ad;
+  --fg-subtle: #75747d;
+  --rule: #2c2d33;
+  --rule-strong: #3d3e45;
+  --accent: #85aee6;
+  --accent-hover: #a9c7f0;
+  --accent-weak: #1c2838;
+  --on-accent: #0e0f11;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --h: #e2774f;
+  --h-weak: #3a2219;
+  --p: #86a9cc;
+  --p-weak: #1d2733;
+  --bond: #ebb444;
+  --backbone: #8e8d97;
+  --lattice: #34353b;
+  --ghost: #85aee6;
+  --invalid: #f08078;
+  --diff-1: #6fbf8a;
+  --diff-1-weak: #162a1d;
+  --diff-1-ink: #8fd3a5;
+  --diff-2: #e59a48;
+  --diff-2-weak: #33240f;
+  --diff-2-ink: #f0b06a;
+  --diff-3: #ec7a82;
+  --diff-3-weak: #3a1a1e;
+  --diff-3-ink: #f59aa0;
+  --scrim: rgba(0, 0, 0, 0.65);
+  --st-proved: #6cc08f;
+  --st-computed: #7fb0e3;
+  --st-cited: #a6a5ad;
+  --st-conjecture: #b993dc;
+  --st-draft: #e2ac4f;
+  --st-lean: #5cc4c8;
+  color-scheme: dark;
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --gutter: 2rem;
+  }
+}

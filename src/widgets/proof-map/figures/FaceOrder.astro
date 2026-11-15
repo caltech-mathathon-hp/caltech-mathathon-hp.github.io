@@ -1,0 +1,118 @@
+---
+/**
+ * Card "The frame" (BL pp. 33–34, Figs. 4–7): the order in which the intended fold fills the cube,
+ * on a net. 1 the corner rod: the edges of the top and bottom faces and the back right edge (thick).
+ * 2 the back face, by a snake. 3 the tenth-edge rod: the back left edge. 4–7 the left, bottom, right
+ * and top faces, by snakes. 8 the interior, by the core. 9 the front face, left open for the walls
+ * and the items (dots: its free nodes, free edges included).
+ */
+import './fig.css';
+import { N } from './notation';
+
+const Sx = 56;
+const Sy = 64;
+const f = 44;
+const ox = 20;
+const oy = 14;
+const fx = (c: number) => ox + c * Sx;
+const fy = (r: number) => oy + r * Sy;
+const faces = [
+  { name: 'back', n: 2, col: 3, row: 1 },
+  { name: 'left', n: 4, col: 0, row: 1 },
+  { name: 'bottom', n: 5, col: 1, row: 2 },
+  { name: 'right', n: 6, col: 2, row: 1 },
+  { name: 'top', n: 7, col: 1, row: 0 },
+];
+const k = 4;
+const p = (f - 12) / (k - 1);
+const snake = (x: number, y: number) => {
+  const a: [number, number][] = [];
+  for (let r = 0; r < k; r++)
+    for (let c = 0; c < k; c++) a.push([x + 6 + (r % 2 === 0 ? c : k - 1 - c) * p, y + 6 + r * p]);
+  return a;
+};
+const ptsOf = (a: [number, number][]) => a.map((q) => q.join(',')).join(' ');
+/* The front face: free nodes, n columns (free edges included) by n − 2 rows. */
+const front = { x: fx(1), y: fy(1) };
+const frontDots: [number, number][] = [];
+for (let r = 0; r < k; r++) for (let c = 0; c < k + 2; c++) frontDots.push([front.x + (c * f) / (k + 1), front.y + 6 + r * p]);
+/* Rods: the squares of the top and bottom faces, the back right edge, the back left edge. */
+const sq = (c: number, r: number) => `M${fx(c)} ${fy(r)}h${f}v${f}h${-f}Z`;
+const cornerRod = [sq(1, 0), sq(1, 2), `M${fx(2) + f} ${fy(1)}v${f}`];
+const tenth = `M${fx(3) + f} ${fy(1)}v${f}`;
+const badge = (x: number, y: number, n: number) => ({ x, y, n });
+const badges = [
+  ...faces.map((fc) => badge(fx(fc.col) + f - 1, fy(fc.row) + 1, fc.n)),
+  badge(fx(1) - 10, fy(0) + f / 2, 1),
+  badge(fx(3) + f + 10, fy(1) + f / 2, 3),
+  badge(front.x + f - 1, front.y + 1, 9),
+];
+const lx = fx(2) + 4;
+const legend = [
+  { n: 1, t: N.corner, y: fy(0) + 14 },
+  { n: 3, t: N.tenth, y: fy(0) + 36 },
+  { n: 8, t: 'interior: the core', y: fy(2) + 16 },
+  { n: 9, t: 'front face: last', y: fy(2) + 38 },
+];
+---
+
+<svg class="pmf" viewBox="0 0 320 206" role="img" aria-labelledby="pmf-order-t">
+  <title id="pmf-order-t">A net of the cube, numbered in the order the fold fills it. 1: the corner rod, along the edges of the top and bottom faces and the back right edge. 2: the back face, by a snake. 3: the tenth-edge rod, along the back left edge. 4 to 7: the left, bottom, right and top faces, each by a snake. 8: the interior, by the core. 9: the front face, left open until last.</title>
+  {
+    faces.map((fc) => {
+      const x = fx(fc.col);
+      const y = fy(fc.row);
+      const s = snake(x, y);
+      return (
+        <g>
+          <rect class="pmf-face" x={x} y={y} width={f} height={f} />
+          <polyline class="pmf-chain" points={ptsOf(s)} />
+          {s.map(([cx, cy]) => (
+            <circle class="pmf-h" cx={cx} cy={cy} r="2.6" />
+          ))}
+          <text class="pmf-label" x={x + f / 2} y={y + f + 13} text-anchor="middle">
+            {fc.name}
+          </text>
+        </g>
+      );
+    })
+  }
+  <rect class="pmf-face pmf-face-front" x={front.x} y={front.y} width={f} height={f} />
+  {frontDots.map(([x, y]) => <circle class="pmf-dot" cx={x} cy={y} r="2.3" />)}
+  <text class="pmf-label" x={front.x + f / 2} y={front.y + f + 13} text-anchor="middle">front</text>
+  {cornerRod.map((d) => <path class="pmf-fo-rod" d={d} />)}
+  <path class="pmf-fo-rod" d={tenth} />
+  {
+    badges.map((b) => (
+      <g>
+        <circle class="pmf-badge" cx={b.x} cy={b.y} r="7.5" />
+        <text class="pmf-badge-num" x={b.x} y={b.y + 3.8} text-anchor="middle">
+          {b.n}
+        </text>
+      </g>
+    ))
+  }
+  {
+    legend.map((l) => (
+      <g>
+        <circle class="pmf-badge" cx={lx + 7.5} cy={l.y - 4} r="7.5" />
+        <text class="pmf-badge-num" x={lx + 7.5} y={l.y - 0.2} text-anchor="middle">
+          {l.n}
+        </text>
+        <text class="pmf-label" x={lx + 21} y={l.y}>
+          {l.t}
+        </text>
+      </g>
+    ))
+  }
+</svg>
+
+<style>
+  .pmf-fo-rod {
+    fill: none;
+    stroke: var(--h);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+</style>

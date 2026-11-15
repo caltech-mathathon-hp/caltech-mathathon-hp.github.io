@@ -1,0 +1,12 @@
+{
+  "id": "fill-two-bins",
+  "order": 10,
+  "title": "Fill two bins",
+  "bins": 2,
+  "capacity": 6,
+  "items": [4, 2, 2, 4],
+  "answer": "yes",
+  "intro": "Put every item into a bin so that each bin holds exactly 6.",
+  "hint": "Each 4 needs a 2.",
+  "solution": [0, 0, 1, 1]
+}

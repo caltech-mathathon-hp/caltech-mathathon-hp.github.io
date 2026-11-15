@@ -1,0 +1,160 @@
+---
+title: Context and related work
+slug: context
+navTitle: Context
+kicker: Part III
+lede: Two hardness proofs from 1998, the results that followed, and the open problem of a simpler proof.
+summary: The two 1998 proofs that HP folding is NP-complete, and the work around them. We found no simpler proof published since.
+order: 5
+---
+
+import PapersMap from '../../widgets/papers/PapersMap.tsx';
+import PapersList from '../../widgets/papers/PapersList.astro';
+
+## The HP model
+
+The HP model <Cite k="dill1985theory" /> reduces a protein to a string of H's (hydrophobic) and
+P's (polar). It keeps one force of real folding: hydrophobic residues gather in a core.
+[The front page](../) defines folds and contacts. <Cite k="istrail2009combinatorial" /> survey
+the mathematics of the model up to 2009.
+
+Before 1998, hardness was known only for models with more structure.
+<Cite k="paterson1996complexity" /> proved it for an unbounded alphabet in which only identical
+letters bond. Other proofs used energies that are part of the input <Cite k="unger1993finding" />,
+angle rules on the diamond lattice <Cite k="ngo1992computational" />, or a graph of charges in
+place of a chain <Cite k="fraenkel1993complexity" />. <Cite k="hart1997robust" /> extended such
+results to every finitely representable lattice, still with an unbounded alphabet. In these models
+the energy or the rules can pin down the shape of the fold. With two letters any two H's can form a
+contact, so a reduction has to force the shape through the number of contacts alone. Unger and
+Moult could not prove hardness for an HP-like model, and <Cite k="hart1996fast" /> listed the
+complexity of HP folding as open and conjectured that it is NP-hard.
+
+## Two proofs from 1998
+
+In 1998 two independent papers proved HP folding NP-complete: <Cite k="berger1998protein" /> on
+the cubic lattice and <Cite k="crescenzi1998complexity" /> on the square lattice. The second paper
+credits Berger and Leighton with proving the cubic case a few months earlier.
+
+Berger and Leighton reduce from a form of bin packing in which every bin must be exactly full. It is
+strongly NP-complete, which follows from 3-PARTITION <Cite k="garey1979computers" />. Strong
+hardness is needed because each item size becomes a length in the string, written in unary. The
+string has $n^3$ H's, and $n^3$ H's have the most contacts exactly when they fill an
+$n\times n\times n$ cube. Berger and Leighton cite this cube lemma as a classic result, without a
+source. Its inequality is the discrete Loomis–Whitney inequality <Cite k="loomis1949inequality" />,
+and <Cite k="atkins1999intractability" /> prove the lemma in full, with the case of equality.
+
+In a perfect fold every P lies outside the cube, and short blocks such as <Seq s="PHP" /> are forced
+onto its edges and faces. Some blocks build walls that cut one face into bins, and the blocks that
+encode the items must fit into the bins. That a perfect fold gives a packing takes about a page and
+a half of counting. The converse is longer. It needs explicit coordinates for the fold, and six
+lemmas that route the **linkers**, the runs of P's that join the pieces of the string. The lemmas
+are Berger and Leighton's own; they credit the general method to work on three-dimensional circuit
+layout <Cite k="leighton1986three" />.
+
+Crescenzi et al. reduce from Hamiltonian path. They measure a fold by its **losses**: lattice edges
+that join an H to a node that is not an H and are not edges of the string. Fewer losses means more
+contacts. The proof first folds a set of strings instead of one. Each vertex of the graph gets
+strings that carry its codeword in a Hadamard-code embedding of the graph
+<Cite k="trevisan1997when" />, where the Hamming distance between two codewords tells whether the
+vertices are adjacent. Strings laid side by side in the order of a Hamiltonian path form a
+near-square of H's, whose only losses come from mismatched codewords. The target is a positive
+budget of $E = 7n(n-1)$ losses for a graph on $n$ vertices. The proof that a fold within this budget
+gives a Hamiltonian path takes 11 pages of the journal version, plus 25 pages of appendices of local
+case analysis. A second step joins the strings into one, starting from Hamiltonian cycle in a
+special class of planar graphs; its converse is one sentence. A 3D version is sketched in one
+paragraph.
+
+| | Berger and Leighton | Crescenzi et al. |
+|---|---|---|
+| Lattice | cubic, $\mathbb Z^3$ | square, $\mathbb Z^2$ |
+| Source problem | bin packing, strongly NP-complete | Hamiltonian path |
+| Target | a perfect fold: the H's fill a cube | at most $E > 0$ losses |
+| Main gadget | walls that cut a face of the cube into bins | Hadamard codewords for the vertices |
+| Longest part | the fold and the routing of the linkers | fold ⇒ Hamiltonian path |
+| Length of the journal version | 14 pages | 43 pages, 25 of them appendices |
+
+## What came after
+
+### Variants
+
+Later hardness proofs change the problem. <Cite k="nayak1998spatial" /> use random codewords over
+an alphabet of about $10^{300}$ letters, and also prove MAX SNP-hardness, both under randomized
+reductions. They write that two letters would need a new idea.
+<Cite k="atkins1999intractability" /> use 12 letters with a designed table of contact energies, and
+give a deterministic proof on the cubic lattice. If the region to fill is part of the input, a
+three-page reduction <Cite k="feng2022bicolored" /> from Hamiltonian path in grid graphs
+<Cite k="itai1982hamilton" /> is enough. If the angle at every residue is fixed, hardness holds in
+2D even with two H's <Cite k="demaine2022computational" />, and in 3D through filling a cube with
+prescribed turns <Cite k="abel2013finding" />. In our reading, each change gives the reduction a
+way to fix the shape other than the number of contacts.
+
+### Approximation
+
+<Cite k="hart1996fast" /> gave algorithms that reach, asymptotically, 1/4 of the optimal score in
+2D and 3/8 in 3D. They rest on a parity bound: the lattices are bipartite, so an H can form
+contacts only with H's whose positions in the string have the other parity.
+<Cite k="istrail2009combinatorial" /> restate the 2D bound without its term for H's at the ends of
+the string. That form fails for <Seq s="HPPHPHPH" />, which folds with 3 contacts against a bound
+of 2 (our check).
+
+<Cite k="berger1998protein" /> derive hardness within $9/8-\varepsilon$ for a related measure, the
+number of missed H–H bonds: deciding whether a fold misses only the minimum of 8 is NP-hard, and
+the count is an integer. <Cite k="crescenzi1998complexity" /> claim, without proof, that minimizing
+losses in 3D is MAX SNP-complete. For the number of contacts itself, hardness of approximation is
+open <Cite k="nayak1998spatial" /> <Cite k="demaine2012geometric" />.
+
+### Inverse folding
+
+The reverse problem asks for a string that folds well into a given shape.
+<Cite k="hart1997computational" /> claimed that a canonical version is NP-complete on both
+lattices. <Cite k="berman2004protein" /> showed that the 2D reduction is wrong, solved the 2D case
+in polynomial time, and proved the 3D case NP-complete and gave a PTAS for it. It is the only
+published hardness proof in the area that we know to be wrong. <Cite k="kleinberg1999efficient" />
+solved another design model in polynomial time.
+
+### Formalization
+
+We found no machine-checked hardness proof for HP folding. The only formalization of the model we
+found is in Lean: folds, the contact score, score bounds and a verified search for optimal folds
+<Cite k="kjoshanssen2024ptyche" />. Mathlib, Lean's main library, has polynomial-time Turing
+machines but no NP <Cite k="mathlib2026computability" />. Four newer Lean libraries add NP and
+reductions <Cite k="cslibfrontier2026complexity" /> <Cite k="senellart2026descriptive" />
+<Cite k="solresol2026nphardness" /> <Cite k="rbarish2026npcompleteness" />. They are large, three
+of them were written with AI assistance, and we have not reviewed them. The Cook–Levin theorem is
+formalized in Coq <Cite k="gaher2021mechanising" /> and in Isabelle <Cite k="balbach2023cook" />.
+<Cite k="kreuzer2023verification" /> checked in Isabelle that NP-hardness reductions for the closest
+and shortest vector problems are correct, and argued their running time on paper. Along the way
+they found and fixed problems in the published proofs.
+
+## The open problem
+
+<Cite k="demaine2012geometric" /> skipped both proofs in his MIT lectures as complicated, and listed
+finding "a simple or cleaner proof" as an open problem. The surveys restate the theorems:
+<Cite k="istrail2009combinatorial" /> without proofs, and <Cite k="chandru2003algorithmics" /> with
+a sketch of the 3D construction that leaves out the proof that a perfect fold gives a packing. We
+searched the papers that cite either proof: 820 through Semantic Scholar and 653 through OpenAlex.
+None gives a new or simpler proof for the two-letter model. We also found no erratum and no
+independent check of either proof. The only published criticism, by <Cite k="bahi2013protein" />,
+is about modelling: the 2D proof ranges over all self-avoiding walks, including folds that pivot
+moves from the straight chain cannot reach. It does not dispute correctness.
+
+Three related questions are also open in the literature:
+
+- hardness of approximating the number of contacts <Cite k="nayak1998spatial" />
+  <Cite k="demaine2012geometric" />;
+- hardness on other lattices: we found no hardness proof for HP folding on the triangular,
+  hexagonal or face-centred cubic lattice, where only approximation algorithms are known, and
+  <Cite k="istrail2009combinatorial" /> list the hexagonal case as open;
+- hardness for strings whose optimal fold is unique <Cite k="aichholzer2003long" />, which the known
+  proofs do not cover.
+
+## All papers
+
+The map places every source we collected by year and theme, and draws the connections of the paper
+you select. The list groups the same sources by theme, most relevant first.
+
+<div class="wide" id="papers-map">
+  <PapersMap client:visible />
+</div>
+
+<PapersList />

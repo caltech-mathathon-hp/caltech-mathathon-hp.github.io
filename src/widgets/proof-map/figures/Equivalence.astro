@@ -1,0 +1,91 @@
+---
+/**
+ * Card "The idea": the items fit into K bins of size B (left) exactly when the string folds
+ * perfectly (right). Each arrow is one direction, proved by one lane of the board; the labels do not
+ * say "left" or "right", since on phones the lanes stack. The packing drawn is the one of
+ * story/items.ts: bin 1 = {u₁, u₄}, bin 2 = {u₂, u₃}; ribbons as dominoes (blocks PHHP).
+ */
+import './fig.css';
+import Tx from './Tx.astro';
+import { N } from './notation';
+import { itemColor, oblique, pts, hbrace, type P3 } from './lib';
+import { ITEMS, CAP, inBin, domino } from './story/items';
+
+const c = 7.6;
+const g = 8.6;
+const bx = 14;
+const binY = [86, 112];
+const m = 2; // a 3 × 3 × 3 cube
+const pr = oblique(238, 146, 24);
+const face = (a: P3[]) => pts(a.map(pr));
+const nodes: P3[] = [];
+for (let z = m; z >= 1; z--) for (let x = 0; x <= m; x++) nodes.push([x, m, z]);
+for (let z = m; z >= 1; z--) for (let y = 0; y < m; y++) nodes.push([m, y, z]);
+for (let y = 0; y <= m; y++) for (let x = 0; x <= m; x++) nodes.push([x, y, 0]);
+const ax0 = 128;
+const ax1 = 200;
+const binW = (CAP - 1) * g + c;
+const blocks = (b: number) => {
+  let u = 0;
+  return inBin(b).flatMap((k) => {
+    const out = domino(ITEMS[k]).map((d) => ({ k, u: u + d.x }));
+    u += ITEMS[k];
+    return out;
+  });
+};
+---
+
+<svg class="pmf" viewBox="0 0 320 186" role="img" aria-labelledby="pmf-iff-t">
+  <title id="pmf-iff-t">On the left, the items packed into K bins of size B: u1 and u4 in bin 1, u2 and u3 in bin 2, and so on. On the right, a cube of H's: the string folds perfectly. An arrow from left to right says that a packing gives a fold; an arrow back says that a fold gives a packing.</title>
+  <text class="pmf-label-strong" x={bx} y="34">the items fit</text>
+  <Tx x={bx} y="50" t={`${N.K} bins of size ${N.B}`} />
+  <path class="pmf-brace" d={hbrace(bx, bx + binW, binY[0] - 10, -1)} />
+  <Tx x={bx + binW / 2} y={binY[0] - 20} t={N.B} a="middle" />
+  {
+    binY.map((y, b) => (
+      <g>
+        <rect class="pmf-face" x={bx - 3} y={y - c / 2 - 3} width={binW + 6} height={c + 6} rx="3" />
+        {blocks(b).map((d) => (
+          <rect x={bx + d.u * g} y={y - c / 2} width={g + c} height={c} rx="1.6" style={`fill:${itemColor(d.k)}`} />
+        ))}
+      </g>
+    ))
+  }
+  <text class="pmf-label" x={bx + binW / 2} y={binY[1] + 24} text-anchor="middle">⋮</text>
+  <text class="pmf-label" x={bx} y={binY[1] + 48}>
+    {
+      ITEMS.map((_, k) => (
+        <>
+          {k > 0 && ', '}
+          <tspan class="pmf-v" font-weight="600" style={`fill:${itemColor(k)}`}>u</tspan><tspan font-weight="600" style={`fill:${itemColor(k)}`}>{N.item(k + 1).slice(1)}</tspan>
+        </>
+      ))
+    }, …
+  </text>
+  <text class="pmf-label-strong" x="306" y="34" text-anchor="end">it folds perfectly</text>
+  <polygon class="pmf-face pmf-face-front" points={face([[0, 0, 0], [m, 0, 0], [m, m, 0], [0, m, 0]])} />
+  <polygon class="pmf-face pmf-face-front" points={face([[0, m, 0], [m, m, 0], [m, m, m], [0, m, m]])} />
+  <polygon class="pmf-face pmf-face-front" points={face([[m, 0, 0], [m, 0, m], [m, m, m], [m, m, 0]])} />
+  {nodes.map((p) => <circle class="pmf-h" cx={pr(p)[0]} cy={pr(p)[1]} r="4.6" />)}
+  <defs>
+    <marker id="pmf-iff-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L8 4L0 8z" class="pmf-iff-head" />
+    </marker>
+  </defs>
+  <line class="pmf-iff-line" x1={ax0} y1="92" x2={ax1} y2="92" marker-end="url(#pmf-iff-arrow)" />
+  <line class="pmf-iff-line" x1={ax1} y1="120" x2={ax0} y2="120" marker-end="url(#pmf-iff-arrow)" />
+  <text class="pmf-label" x={(ax0 + ax1) / 2} y="68" text-anchor="middle">a packing</text>
+  <text class="pmf-label" x={(ax0 + ax1) / 2} y="82" text-anchor="middle">gives a fold</text>
+  <text class="pmf-label" x={(ax0 + ax1) / 2} y="138" text-anchor="middle">a fold</text>
+  <text class="pmf-label" x={(ax0 + ax1) / 2} y="152" text-anchor="middle">gives a packing</text>
+</svg>
+
+<style>
+  .pmf-iff-line {
+    stroke: var(--fg-muted);
+    stroke-width: 1.5;
+  }
+  .pmf-iff-head {
+    fill: var(--fg-muted);
+  }
+</style>

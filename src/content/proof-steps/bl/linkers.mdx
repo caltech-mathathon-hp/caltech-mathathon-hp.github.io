@@ -1,0 +1,50 @@
+---
+title: Loops take up slack
+caption: 'All linkers have the same length, fixed before the packing is known. Each takes its route through the switchboard and uses up the rest in a loop away from the cube.'
+lane: right
+group: links
+order: 5
+difficulty: 2
+figure: bl-linkers
+source: '“Packing the connecting strings of P’s”, pp. 36–37'
+---
+
+### The idea
+
+We wrote $S$ before knowing the packing, so every linker has the same length, $52n+2$ P's. In the fold, a linker must lead from the last H of one ribbon to the first H of the next, wherever the packing put it, and use no node that another letter uses.
+
+From each of its two ends, the linker first goes four steps straight out from the front face. There the switchboard of [13 Untangling the linkers](#step-bl-crossbar) takes over and carries the two ends to neighbouring points further out. The route runs out through the switchboard, one step across and back in, and each trip through the switchboard takes at most $26n-23$ steps. With the four steps at each end, the route has at most $52n-37$ steps, fewer than the linker needs. The difference is even because of the colouring of [12 Filling the strips](#step-bl-fill-strips): every linker joins an odd node to an even one, so both the route and the linker take an odd number of steps. The linker spends its extra P's on a loop straight out from the switchboard and back.
+
+### Statement
+
+Every linker fits outside the cube on nodes no other letter uses, so a packing gives a perfect fold.
+
+### Exact statement
+
+The fold of [10 Folding the frame](#step-bl-frame), [11 Building the walls](#step-bl-build-walls) and [12 Filling the strips](#step-bl-fill-strips) extends to a fold of all of $S$. Each linker, the $52n+2$ P's between the last H of one piece and the first H of the next ribbon of the item part, lies outside the cube and meets no other letter. So $S$ has a perfect fold.
+
+### Uses
+
+[4 Spelling the string](#step-bl-string): the linkers. [10 Folding the frame](#step-bl-frame), [11 Building the walls](#step-bl-build-walls): the P's already placed. [12 Filling the strips](#step-bl-fill-strips): the ends of the ribbons. [13 Untangling the linkers](#step-bl-crossbar).
+
+### Proof
+
+1. **Ends.** A linker joins the last H of a piece to the first H of the next ribbon. The first linker starts at the spaced rod's last H, $(n-1,n-2-q,0)$, which is odd because $q$ is even. Every other linker starts at the last H of a ribbon, which is odd, and every linker ends at the first H of a ribbon, which is even. All these ends are distinct nodes $(a,b,0)$ with $0\le a,b\le n-1$.
+2. **Out of the face.** From each end $(a,b,0)$, the linker uses $(a,b,-1),\dots,(a,b,-4)$. The node $(a,b,-1)$ is the end H's own P. The other three are free: for a ribbon end by part (4) of cards 10 and 11, and for the spaced rod's end because the runs of card 11 in front of $E_2$ avoid row $n-2-q$.
+3. **Switchboard.** No letter placed so far has $k\le-4$. Use the region $k\le-4$ as the switchboard of card 13 with $h=n$, depth $d$ at $k=-4-d$, and the inputs $(a,b,-4)$. Pair the outputs as $(2t,b)$ and $(2t+1,b)$; $n$ is even, so there are $n^2/2$ pairs, at least as many as linkers. Choose a permutation that sends the two ends of each linker to the two outputs of one pair, and keep only the paths from inputs that are ends.
+4. **Length.** A linker is now a walk of at most $4+(26n-23)+1+(26n-23)+4$ steps, which is $52n-37$, from its first end out and through the switchboard, one step across the pair, and back to its other end. It needs $52n+3$ steps, one more than its number of P's. Both lengths are odd, as the walk joins an odd node to an even one, so the difference $2L$ is even and positive.
+5. **Loops.** Replace the step across the pair by a loop: $L$ steps further out from the first output, one step across, and $L$ steps back to the second. The nodes beyond the outputs in front of each output are used by that output's loop alone, so the loops are disjoint.
+
+Every linker now has exactly $52n+2$ P's, outside the cube and disjoint from every other letter. With card 12, the H's fill the cube.
+
+### Where in the paper
+
+“Packing the connecting strings of P’s”, pp. 36–37: the parity remark, the crossbar (our switchboard) at $k\le-4$, the bound $2(26n-23+4)+1=52n-37$, the choice $c=52$, and the loops.
+
+### Rating
+
+2: a count of lengths and a parity check, with the switchboard taken from card 13.
+
+### Our note
+
+The paper discusses linkers between item ribbons only. The first linker starts at the spaced rod's last H, an odd node because $q$ is even, so the same parity argument applies. The paper also leaves to the reader that the columns in front of the ends are free (proof step 2) and that loops in front of different outputs do not meet (proof step 5).

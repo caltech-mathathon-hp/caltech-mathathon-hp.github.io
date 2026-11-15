@@ -1,0 +1,54 @@
+---
+title: Turning packing into folding
+caption: 'We call a fold perfect when its H''s fill a cube. From any bin packing puzzle we build an HP string that has a perfect fold exactly when the items fit.'
+lane: top
+order: 1
+difficulty: 1
+figure: bl-iff
+source: '§3.2, pp. 32–33'
+---
+
+### The idea
+
+To show that folding is hard, we show that a program for folding would also solve a puzzle known to be hard: packing items into bins. So for each packing puzzle we write down one HP string and ask how well it folds.
+
+A fold can take any shape, and that makes folding hard to argue about. So we fix a target. A set of H's makes the most contacts when it fills a cube ([3 Why a cube](#step-bl-cube)). We call a fold **perfect** when its H's fill a cube, and we ask whether the string has one. Then we spell the string so that filling the cube is a jigsaw in which almost every piece has one place: some pieces go along the edges, some on the faces, and one long run of H's inside. On one face, which we call the front face, a few pieces cut out strips that act as bins. The only choice left is which strip each item goes into, so the string folds perfectly exactly when the items fit.
+
+### Statement
+
+For every bin packing puzzle we build one HP string that has a perfect fold exactly when the puzzle has a solution.
+
+### Exact statement
+
+A **perfect fold** of a string with $n^3$ H's is a fold whose H's occupy exactly the nodes of an $n\times n\times n$ cube. Given items of even sizes to be packed into $K$ bins of size $B$ ([2 Why bin packing](#step-bl-problems)), we build a string $S$ with $n^3$ H's such that
+
+$$S \text{ has a perfect fold} \iff \text{the items fit into the bins.}$$
+
+By [3 Why a cube](#step-bl-cube), the perfect folds are exactly the folds with at least $3n^2(n-1)$ H–H pairs, the most that $n^3$ H's can make. So a program that finds the best fold of $S$ also solves the packing puzzle.
+
+### Uses
+
+No earlier card. This card says what the board proves.
+
+### Proof
+
+The plan, card by card:
+
+1. **Setup.** [2 Why bin packing](#step-bl-problems) states the problems. [3 Why a cube](#step-bl-cube) shows that a perfect fold is a fold with the most H–H pairs. [4 Spelling the string](#step-bl-string) builds $S$.
+2. **Left lane: if $S$ folds perfectly, the items fit.** Local rules fix where each kind of H can go. The rods then fill the edges of the cube and lay straight walls on one face, the walls cut that face into strips, and the item ribbons must fill $K$ strips of $B$ nodes each, which is a packing.
+3. **Right lane: if the items fit, $S$ folds perfectly.** Given a packing, the fold is built piece by piece in coordinates: the frame, the walls, the items in the strips, and finally the runs of P's that join the items, routed through a switchboard in front of the cube.
+4. **End.** [15 Folding is NP-complete](#step-bl-conclusion) puts the two lanes together.
+
+Both directions are needed. The right lane alone would allow a string that folds perfectly even when the items do not fit, and the left lane alone a string that never folds perfectly.
+
+### Where in the paper
+
+§3.2, pp. 32–33, outlines the reduction. The right lane is §3.2.3 and the left lane §3.2.4.
+
+### Rating
+
+1: an outline; the other cards hold the proofs.
+
+### Our note
+
+The paper proves the right lane first, in about 3½ pages, and the left lane in about 1½. We read the left lane first, because it shows why the string is built the way it is.

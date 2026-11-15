@@ -1,0 +1,52 @@
+---
+title: Two edges stay free
+caption: 'The longest rod is as long as a path along the edges can be, so it must pass all 8 corners and cover 9 edges. A second rod takes a tenth edge, which leaves two edges free for the walls to hang between.'
+lane: left
+group: forced
+order: 2
+difficulty: 2
+figure: bl-skeleton
+source: '“Forming the bins”, p. 37'
+---
+
+### The idea
+
+The rods fill the edges and corners of the cube: 8 corners joined by 12 edges of $n-2$ nodes each, and each rod lies along them as a path ([5 The counts match](#step-bl-local-rules)). The walls will need two empty edges to hang between. So the string starts with the corner rod of [4 Spelling the string](#step-bl-string), which has $9n-10$ H's and, as we now show, almost no choice in where it lies.
+
+A path along the edges turns only at corners. Between two corners it covers a whole edge, and before its first corner and after its last it covers at most one edge each. So a path through $r$ corners has at most $r+(r+1)(n-2)$ nodes. The corner rod has $9n-10=8+9(n-2)$, so it passes all 8 corners and covers 9 whole edges. At each corner it uses at least two of the three edges, so the three edges it misses share no corner. A second rod, of $n-2$ H's, fills one of them. The other two stay empty, and these are the free edges.
+
+### Statement
+
+The first two rods fill ten of the twelve edges, and the two edges left share no corner.
+
+### Exact statement
+
+Here an **edge** means the $n-2$ edge nodes between two corners. In a perfect fold:
+
+1. the corner rod <Seq s="(PHP)^{9n−10}" /> covers all 8 corners and all nodes of 9 edges;
+2. the tenth-edge rod <Seq s="(PHP)^{n−2}" /> fills one of the 3 edges left;
+3. the other two, the **free edges**, share no corner.
+
+### Uses
+
+[4 Spelling the string](#step-bl-string): the rod lengths. [5 The counts match](#step-bl-local-rules): (b), (c), and the fact that a rod's H's form a path in the skeleton.
+
+### Proof
+
+1. The skeleton consists of 12 paths of $n-2$ edge nodes, joined at 8 corners, with 3 edges at each corner. Two skeleton nodes are neighbours only along these paths.
+2. A path in the skeleton that meets $k$ corners has at most $k+(k+1)(n-2)$ nodes. Between two consecutive corners it runs along a whole edge, $n-2$ nodes, and before the first and after the last corner it covers at most $n-2$ nodes each.
+3. The corner rod is such a path with $9n-10=8+9(n-2)$ nodes. Since $k\le8$, step 2 forces $k=8$ and both end runs complete. So the rod covers the 8 corners, the 7 edges between consecutive corners, and the 2 edges of its end runs: 9 edges.
+4. At every corner the rod covers at least two of the three edges: the edges by which it enters and leaves, or, at its first and last corner, one of these and the edge of its end run. So each corner meets at most one of the 3 edges left, and no two of them share a corner.
+5. The tenth-edge rod is a path of $n-2$ lone H's on skeleton nodes not yet used. These are the nodes of the 3 edges left, and since their corners are taken, no two of these edges are joined. So the rod fills one of them.
+
+### Where in the paper
+
+“Forming the bins”, p. 37, first paragraph. The paper argues from the parity of corner nodes and from the length of the rod ("since it is so long").
+
+### Rating
+
+2: a counting argument. The paper's version is terse; the bound of proof step 2 makes it a count.
+
+### Our note
+
+The step is correct, and the paper argues it in a few lines. The bound $k+(k+1)(n-2)$ is our rephrasing. It forces $k=8$, and then every corner has at least two of its edges covered, so the edges left share no corner.

@@ -1,0 +1,46 @@
+---
+/**
+ * Lab (unlisted: not in the navigation): the bin-packing game, the problem Berger and Leighton
+ * reduce from.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BinPack from '../../widgets/bin-pack/BinPack.tsx';
+---
+
+<BaseLayout title="Bin packing" description="Bin packing, the problem Berger and Leighton reduce from.">
+  <article class="flow lab">
+    <header class="page-head">
+      <p class="kicker ui">Lab</p>
+      <h1>Bin packing</h1>
+      <p class="lede">
+        Berger and Leighton reduce from bin packing. Put every item into a bin so that each bin is filled exactly.
+      </p>
+    </header>
+    <div class="wide">
+      <BinPack client:load />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .lab {
+    padding-top: var(--s-7);
+  }
+  .page-head {
+    margin-bottom: var(--s-4);
+  }
+  .kicker {
+    margin: 0 0 var(--s-2);
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: var(--fs-xs);
+  }
+  .lede {
+    font-size: var(--fs-lg);
+    line-height: 1.5;
+    color: var(--fg-muted);
+    margin: var(--s-4) 0 0;
+  }
+</style>

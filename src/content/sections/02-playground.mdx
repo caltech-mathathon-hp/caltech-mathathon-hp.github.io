@@ -1,0 +1,116 @@
+---
+title: Playground
+slug: playground
+navTitle: Playground
+lede: Fold strings of H’s and P’s on the cubic lattice and five others, level by level, so that as many H’s as possible touch. Then pack items into bins, the puzzle that Berger and Leighton translate into folding.
+summary: A folding game on the cubic lattice and five others, and the bin-packing puzzle that Berger and Leighton translate into folding.
+order: 2
+---
+
+import FoldGame from '../../widgets/fold-game/FoldGame.tsx';
+import BinPack from '../../widgets/bin-pack/BinPack.tsx';
+
+{/* Level titles in the text are those of src/widgets/fold-game/levels/*.json and
+    src/widgets/bin-pack/levels/*.json; rename them here if a level is renamed there. */}
+
+Place the letters of the string one at a time, each on a free node next to the one before. Two H's
+that end up side by side without being neighbours in the string make a **contact**, drawn as a
+dashed line. Each level says how many contacts its best fold has; try to reach that number. The
+[front page](../) explains the model behind the game.
+
+<div class="wide">
+  <FoldGame client:load levels latticePicker lattice="cubic" />
+</div>
+
+## Levels and lattices
+
+We start on the cubic lattice, where Berger and Leighton proved their theorem. Its five levels lead
+from a first contact to a cube of 27 H's, and the sections below say what they show. Show solution
+plays a best fold, which you can then change like your own. The switch at the top of the game
+changes between 3D and 2D, and the tabs beside it change the lattice. The numbered chips under them
+pick a level, and under Own string you can fold any string you type.
+
+## What the cubic levels teach
+
+Three ideas of Berger and Leighton's proof show up in the levels on the cubic lattice.
+
+### H's gather into a cube
+
+Every side of an H that does not touch another H is a lost contact, so the score grows as the H's
+gather and the P's move outside. On the cubic lattice they gather best into a cube, because a set
+of $n^3$ nodes has the most neighbouring pairs only when it is an $n \times n \times n$ cube.
+*Eight H's* shows this for $n = 2$: its best fold has 5 contacts, and only a 2×2×2 cube of H's
+reaches 5. *The 3×3×3 cube* does the same for $n = 3$, with 28 contacts. Berger and Leighton's
+strings have $n^3$ H's, so for them too no other shape of the H's has as many contacts as the cube,
+and a fold with that many fills the cube with H's. The [front page](../) calls such a fold perfect.
+
+### P's push H's to the surface
+
+A perfect fold leaves no room in the cube for P's, so every P sits outside it. In *A core with
+loops* each PP loop therefore leaves the cube and comes back next to where it left. In a larger
+cube this decides where each H can go, because the letters beside an H in the string sit on
+neighbouring nodes. An H between two P's, as in <Seq s="PHP" />, has two sides facing out of the
+cube, so it sits on an edge or at a corner. The H's of <Seq s="PHHP" /> each have one side facing
+out, and the counting in the proof puts them on a face. Berger and Leighton spell their string with
+such pieces: rods such as <Seq s="(PHP)^3" /> go along the edges, and ribbons such as
+<Seq s="(PHHP)^3" /> go on the faces. [The original proof](../original-proof/) builds its bins on
+this frame of edges and faces.
+
+### Early choices decide late ones
+
+In *The 3×3×3 cube* the fold must pass through every node of the cube, so a choice made early can
+make the cube impossible to close much later. Even the first letter matters. Colour the nodes of
+the cube with two colours so that neighbours differ: the 8 corners and the 6 face centres get one
+colour, the 12 edge midpoints and the centre the other. Consecutive letters alternate colours, so
+the 14 letters at odd positions all share a colour, and only the first colour has 14 nodes. A fold
+that starts in the middle of an edge, or at the centre, can therefore never fill the cube.
+
+On the cubic lattice each new letter has up to five free directions, so the folds multiply: their
+number grows like $4.68^n$ for a string of
+$n+1$ letters, and folds with many contacts are rare among them. The [front page](../) explains why
+many folds alone do not make a problem hard.
+
+## NP-complete on two lattices, open on four
+
+The switch and the tabs at the top of the game move it to five other lattices, and the same string
+can score differently on each. *The 20-letter test string* is a level on every lattice but the
+face-centred cubic one: its best fold has 11 contacts on the cubic lattice, 9 on the square, 15 on
+the triangular, 6 on the diamond and 4 on the hexagonal. On each lattice we can ask the
+[question on the front page](../): does a string have a fold with at least a given number of
+contacts? The table says what is known. "Open" means that we found no proof of hardness
+([Context](../context/)).
+
+| Lattice | Neighbours of a node | What is known |
+|---|---|---|
+| Cubic (3D) | 6 | NP-complete <Cite k="berger1998protein" /> |
+| Face-centred cubic (3D) | 12 | open |
+| Diamond (3D) | 4 | open; a path problem with rules on dihedral angles is NP-complete <Cite k="ngo1992computational" /> |
+| Square (2D) | 4 | NP-complete <Cite k="crescenzi1998complexity" /> |
+| Triangular (2D) | 6 | open; a 6/11-approximation is known <Cite k="istrail2009combinatorial" /> |
+| Hexagonal (2D) | 3 | open, as listed by <Cite k="istrail2009combinatorial" /> |
+
+The cubic, diamond, square and hexagonal lattices are bipartite: colour the nodes with two colours
+so that neighbours differ, and every step of a fold changes colour. So two H's can touch only if
+they are an odd number of steps apart along the string. The game's upper bound uses this. The
+levels called *Odd and even* show the difference: <Seq s="HPHPHPHPH" /> has no contact on the square
+lattice, but 7 on the triangular lattice and 8 on the face-centred cubic one, which have triangles.
+
+## Bin packing, the puzzle behind the proof
+
+**Bin packing** gives us some items, each with a size, and some bins of equal size, and asks
+whether the items fill the bins exactly. It is the puzzle that Berger and Leighton translate into
+folding. For each bin packing puzzle they write down one HP string, and a perfect fold of that
+string exists exactly when the items fit.
+
+<div class="wide">
+  <BinPack client:visible levels={['fill-two-bins', 'dead-end', 'three-bins', 'three-sixes', 'running-example']} />
+</div>
+
+We keep every size even, as Berger and Leighton do, because their string writes an item of size $s$
+as $s/2$ copies of <Seq s="PHHP" />, a ribbon with as many H's as the item's size. On the front face
+of the cube, walls cut out strips that act as the bins, and the only freedom a perfect fold has
+left is which strip each item's ribbon goes into. For the last level, *The running example*, the
+items fit, so the string has a perfect fold, and its H's fill a cube of 80×80×80.
+
+Early choices decide late ones here too, as in *The 3×3×3 cube*: in *A dead end*, some first moves
+leave no way to finish.
