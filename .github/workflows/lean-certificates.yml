@@ -73,15 +73,17 @@ jobs:
           allowed = {"propext", "Classical.choice", "Quot.sound"}
           bad, seen = [], 0
           for path in sys.argv[1:]:
-              for line in open(path, encoding="utf-8"):
-                  if "does not depend on any axioms" in line:
-                      seen += 1
-                  m = re.search(r"depends on axioms: \[(.*)\]", line)
-                  if m:
-                      seen += 1
-                      extra = {a.strip() for a in m.group(1).split(",")} - allowed
-                      if extra:
-                          bad.append(f"{path}: {line.strip()}")
+              # Lean wraps a long list over several lines, so match across newlines.
+              text = open(path, encoding="utf-8").read()
+              seen += text.count("does not depend on any axioms")
+              found = re.findall(r"'([^']+)' depends on axioms: \[([^\]]*)\]", text)
+              if len(found) != text.count("depends on axioms"):
+                  bad.append(f"{path}: an axiom list that cannot be read")
+              for name, listed in found:
+                  seen += 1
+                  extra = {a.strip() for a in listed.split(",")} - allowed
+                  if extra:
+                      bad.append(f"{path}: {name} depends on {', '.join(sorted(extra))}")
           print(f"{seen} axiom reports read")
           if bad or seen == 0:
               print("\n".join(bad) or "no axiom reports found")
@@ -118,13 +120,17 @@ jobs:
           allowed = {"propext", "Classical.choice", "Quot.sound"}
           bad, seen = [], 0
           for path in sys.argv[1:]:
-              for line in open(path, encoding="utf-8"):
-                  m = re.search(r"depends on axioms: \[(.*)\]", line)
-                  if m:
-                      seen += 1
-                      extra = {a.strip() for a in m.group(1).split(",")} - allowed
-                      if extra:
-                          bad.append(f"{path}: {line.strip()}")
+              # Lean wraps a long list over several lines, so match across newlines.
+              text = open(path, encoding="utf-8").read()
+              seen += text.count("does not depend on any axioms")
+              found = re.findall(r"'([^']+)' depends on axioms: \[([^\]]*)\]", text)
+              if len(found) != text.count("depends on axioms"):
+                  bad.append(f"{path}: an axiom list that cannot be read")
+              for name, listed in found:
+                  seen += 1
+                  extra = {a.strip() for a in listed.split(",")} - allowed
+                  if extra:
+                      bad.append(f"{path}: {name} depends on {', '.join(sorted(extra))}")
           print(f"{seen} axiom reports read")
           if bad or seen == 0:
               print("\n".join(bad) or "no axiom reports found")

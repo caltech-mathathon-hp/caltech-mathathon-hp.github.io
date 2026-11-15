@@ -126,8 +126,9 @@ the formula with at most three literals per clause, so 3-SAT is NP-hard as well.
 
 ### Nothing left to assume
 
-Our project copies the 63 files of the Cook–Levin proof that the team's library does not have,
-and plugs the theorem into both chains. This gives Berger and Leighton's theorem with no
+Our project adds 57 files of the Cook–Levin proof to its copy of the team's library. The other
+six only prove that 3-SAT is NP-hard, which our chains do not use. We plug the theorem into both
+chains, which gives Berger and Leighton's theorem with no
 hypothesis, once through our reduction and once through the team's:
 
 <LeanCode cert="shelf" names="Shelf.Unconditional.perfectHPStringFold_NPComplete Shelf.Unconditional.hpStringFold_NPComplete" caption="Through our reduction" />
