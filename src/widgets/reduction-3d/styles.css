@@ -1,17 +1,29 @@
 /*
- * Reduction3D. The left panel follows the site's tokens (light and dark); the 3D stage is a dark
- * viewer in both themes, so its colours (and those of the HUD and the dock on top of it) are fixed
- * here. Everything is scoped under .rd-root; ids and classes are prefixed rd-.
+ * Reduction3D. The left panel follows the site's tokens (light and dark). The 3D stage has two
+ * looks of its own, day (light, like the page; the default) and night (dark), set by
+ * data-stage on .rd-root; the HUD and the dock on top of it take their colours from the --rd-*
+ * variables below. data-explain="0" (the default) hides the explanation, the step numbers and
+ * the counters. Everything is scoped under .rd-root; ids and classes are prefixed rd-.
  */
 .rd-root {
-  --rd-stage: #0e1116;
-  --rd-dock: rgba(16, 19, 25, 0.88);
-  --rd-dock-line: rgba(255, 255, 255, 0.09);
-  --rd-ink: #e8eaee;
-  --rd-muted: #9aa3b1;
-  --rd-hi: #6ea8ff;
-  --rd-ok: var(--diff-1);
-  --rd-bad: var(--invalid);
+  /* day stage */
+  --rd-stage: #f2f0eb;
+  --rd-dock: rgba(255, 255, 255, 0.9);
+  --rd-dock-line: #e2ded5;
+  --rd-ink: #1c1c21;
+  --rd-ink2: #33333b;
+  --rd-muted: #66666f;
+  --rd-hi: #1f4f8f;
+  --rd-on-hi: #ffffff;
+  --rd-tag: #1f4f8f;
+  --rd-btn: #f2f0eb;
+  --rd-btn-line: #c9c3b7;
+  --rd-btn-hover: #e2ded5;
+  --rd-pill-line: #c9c3b7;
+  --rd-pill-done-bg: #e7eef7;
+  --rd-pill-done-fg: #1f4f8f;
+  --rd-note-line: #c9c3b7;
+  --rd-map: #e9e5dc;
 
   display: grid;
   grid-template-columns: minmax(19rem, 24rem) 1fr;
@@ -26,6 +38,25 @@
   line-height: var(--lh-ui);
   color: var(--fg);
 }
+.rd-root[data-stage='night'] {
+  --rd-stage: #0e1116;
+  --rd-dock: rgba(16, 19, 25, 0.88);
+  --rd-dock-line: rgba(255, 255, 255, 0.09);
+  --rd-ink: #e8eaee;
+  --rd-ink2: #d5d9e0;
+  --rd-muted: #9aa3b1;
+  --rd-hi: #6ea8ff;
+  --rd-on-hi: #0e1116;
+  --rd-tag: #9fc2ff;
+  --rd-btn: rgba(255, 255, 255, 0.07);
+  --rd-btn-line: rgba(255, 255, 255, 0.12);
+  --rd-btn-hover: rgba(255, 255, 255, 0.14);
+  --rd-pill-line: rgba(255, 255, 255, 0.14);
+  --rd-pill-done-bg: rgba(110, 168, 255, 0.16);
+  --rd-pill-done-fg: #cfe0ff;
+  --rd-note-line: #3b4658;
+  --rd-map: #1a1e25;
+}
 .rd-root [hidden] {
   display: none !important;
 }
@@ -33,7 +64,7 @@
 /* ---------- left panel ---------- */
 .rd-left {
   overflow-y: auto;
-  padding: var(--s-3);
+  padding: var(--s-2);
   background: var(--bg-sunk);
   border-right: 1px solid var(--rule);
 }
@@ -41,8 +72,8 @@
   background: var(--bg-elev);
   border: 1px solid var(--rule);
   border-radius: var(--radius-md);
-  padding: var(--s-3);
-  margin-bottom: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  margin-bottom: var(--s-2);
 }
 .rd-card:last-child {
   margin-bottom: 0;
@@ -95,8 +126,8 @@
 }
 .rd-primary {
   width: 100%;
-  margin-top: var(--s-3);
-  padding: 0.55rem;
+  margin-top: var(--s-2);
+  padding: 0.45rem;
   border: 0;
   border-radius: var(--radius-md);
   background: var(--accent);
@@ -161,7 +192,7 @@
   align-items: end;
 }
 #rd-tPool {
-  min-height: 7rem;
+  min-height: 5rem;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-end;
@@ -291,8 +322,8 @@
 }
 #rd-formula {
   font-family: var(--font-serif);
-  font-size: 0.95rem;
-  line-height: 2;
+  font-size: 0.86rem;
+  line-height: 1.85;
   word-break: break-word;
 }
 #rd-formula .f {
@@ -310,34 +341,6 @@
 #rd-formula sup,
 #rd-formula sub {
   font-size: 0.68em;
-}
-.rd-faceWrap {
-  display: flex;
-  gap: var(--s-3);
-  align-items: flex-start;
-}
-#rd-face {
-  flex: none;
-  width: 9rem;
-  height: 9rem;
-  border-radius: var(--radius-sm);
-  background: #1a1e25;
-  image-rendering: pixelated;
-}
-#rd-faceLegend {
-  font-size: var(--fs-xs);
-  color: var(--fg-muted);
-}
-#rd-faceLegend div {
-  margin-bottom: 3px;
-}
-#rd-faceLegend i {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  margin-right: 5px;
-  border-radius: 2px;
-  vertical-align: -1px;
 }
 .rd-root .check {
   display: flex;
@@ -358,6 +361,48 @@
 }
 .rd-root .check small {
   color: var(--fg-muted);
+}
+.rd-fold summary {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-2);
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.rd-fold summary::-webkit-details-marker {
+  display: none;
+}
+.rd-fold summary::after {
+  content: '▾';
+  margin-left: var(--s-1);
+}
+.rd-fold[open] summary {
+  margin-bottom: var(--s-2);
+}
+.rd-fold[open] summary::after {
+  content: '▴';
+}
+#rd-checkSum,
+.rd-sum {
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+  color: var(--fg);
+}
+#rd-checkSum.ok {
+  color: var(--diff-1-ink);
+}
+#rd-checkSum.bad {
+  color: var(--diff-3-ink);
 }
 
 /* ---------- the stage ---------- */
@@ -397,11 +442,12 @@
   right: 14px;
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 12px;
   pointer-events: none;
 }
 #rd-hud .box {
-  padding: 6px 10px;
+  padding: 5px 10px;
   border: 1px solid var(--rd-dock-line);
   border-radius: 9px;
   background: var(--rd-dock);
@@ -416,16 +462,43 @@
 #rd-stats .k {
   color: var(--rd-muted);
 }
+.rd-hudright {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-left: auto;
+}
+/* the legend: a big H bead, a small P bead */
+.rd-legend {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.rd-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.rd-legend svg {
+  display: block;
+}
+#rd-hud .rd-iconbtn {
+  min-width: 30px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
 .rd-viewmenu {
   position: relative;
-  align-self: flex-start;
   pointer-events: auto;
 }
 #rd-viewBtn {
   font-size: 0.75rem;
 }
-#rd-viewBtn:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+#rd-viewBtn:hover,
+#rd-hud .rd-iconbtn:hover {
+  border-color: var(--rd-btn-line);
 }
 #rd-toggles {
   position: absolute;
@@ -447,6 +520,35 @@
   accent-color: var(--rd-hi);
 }
 
+/* zoom: + and − (the wheel and two-finger scrolling scroll the page) */
+.rd-zoom {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--rd-dock-line);
+  border-radius: 9px;
+  background: var(--rd-dock);
+}
+.rd-zoom button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--rd-ink);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.rd-zoom button + button {
+  border-top: 1px solid var(--rd-dock-line);
+}
+.rd-zoom button:hover {
+  background: var(--rd-btn-hover);
+}
 #rd-dock {
   position: absolute;
   left: 14px;
@@ -486,7 +588,7 @@
   min-width: 22px;
   height: 21px;
   padding: 0 4px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid var(--rd-pill-line);
   border-radius: 6px;
   background: transparent;
   color: var(--rd-muted);
@@ -494,28 +596,40 @@
   font-variant-numeric: tabular-nums;
 }
 .rd-root .pill.done {
-  background: rgba(110, 168, 255, 0.16);
-  border-color: rgba(110, 168, 255, 0.25);
-  color: #cfe0ff;
+  background: var(--rd-pill-done-bg);
+  border-color: transparent;
+  color: var(--rd-pill-done-fg);
 }
 .rd-root .pill.cur {
   background: var(--rd-hi);
   border-color: var(--rd-hi);
-  color: #0e1116;
+  color: var(--rd-on-hi);
   font-weight: 700;
 }
 .rd-root .pill:hover {
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: var(--rd-muted);
 }
 #rd-stepinfo {
+  padding: 8px 14px 0;
+}
+.rd-root[data-explain='1'] #rd-stepinfo {
   height: clamp(5.5rem, 15vh, 9rem);
   overflow-y: auto;
-  padding: 8px 14px 4px;
+  padding-bottom: 4px;
+}
+.rd-titlerow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-3);
+}
+.rd-titlerow #rd-stepTitle {
+  flex: 1;
+  min-width: 0;
 }
 #rd-stepTag {
   font-size: 0.68rem;
   letter-spacing: 0.02em;
-  color: #9fc2ff;
+  color: var(--rd-tag);
 }
 #rd-stepTitle {
   margin: 2px 0 4px;
@@ -531,55 +645,50 @@
 #rd-stepBody p {
   margin: 0 0 7px;
   font-size: 0.82rem;
-  color: #d5d9e0;
+  color: var(--rd-ink2);
 }
 #rd-stepBody b {
-  color: #fff;
+  color: var(--rd-ink);
 }
 #rd-stepBody .note {
   padding-left: 8px;
-  border-left: 2px solid #3b4658;
-  color: #aab3c0;
+  border-left: 2px solid var(--rd-note-line);
+  color: var(--rd-muted);
 }
 #rd-stepBody .eq {
   font-family: var(--font-serif);
   font-size: 0.9rem;
-  color: #fff;
+  color: var(--rd-ink);
 }
 #rd-stepBody .rd-cards {
   font-size: 0.75rem;
   color: var(--rd-muted);
 }
 #rd-stepBody .rd-cards a {
-  color: #9fc2ff;
+  color: var(--rd-tag);
 }
 #rd-controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px;
-  padding: 8px 12px 10px;
-  border-top: 1px solid var(--rd-dock-line);
+  padding: 6px 12px 10px;
+}
+.rd-root[data-explain='1'] #rd-controls {
+  padding-top: 0;
 }
 #rd-controls button {
   height: 30px;
   min-width: 34px;
   padding: 0 9px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--rd-btn-line);
   border-radius: 7px;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--rd-btn);
   color: var(--rd-ink);
   font-size: 0.8rem;
 }
 #rd-controls button:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-#rd-controls button.play {
-  min-width: 74px;
-  background: var(--rd-hi);
-  border-color: var(--rd-hi);
-  color: #0e1116;
-  font-weight: 700;
+  background: var(--rd-btn-hover);
 }
 #rd-controls .kbd {
   font-size: 0.68rem;
@@ -597,16 +706,101 @@
   width: 110px;
   accent-color: var(--rd-hi);
 }
-#rd-progress {
-  height: 3px;
-  overflow: hidden;
-  border-radius: 0 0 12px 12px;
-  background: rgba(255, 255, 255, 0.07);
+.rd-explain {
+  flex: none;
+  padding: 2px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--rd-tag);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
-#rd-progress div {
+.rd-explain:hover {
+  background: var(--rd-btn-hover);
+}
+
+/* the whole string as a bar; the arrow marks how far the fold has got */
+#rd-scrub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 12px;
+}
+#rd-scrub button {
+  flex: none;
+  width: 30px;
+  height: 26px;
+  border: 1px solid var(--rd-btn-line);
+  border-radius: 7px;
+  background: var(--rd-btn);
+  color: var(--rd-ink);
+  font-size: 0.72rem;
+}
+#rd-scrub button:hover {
+  background: var(--rd-btn-hover);
+}
+#rd-bar {
+  position: relative;
+  flex: 1;
+  height: 26px;
+  padding: 5px 0 7px;
+  cursor: pointer;
+  touch-action: none;
+}
+#rd-barCv {
+  display: block;
+  width: 100%;
+  height: 14px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--rd-ink) 6%, transparent);
+}
+#rd-marker {
+  position: absolute;
+  top: 1px;
+  bottom: 0;
   width: 0;
-  height: 100%;
-  background: var(--rd-hi);
+  pointer-events: none;
+}
+#rd-marker::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 6px;
+  left: -1px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--rd-ink);
+}
+#rd-marker::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: -5px;
+  border: 5px solid transparent;
+  border-bottom: 7px solid var(--rd-ink);
+  border-top-width: 0;
+}
+#rd-bar:focus-visible {
+  outline: 2px solid var(--rd-hi);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+#rd-barTip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%);
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--rd-ink);
+  color: var(--rd-stage);
+  font-size: 0.68rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* minimal by default: the explanation, the step numbers and the counters wait for "Explain" */
+.rd-root:not([data-explain='1']) :is(#rd-timeline, #rd-stepTag, #rd-stepRes, #rd-stepBody, #rd-stats, #rd-controls) {
+  display: none;
 }
 .rd-root :focus-visible {
   outline: 2px solid var(--accent);

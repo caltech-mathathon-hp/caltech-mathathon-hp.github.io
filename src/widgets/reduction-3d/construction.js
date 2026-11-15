@@ -436,81 +436,197 @@ export function buildFold(P, sizes, assign) {
     const lc = strings[s].cells[strings[s].len - 1];
     prevEnd = [lc[0], lc[1]];
   }
-  const XMIN = -3, XMAX = n + 2, YMIN = -1, YMAX = n + 2;
-  const W2 = XMAX - XMIN + 1;
-  const pk = (x, y) => (y - YMIN) * W2 + (x - XMIN);
-  function bfsLeg(start, blocked) {
-    const prev = new Int32Array(W2 * (YMAX - YMIN + 1)).fill(-2);
-    const s0 = pk(start[0], start[1]);
-    prev[s0] = -1;
-    const queue = [s0];
-    const order = [[0, -1], [1, 0], [-1, 0], [0, 1]];
-    for (let qi = 0; qi < queue.length; qi++) {
-      const cur = queue[qi];
-      const cx = (cur % W2) + XMIN, cy = Math.floor(cur / W2) + YMIN;
-      if (cy === YMIN) {
-        const path = [];
-        for (let p = cur; p !== -1; p = prev[p]) path.push([(p % W2) + XMIN, Math.floor(p / W2) + YMIN]);
-        return path.reverse();
-      }
-      for (const [dx, dy] of order) {
-        const nx = cx + dx, ny = cy + dy;
-        if (nx < XMIN || nx > XMAX || ny < YMIN || ny > YMAX) continue;
-        const nk = pk(nx, ny);
-        if (prev[nk] !== -2 || blocked.has(nk)) continue;
-        prev[nk] = cur; queue.push(nk);
+  // Every linker gets a plane k = -D of its own in front of the cube (D = 4, 6, 8, ...). Its two ends
+// drop straight to that plane (stubs), run in it to just below the cube (legs), and its slack is
+// folded into a small box of P's under the front of the cube: a snake through the box layer by
+// layer that climbs back up a free column, plus a short drop above the box for the remainder.
+// Boxes of linkers whose planes are less than `side` apart sit in different columns, so no two
+// boxes meet and the drops above the boxes never cross another box. If a box cannot be placed,
+// that linker falls back to a hairpin loop to the side of all boxes.
+const side = Math.max(4, 2 * Math.round(Math.cbrt(L * 0.95) / 2)); // even box side
+const NC = side / 2; // columns of boxes; planes 2*NC = side apart share a column
+const CW = side + 3; // column width (box width up to side + 1, plus a gap)
+const col0 = Math.round(n / 2 - (NC * CW) / 2);
+const colX = (c) => col0 + c * CW;
+const XMIN = Math.min(-3, col0 - 2), XMAX = Math.max(n + 2, colX(NC) + 2 * M + 8), YMIN = -2, YMAX = n + 2;
+const YT = YMIN; // legs end on this row, the boxes hang below it
+const W2 = XMAX - XMIN + 1;
+const pk = (x, y) => (y - YMIN) * W2 + (x - XMIN);
+// a leg in the plane k = z from `start` to `target` (on the row YT, which legs only enter at their
+// target), avoiding `blocked` and anything already placed. Moving sideways in front of the face
+// costs 8 and every other step 1, so legs drop straight out of the face and travel sideways on
+// the two free rows just below the cube, where they do not hide the strips.
+const GH = YMAX - YMIN + 1, GN = W2 * GH;
+function bfsTo(start, target, blocked, z) {
+  const dist = new Int32Array(GN).fill(0x3fffffff), prev = new Int32Array(GN).fill(-1);
+  const s0 = pk(start[0], start[1]), t0 = pk(target[0], target[1]);
+  const heap = [[0, s0]];
+  dist[s0] = 0;
+  const push = (d, v) => {
+    heap.push([d, v]);
+    for (let i = heap.length - 1; i > 0;) { const j = (i - 1) >> 1; if (heap[j][0] <= heap[i][0]) break; [heap[i], heap[j]] = [heap[j], heap[i]]; i = j; }
+  };
+  const pop = () => {
+    const top = heap[0], last = heap.pop();
+    if (heap.length) {
+      heap[0] = last;
+      for (let i = 0; ;) {
+        const l = 2 * i + 1, r = l + 1; let m = i;
+        if (l < heap.length && heap[l][0] < heap[m][0]) m = l;
+        if (r < heap.length && heap[r][0] < heap[m][0]) m = r;
+        if (m === i) break;
+        [heap[i], heap[m]] = [heap[m], heap[i]]; i = m;
       }
     }
-    return null;
+    return top;
+  };
+  while (heap.length) {
+    const [d, cur] = pop();
+    if (d !== dist[cur]) continue;
+    if (cur === t0) {
+      const path = [];
+      for (let p = cur; p !== -1; p = prev[p]) path.push([(p % W2) + XMIN, Math.floor(p / W2) + YMIN]);
+      return path.reverse();
+    }
+    const cx = (cur % W2) + XMIN, cy = Math.floor(cur / W2) + YMIN;
+    for (const [dx, dy] of [[0, -1], [1, 0], [-1, 0], [0, 1]]) {
+      const nx = cx + dx, ny = cy + dy;
+      if (nx < XMIN || nx > XMAX || ny < YMIN || ny > YMAX) continue;
+      const nk = pk(nx, ny);
+      if (blocked.has(nk) || (ny === YT && nk !== t0) || occ.has(key(nx, ny, z))) continue;
+      const w = dy === 0 && cy >= 1 && cx >= 0 && cx <= n - 1 ? 8 : 1;
+      if (d + w < dist[nk]) { dist[nk] = d + w; prev[nk] = cur; push(d + w, nk); }
+    }
   }
-  // greedy layering: shallowest layer first; deeper connectors' stubs are obstacles
-  const remaining = conn.map((_, i) => i);
-  const routes = new Array(M);
-  for (let d = 0; d < M; d++) {
-    const D = 4 + 2 * d;
-    let done = false;
+  return null;
+}
+// box W x Dd x Lh (Dd, Lh even) with as little left over as possible and close to a cube
+function boxDims(ell) {
+  let best = null;
+  for (let W = Math.max(2, side - 4); W <= side + 1; W++)
+    for (let Dd = Math.max(2, side - 4); Dd <= side; Dd += 2)
+      for (let Lh = 2; Lh <= 8 * side; Lh += 2) {
+        const V = W * Dd * Lh;
+        if (V > ell) break;
+        const score = (ell - V) + 3 * (Math.abs(W - Dd) + Math.abs(Lh - Dd));
+        if (!best || score < best.score) best = { W, Dd, Lh, V, score };
+      }
+  return best;
+}
+// a path through the whole box from (W-2, 0) to (W-1, 0) on the top layer, as [u, w, layer]:
+// each layer is snaked row by row without the column (W-1, 0), every other layer backwards,
+// and the column takes the path back up
+function boxPath(W, Dd, Lh) {
+  const PA = [];
+  for (let u = W - 2; u >= 0; u--) PA.push([u, 0]);
+  for (let w = 1; w < Dd; w++) {
+    if (w % 2) for (let u = 0; u < W; u++) PA.push([u, w]);
+    else for (let u = W - 1; u >= 0; u--) PA.push([u, w]);
+  }
+  const out = [];
+  for (let li = 0; li < Lh; li++) {
+    if (li % 2 === 0) for (const [u, w] of PA) out.push([u, w, li]);
+    else for (let t = PA.length - 1; t >= 0; t--) out.push([PA[t][0], PA[t][1], li]);
+  }
+  for (let li = Lh - 1; li >= 0; li--) out.push([W - 1, 0, li]);
+  return out;
+}
+const freeCells = (cells) => {
+  const seen = new Set();
+  for (const c of cells) {
+    const k = key(c[0], c[1], c[2]);
+    if (occ.has(k) || seen.has(k)) return false;
+    seen.add(k);
+  }
+  return true;
+};
+// legs from both ends to the targets ta, tb on the row YT (either end may take either target)
+function legsTo(a, b, ta, tb, blocked, z) {
+  for (const [p, q] of [[ta, tb], [tb, ta]]) {
+    for (const aFirst of [true, false]) {
+      const first = aFirst ? a : b, second = aFirst ? b : a;
+      const t1 = aFirst ? p : q, t2 = aFirst ? q : p;
+      const bl1 = new Set(blocked); bl1.add(pk(second[0], second[1]));
+      const l1 = bfsTo(first, [t1, YT], bl1, z);
+      if (!l1) continue;
+      const bl2 = new Set(blocked); for (const c of l1) bl2.add(pk(c[0], c[1]));
+      const l2 = bfsTo(second, [t2, YT], bl2, z);
+      if (!l2) continue;
+      return aFirst ? { legA: l1, legB: l2 } : { legA: l2, legB: l1 };
+    }
+  }
+  return null;
+}
+function stubsAndLegs(a, b, legA, legB, z) {
+  const head = [], tail = [];
+  for (let zz = -2; zz >= z; zz--) head.push([a[0], a[1], zz]);
+  for (let t = 1; t < legA.length; t++) head.push([legA[t][0], legA[t][1], z]);
+  for (let t = legB.length - 1; t >= 1; t--) tail.push([legB[t][0], legB[t][1], z]);
+  for (let zz = z; zz <= -2; zz++) tail.push([b[0], b[1], zz]);
+  return { head, tail };
+}
+function routeBox(ci, D, c, blocked) {
+  const { a, b } = conn[ci], z = -D;
+  const xa = colX(c) + CW - 4, xb = xa + 1;
+  const legs = legsTo(a, b, xa, xb, blocked, z);
+  if (!legs) return null;
+  const { legA, legB } = legs;
+  const ell = L - 2 * (D - 1) - (legA.length - 1) - (legB.length - 1);
+  if (ell % 2) throw new Error('linker parity mismatch');
+  const dims = boxDims(ell);
+  if (!dims) return null;
+  const { W, Dd, Lh, V } = dims, dd = (ell - V) / 2, y0 = YT - 1 - dd;
+  const ea = legA[legA.length - 1][0], eb = legB[legB.length - 1][0];
+  let path = boxPath(W, Dd, Lh).map(([u, w, li]) => [xa - (W - 2) + u, y0 - li, z - w]);
+  if (ea !== xa) path = path.reverse();
+  const { head, tail } = stubsAndLegs(a, b, legA, legB, z);
+  const cells = [...head];
+  for (let y = YT - 1; y > y0; y--) cells.push([ea, y, z]);
+  cells.push(...path);
+  for (let y = y0 + 1; y <= YT - 1; y++) cells.push([eb, y, z]);
+  cells.push(...tail);
+  if (cells.length !== L || !freeCells(cells)) return null;
+  return { cells, depth: D, box: { W, Dd, Lh, drop: dd } };
+}
+function routeLoop(ci, D, blocked) {
+  const { a, b } = conn[ci], z = -D;
+  const tx = colX(NC) + 2 + 2 * (D / 2); // right of all boxes, one column per plane
+  const legs = legsTo(a, b, tx, tx + 1, blocked, z);
+  if (!legs) return null;
+  const { legA, legB } = legs;
+  const ell = L - 2 * (D - 1) - (legA.length - 1) - (legB.length - 1);
+  if (ell % 2 || ell < 2) return null;
+  const h = ell / 2;
+  const ea = legA[legA.length - 1][0], eb = legB[legB.length - 1][0];
+  const { head, tail } = stubsAndLegs(a, b, legA, legB, z);
+  const cells = [...head];
+  for (let y = YT - 1; y >= YT - h; y--) cells.push([ea, y, z]);
+  for (let y = YT - h; y <= YT - 1; y++) cells.push([eb, y, z]);
+  cells.push(...tail);
+  if (cells.length !== L || !freeCells(cells)) return null;
+  return { cells, depth: D, loop: h };
+}
+// greedy layering: shallowest plane first; the stubs of the deeper linkers are obstacles there
+const remaining = conn.map((_, i) => i);
+const routes = new Array(M);
+for (let d = 0; d < M; d++) {
+  const D = 4 + 2 * d;
+  let route = null, chosen = -1;
+  for (const pass of ['box', 'loop']) {
     for (const ci of remaining) {
       const blocked = new Set();
       for (const cj of remaining) if (cj !== ci) { blocked.add(pk(...conn[cj].a)); blocked.add(pk(...conn[cj].b)); }
-      const { a, b } = conn[ci];
-      let legA = null, legB = null;
-      for (const swap of [false, true]) {
-        const s1 = swap ? b : a, s2 = swap ? a : b;
-        const bl1 = new Set(blocked); bl1.add(pk(...s2));
-        const l1 = bfsLeg(s1, bl1);
-        if (!l1) continue;
-        const bl2 = new Set(blocked); for (const c2 of l1) bl2.add(pk(...c2));
-        const l2 = bfsLeg(s2, bl2);
-        if (!l2) continue;
-        legA = swap ? l2 : l1; legB = swap ? l1 : l2;
-        break;
-      }
-      if (!legA) continue;
-      const xa = legA[legA.length - 1][0], xb = legB[legB.length - 1][0];
-      const twoH = L + 5 - 2 * D - legA.length - legB.length - Math.abs(xa - xb);
-      if (twoH % 2 !== 0) throw new Error('connector parity mismatch');
-      const h = twoH / 2;
-      if (h < 1) continue;
-      const z = -D;
-      const cells = [];
-      for (let zz = -2; zz >= z; zz--) cells.push([a[0], a[1], zz]);
-      for (let t = 1; t < legA.length; t++) cells.push([legA[t][0], legA[t][1], z]);
-      for (let y = -2; y >= -1 - h; y--) cells.push([xa, y, z]);
-      const sx = Math.sign(xb - xa);
-      for (let x = xa + sx; x !== xb + sx; x += sx) cells.push([x, -1 - h, z]);
-      for (let y = -h; y <= -2; y++) cells.push([xb, y, z]);
-      for (let t = legB.length - 1; t >= 1; t--) cells.push([legB[t][0], legB[t][1], z]);
-      for (let zz = z; zz <= -2; zz++) cells.push([b[0], b[1], zz]);
-      if (cells.length !== L) throw new Error(`connector length ${cells.length} != ${L}`);
-      routes[ci] = { cells, depth: D, h, legA, legB };
-      remaining.splice(remaining.indexOf(ci), 1);
-      done = true;
-      break;
+      route = pass === 'box' ? routeBox(ci, D, d % NC, blocked) : routeLoop(ci, D, blocked);
+      if (route) { chosen = ci; break; }
     }
-    if (!done) throw new Error('could not route connectors');
+    if (route) break;
   }
+  if (!route) throw new Error('could not route the linkers');
+  routes[chosen] = route;
+  remaining.splice(remaining.indexOf(chosen), 1);
+}
 
-  const itemSegs = [];
+const itemSegs = [];
   strings.forEach((s, si) => {
     const cat = s.kind === 'filler' ? 11 : s.kind === 'dummy' ? 12 : 13;
     const label = s.kind === 'filler' ? `Filler string → bin ${s.bin + 1}`

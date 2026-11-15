@@ -13,6 +13,9 @@
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { LineSegments2 } from 'three/addons/lines/LineSegments2.js';
+import { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import * as C from './construction.js';
 
 export function mount(root) {
@@ -25,6 +28,7 @@ export function mount(root) {
 
   // ------------------------------------------------------------------ presets & colours
   const PRESETS = [
+    { name: 'K = 2, B = 4, U = {2, 4, 2}', K: 2, B: 4, sizes: [2, 4, 2] },
     { name: 'K = 2, B = 8, U = {4, 2, 6, 2, 2}', K: 2, B: 8, sizes: [4, 2, 6, 2, 2] },
     { name: 'K = 2, B = 8, U = {2, 4, 2, 2, 4, 2}', K: 2, B: 8, sizes: [2, 4, 2, 2, 4, 2] },
     { name: 'K = 2, B = 6, U = {2, 2, 4, 2, 2}', K: 2, B: 6, sizes: [2, 2, 4, 2, 2] },
@@ -34,28 +38,51 @@ export function mount(root) {
   ];
   // CAT: 0 P, 1 edges, 2 back, 3 back-left edge, 4 left, 5 bottom, 6 right, 7 top, 8 interior,
   //      9 wall, 10 special, 11 filler, 12 dummy, 13 item
-  const SCHEMES = {
-    // by construction step
+  // Palettes. 'hp' (the default): H's in reds (edges a light red; faces, core and paddings paler;
+  // walls dark), P's grey and translucent, items in bright colours; one version per stage.
+  // 'normal': one colour per step of the construction.
+  const PALETTES = {
     normal: {
       cat: ['#a3a9b3', '#f2b33d', '#3f7ed6', '#f2b33d', '#4a90e2', '#386fc4', '#5a9cf0', '#4485dc', '#2d5aa0',
         '#b8463a', '#ff8c1a', '#4f8f86', '#9c8a6a', '#ffffff'],
       items: ['#ffd23f', '#4cc9ff', '#3ee07a', '#ff5dc8', '#c77dff', '#ff9f43', '#9ef01a', '#00e5c0', '#ff6b6b', '#a0c4ff'],
       pOpacity: 1, bondOpacity: 0.55,
     },
-    // H/P mode: P faint grey, H red (edges and volume in light shades, walls dark red), items neon
-    hp: {
-      cat: ['#9aa0a8', '#ff8a7a', '#f6c3bc', '#ff8a7a', '#f6c3bc', '#f6c3bc', '#f6c3bc', '#f6c3bc', '#efaaa2',
+    hp_night: {
+      cat: ['#aab0b8', '#ff8a7a', '#f6c3bc', '#ff8a7a', '#f6c3bc', '#f6c3bc', '#f6c3bc', '#f6c3bc', '#efaaa2',
         '#9e1c1c', '#ff8a7a', '#fbdcd7', '#e39a91', '#ffffff'],
       items: ['#39ff14', '#00f0ff', '#ff00ff', '#ffff00', '#bc13fe', '#00ff9f', '#4d4dff', '#ccff00', '#7df9ff', '#ff9f00'],
-      pOpacity: 0.38, bondOpacity: 0.28,
+      pOpacity: 0.62, bondOpacity: 0.6,
+    },
+    hp_day: {
+      cat: ['#5f6670', '#f0705e', '#f2b0a7', '#f0705e', '#f2b0a7', '#f2b0a7', '#f2b0a7', '#f2b0a7', '#ea9b91',
+        '#9e1c1c', '#f0705e', '#f6c8c1', '#d6837a', '#ffffff'],
+      items: ['#2bd60f', '#00b4e0', '#e000e0', '#f2c200', '#a312f0', '#00c98a', '#3d3dff', '#90c000', '#1fb2d4', '#ff8a00'],
+      pOpacity: 0.72, bondOpacity: 0.7,
+    },
+  };
+  // The stage: day (light, like the page) or night (dark). It follows the site's theme until the
+  // reader picks one with the sun / moon button.
+  const STAGES = {
+    day: {
+      clear: 0xf2f0eb, line: 0x7f858e, wire: 0xb5aea1, wireOp: 0.9, label: 'rgba(255,255,255,0.92)', ink: '#1c1c21', plugInk: '#7a6538',
+      strip: 0x1c1c21, plugStrip: 0x8a7650, stripOp: 0.45, map: '#e9e5dc', mapEmpty: '#d6d1c6', mapLine: 'rgba(28,28,33,0.8)', mapPlug: 'rgba(122,101,56,0.9)',
+    },
+    night: {
+      clear: 0x0e1116, line: 0x8a919c, wire: 0x4a5466, wireOp: 0.55, label: 'rgba(14,17,22,0.78)', ink: '#ffffff', plugInk: '#dccb9f',
+      strip: 0xffffff, plugStrip: 0xcdbb94, stripOp: 0.85, map: '#14171d', mapEmpty: '#262b34', mapLine: 'rgba(255,255,255,0.9)', mapPlug: 'rgba(205,187,148,0.9)',
     },
   };
   let scheme = 'hp'; // H/P colours by default (View ▸ H/P colours)
+  let stage = document.documentElement.dataset.theme === 'dark' ? 'night' : 'day';
+  let stageChosen = false;
+  const pal = () => PALETTES[scheme === 'hp' ? 'hp_' + stage : 'normal'];
+  const ST = () => STAGES[stage];
   const hexRGB = (h) => { const c = new THREE.Color(h); return [c.r, c.g, c.b]; };
   const RGB_CACHE = {};
   const rgbOf = (h) => RGB_CACHE[h] || (RGB_CACHE[h] = hexRGB(h));
-  const catHex = (c) => SCHEMES[scheme].cat[c];
-  const itemHex = (u) => { const a = SCHEMES[scheme].items; return a[u % a.length]; };
+  const catHex = (c) => pal().cat[c];
+  const itemHex = (u) => { const a = pal().items; return a[u % a.length]; };
   const catRGB = (c) => rgbOf(catHex(c));
   const itemRGB = (u) => rgbOf(itemHex(u));
 
@@ -64,7 +91,7 @@ export function mount(root) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.localClippingEnabled = true;
-  renderer.setClearColor(0x0e1116);
+  renderer.setClearColor(ST().clear);
   glWrap.appendChild(renderer.domElement);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(38, 1, 0.3, 20000);
@@ -77,13 +104,31 @@ export function mount(root) {
   camera.add(headlight); camera.add(hlTarget); headlight.target = hlTarget;
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true; controls.dampingFactor = 0.12;
+  controls.enableZoom = false; // the wheel and two-finger scrolling scroll the page; + and − zoom
   controls.addEventListener('start', () => { camTween = null; });
+  // the bonds of the chain are fat lines (a width in world units, so they scale with the beads)
+  const lineMats = [];
+  const bondMaterial = () => {
+    const m = new LineMaterial({ color: 0x8a919c, linewidth: 0.14, worldUnits: true, transparent: true, opacity: 0.6 });
+    m.resolution.set(Math.max(1, glWrap.clientWidth), Math.max(1, glWrap.clientHeight));
+    lineMats.push(m);
+    return m;
+  };
+  function zoomBy(f) {
+    const d = camera.position.clone().sub(controls.target);
+    const r0 = d.length(), r1 = clamp(r0 * f, controls.minDistance, controls.maxDistance);
+    const u = d.normalize();
+    camTween = { t: 0, dur: 0.25, p0: camera.position.clone(), t0: controls.target.clone(), t1: controls.target.clone(), u0: u, u1: u.clone(), r0, r1 };
+  }
+  $('#rd-zoomIn').addEventListener('click', () => zoomBy(0.8));
+  $('#rd-zoomOut').addEventListener('click', () => zoomBy(1.25));
 
   function resize() {
     const w = glWrap.clientWidth, h = glWrap.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h);
     camera.aspect = w / h;
+    for (const m of lineMats) m.resolution.set(w, h);
     // keep the scene centred in the part of the viewport that the dock does not cover
     const dock = $('#rd-dock'), hud = $('#rd-hud');
     const dh = dock && !dock.hidden ? dock.offsetHeight + 14 : 0;
@@ -108,8 +153,10 @@ export function mount(root) {
   // ------------------------------------------------------------------ state
   let RES = null;      // build result
   let V = null;        // scene data for the current build
-  const cur = { k: 0, t: 1, running: false };
-  let playing = false, hold = 0, speed = 1;
+  // where we are: cur.pos residues are folded; cur.k is the step that contains that position;
+  // cur.anim, while a step is being folded, runs from anim.from to anim.to residues
+  const cur = { k: 0, pos: 0, anim: null };
+  let speed = 1;
   let camTween = null;
   let fmtNumeric = false;
 
@@ -147,6 +194,8 @@ export function mount(root) {
   function previewInstance() {
     const { K, B, sizes } = readInstance();
     const chk = C.checkInstance(K, B, sizes);
+    $('#rd-instSum').textContent = Number.isInteger(K) && Number.isInteger(B) && sizes.length
+      ? `${K} bins of size ${B} · items ${sizes.join(', ')}` : 'incomplete';
     resetBoardIfNew(K, B, sizes);
     renderBoard();
     if (chk.errs.length) { setStatus(chk.errs[0], 'err'); renderParams(null); renderFormula(null); return; }
@@ -172,7 +221,7 @@ export function mount(root) {
   }
   function renderBoard() {
     if (!BD.K) { $('#rd-tPool').innerHTML = '<span class="tempty">—</span>'; $('#rd-tBins').innerHTML = ''; $('#rd-packHint').textContent = ''; return; }
-    const U = Math.max(10, Math.min(26, Math.floor(210 / BD.B)));
+    const U = Math.max(9, Math.min(22, Math.floor(168 / BD.B)));
     const inBin = new Set(BD.bins.flat());
     const blk = (u) => `<div class="tblk${BD.active.has(u) ? ' active' : ''}" data-u="${u}" style="--c:${itemHex(u)};height:${Math.max(8, BD.sizes[u] * U - 3)}px"><span>u${u + 1}</span><b>${BD.sizes[u]}</b></div>`;
     $('#rd-tPool').innerHTML = BD.sizes.map((_, u) => (inBin.has(u) ? '' : blk(u))).join('') || '<span class="tempty">all items packed</span>';
@@ -261,6 +310,7 @@ export function mount(root) {
 
   function renderParams(P, sizes) {
     const t = $('#rd-params');
+    if (!t) return; // the parameters card is not shown (kept for pages that want it)
     if (!P) { t.innerHTML = ''; return; }
     const { q, n, T, c, K, B } = P;
     const str = C.buildString(P, sizes);
@@ -337,7 +387,6 @@ export function mount(root) {
     $('#rd-find').disabled = true;
     const given = bdComplete() ? BD.sizes.map((_, u) => bdBinOf(u)) : null;
     setStatus((given ? 'Building S_B and folding it with your packing' : 'Solving the bin packing, building S_B and its fold') + (chk.P.q === 6 ? '… (n = 80, a few seconds)' : '…'));
-    setPlaying(false);
     setTimeout(() => {
       let res;
       try { res = C.build(K, B, sizes, given); } catch (err) { console.error(err); setStatus('Construction failed: ' + err.message, 'err'); $('#rd-find').disabled = false; return; }
@@ -354,7 +403,7 @@ export function mount(root) {
         setStatus('No packing exists, so by §3.2.4 S_B has no fold with its H\'s in a perfect cube.', 'err');
         $('#rd-placeholder').hidden = false;
         $('#rd-placeholder').innerHTML = `<div><b>No packing exists.</b><br>By §3.2.4, any fold of S<sub>B</sub> (${fmt(res.str.types.length)} residues, n = ${res.P.n}) whose H's formed a perfect ${res.P.n}³ cube would yield a packing.<br>So no fold of this string reaches 3n²(n−1) = ${fmt(3 * res.P.n ** 2 * (res.P.n - 1))} H–H pairs.</div>`;
-        $('#rd-hud').hidden = true; $('#rd-dock').hidden = true;
+        $('#rd-hud').hidden = true; $('#rd-dock').hidden = true; $('#rd-zoom').hidden = true;
         $('#rd-checks').innerHTML = '<div class="check"><small>No fold to verify.</small></div>';
         renderFormula(res.P, sizes);
         return;
@@ -364,7 +413,7 @@ export function mount(root) {
       BD.active = new Set(); renderBoard();
       const binsTxt = Array.from({ length: K }, (_, b) => `bin ${b + 1} = {${sizes.map((s, u) => (res.assign[u] === b ? 'u' + (u + 1) : null)).filter(Boolean).join(', ')}}`).join(', ');
       $('#rd-solveinfo').innerHTML = res.given ? `Folding your packing: ${binsTxt}.` : `The bins were not full, so backtracking packed them (${fmt(res.solverNodes)} search nodes): ${binsTxt}.`;
-      setStatus(`Fold built in ${res.tFold} ms and verified in ${res.tVal} ms. Press → to fold step by step (← goes back, Space plays everything).`, res.val.ok ? 'ok' : 'err');
+      setStatus(res.val.ok ? 'Folded and checked. Press → for the first step.' : 'The fold failed a check (see below).', res.val.ok ? 'ok' : 'err');
       renderChecks(res);
       setup(res);
       renderFormula(res.P, sizes);
@@ -373,9 +422,13 @@ export function mount(root) {
   }
 
   function renderChecks(res) {
+    const ok = res.val.checks.filter((c) => c.ok).length, all = res.val.checks.length;
+    $('#rd-checkSum').textContent = ok === all ? `✓ all ${all} pass` : `✗ ${all - ok} of ${all} fail`;
+    $('#rd-checkSum').className = ok === all ? 'ok' : 'bad';
     $('#rd-checks').innerHTML = res.val.checks.map((c) =>
       `<div class="check ${c.ok ? 'ok' : 'bad'}"><span class="m">${c.ok ? '✓' : '✗'}</span><span>${c.name}${c.detail ? ` <small>(${c.detail})</small>` : ''}</span></div>`).join('');
   }
+
 
   // ------------------------------------------------------------------ scene setup
   function teardown() {
@@ -387,6 +440,7 @@ export function mount(root) {
         if (x.material) { (Array.isArray(x.material) ? x.material : [x.material]).forEach((mm) => { if (mm.map) mm.map.dispose(); mm.dispose(); }); }
       });
     }
+    lineMats.length = 0;
     V = null;
   }
 
@@ -429,7 +483,7 @@ export function mount(root) {
     const big = n > 50;
     const geoH = new THREE.IcosahedronGeometry(0.47, 1);
     const geoI = big ? new THREE.IcosahedronGeometry(0.47, 0) : geoH;
-    const geoP = new THREE.IcosahedronGeometry(0.21, big ? 0 : 1);
+    const geoP = new THREE.IcosahedronGeometry(0.25, big ? 0 : 1);
     const matH = new THREE.MeshLambertMaterial({ color: 0xffffff });
     const matP = new THREE.MeshLambertMaterial({ color: 0xffffff });
     const mk = (geo, mat, cnt) => {
@@ -457,20 +511,21 @@ export function mount(root) {
     // backbone
     const bondPos = new Float32Array(Math.max(1, N - 1) * 6);
     for (let i = 0; i < N - 1; i++) bondPos.set(FP.subarray(3 * i, 3 * i + 6), 6 * i);
-    const bondGeo = new THREE.BufferGeometry();
-    bondGeo.setAttribute('position', new THREE.BufferAttribute(bondPos, 3));
-    bondGeo.setDrawRange(0, 0);
-    const bondMat = new THREE.LineBasicMaterial({ color: 0x8a919c, transparent: true, opacity: 0.55 });
-    const bonds = new THREE.LineSegments(bondGeo, bondMat); bonds.frustumCulled = false;
+    const bondGeo = new LineSegmentsGeometry();
+    bondGeo.setPositions(bondPos);
+    bondGeo.instanceCount = 0;
+    const bondMat = bondMaterial();
+    const bonds = new LineSegments2(bondGeo, bondMat); bonds.frustumCulled = false;
 
     // dynamic (in flight + visible tail)
     const dynH = mk(geoH, new THREE.MeshLambertMaterial({ color: 0xffffff }), DYN_CAP);
     const dynP = mk(geoP, new THREE.MeshLambertMaterial({ color: 0xffffff }), DYN_CAP);
     for (const d of [dynH, dynP]) { d.instanceMatrix.setUsage(THREE.DynamicDrawUsage); d.instanceColor.setUsage(THREE.DynamicDrawUsage); }
-    const dynBondPos = new Float32Array((DYN_CAP + 4) * 6);
-    const dynBondGeo = new THREE.BufferGeometry();
-    dynBondGeo.setAttribute('position', new THREE.BufferAttribute(dynBondPos, 3).setUsage(THREE.DynamicDrawUsage));
-    const dynBonds = new THREE.LineSegments(dynBondGeo, bondMat.clone()); dynBonds.frustumCulled = false;
+    const dynBondGeo = new LineSegmentsGeometry();
+    dynBondGeo.setPositions(new Float32Array((DYN_CAP + 4) * 6));
+    dynBondGeo.attributes.instanceStart.data.setUsage(THREE.DynamicDrawUsage);
+    dynBondGeo.instanceCount = 0;
+    const dynBonds = new LineSegments2(dynBondGeo, bondMaterial()); dynBonds.frustumCulled = false;
     const tailGeo = new THREE.BufferGeometry();
     tailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3).setUsage(THREE.DynamicDrawUsage));
     const tail = new THREE.Line(tailGeo, new THREE.LineBasicMaterial({ color: 0x8a919c, transparent: true, opacity: 0.45 }));
@@ -480,21 +535,8 @@ export function mount(root) {
     const wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(n, n, n)),
       new THREE.LineBasicMaterial({ color: 0x4a5466, transparent: true, opacity: 0.55 }));
 
-    // bins overlay (outlines + labels)
+    // strip outlines and labels, drawn by buildStripOverlay() for the current stage
     const binGroup = new THREE.Group();
-    const K = res.K, sizes = res.sizes;
-    fold.bins.forEach((bn, j) => {
-      const x0 = 1 - cc - 0.5, x1 = n - 2 - cc + 0.5, y0 = bn.rb + 1 - cc - 0.5, y1 = bn.rt - 1 - cc + 0.5, z = cc + 0.55;
-      const g = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(x0, y0, z), new THREE.Vector3(x1, y0, z), new THREE.Vector3(x1, y1, z), new THREE.Vector3(x0, y1, z), new THREE.Vector3(x0, y0, z)]);
-      const line = new THREE.Line(g, new THREE.LineBasicMaterial({ color: j < K ? 0xffffff : 0xcdbb94, transparent: true, opacity: 0.85 }));
-      binGroup.add(line);
-      const items = bn.contents.filter((s) => s.kind === 'item').map((s) => `u${s.item + 1}`);
-      const text = j < K ? `strip ${j + 1}: ${items.join(' + ')}` : `strip ${j + 1}: plug`;
-      const spr = makeLabel(text, j < K ? '#ffffff' : '#dccb9f', n);
-      spr.position.set(-cc - 1.5 - spr.userData.w / 2, (bn.rt + bn.rb) / 2 - cc, cc + 1);
-      binGroup.add(spr);
-    });
 
     const objects = [meshS, meshI, meshP, bonds, dynH, dynP, dynBonds, tail, wire, binGroup];
     objects.forEach((o) => scene.add(o));
@@ -516,7 +558,7 @@ export function mount(root) {
     };
     V.steps = buildSteps(res);
     V.wallStep = V.steps.findIndex((s) => s.id === 'walls');
-    if (scheme !== 'normal') paintAll();
+    paintAll();
     // factor ranges for the formula
     V.factorRange = {};
     for (const f of res.str.factors) V.factorRange[f.key] = [f.start, f.end];
@@ -524,7 +566,8 @@ export function mount(root) {
 
     buildTimeline();
     setupFace();
-    $('#rd-placeholder').hidden = true; $('#rd-hud').hidden = false; $('#rd-dock').hidden = false;
+    setupBar();
+    $('#rd-placeholder').hidden = true; $('#rd-hud').hidden = false; $('#rd-dock').hidden = false; $('#rd-zoom').hidden = false;
     resize();
     controls.minDistance = 2; controls.maxDistance = 120 * n;
     camera.far = 400 * n; camera.near = Math.max(0.1, n / 200); camera.updateProjectionMatrix();
@@ -535,6 +578,26 @@ export function mount(root) {
     camera.position.copy(controls.target).add(new THREE.Vector3(...v0.dir).normalize().multiplyScalar(v0.dist * n * DIST_SCALE * fitScale));
   }
 
+  function buildStripOverlay() {
+    const g = V.binGroup, n = V.n, cc = V.cc, K = RES.K, st = ST();
+    for (const ch of [...g.children]) {
+      g.remove(ch);
+      if (ch.geometry) ch.geometry.dispose();
+      if (ch.material) { if (ch.material.map) ch.material.map.dispose(); ch.material.dispose(); }
+    }
+    V.fold.bins.forEach((bn, j) => {
+      const x0 = 1 - cc - 0.5, x1 = n - 2 - cc + 0.5, y0 = bn.rb + 1 - cc - 0.5, y1 = bn.rt - 1 - cc + 0.5, z = cc + 0.55;
+      const geo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(x0, y0, z), new THREE.Vector3(x1, y0, z), new THREE.Vector3(x1, y1, z), new THREE.Vector3(x0, y1, z), new THREE.Vector3(x0, y0, z)]);
+      g.add(new THREE.Line(geo, new THREE.LineBasicMaterial({ color: j < K ? st.strip : st.plugStrip, transparent: true, opacity: st.stripOp })));
+      const items = bn.contents.filter((x) => x.kind === 'item').map((x) => `u${x.item + 1}`);
+      const text = j < K ? `strip ${j + 1}: ${items.join(' + ')}` : `strip ${j + 1}: plug`;
+      const spr = makeLabel(text, j < K ? st.ink : st.plugInk, n);
+      spr.position.set(-cc - 1.5 - spr.userData.w / 2, (bn.rt + bn.rb) / 2 - cc, cc + 1);
+      g.add(spr);
+    });
+  }
+
   function makeLabel(text, color, n) {
     const fs = 44, pad = 14;
     const cv = document.createElement('canvas');
@@ -543,7 +606,7 @@ export function mount(root) {
     const tw = Math.ceil(ctx.measureText(text).width);
     cv.width = tw + 2 * pad; cv.height = fs + 2 * pad;
     ctx.font = `600 ${fs}px -apple-system, Segoe UI, Roboto, sans-serif`;
-    ctx.fillStyle = 'rgba(14,17,22,0.78)';
+    ctx.fillStyle = ST().label;
     const r = 16; const w = cv.width, h = cv.height;
     ctx.beginPath(); ctx.moveTo(r, 0); ctx.arcTo(w, 0, w, h, r); ctx.arcTo(w, h, 0, h, r); ctx.arcTo(0, h, 0, 0, r); ctx.arcTo(0, 0, w, 0, r); ctx.fill();
     ctx.fillStyle = color; ctx.textBaseline = 'middle'; ctx.fillText(text, pad, h / 2 + 2);
@@ -581,7 +644,7 @@ export function mount(root) {
       tag: '§3.2.2 · Fig. 3', title: 'The string S_B, still unfolded',
       body: `<p>The instance on the left has K = ${K} bins of size B = ${B} and ${sizes.length} items of even size, adding up to BK = ${B * K}. Berger and Leighton turn it into the string <b>S<sub>B</sub></b> of Fig. 3, with</p>
         <p class="eq">q = 2·max(K, ⌈B<sup>1/3</sup>⌉) = ${q}, &nbsp; n = q(2q+1)+2 = ${n}, &nbsp; T = (2q−1)(n−2) = ${T}, &nbsp; c = 52.</p>
-        <p>S<sub>B</sub> has ${fmt(N)} letters, exactly n³ = ${fmt(n ** 3)} of them H. A fold has the most H–H pairs, 3n²(n−1) = ${fmt(3 * n * n * (n - 1))}, exactly when its H's fill an ${n}×${n}×${n} cube (the wireframe), and such a perfect fold exists exactly when the items can be packed. Press <b>→</b> to fold S<sub>B</sub> one step at a time with the packing on the left (← goes back, Space plays every step).</p>` });
+        <p>S<sub>B</sub> has ${fmt(N)} letters, exactly n³ = ${fmt(n ** 3)} of them H. A fold has the most H–H pairs, 3n²(n−1) = ${fmt(3 * n * n * (n - 1))}, exactly when its H's fill an ${n}×${n}×${n} cube (the wireframe), and such a perfect fold exists exactly when the items can be packed. Press <b>→</b> to fold S<sub>B</sub> one step at a time with the packing on the left; <b>←</b> goes back, and dragging along the bar below jumps to any letter of the string.</p>` });
 
     add({ id: 'edges', group: 1, ...span(byKey('edges')), dir: [0, 0, 1], factors: ['edges'], view: { dir: [1.0, 0.85, -0.85], dist: 2.6, tgt: [0, 0, 0] },
       cards: [...FRAME, ['local-rules', '5 The counts match']],
@@ -626,7 +689,7 @@ export function mount(root) {
     add({ id: 'fill', group: 3, ...span(fill), dir: tailFront, factors: ['fill'], tint: fill.map((s) => s.string), view: { dir: [0.32, 0.1, 1.2], dist: 2.4, tgt: [-0.04, -0.02, 0.2] },
       cards: STRIPS, tag: '§3.2.3', title: `Paddings: (P^{cn}(PHHP)^{(T−B)/2})^${q}`,
       body: `<p>The rest of S<sub>B</sub> is ribbons, each after a linker of exactly cn+2 = ${fmt(cn + 2)} P's. First every strip gets a padding of T−B = ${T - B} H's. Two paddings never fit into one strip, since 2(T−B) > T, so every strip keeps exactly B = ${B} free nodes. Inside a strip the ribbons follow a snake, and each starts on an even node.</p>
-        <p>The linkers (highlighted) leave the face, drop to a plane of their own in front of the cube and loop far away to use up their fixed length.</p>` });
+        <p>The linkers (highlighted) leave the face, drop to a plane of their own in front of the cube and fold their surplus into small boxes of P's under the cube, to use up their fixed length.</p>` });
     if (dummy.length) {
       add({ id: 'dummy', group: 3, ...span(dummy), dir: tailFront, factors: ['dummy'], tint: dummy.map((s) => s.string), view: { dir: [0.32, 0.1, 1.2], dist: 2.4, tgt: [-0.04, -0.02, 0.2] },
         cards: STRIPS, tag: '§3.2.3', title: `Plugs: (P^{cn}(PHHP)^{B/2})^${q - K}`,
@@ -641,12 +704,12 @@ export function mount(root) {
         view: { dir: [0.32, 0.1, 1.2], dist: 2.4, tgt: [-0.04, -0.02, 0.2] },
         cards: [...STRIPS, ['linkers', '14 Loops take up slack']], tag: '§3.2.3 · the product over u ∈ U', title: `Item u${u + 1} (size ${s}) into strip ${bn + 1}`,
         body: `<p>The item ribbon (PHHP)<sup>${s / 2}</sup> of u${u + 1} goes into strip ${bn + 1}, the strip of bin ${bn + 1} in the packing on the left. Its ${s} H's continue the snake there, and strip ${bn + 1} has ${left} free node${left === 1 ? '' : 's'} left. The ribbon starts on an even node and so ends on an odd one, which gives the next linker the right parity.</p>
-          <p>Its linker (highlighted) has exactly cn+2 = ${fmt(cn + 2)} P's. It drops to its own plane at k = −${sg.depth}, is routed there around the other linkers, and spends its slack in a long loop away from the cube.</p>` });
+          <p>Its linker (highlighted) has exactly cn+2 = ${fmt(cn + 2)} P's. It drops to its own plane at k = −${sg.depth}, is routed there around the other linkers, and folds its surplus into a small box of P's under the cube.</p>` });
     });
-    add({ id: 'conn', group: 4, s: N, e: N, dir: tailFront, factors: ['fill', 'dummy', 'items'], tint: fold.strings.map((_, i) => i), tintAmt: 0.85, view: { dir: [1.2, -0.3, 1.0], dist: 6.0, tgt: [0, -1.35, 0.4] },
+    add({ id: 'conn', group: 4, s: N, e: N, dir: tailFront, factors: ['fill', 'dummy', 'items'], tint: fold.strings.map((_, i) => i), tintAmt: 0.85, view: { dir: [1.2, -0.25, 1.0], dist: 3.2, tgt: [0, -0.35, 0.3] },
       cards: [['crossbar', '13 Untangling the linkers'], ['linkers', '14 Loops take up slack']], tag: '§3.2.3 · Lemmas 3.3–3.8', title: 'The linkers',
       body: `<p>Consecutive ribbons of S<sub>B</sub> can land in strips far apart, so each is joined to the next by a linker of exactly cn+2 = ${fmt(cn + 2)} P's through the space in front of the cube (coloured here by the ribbon each one leads to). The paper routes them through a switchboard of disjoint paths, which allows any order of the items, and loops each one away from the cube to use up its length. That is where c = 52 comes from.</p>
-        <p class="note">With only ${M} linkers a simpler routing does the same job here: each linker drops straight to its own plane k = −D, is routed in that plane around the ends of the deeper ones, and puts its slack into one long hairpin. The parity works out because every ribbon starts on an even node and ends on an odd one.</p>` });
+        <p class="note">With only ${M} linkers a simpler routing does the same job here: each linker drops straight to its own plane k = −D, is routed in that plane around the ends of the deeper ones, and folds its surplus into a small box of P's under the front of the cube (the paper loops it away from the cube instead). The parity works out because every ribbon starts on an even node and ends on an odd one.</p>` });
     const stripTxt = fold.bins.map((bn, j) => {
       if (j >= K) return `strip ${j + 1}: plug`;
       const its = bn.contents.filter((s) => s.kind === 'item').map((s) => `u${s.item + 1} (${sizes[s.item]})`);
@@ -710,22 +773,43 @@ export function mount(root) {
     BD.active = new Set(st.items || []); renderBoard();
   }
 
-  function setPlaying(p) {
-    playing = p; hold = 0.5;
-    $('#rd-bPlay').textContent = p ? '⏸ Pause' : '▶ Play';
-  }
-
+  // jump to step k (its start, then fold it if animate; else straight to its end)
   function goStep(k, animate) {
     if (!V) return;
     k = clamp(k, 0, V.steps.length - 1);
-    cur.k = k; cur.t = animate ? 0 : 1; cur.running = !!animate;
+    const st = V.steps[k];
+    if (animate && st.e > st.s) startAnim(st.s, st.e, k);
+    else { cur.anim = null; cur.pos = st.e; }
+    setStep(k, true);
+  }
+  // make k the current step: its colours, cut-away, texts (and camera, if asked for)
+  function setStep(k, moveCamera) {
+    cur.k = k;
     const st = V.steps[k];
     $('#rd-tgCut').checked = !!st.cut;
     applyTint(st);
     applyVisibility();
     stepUI();
-    if ($('#rd-tgCam').checked) flyTo(st.view, animate ? 1.6 : 0.9);
-    hold = 0.6;
+    if (moveCamera && $('#rd-tgCam').checked) flyTo(st.view, 1.4);
+  }
+  function startAnim(from, to, k) {
+    const st = V.steps[k], len = to - from;
+    cur.anim = { from, to, t: 0, W: clamp(Math.round(len * 0.18), 4, 3500), dur: 1.15 + 0.8 * Math.log10(1 + len),
+      dir0: from === st.s ? st.dirPrev : st.dir, dir1: st.dir };
+    cur.pos = from;
+  }
+  // the step whose residues contain position pos (step 0 at the very start)
+  function stepOfPos(pos) {
+    if (pos <= 0) return 0;
+    for (let k = 0; k < V.steps.length; k++) { const st = V.steps[k]; if (st.e > st.s && pos > st.s && pos <= st.e) return k; }
+    return V.steps.length - 1;
+  }
+  // dragging along the string: jump to any residue
+  function scrubTo(pos) {
+    cur.anim = null;
+    cur.pos = pos;
+    const k = stepOfPos(pos);
+    if (k !== cur.k) setStep(k, false);
   }
 
   function applyTint(st) {
@@ -764,17 +848,51 @@ export function mount(root) {
     V.stringRGB = V.fold.strings.map((s) => (s.kind === 'item' ? itemRGB(s.item) : catRGB(s.kind === 'filler' ? 11 : 12)));
     V.tint = null;
     if (V.steps) applyTint(V.steps[Math.min(cur.k, V.steps.length - 1)]);
-    const sc = SCHEMES[scheme];
+    const sc = pal(), st = ST();
     for (const m of [V.matP, V.dynP.material]) { m.transparent = sc.pOpacity < 1; m.opacity = sc.pOpacity; m.depthWrite = sc.pOpacity >= 1; m.needsUpdate = true; }
-    for (const m of [V.bondMat, V.dynBonds.material]) m.opacity = sc.bondOpacity;
-    V.tail.material.opacity = Math.min(0.45, sc.bondOpacity + 0.1);
+    for (const m of [V.bondMat, V.dynBonds.material]) { m.opacity = sc.bondOpacity; m.color.setHex(st.line); }
+    V.tail.material.opacity = Math.min(0.5, sc.bondOpacity + 0.1); V.tail.material.color.setHex(st.line);
+    V.wire.material.color.setHex(st.wire); V.wire.material.opacity = st.wireOp;
+    buildStripOverlay();
+    if (barPieces.length) drawBar(true);
     V.lastFace = -1;
     renderFaceLegend();
   }
+  // the legend in the corner: a big H bead and a small P bead in the current colours
+  function renderLegend() {
+    $('#rd-lgH').style.fill = scheme === 'hp' ? catHex(1) : catHex(4);
+    $('#rd-lgP').style.fill = catHex(0);
+    $('#rd-lgP').style.fillOpacity = String(Math.max(0.55, pal().pOpacity));
+  }
+  function applyStage() {
+    root.dataset.stage = stage;
+    renderer.setClearColor(ST().clear);
+    const night = stage === 'night';
+    const b = $('#rd-stageBtn');
+    b.textContent = night ? '☀' : '☾';
+    b.title = night ? 'Day view' : 'Night view'; b.setAttribute('aria-label', b.title);
+    paintAll();
+    renderBoard();
+    renderLegend();
+  }
+  $('#rd-stageBtn').addEventListener('click', () => { stage = stage === 'day' ? 'night' : 'day'; stageChosen = true; applyStage(); });
+  document.documentElement.addEventListener('themechange', (e) => {
+    if (stageChosen) return;
+    stage = e.detail === 'dark' ? 'night' : 'day';
+    applyStage();
+  });
+  // explanation, step numbers and counters stay hidden until the reader asks for them
+  $('#rd-explain').addEventListener('click', () => {
+    const open = root.dataset.explain !== '1';
+    root.dataset.explain = open ? '1' : '0';
+    $('#rd-explain').textContent = open ? 'Hide explanation' : 'Explain';
+    $('#rd-explain').setAttribute('aria-expanded', String(open));
+  });
   $('#rd-tgHP').addEventListener('change', () => {
     scheme = $('#rd-tgHP').checked ? 'hp' : 'normal';
     paintAll();
     renderBoard();
+    renderLegend();
   });
 
   function applyVisibility() {
@@ -791,33 +909,29 @@ export function mount(root) {
   for (const id of ['#rd-tgP', '#rd-tgBond', '#rd-tgLab', '#rd-tgCut']) $(id).addEventListener('change', applyVisibility);
   $('#rd-tgCam').addEventListener('change', () => { if ($('#rd-tgCam').checked && V) flyTo(V.steps[cur.k].view, 1.2); });
 
-  // controls
-  $('#rd-bPlay').addEventListener('click', () => {
-    if (!V) return;
-    if (!playing && cur.k === V.steps.length - 1 && !cur.running) { goStep(0, true); setPlaying(true); return; }
-    setPlaying(!playing);
-  });
-  // → : complete the running step, otherwise fold the next one.  ← : back to the state before this step.
+  // → : finish the step being folded, else fold the rest of this step, else the next step.
+  // ← : back to where this step started (the end of the step before).
   function stepForward() {
     if (!V) return;
-    if (cur.running) { cur.t = 1; cur.running = false; hold = 0.6; return; }
+    if (cur.anim) { cur.pos = cur.anim.to; cur.anim = null; return; }
+    const st = V.steps[cur.k];
+    if (st.e > st.s && cur.pos < st.e) { startAnim(cur.pos, st.e, cur.k); return; }
     if (cur.k < V.steps.length - 1) goStep(cur.k + 1, true);
   }
   function stepBack() {
     if (!V) return;
-    setPlaying(false);
-    if (cur.k > 0) goStep(cur.k - 1, false);
+    if (cur.anim) { cur.pos = cur.anim.from; cur.anim = null; }
+    const st = V.steps[cur.k];
+    if (st.e > st.s && cur.pos > st.s) { cur.pos = st.s; setStep(stepOfPos(cur.pos), true); return; }
+    if (cur.k > 0) { const k = cur.k - 1; cur.pos = V.steps[k].e; setStep(k, true); }
   }
   $('#rd-bNext').addEventListener('click', stepForward);
   $('#rd-bPrev').addEventListener('click', stepBack);
-  $('#rd-bFirst').addEventListener('click', () => { if (V) { setPlaying(false); goStep(0, true); } });
-  $('#rd-bSkip').addEventListener('click', () => { if (V) { cur.t = 1; cur.running = false; hold = 0.6; } });
-  $('#rd-bReplay').addEventListener('click', () => { if (V) goStep(cur.k, true); });
   $('#rd-speed').addEventListener('input', () => {
     speed = Math.pow(2, ($('#rd-speed').value - 50) / 20);
     $('#rd-speedLbl').textContent = (speed < 1 ? speed.toFixed(2) : speed.toFixed(1)) + '×';
   });
-  // the widget takes ← → Space while at least half of it is on screen, or while focus is inside it
+  // the widget takes ← → while at least half of it is on screen, or while focus is inside it
   const inView = () => {
     const r = root.getBoundingClientRect();
     const seen = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
@@ -831,10 +945,10 @@ export function mount(root) {
     const a = document.activeElement;
     if (!root.contains(a) && !inView()) return;
     if (a && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) return;
-    if (e.key === ' ' && a && a.tagName === 'BUTTON') return;
     if (e.key === 'ArrowRight') { stepForward(); e.preventDefault(); }
     else if (e.key === 'ArrowLeft') { stepBack(); e.preventDefault(); }
-    else if (e.key === ' ') { $('#rd-bPlay').click(); e.preventDefault(); }
+    else if (e.key === '+' || e.key === '=') { zoomBy(0.8); e.preventDefault(); }
+    else if (e.key === '-' || e.key === '_') { zoomBy(1.25); e.preventDefault(); }
   });
 
   // ------------------------------------------------------------------ camera
@@ -874,18 +988,22 @@ export function mount(root) {
   function updateBeads() {
     const st = V.steps[cur.k];
     const { FP, TY, N, col } = V;
-    const s = st.s, e = st.e, len = e - s, W = st.W, t = cur.t;
-    let f, placed;
-    if (len === 0) { f = s; placed = s; } else {
-      f = s + (len + W) * easeIO(t);
+    const an = cur.anim;
+    let s, e, W, t, f, placed, dir0, dir1;
+    if (an) {
+      s = an.from; e = an.to; W = an.W; t = an.t; dir0 = an.dir0; dir1 = an.dir1;
+      f = s + (e - s + W) * easeIO(t);
       placed = t >= 1 ? e : clamp(Math.floor(f - W) + 1, s, e);
+    } else {
+      s = e = f = placed = cur.pos; W = 1; t = 1; dir0 = dir1 = st.dir;
     }
+    const len = e - s;
     V.placed = placed;
     V.meshS.count = V.cntS[placed]; V.meshI.count = V.cntI[placed]; V.meshP.count = V.cntP[placed];
-    V.bondGeo.setDrawRange(0, Math.max(0, 2 * (placed - 1)));
+    V.bondGeo.instanceCount = Math.max(0, placed - 1);
 
     // tail anchor and direction
-    vD0.copy(toThree(st.dirPrev)); vD1.copy(toThree(st.dir));
+    vD0.copy(toThree(dir0)); vD1.copy(toThree(dir1));
     vD.copy(vD0).lerp(vD1, smooth(Math.min(1, t * 3))).normalize();
     const ta = easeIO(t);
     let bx0, by0, bz0;
@@ -899,7 +1017,7 @@ export function mount(root) {
 
     const mH = V.dynH.instanceMatrix.array, mP = V.dynP.instanceMatrix.array;
     const cH = V.dynH.instanceColor.array, cP = V.dynP.instanceColor.array;
-    const bp = V.dynBondGeo.attributes.position.array;
+    const bondBuf = V.dynBondGeo.attributes.instanceStart.data, bp = bondBuf.array;
     let nh = 0, np = 0, nb = 0;
     let px = 0, py = 0, pz = 0, havePrev = false;
     if (placed > 0) { px = FP[3 * (placed - 1)]; py = FP[3 * (placed - 1) + 1]; pz = FP[3 * (placed - 1) + 2]; havePrev = true; }
@@ -921,10 +1039,8 @@ export function mount(root) {
     const upload = (attr, count) => { attr.clearUpdateRanges(); attr.addUpdateRange(0, Math.max(1, count)); attr.needsUpdate = true; };
     upload(V.dynH.instanceMatrix, nh * 16); upload(V.dynP.instanceMatrix, np * 16);
     upload(V.dynH.instanceColor, nh * 3); upload(V.dynP.instanceColor, np * 3);
-    V.dynBondGeo.attributes.position.clearUpdateRanges();
-    V.dynBondGeo.attributes.position.addUpdateRange(0, Math.max(1, nb * 6));
-    V.dynBondGeo.attributes.position.needsUpdate = true;
-    V.dynBondGeo.setDrawRange(0, 2 * nb);
+    bondBuf.clearUpdateRanges(); bondBuf.addUpdateRange(0, Math.max(1, nb * 6)); bondBuf.needsUpdate = true;
+    V.dynBondGeo.instanceCount = nb;
     // the rest of the unfolded chain, as a line
     const tp = V.tail.geometry.attributes.position.array;
     if (hi < N) {
@@ -940,6 +1056,7 @@ export function mount(root) {
   let faceCtx = null, faceScale = 1;
   function setupFace() {
     const cv = $('#rd-face');
+    if (!cv) return;
     faceScale = Math.max(2, Math.floor(228 / V.n));
     cv.width = cv.height = faceScale * V.n;
     faceCtx = cv.getContext('2d');
@@ -947,33 +1064,113 @@ export function mount(root) {
     V.lastFace = -1;
   }
   function renderFaceLegend() {
-    if (!V || !RES || !RES.assign) return;
+    if (!V || !RES || !RES.assign || !$('#rd-faceLegend')) return;
     const its = RES.sizes.map((s, u) => `<div><i style="background:${itemHex(u)}"></i>u${u + 1} (${s}) → strip ${RES.assign[u] + 1}</div>`).join('');
     $('#rd-faceLegend').innerHTML = `${its}<div><i style="background:${catHex(11)}"></i>padding (T−B = ${RES.P.T - RES.P.B})</div>` +
       (RES.P.q > RES.K ? `<div><i style="background:${catHex(12)}"></i>plug (strip of no bin)</div>` : '') +
       `<div><i style="background:${catHex(9)}"></i>periods &nbsp;<i style="background:${catHex(10)}"></i>spaced rod</div>`;
   }
   function drawFace() {
+    if (!faceCtx) return;
     const placed = V.placed;
     if (placed === V.lastFace) return;
     V.lastFace = placed;
     const n = V.n, s = faceScale, ctx = faceCtx;
-    ctx.fillStyle = '#14171d'; ctx.fillRect(0, 0, n * s, n * s);
+    const st = ST();
+    ctx.fillStyle = st.map; ctx.fillRect(0, 0, n * s, n * s);
     const gap = s >= 4 ? 1 : 0;
     for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
       const i = V.frontIdx[x + y * n];
-      ctx.fillStyle = i >= 0 && i < placed ? V.hexOf(i) : '#262b34';
+      ctx.fillStyle = i >= 0 && i < placed ? V.hexOf(i) : st.mapEmpty;
       ctx.fillRect(x * s, (n - 1 - y) * s, s - gap, s - gap);
     }
     if (cur.k >= V.wallStep) {
       ctx.lineWidth = 1;
       V.fold.bins.forEach((bn, j) => {
-        ctx.strokeStyle = j < RES.K ? 'rgba(255,255,255,0.9)' : 'rgba(205,187,148,0.9)';
+        ctx.strokeStyle = j < RES.K ? st.mapLine : st.mapPlug;
         const x0 = 1 * s - 0.5, y0 = (n - 1 - (bn.rt - 1)) * s - 0.5;
         ctx.strokeRect(x0, y0, (n - 2) * s, (bn.rt - bn.rb - 1) * s);
       });
     }
   }
+
+  // ------------------------------------------------------------------ the string bar
+  // The whole of S_B from left to right: H pieces full height in their colours, runs of P's as a
+  // thin grey line, the part not folded yet faded. The arrow marks how far the fold has got;
+  // dragging along the bar folds or unfolds to any residue.
+  const bar = $('#rd-bar'), barCv = $('#rd-barCv'), marker = $('#rd-marker'), barTip = $('#rd-barTip');
+  let barPieces = [], barW = 0, barH = 0, barShown = -1, barDrag = false;
+  const PIECE_NAMES = {
+    edges: 'corner rod', back: 'back face ribbon', bl: 'tenth-edge rod', p4: 'P-hop', left: 'left face ribbon', p7a: 'P-hop',
+    bottom: 'bottom face ribbon', p7b: 'P-hop', right: 'right face ribbon', p7c: 'P-hop', top: 'top face ribbon', int: 'core',
+    down: 'P-hop to the front face', walls: 'periods: walls and rods', special: 'spaced rod',
+  };
+  function setupBar() {
+    barPieces = [];
+    for (const sg of V.segs) {
+      if (sg.key === 'filler' || sg.key === 'dummy' || sg.key === 'item') {
+        const str = V.fold.strings[sg.string];
+        const name = sg.key === 'filler' ? 'padding' : sg.key === 'dummy' ? 'plug' : `item u${sg.item + 1}`;
+        barPieces.push({ s: sg.start, e: str.connEnd, kind: 'P', label: `linker before the ${name}` });
+        barPieces.push({ s: str.connEnd, e: sg.end, kind: sg.key, item: sg.item, label: `${name}, into strip ${sg.bin + 1}`, min: true });
+      } else barPieces.push({ s: sg.start, e: sg.end, cat: sg.cat, kind: sg.cat === 0 ? 'P' : 'H', label: PIECE_NAMES[sg.key] || sg.label, min: sg.key === 'special' });
+    }
+    bar.setAttribute('aria-valuemax', String(V.N));
+    barShown = -1;
+    drawBar(true);
+  }
+  const pieceColor = (p) => (p.kind === 'P' ? catHex(0) : p.kind === 'item' ? itemHex(p.item) : p.kind === 'filler' ? catHex(11) : p.kind === 'dummy' ? catHex(12) : catHex(p.cat));
+  function drawBar(force) {
+    if (!V || !barPieces.length) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(1, Math.round(barCv.clientWidth * dpr)), h = Math.max(1, Math.round(barCv.clientHeight * dpr));
+    if (w !== barW || h !== barH) { barCv.width = barW = w; barCv.height = barH = h; force = true; }
+    const placed = V.placed;
+    if (!force && placed === barShown) return;
+    barShown = placed;
+    const ctx = barCv.getContext('2d'), sx = w / V.N, xm = placed * sx;
+    ctx.clearRect(0, 0, w, h);
+    for (const done of [false, true]) {
+      ctx.save();
+      ctx.beginPath();
+      if (done) ctx.rect(0, 0, xm, h); else ctx.rect(xm, 0, w - xm, h);
+      ctx.clip();
+      ctx.globalAlpha = done ? 1 : 0.32;
+      for (const p of barPieces) {
+        let x0 = p.s * sx, x1 = p.e * sx;
+        if (p.min && x1 - x0 < 2 * dpr) { const c = (x0 + x1) / 2; x0 = c - dpr; x1 = c + dpr; }
+        const thin = p.kind === 'P';
+        ctx.fillStyle = pieceColor(p);
+        ctx.fillRect(x0, thin ? h * 0.38 : 0, Math.max(x1 - x0, 0.6), thin ? h * 0.24 : h);
+      }
+      ctx.restore();
+    }
+    marker.style.left = (100 * placed / V.N) + '%';
+    bar.setAttribute('aria-valuenow', String(placed));
+    bar.setAttribute('aria-valuetext', `${fmt(placed)} of ${fmt(V.N)} letters folded`);
+  }
+  const posAt = (x) => { const r = barCv.getBoundingClientRect(); return clamp(Math.round(((x - r.left) / r.width) * V.N), 0, V.N); };
+  const pieceAt = (pos) => barPieces.find((p) => pos >= p.s && pos < p.e) || barPieces[barPieces.length - 1];
+  bar.addEventListener('pointerdown', (e) => {
+    if (!V) return;
+    barDrag = true;
+    bar.setPointerCapture(e.pointerId);
+    scrubTo(posAt(e.clientX));
+    e.preventDefault();
+  });
+  bar.addEventListener('pointermove', (e) => {
+    if (!V || !barPieces.length) return;
+    const pos = posAt(e.clientX);
+    if (barDrag) scrubTo(pos);
+    const r = barCv.getBoundingClientRect();
+    barTip.textContent = pieceAt(pos).label;
+    barTip.style.left = (clamp(e.clientX - r.left, 0, r.width) / r.width * 100) + '%';
+    barTip.hidden = false;
+  });
+  const endDrag = (e) => { barDrag = false; try { bar.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ } };
+  bar.addEventListener('pointerup', endDrag);
+  bar.addEventListener('pointercancel', endDrag);
+  bar.addEventListener('pointerleave', () => { if (!barDrag) barTip.hidden = true; });
 
   // ------------------------------------------------------------------ main loop
   let lastT = performance.now(), statAcc = 0;
@@ -982,18 +1179,12 @@ export function mount(root) {
     const dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
     if (!onScreen) return;
     if (V) {
-      const st = V.steps[cur.k];
-      if (cur.running) {
-        cur.t += dt * speed / st.dur;
-        if (cur.t >= 1) { cur.t = 1; cur.running = false; hold = st.id === 'start' ? 1.0 : 0.6; }
-      } else if (playing) {
-        hold -= dt * speed;
-        if (hold <= 0) {
-          if (cur.k < V.steps.length - 1) goStep(cur.k + 1, true);
-          else setPlaying(false);
-        }
+      if (cur.anim) {
+        cur.anim.t += dt * speed / cur.anim.dur;
+        if (cur.anim.t >= 1) { cur.pos = cur.anim.to; cur.anim = null; }
       }
       updateBeads();
+      drawBar(false);
       statAcc += dt;
       if (statAcc > 0.1) {
         statAcc = 0;
@@ -1001,7 +1192,6 @@ export function mount(root) {
         const pl = V.placed;
         const txt = `<span class="k">residues placed</span> ${fmt(pl)} / ${fmt(V.N)}<br><span class="k" title="neighbouring H's, consecutive ones included, as the paper counts">H–H pairs</span> ${fmt(V.contactPrefix[pl])} / ${fmt(V.target)}<br><span class="k">cube</span> ${V.n}×${V.n}×${V.n} &nbsp;<span class="k">step</span> ${cur.k}/${V.steps.length - 1}`;
         if (txt !== V.lastStats) { $('#rd-stats').innerHTML = txt; V.lastStats = txt; }
-        $('#rd-progress div').style.width = (100 * pl / V.N).toFixed(2) + '%';
       }
     }
     updateCamera(dt);
@@ -1011,5 +1201,7 @@ export function mount(root) {
   requestAnimationFrame(frame);
 
   // ------------------------------------------------------------------ init
+  root.dataset.explain = '0';
+  applyStage();
   loadPreset(0);
 }

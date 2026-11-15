@@ -16,19 +16,21 @@ The [original proof](../original-proof/) turns every bin packing instance into a
 
 ## Reading the picture
 
-The H's are red: a light red on the edges, paler in the faces, the core and the paddings, and dark in the walls. The P's are faint grey, and every item ribbon has its own bright colour, the same as on the packing board. *View* switches to one colour per step of the construction, hides the P's, or cuts a corner off the cube.
+The big red beads are the H's and the small grey ones the P's, as the legend in the corner says. The H's of the edges are a stronger red, those of the faces, the core and the paddings paler, and the walls dark; every item ribbon has its own bright colour, the same as on the packing board. The sun and moon button switches between a day and a night view, and *View* offers one colour per step of the construction, hides the P's, or cuts a corner off the cube.
 
-The dock under the cube lists the steps in the order of the string. Each step names the piece of $S_B$ it folds, marks that piece in the formula on the left, and links to its card on the [proof board](../original-proof/). <kbd>←</kbd> goes back one step and <kbd>Space</kbd> plays all of them. The counter counts H–H pairs the way the paper does, consecutive H's included, so a perfect fold reaches $3n^2(n-1)$ (see [Pairs and contacts](../original-proof/#pairs-and-contacts)).
+Under the cube you see only the name of the current step. **Explain** opens the rest: the list of steps in the order of the string, what each step folds and why, links to its cards on the [proof board](../original-proof/), and counters of the letters placed and the H–H pairs, which the paper counts with consecutive H's included, so that a perfect fold reaches $3n^2(n-1)$ (see [Pairs and contacts](../original-proof/#pairs-and-contacts)). The piece being folded is also marked in the formula on the left.
+
+The bar under the step's name is the whole string $S_B$, from its first letter to its last: H pieces in their colours, runs of P's as a thin grey line, the part not yet folded faded. The arrow marks the letter the fold has reached. Drag along the bar to fold or unfold to any letter, or step with <kbd>→</kbd> and <kbd>←</kbd>. Drag the cube to turn it and zoom with <kbd>+</kbd> and <kbd>−</kbd>; scrolling scrolls the page.
 
 ## Why the cube is so big
 
-Even small instances give a large cube. With two bins of size at most 8, $q = 2\max(K, \lceil B^{1/3}\rceil) = 4$, so $n = q(2q+1)+2 = 38$: 54,872 H's and about 85,000 letters. The running example of the proof cards has bins of size 10, which already needs $q = 6$ and $n = 80$, that is 512,000 H's. It is among the presets, but slow on older computers. The longest pieces are the linkers: each has $52n+2$ P's, which is why their loops hang far below the cube.
+Even small instances give a large cube. With two bins of size at most 8, $q = 2\max(K, \lceil B^{1/3}\rceil) = 4$, so $n = q(2q+1)+2 = 38$: 54,872 H's and about 85,000 letters. The running example of the proof cards has bins of size 10, which already needs $q = 6$ and $n = 80$, that is 512,000 H's. It is among the presets, but slow on older computers. The longest pieces are the linkers: each has $52n+2$ P's, far more than it needs, and here each folds its surplus into a small box of P's under the cube.
 
 ## How close this is to the paper
 
 The string is exactly that of Fig. 3, checked letter by letter, and the frame, the periods and the spaced rod sit at the coordinates of §3.2.3 (Figs. 4–8). Two kinds of route are only asserted in the paper, so we had to choose them:
 
 - The short hops of four or seven P's between faces are found by a small search that keeps them at distance at least 2 from the cube.
-- The linkers do not use the switchboard of [13 Untangling the linkers](../original-proof/#step-bl-crossbar). With a dozen of them it is enough to give each linker its own plane in front of the cube and to put its slack into one loop.
+- The linkers do not use the switchboard of [13 Untangling the linkers](../original-proof/#step-bl-crossbar). With a dozen of them it is enough to give each linker its own plane in front of the cube. The paper uses up the surplus length with a loop away from the cube; here it is folded into a small box of P's under the cube, which keeps the picture compact.
 
 Every fold is checked as it is built: its letters are those of $S_B$, no site is used twice, the H's fill the cube, and the H–H pairs reach $3n^2(n-1)$. The panel on the left lists these checks.
