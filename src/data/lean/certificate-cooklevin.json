@@ -1,0 +1,79 @@
+{
+  "_comment": "Written by scripts/build_lean.py from lean/cooklevin. Do not edit by hand.",
+  "id": "cooklevin",
+  "source": {
+    "ref": "HEAD",
+    "path": "lean/cooklevin",
+    "commit": "7504a2d54c002168654a4ca080c63d3a677facf8",
+    "date": "2026-11-14"
+  },
+  "project": {
+    "lean": "4.24.0",
+    "mathlib": "v4.24.0",
+    "files": 135,
+    "lines": 15177,
+    "declarations": 1923,
+    "theorems": 1019,
+    "sorries": 0,
+    "axioms": 0,
+    "nativeDecide": 0,
+    "checks": {
+      "audit": "checks/AxiomAudit.lean",
+      "verify": null
+    }
+  },
+  "links": {
+    "repo": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io",
+    "tree": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/tree/7504a2d54c002168654a4ca080c63d3a677facf8/lean/cooklevin",
+    "clone": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io.git",
+    "branch": "main",
+    "ci": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/actions/workflows/lean-certificates.yml",
+    "docs": {
+      "readme": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/7504a2d54c002168654a4ca080c63d3a677facf8/lean/cooklevin/README.md",
+      "audit": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/7504a2d54c002168654a4ca080c63d3a677facf8/lean/cooklevin/checks/AxiomAudit.lean"
+    }
+  },
+  "download": {
+    "path": "lean/lean-cooklevin.zip",
+    "folder": "lean-cooklevin",
+    "bytes": 255060,
+    "sha256": "f284cae4d956e08ab9c7a9b2d52e86250f12f553b0466272799cbb3f52619f74"
+  },
+  "index": [],
+  "route": [],
+  "decls": {
+    "SAT.CookLevin": {
+      "full": "ProteinFolding.SAT.CookLevin",
+      "kw": "def",
+      "file": "ProteinFolding/Common/CookLevin.lean",
+      "line": 192,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/7504a2d54c002168654a4ca080c63d3a677facf8/lean/cooklevin/ProteinFolding/Common/CookLevin.lean#L192",
+      "code": "/-- **The Cook–Levin hypothesis**: CNF-SAT (binary indices) is NP-hard in the\nproject's sense. Use only as an explicit hypothesis. -/\ndef CookLevin : Prop := NPHard cnfEncoding Satisfiable"
+    },
+    "SAT.CookLevinUniversal.cookLevin": {
+      "full": "ProteinFolding.SAT.CookLevinUniversal.cookLevin",
+      "kw": "theorem",
+      "file": "ProteinFolding/Common/CookLevinProofUniversal.lean",
+      "line": 19,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/7504a2d54c002168654a4ca080c63d3a677facf8/lean/cooklevin/ProteinFolding/Common/CookLevinProofUniversal.lean#L19",
+      "code": "theorem cookLevin : CookLevin"
+    },
+    "SAT.CookLevinUniversal.inNP_karp": {
+      "full": "ProteinFolding.SAT.CookLevinUniversal.inNP_karp",
+      "kw": "theorem",
+      "file": "ProteinFolding/Common/CookLevinProofUniversal.lean",
+      "line": 11,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/7504a2d54c002168654a4ca080c63d3a677facf8/lean/cooklevin/ProteinFolding/Common/CookLevinProofUniversal.lean#L11",
+      "code": "theorem inNP_karp (A : Type) (ea : FinEncoding A) (L : A → Prop) (hnp : InNP ea L) :\n    KarpReduces ea cnfEncoding L Satisfiable"
+    },
+    "SAT.CookLevinUniversalWidthThree.npHard": {
+      "full": "ProteinFolding.SAT.CookLevinUniversalWidthThree.npHard",
+      "kw": "theorem",
+      "file": "ProteinFolding/Common/CookLevinProofUniversalWidthThree.lean",
+      "line": 47,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/7504a2d54c002168654a4ca080c63d3a677facf8/lean/cooklevin/ProteinFolding/Common/CookLevinProofUniversalWidthThree.lean#L47",
+      "code": "theorem npHard : NPHard cnfEncoding (fun φ => ThreeCNF.WidthAtMostThree φ ∧ Satisfiable φ)"
+    }
+  },
+  "axiomReport": []
+}

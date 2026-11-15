@@ -513,6 +513,7 @@ def build(files: dict[str, bytes], cfg: dict, commit: str | None, date: str | No
     namespace = src_cfg.get("namespace", "")
     zip_path = src_cfg.get("zip", "lean/lean-cubic.zip")
     audit = src_cfg.get("audit", AUDIT)
+    has_index = src_cfg.get("index", True)  # false: the project has no docs/theorem-index.md
     exclude = [f.strip("/") for f in src_cfg.get("count_exclude", [])]
     at = commit or branch
 
@@ -565,7 +566,9 @@ def build(files: dict[str, bytes], cfg: dict, commit: str | None, date: str | No
 
     # the theorem index
     rows = []
-    if INDEX_MD not in files:
+    if not has_index:
+        pass
+    elif INDEX_MD not in files:
         problems.error(f"{path}/{INDEX_MD} is missing")
     else:
         table = read_index_table(files[INDEX_MD].decode("utf-8"))
@@ -595,6 +598,8 @@ def build(files: dict[str, bytes], cfg: dict, commit: str | None, date: str | No
     route = read_route(cfg.get("route", []), show_decl, problems)
 
     docs = {**DOCS, "audit": audit}
+    if not has_index:  # a project outside the team's format: link the files it has
+        docs = {key: rel for key, rel in docs.items() if rel in files or key == "audit"}
     for key, rel in docs.items():
         if rel not in files:
             problems.warn(f"{path}/{rel} is missing" + (f"; links.docs.{key} points nowhere" if repo_url else ""))
@@ -660,7 +665,8 @@ def summary(data: dict) -> str:
     files = f"{p['files']} files"
     if x := p.get("excluded"):
         files += f" (and {x['files']} in {', '.join(x['paths'])}, not counted)"
-    return (f"{at}: {len(sts)} index rows ({counts}), {len(data['decls'])} declarations shown, "
+    rows = f"{len(sts)} index rows ({counts})" if sts else "no index"
+    return (f"{at}: {rows}, {len(data['decls'])} declarations shown, "
             f"{files}, {p['theorems']} theorems, zip {data['download']['bytes']} bytes")
 
 

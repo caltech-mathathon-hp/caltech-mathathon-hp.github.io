@@ -1,0 +1,32 @@
+# Settings for scripts/build_lean.py, which writes certificate-cooklevin.json (next to this file)
+# and public/lean/lean-cooklevin.zip from the Lean proof of the Cook–Levin theorem
+# (lean/cooklevin). Edit by hand, then run
+#   python3 scripts/build_lean.py --config src/data/lean/certificate-cooklevin.toml \
+#     --out src/data/lean/certificate-cooklevin.json --zip public/lean/lean-cooklevin.zip
+# (add --check to see if both are up to date, --repo PATH to read another clone).
+
+[source]
+# Which certificate this is; the page tells them apart by it.
+id = "cooklevin"
+# Where the Lean project lives on GitHub; the page's links are built from this.
+repo_url = "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io"
+# The git ref the script reads, in the repo given by --repo (default: the repo holding site/).
+ref = "HEAD"
+# The branch name, for links when no commit is known.
+branch = "main"
+# The Lean project's folder in that repo.
+path = "lean/cooklevin"
+# Names on the page are relative to this namespace.
+namespace = "ProteinFolding"
+zip = "lean/lean-cooklevin.zip"   # under public/
+# The file that prints the axioms of the main results.
+audit = "checks/AxiomAudit.lean"
+# The project has no docs/theorem-index.md; its README lists the main results.
+index = false
+
+[show]
+# Declarations the page shows (names relative to the namespace).
+extra = [
+  "SAT.CookLevin", "SAT.CookLevinUniversal.cookLevin", "SAT.CookLevinUniversal.inNP_karp",
+  "SAT.CookLevinUniversalWidthThree.npHard",
+]

@@ -213,6 +213,18 @@ class Settings(unittest.TestCase):
         files["checks/ShelfHardness.lean"] = files.pop("checks/CubicHardness.lean")
         self.assertEqual(build_fixture(files, cfg)[2].warnings, [])
 
+    def test_no_index(self):
+        """index = false: a project outside the team's format (lean/cooklevin) has no table."""
+        files = {rel: b for rel, b in bl.read_dir(FIXTURE).items() if not rel.startswith("docs/")}
+        cfg = load_cfg()
+        self.assertEqual(build_fixture(files, cfg)[2].errors, ["lean/cubic/docs/theorem-index.md is missing"])
+        cfg["source"]["index"] = False
+        data, _, problems = build_fixture(files, cfg)
+        self.assertEqual((problems.errors, problems.warnings), ([], []))
+        self.assertEqual(data["index"], [])
+        self.assertEqual(sorted(data["links"]["docs"]), ["audit", "readme"])
+        self.assertIn("no index", bl.summary(data))
+
     def test_verify(self):
         files = with_vendor()
         files["vendor/lib/checks/Verify.ps1"] = b"# not the project's own\n"
