@@ -1,5 +1,6 @@
 {
   "_comment": "Written by scripts/build_lean.py from lean/cubic. Do not edit by hand.",
+  "id": "cubic",
   "source": {
     "ref": "HEAD",
     "path": "lean/cubic",
@@ -15,7 +16,11 @@
     "theorems": 2556,
     "sorries": 0,
     "axioms": 0,
-    "nativeDecide": 0
+    "nativeDecide": 0,
+    "checks": {
+      "audit": "checks/CubicHardness.lean",
+      "verify": "checks/Verify.ps1"
+    }
   },
   "links": {
     "repo": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io",
@@ -34,6 +39,7 @@
   },
   "download": {
     "path": "lean/lean-cubic.zip",
+    "folder": "lean-cubic",
     "bytes": 608096,
     "sha256": "40206fe78bd36992752b58ec78dae68e69e1a5c93df87c412be3a70781f1226e"
   },
@@ -246,6 +252,44 @@
         }
       ],
       "note": "proposition only"
+    }
+  ],
+  "route": [
+    {
+      "problem": "Every problem in NP",
+      "via": null,
+      "assumed": false,
+      "np": null
+    },
+    {
+      "problem": "SAT",
+      "via": "SAT.CookLevin",
+      "assumed": true,
+      "np": null
+    },
+    {
+      "problem": "3D matching",
+      "via": "ThreeDimensionalMatching.cnfToBlockMatching_karp",
+      "assumed": false,
+      "np": null
+    },
+    {
+      "problem": "Bin packing",
+      "via": "MatchingPacking.matching_karpReduces_modified",
+      "assumed": false,
+      "np": null
+    },
+    {
+      "problem": "Perfect folding",
+      "via": "CubicPacking.packingToPerfect_karp",
+      "assumed": false,
+      "np": "perfectHPStringFold_inNP"
+    },
+    {
+      "problem": "HP folding",
+      "via": "perfect_karpReduces_hp",
+      "assumed": false,
+      "np": "hpStringFold_inNP"
     }
   ],
   "decls": {

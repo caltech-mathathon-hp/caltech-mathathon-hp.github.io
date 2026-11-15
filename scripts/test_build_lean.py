@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Tests for build_lean.py, on the made-up project in scripts/fixtures/lean-cubic/.
+"""Tests for build_lean.py, on the made-up project in scripts/fixtures/lean-cubic/ (with the
+made-up library in scripts/fixtures/vendor-lib/ for the settings of a second certificate).
 
 Run from site/:  python3 scripts/test_build_lean.py
 """
@@ -23,12 +24,21 @@ sys.path.insert(0, str(HERE))
 import build_lean as bl  # noqa: E402
 
 FIXTURE = HERE / "fixtures" / "lean-cubic"
+VENDOR = HERE / "fixtures" / "vendor-lib"
 CONFIG = HERE / "fixtures" / "certificate.toml"
+SHELF_CONFIG = HERE / "fixtures" / "certificate-shelf.toml"
 SCRIPT = HERE / "build_lean.py"
 
 
-def load_cfg() -> dict:
-    return tomllib.loads(CONFIG.read_text(encoding="utf-8"))
+def load_cfg(path: Path = CONFIG) -> dict:
+    return tomllib.loads(path.read_text(encoding="utf-8"))
+
+
+def with_vendor() -> dict[str, bytes]:
+    """The fixture with the made-up library vendored under vendor/lib/."""
+    files = bl.read_dir(FIXTURE)
+    files.update({f"vendor/lib/{rel}": b for rel, b in bl.read_dir(VENDOR).items()})
+    return dict(sorted(files.items()))
 
 
 def build_fixture(files: dict[str, bytes] | None = None, cfg: dict | None = None, date: str | None = None):
@@ -37,8 +47,8 @@ def build_fixture(files: dict[str, bytes] | None = None, cfg: dict | None = None
     return data, zip_bytes, problems
 
 
-def run(*args: str | Path) -> subprocess.CompletedProcess:
-    return subprocess.run([sys.executable, str(SCRIPT), "--config", str(CONFIG), *map(str, args)],
+def run(*args: str | Path, config: Path = CONFIG) -> subprocess.CompletedProcess:
+    return subprocess.run([sys.executable, str(SCRIPT), "--config", str(config), *map(str, args)],
                           capture_output=True, text=True)
 
 
@@ -156,13 +166,15 @@ class FixtureBuild(unittest.TestCase):
             # Statement: Residue Sequence Fold bondCount instance; Square: Fold Grid Accepts message
             # Accepts; Main: bondCount_le emptyFold CookLevin main_conditional emptyFold_bonds
             "declarations": 15, "theorems": 3, "sorries": 0, "axioms": 0, "nativeDecide": 0,
+            "checks": {"audit": "checks/CubicHardness.lean", "verify": None},  # no Verify.ps1
         })
         self.assertEqual(self.data["source"], {"ref": "HEAD", "path": "lean/cubic", "commit": None, "date": None})
 
     def test_zip(self):
         again = build_fixture()[1]
         self.assertEqual(hashlib.sha256(again).hexdigest(), hashlib.sha256(self.zip).hexdigest())
-        self.assertEqual(self.data["download"], {"path": "lean/lean-cubic.zip", "bytes": len(self.zip),
+        self.assertEqual(self.data["download"], {"path": "lean/lean-cubic.zip", "folder": "lean-cubic",
+                                                 "bytes": len(self.zip),
                                                  "sha256": hashlib.sha256(self.zip).hexdigest()})
         with zipfile.ZipFile(io.BytesIO(self.zip)) as zf:
             names = zf.namelist()
@@ -174,6 +186,140 @@ class FixtureBuild(unittest.TestCase):
         dated = build_fixture(date="2026-11-14")[1]
         with zipfile.ZipFile(io.BytesIO(dated)) as zf:
             self.assertEqual({i.date_time for i in zf.infolist()}, {(2026, 11, 14, 0, 0, 0)})
+
+    def test_defaults_of_the_new_settings(self):
+        self.assertEqual(self.data["id"], "cubic")
+        self.assertEqual(self.data["route"], [])
+        self.assertNotIn("excluded", self.data["project"])
+
+
+class Settings(unittest.TestCase):
+    """The [source] keys that let a second project have its own certificate, and [[route]]."""
+
+    def test_id(self):
+        cfg = load_cfg()
+        cfg["source"]["id"] = "shelf"
+        self.assertEqual(build_fixture(cfg=cfg)[0]["id"], "shelf")
+
+    def test_audit(self):
+        cfg = load_cfg()
+        cfg["source"]["audit"] = "checks/ShelfHardness.lean"
+        data, _, problems = build_fixture(cfg=cfg)
+        self.assertEqual(problems.warnings, ["lean/cubic/checks/ShelfHardness.lean is missing; "
+                                             "links.docs.audit points nowhere"])
+        self.assertEqual(data["project"]["checks"]["audit"], "checks/ShelfHardness.lean")
+        self.assertTrue(data["links"]["docs"]["audit"].endswith("/lean/cubic/checks/ShelfHardness.lean"))
+        files = bl.read_dir(FIXTURE)
+        files["checks/ShelfHardness.lean"] = files.pop("checks/CubicHardness.lean")
+        self.assertEqual(build_fixture(files, cfg)[2].warnings, [])
+
+    def test_verify(self):
+        files = with_vendor()
+        files["vendor/lib/checks/Verify.ps1"] = b"# not the project's own\n"
+        self.assertIsNone(build_fixture(files)[0]["project"]["checks"]["verify"])
+        files["checks/Verify.ps1"] = b"lake build\n"
+        self.assertEqual(build_fixture(files)[0]["project"]["checks"],
+                         {"audit": "checks/CubicHardness.lean", "verify": "checks/Verify.ps1"})
+
+    def test_count_exclude(self):
+        plain = build_fixture()[0]["project"]
+        cfg = load_cfg()
+        cfg["show"]["extra"].append("Lib.binCount_pos")
+        counted, _, problems = build_fixture(with_vendor(), cfg)
+        self.assertEqual(problems.errors, [])
+        self.assertEqual(counted["project"]["files"], plain["files"] + 1)  # without count_exclude
+        cfg["source"]["count_exclude"] = ["vendor/"]
+        data, zip_bytes, problems = build_fixture(with_vendor(), cfg)
+        self.assertEqual(problems.errors, [])
+        project = data["project"]
+        for key in ("files", "lines", "declarations", "theorems"):
+            self.assertEqual(project[key], plain[key], key)
+        self.assertEqual(project["excluded"], {"paths": ["vendor"], "files": 1, "lines": 9, "theorems": 1})
+        # names still resolve in the vendored files, and the zip still holds them
+        self.assertEqual(data["decls"]["Lib.binCount_pos"]["file"], "vendor/lib/ProteinFolding/Packing.lean")
+        with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
+            self.assertIn("lean-cubic/vendor/lib/ProteinFolding/Packing.lean", zf.namelist())
+        self.assertTrue(bl.under("vendor/a.lean", ["vendor"]))
+        self.assertFalse(bl.under("vendored/a.lean", ["vendor"]))
+
+    def test_count_exclude_still_checks_the_code(self):
+        cfg = load_cfg()
+        cfg["source"]["count_exclude"] = ["vendor"]
+        files = with_vendor()
+        rel = "vendor/lib/ProteinFolding/Packing.lean"
+        files[rel] = files[rel].replace(b"  decide", b"  sorry").replace(
+            b"end ProteinFolding.Lib", b"axiom cheat : False\n\ntheorem t : 1 = 1 := by native_decide\n\n"
+                                       b"end ProteinFolding.Lib")
+        data, _, problems = build_fixture(files, cfg)
+        self.assertEqual(len(problems.errors), 2)
+        self.assertIn(f"{rel}:11: `sorry`", problems.errors[0])
+        self.assertIn("`axiom`", problems.errors[1])
+        self.assertEqual(len(problems.warnings), 1)
+        p = data["project"]
+        self.assertEqual((p["sorries"], p["axioms"], p["nativeDecide"]), (1, 1, 1))
+        self.assertEqual(p["excluded"]["theorems"], 2)
+
+    def no_links(self, cfg: dict) -> None:
+        cfg["source"]["audit"] = "checks/Missing.lean"
+        data, _, problems = build_fixture(cfg=cfg)
+        self.assertEqual(problems.errors, [])
+        self.assertEqual(problems.warnings, ["lean/cubic/checks/Missing.lean is missing"])
+        self.assertEqual(data["links"], {})
+        self.assertTrue(data["decls"])
+        self.assertTrue(all(d["href"] is None for d in data["decls"].values()))
+        sources = [s for r in data["index"] for s in r["sources"]]
+        self.assertEqual([s["label"] for s in sources], ["Common/Statement", "Statement", "Main", "Main", "Main"])
+        self.assertTrue(all(s["href"] is None for s in sources))
+        self.assertNotIn("http", json.dumps(data))
+
+    def test_no_links_when_repo_url_is_empty(self):
+        cfg = load_cfg()
+        cfg["source"]["repo_url"] = ""
+        self.no_links(cfg)
+
+    def test_no_links_when_repo_url_is_absent(self):
+        cfg = load_cfg()
+        del cfg["source"]["repo_url"]
+        self.no_links(cfg)
+
+    def test_download_folder_is_the_zip_name(self):
+        cfg = load_cfg()
+        cfg["source"]["zip"] = "lean/lean-shelf.zip"
+        data, zip_bytes, _ = build_fixture(cfg=cfg)
+        self.assertEqual(data["download"]["path"], "lean/lean-shelf.zip")
+        self.assertEqual(data["download"]["folder"], "lean-shelf")
+        with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
+            self.assertTrue(all(n.startswith("lean-shelf/") for n in zf.namelist()))
+
+    def test_route(self):
+        cfg = load_cfg()
+        cfg["route"] = [
+            {"problem": "Every problem in NP"},
+            {"problem": "SAT", "via": "SAT.CookLevin", "assumed": True},
+            {"problem": "Square folding", "via": "Square.Instance.Accepts", "np": "emptyFold_bonds"},
+        ]
+        data, _, problems = build_fixture(cfg=cfg)
+        self.assertEqual(problems.errors, [])
+        self.assertEqual(data["route"], [
+            {"problem": "Every problem in NP", "via": None, "assumed": False, "np": None},
+            {"problem": "SAT", "via": "SAT.CookLevin", "assumed": True, "np": None},
+            {"problem": "Square folding", "via": "Square.Instance.Accepts", "assumed": False,
+             "np": "emptyFold_bonds"},
+        ])
+        # a route name not shown elsewhere joins decls, after the [show] extra names
+        self.assertEqual(list(data["decls"])[-1], "Square.Instance.Accepts")
+        self.assertEqual(data["decls"]["Square.Instance.Accepts"]["full"], "ProteinFolding.Square.Instance.Accepts")
+
+    def test_route_errors(self):
+        cfg = load_cfg()
+        cfg["route"] = [{"problem": "A", "via": "nothing"}, {"via": "Grid"}, {"problem": "C", "np": "Instance.Accepts"},
+                        {"problem": "D", "assume": True}]
+        _, _, problems = build_fixture(cfg=cfg)
+        self.assertEqual(len(problems.errors), 4, problems.errors)
+        self.assertIn("[[route]] 1: `nothing` not found", problems.errors[0])
+        self.assertIn("[[route]] 2: no problem", problems.errors[1])
+        self.assertIn("[[route]] 3: `Instance.Accepts` is ambiguous", problems.errors[2])
+        self.assertIn("[[route]] 4: unknown key assume", problems.errors[3])
 
 
 class Failures(unittest.TestCase):
@@ -258,6 +404,34 @@ class CommandLine(unittest.TestCase):
         self.assertEqual(r.returncode, 1)
         self.assertIn("`admit` in the code", r.stderr)
         self.assertFalse(self.out.exists() or self.zip.exists())
+
+    def test_second_certificate(self):
+        """A shelf-like project: own settings and outputs, a vendored library, no links."""
+        shutil.copytree(VENDOR, self.lean / "vendor" / "lib")
+        out, zip_out = self.tmp / "certificate-shelf.json", self.tmp / "lean-shelf.zip"
+        args = ("--lean", self.lean, "--out", out, "--zip", zip_out)
+        r = run(*args, config=SHELF_CONFIG)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(r.stderr, "")
+        self.assertIn("(and 1 in vendor, not counted)", r.stdout)
+        data = json.loads(out.read_text(encoding="utf-8"))
+        self.assertEqual(data["id"], "shelf")
+        self.assertEqual(data["links"], {})
+        self.assertEqual(data["download"]["folder"], "lean-shelf")
+        self.assertEqual(data["project"]["files"], 4)
+        self.assertEqual(data["project"]["excluded"]["files"], 1)
+        self.assertEqual([s["via"] for s in data["route"]], [None, "SAT.CookLevin", "main_conditional"])
+        self.assertIn("Lib.binCount", data["decls"])
+        with zipfile.ZipFile(zip_out) as zf:
+            self.assertIn("lean-shelf/vendor/lib/ProteinFolding/Packing.lean", zf.namelist())
+        r = run(*args, "--check", config=SHELF_CONFIG)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        vendored = self.lean / "vendor" / "lib" / "ProteinFolding" / "Packing.lean"
+        vendored.write_text(vendored.read_text(encoding="utf-8") + "\n-- edited\n", encoding="utf-8")
+        r = run(*args, "--check", config=SHELF_CONFIG)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn("is out of date", r.stderr)
+        self.assertIn(f"--config {SHELF_CONFIG} --out {out} --zip {zip_out}", r.stderr)
 
     @unittest.skipUnless(shutil.which("git"), "git not installed")
     def test_git_source_matches_directory(self):

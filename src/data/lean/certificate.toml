@@ -17,10 +17,38 @@ namespace = "ProteinFolding"
 zip = "lean/lean-cubic.zip"   # under public/
 
 [show]
-# Declarations the page shows besides those named in docs/theorem-index.md (names relative to the namespace).
-# The last two are the first steps of the reduction chain SAT → 3D matching → bin packing.
+# Declarations the page shows besides those named in docs/theorem-index.md and in [[route]] below
+# (names relative to the namespace).
 extra = [
   "HPStringFold", "latticeDistance", "cube", "hydrophobicSites", "HPInstance", "PerfectInstance",
   "cubeBondThreshold", "PerfectIffThreshold", "PolyTimeDecidable", "KarpReduces",
-  "ThreeDimensionalMatching.cnfToBlockMatching_karp", "MatchingPacking.matching_karpReduces_modified",
 ]
+
+# The chain of reductions the page draws, in order. Each problem is reached from the one before
+# by `via` (a Karp reduction, or with assumed = true the hypothesis taken as given); `np` proves
+# the problem is in NP. Every name must resolve, and the page shows its declaration.
+[[route]]
+problem = "Every problem in NP"
+
+[[route]]
+problem = "SAT"
+via = "SAT.CookLevin"
+assumed = true
+
+[[route]]
+problem = "3D matching"
+via = "ThreeDimensionalMatching.cnfToBlockMatching_karp"
+
+[[route]]
+problem = "Bin packing"
+via = "MatchingPacking.matching_karpReduces_modified"
+
+[[route]]
+problem = "Perfect folding"
+via = "CubicPacking.packingToPerfect_karp"
+np = "perfectHPStringFold_inNP"
+
+[[route]]
+problem = "HP folding"
+via = "perfect_karpReduces_hp"
+np = "hpStringFold_inNP"

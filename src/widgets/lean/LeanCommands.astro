@@ -1,31 +1,49 @@
 ---
 /**
- * Shell commands for checking the Lean project, built from certificate.json so the URLs, the
+ * Shell commands for checking a Lean project, built from its certificate so the URLs, the
  * branch and the folder names stay in one place.
  *
  *   <LeanCommands step="zip" />     unzip the download
- *   <LeanCommands step="git" />     clone the branch instead
+ *   <LeanCommands step="git" />     clone the branch instead (needs a public address)
  *   <LeanCommands step="build" />   fetch mathlib, build, print the main theorems and their axioms
- *   <LeanCommands step="verify" />  the project's full audit (PowerShell 7)
+ *   <LeanCommands step="verify" />  the project's full audit (PowerShell 7), if it has one
+ *
+ * cert="<id>" picks the certificate (default "cubic").
  */
 import { Code } from 'astro:components';
 import './lean.css';
-import { lean, zipFolder } from './lean';
+import { cert as getCert, zipFolder } from './lean';
 
 interface Props {
   step: 'zip' | 'git' | 'build' | 'verify';
+  cert?: string;
 }
-const { step } = Astro.props;
-const zip = lean.download.path.split('/').pop();
-const repoDir = lean.links.clone.split('/').pop()!.replace(/\.git$/, '');
-const code = {
-  zip: `unzip ${zip}\ncd ${zipFolder}`,
-  git: `git clone --branch ${lean.links.branch} --single-branch ${lean.links.clone}\ncd ${repoDir}/${lean.source.path}`,
-  build: 'lake exe cache get\nlake build\nlake env lean checks/CubicHardness.lean',
-  verify: 'pwsh -NoProfile -File checks/Verify.ps1',
-}[step];
+const { step, cert = 'cubic' } = Astro.props;
+const c = getCert(cert);
+const audit = c.project.checks?.audit ?? 'checks/CubicHardness.lean';
+const verify = c.project.checks ? c.project.checks.verify : 'checks/Verify.ps1';
+const fail = (why: string): never => {
+  throw new Error(`Lean page: <LeanCommands step="${step}" cert="${cert}" />: ${why}`);
+};
+
+function code(): string {
+  switch (step) {
+    case 'zip':
+      return `unzip ${c.download.path.split('/').pop()}\ncd ${zipFolder(c)}`;
+    case 'git': {
+      const { clone, branch } = c.links;
+      if (!clone || !branch) return fail('the project has no public address');
+      const dir = clone.split('/').pop()!.replace(/\.git$/, '');
+      return `git clone --branch ${branch} --single-branch ${clone}\ncd ${dir}/${c.source.path}`;
+    }
+    case 'build':
+      return `lake exe cache get\nlake build\nlake env lean ${audit}`;
+    case 'verify':
+      return verify ? `pwsh -NoProfile -File ${verify}` : fail('the project has no audit script');
+  }
+}
 ---
 
 <div class="ln ln-cmd">
-  <Code code={code} lang="sh" theme="css-variables" class="ln-codeblock" />
+  <Code code={code()} lang="sh" theme="css-variables" class="ln-codeblock" />
 </div>

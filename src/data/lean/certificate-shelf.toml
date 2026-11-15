@@ -1,0 +1,67 @@
+# Settings for scripts/build_lean.py, which writes certificate-shelf.json (next to this file) and
+# public/lean/lean-shelf.zip from our own Lean project (the shelf proof, lean/shelf). Edit by hand,
+# then run
+#   python3 scripts/build_lean.py --config src/data/lean/certificate-shelf.toml \
+#     --out src/data/lean/certificate-shelf.json --zip public/lean/lean-shelf.zip
+# (add --check to see if both are up to date, --repo PATH to read another clone).
+
+[source]
+# Which certificate this is; the page tells the two apart by it.
+id = "shelf"
+# Where the Lean project lives on GitHub; the page's links are built from this.
+repo_url = "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io"
+# The git ref the script reads, in the repo given by --repo (default: the repo holding site/).
+ref = "HEAD"
+# The branch name, for links when no commit is known.
+branch = "main"
+# The Lean project's folder in that repo.
+path = "lean/shelf"
+# Declaration names on the page and in docs/theorem-index.md are relative to this namespace.
+# Our own names are under Shelf.; the others come from the team's library in vendor/.
+namespace = "ProteinFolding"
+zip = "lean/lean-shelf.zip"   # under public/
+# The file that prints the axioms of the main theorems.
+audit = "checks/ShelfHardness.lean"
+# Folders not counted as the project's own: vendor/ is a copy of the team's library. They are
+# still checked for sorry and axioms, searched for names, and put in the zip.
+count_exclude = ["vendor"]
+
+[show]
+# Declarations the page shows besides those named in docs/theorem-index.md and in [[route]] below
+# (names relative to the namespace).
+extra = [
+  # the shelf reduction: the word, the map and its running time
+  "Shelf.shelfWord", "Shelf.side", "Shelf.normalise", "Shelf.shelfReduction", "Shelf.shelfMap_polyTime",
+  # the source problem and the two directions of the proof
+  "Packing.Instance", "Shelf.ExactAccepts", "Shelf.modifiedAccepts_iff",
+  "Shelf.PerfectFolds", "Shelf.PackingGivesFold", "Shelf.FoldGivesPacking", "Shelf.ReductionCorrect",
+  "Shelf.packingGivesFold", "Shelf.foldGivesPacking", "Shelf.reductionCorrect",
+  # the theorems, and the team's results they are built from
+  "Shelf.perfectHPStringFold_NPHard", "Shelf.perfectHPStringFold_NPComplete", "Shelf.hpStringFold_NPComplete",
+  "SATPacking.modifiedBinPackingUnary_NPHard", "hpNPHard_of_perfectNPHard",
+]
+
+# The chain of reductions the page draws, in order. Each problem is reached from the one before
+# by `via` (a Karp reduction, or with assumed = true the hypothesis taken as given); `np` proves
+# the problem is in NP. Every name must resolve, and the page shows its declaration.
+[[route]]
+problem = "Every problem in NP"
+
+[[route]]
+problem = "SAT"
+via = "SAT.CookLevin"
+assumed = true
+
+[[route]]
+problem = "Bin packing"
+via = "SATPacking.cnfToSortedModified_karp"
+
+[[route]]
+problem = "Perfect folding"
+via = "Shelf.shelfKarp"
+np = "perfectHPStringFold_inNP"
+
+[[route]]
+problem = "HP folding"
+via = "perfect_karpReduces_hp"
+np = "hpStringFold_inNP"

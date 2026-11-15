@@ -1,0 +1,45 @@
+ProteinFolding.HPStringFoldNPComplete : Prop
+'ProteinFolding.HPStringFoldNPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.PerfectHPStringFoldNPHard : Prop
+'ProteinFolding.PerfectHPStringFoldNPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.PerfectHPStringFoldNPComplete : Prop
+'ProteinFolding.PerfectHPStringFoldNPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.foldGivesPacking : ProteinFolding.Shelf.FoldGivesPacking
+'ProteinFolding.Shelf.foldGivesPacking' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.packingGivesFold : ProteinFolding.Shelf.PackingGivesFold
+'ProteinFolding.Shelf.packingGivesFold' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.reductionCorrect : ProteinFolding.Shelf.ReductionCorrect
+'ProteinFolding.Shelf.reductionCorrect' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.shelfMap_correct (I : ProteinFolding.Packing.Instance) :
+  ProteinFolding.Packing.ModifiedAccepts I ↔ ProteinFolding.Shelf.PerfectFolds (ProteinFolding.Shelf.shelfMap I)
+'ProteinFolding.Shelf.shelfMap_correct' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.shelfMap_polyTime :
+  Nonempty
+    (Turing.TM2ComputableInPolyTime ProteinFolding.Packing.instanceEncoding ProteinFolding.perfectEncoding
+      ProteinFolding.Shelf.shelfMap)
+'ProteinFolding.Shelf.shelfMap_polyTime' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.shelfKarp :
+  ProteinFolding.KarpReduces ProteinFolding.Packing.instanceEncoding ProteinFolding.perfectEncoding
+    ProteinFolding.Packing.ModifiedAccepts ProteinFolding.Shelf.PerfectFolds
+'ProteinFolding.Shelf.shelfKarp' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.hpStringFold_inNP : ProteinFolding.InNP ProteinFolding.hpEncoding fun I => I.Accepts
+'ProteinFolding.hpStringFold_inNP' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.perfectHPStringFold_inNP :
+  ProteinFolding.InNP ProteinFolding.perfectEncoding fun I => ProteinFolding.PerfectHPStringFold I.1 I.2
+'ProteinFolding.perfectHPStringFold_inNP' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.hpNPHard_of_perfectNPHard
+  (h : ProteinFolding.NPHard ProteinFolding.perfectEncoding fun I => ProteinFolding.PerfectHPStringFold I.1 I.2) :
+  ProteinFolding.NPHard ProteinFolding.hpEncoding fun I => I.Accepts
+'ProteinFolding.hpNPHard_of_perfectNPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard (hCL : ProteinFolding.SAT.CookLevin) :
+  ProteinFolding.Packing.ModifiedBinPackingUnaryNPHard
+'ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.perfectHPStringFold_NPHard (hCL : ProteinFolding.SAT.CookLevin) :
+  ProteinFolding.PerfectHPStringFoldNPHard
+'ProteinFolding.Shelf.perfectHPStringFold_NPHard' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.perfectHPStringFold_NPComplete (hCL : ProteinFolding.SAT.CookLevin) :
+  ProteinFolding.PerfectHPStringFoldNPComplete
+'ProteinFolding.Shelf.perfectHPStringFold_NPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+ProteinFolding.Shelf.hpStringFold_NPComplete (hCL : ProteinFolding.SAT.CookLevin) :
+  ProteinFolding.HPStringFoldNPComplete
+'ProteinFolding.Shelf.hpStringFold_NPComplete' depends on axioms: [propext, Classical.choice, Quot.sound]

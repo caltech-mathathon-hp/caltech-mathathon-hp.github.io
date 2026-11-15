@@ -1,29 +1,38 @@
 ---
 /**
- * The project's own index (docs/theorem-index.md): each statement of the paper, the Lean
+ * A project's own index (docs/theorem-index.md): each statement of the paper, the Lean
  * declarations that state or prove it, and its status.
  *
- *   <LeanIndex />
+ *   <LeanIndex />                 the team's certificate
+ *   <LeanIndex cert="shelf" paper="Our paper" />
  */
 import './lean.css';
 import Dot from './Dot.astro';
-import { lean } from './lean';
+import { cert as getCert } from './lean';
 
-const link = (n: string) => lean.decls[n]?.href;
+interface Props {
+  /** The certificate's id (default "cubic"). */
+  cert?: string;
+  /** The first column's heading. */
+  paper?: string;
+}
+const { cert = 'cubic', paper = 'In the paper' } = Astro.props;
+const c = getCert(cert);
+const link = (n: string) => c.decls[n]?.href;
 ---
 
 <div class="ln ln-table-wrap wide">
   <table class="ln-table">
     <thead>
       <tr>
-        <th scope="col">In the paper</th>
+        <th scope="col">{paper}</th>
         <th scope="col" class="ln-col-lean">In Lean</th>
         <th scope="col">Status</th>
       </tr>
     </thead>
     <tbody>
       {
-        lean.index.map((r) => (
+        c.index.map((r) => (
           <tr>
             <td>
               {r.concept}

@@ -3,24 +3,35 @@ title: Lean formalization
 slug: lean
 navTitle: Lean
 kicker: Part IV
-lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem. HP folding on the cubic lattice is NP-complete, assuming one classical theorem, Cook–Levin. You can download the proof and check it yourself.
-summary: Berger and Leighton's theorem checked in Lean, assuming the Cook–Levin theorem, with the files to check it yourself.
+lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem twice, once with their reduction and once with ours. HP folding on the cubic lattice is NP-complete, assuming one classical theorem, Cook–Levin. You can download both proofs and check them yourself.
+summary: Berger and Leighton's theorem checked in Lean twice, with their reduction and with ours, assuming the Cook–Levin theorem.
 order: 6
 status: ready
 ---
 
-import { lean, date } from '../../widgets/lean/lean';
+import { lean, cert, date } from '../../widgets/lean/lean';
 import LeanCertificate from '../../widgets/lean/LeanCertificate.astro';
 import LeanCode from '../../widgets/lean/LeanCode.astro';
 import LeanAxioms from '../../widgets/lean/LeanAxioms.astro';
 import LeanCommands from '../../widgets/lean/LeanCommands.astro';
 import LeanIndex from '../../widgets/lean/LeanIndex.astro';
 
-{/* Everything this page shows from the Lean project (code, names, links, counts, the zip) comes
-    from src/data/lean/certificate.json and public/lean/, which scripts/build_lean.py writes from
-    lean/cubic. Run it again when lean/ changes. */}
+export const shelf = cert('shelf');
 
-<LeanCertificate />
+{/* Everything this page shows from the two Lean projects (code, names, links, counts, the zips)
+    comes from src/data/lean/certificate*.json and public/lean/, which scripts/build_lean.py writes:
+    certificate.json from lean/cubic, certificate-shelf.json from lean/shelf (see the comments at
+    the top of the two .toml files next to them). Run it again when a project changes. */}
+
+<LeanCertificate label="Berger and Leighton's reduction" />
+
+<LeanCertificate
+  cert="shelf"
+  label="Our reduction, with the bins on one edge"
+  claim="Lean checks the same theorem with our reduction from bin packing to perfect folding."
+  how="Only this step of the chain is ours. The other steps, the definitions and the final statements are the team's, and our project builds on an unchanged copy of them."
+  labels={{ 'Perfect folding': 'our reduction, proved in Lean' }}
+/>
 
 ## Why a computer checks it
 
@@ -46,6 +57,10 @@ bounds their number of contacts, but proves nothing about hardness.
 If SAT is NP-hard, then HP folding on the cubic lattice is NP-complete, and so is perfect folding.
 </Theorem>
 
+Both certificates prove this theorem, and about the same statements. The definitions and the two
+final statements are written once, in the team's library, and our project builds on a copy of that
+library without changing it. So the two proofs share every step but one.
+
 Lean follows the plan of the paper. Perfect folding asks whether a string with $n^3$ H's has a
 fold whose H's fill an $n \times n \times n$ cube. Theorem 3.2 of the paper says that this happens
 exactly when the string has a fold with $3n^2(n-1)$ pairs of H's on neighbouring sites, the most
@@ -54,7 +69,7 @@ proves Theorem 3.2 with no assumption.
 It also proves, with no assumption, that both problems are in NP: it builds a Turing machine that
 checks a proposed fold in polynomial time.
 
-For hardness, Lean follows the chain at the top of this page. Each step is a reduction: a
+For hardness, Lean follows the chains at the top of this page. Each step is a reduction: a
 function that turns instances of one problem into instances of the next, preserves the answer,
 and is computed by a Turing machine whose running time Lean proves polynomial. Only the first
 step, from every problem in NP to SAT, is assumed. These are the main results as Lean states
@@ -87,11 +102,15 @@ in the theorem's type. This is what Lean prints for three of the main results:
 
 <LeanAxioms names="perfectIffThreshold_holds hpStringFold_inNP hpStringFold_NPComplete" />
 
+Our final theorems rest on the same three axioms:
+
+<LeanAxioms cert="shelf" names="Shelf.perfectHPStringFold_NPComplete Shelf.hpStringFold_NPComplete" />
+
 ## The definitions
 
 Lean checks every step after the definitions, but not the definitions themselves. If a definition
-said something other than what the paper means, Lean would prove a different theorem. So we show
-them here in full, to compare with the [front page](../) and with the paper. The
+said something other than what the paper means, Lean would prove a different theorem. Both
+certificates use these definitions, so we show them once, in full, to compare with the [front page](../) and with the paper. The
 <a href={lean.links.docs.model}>model notes</a> list every choice they make, down to empty strings
 and how numbers are written.
 
@@ -117,49 +136,108 @@ answer, and a problem is NP-hard when every problem in NP reduces to it.
 
 <LeanCode names="HPStringFoldNPComplete PerfectHPStringFoldNPComplete" caption="The statements of the main theorems" />
 
-## Where the proof differs from the paper
+## Two proofs of one step
 
-Lean proves the paper's theorem about the paper's problems, but in two places not by the paper's
-argument. The paper takes the hardness of bin packing with small numbers from Garey and Johnson
-<Cite k="garey1979computers" />. The project proves it in Lean instead, from SAT through 3D
-matching, so no published result enters the proof except Cook–Levin.
+Both chains go from SAT to bin packing by the team's reduction, and from perfect folding to HP
+folding by the team's reduction. They differ in the step between, from bin packing to perfect
+folding, where each builds its own string.
+
+### Berger and Leighton's string
+
+The team's certificate proves the paper's theorem about the paper's problems, but in two places
+not by the paper's argument. The paper takes the hardness of bin packing with small numbers from
+Garey and Johnson <Cite k="garey1979computers" />. The project proves it in Lean instead, from SAT
+through 3D matching, so no published result enters the proof except Cook–Levin. Our certificate
+uses this part of the team's proof as it is.
 
 The reduction from bin packing to perfect folding builds a different string from the one in the
 paper's Figure 3, so the paper's Lemmas 3.3 to 3.8 are not formalized one by one. Lean proves
 both directions for the new string: it has a perfect fold exactly when the items fit. The
 <a href={lean.links.docs.proofRoute}>proof route</a> describes the construction.
 
+### Our string
+
+Our certificate formalizes the version of [our proof](../one-edge-proof/) that the
+[3D view](../one-edge-proof/#folding-a-small-instance) on that page folds. The bins are gaps on
+one edge of the cube, the shelf. Separators, each a single H, cut the shelf into gaps, and two
+tethers pin the first and the last separator to the two ends of the shelf, so every gap is
+exactly full.
+
+Take bin packing with sizes $a_1, \dots, a_k$, $m$ bins and capacity $B$. The reduction first
+multiplies every size and $B$ by 6, and if $m$ is even it adds one bin and one item of size $B$.
+Then it writes a string $S$ with $n^3$ H's, where $n = m(B+1)+3$. Lean proves both directions:
+a perfect fold of $S$ gives a packing, and from a packing it builds a perfect fold of $S$, site
+by site. It also builds a Turing machine that writes $S$ and proves that it runs in polynomial
+time.
+
+<LeanCode cert="shelf" names="Shelf.reductionCorrect Shelf.shelfKarp" caption="Our reduction: correct on every input, and computed in polynomial time" />
+
+As in the team's project, a machine gets any input. So the reduction first checks that the sizes
+are positive and add up to $mB$, and sends any other input to a string with no perfect fold. The
+team's source problem also asks that every size is even, and our reduction makes the same check.
+Our <a href={shelf.links.docs.proofRoute}>proof route</a> lists the other places where Lean
+differs from our write-up.
+
+The final theorems are the team's statements, proved through our step:
+
+<LeanCode cert="shelf" names="Shelf.perfectHPStringFold_NPComplete Shelf.hpStringFold_NPComplete" caption="Our final theorems" />
+
 ## Check it yourself
 
 You need [elan](https://github.com/leanprover/elan), Lean's installer, which fetches the right
-version of Lean by itself. Download the project with the button at the top of this page and
-unpack it,
+version of Lean by itself. Download a project with the button on its card and unpack it. The
+team's project:
 
 <LeanCommands step="zip" />
 
-or clone it from GitHub:
+Our project:
+
+<LeanCommands cert="shelf" step="zip" />
+
+Both projects are also in the website's repository on GitHub, ours in `lean/shelf`, next to the
+team's. To clone it and go to the team's project:
 
 <LeanCommands step="git" />
 
-Then download mathlib's compiled files, build the project and print the main results with their
-axioms:
+In either folder, download mathlib's compiled files, build the project and print the main results
+with their axioms. Only the last command differs. For the team's project:
 
 <LeanCommands step="build" />
 
+For ours:
+
+<LeanCommands cert="shelf" step="build" />
+
 The first command downloads several gigabytes, and the build checks every proof in the project.
-For the project's full audit, install PowerShell 7 and run the script below. It compares every
-file with its recorded hash, searches the code for forbidden commands, and prints the axioms of
-every public declaration.
+Ours also builds the team's library from its copy, which takes a few more minutes. For the team's
+full audit, install PowerShell 7 and run the script below. It compares every file with its
+recorded hash, searches the code for forbidden commands, and prints the axioms of every public
+declaration.
 
 <LeanCommands step="verify" />
 
-GitHub runs the build and the audit again on every change to the branch; <a href={lean.links.ci}>here
-are the runs</a>. The zip on this page holds the version of {date(lean.source.date)}, commit
-<code>{lean.source.commit?.slice(0, 7)}</code>. Its SHA-256 is <code class="ln-hash">{lean.download.sha256}</code>.
+GitHub runs the build and the audit of the team's project again on every change;
+<a href={lean.links.ci}>here are the runs</a>. The team's zip holds the version of
+{date(lean.source.date)}, commit <code>{lean.source.commit?.slice(0, 7)}</code>, and its SHA-256 is
+<code class="ln-hash">{lean.download.sha256}</code>. Ours holds the version of
+{date(shelf.source.date)}, commit <code>{shelf.source.commit?.slice(0, 7)}</code>, and its SHA-256
+is <code class="ln-hash">{shelf.download.sha256}</code>.
 
 ## Every statement and where it is
 
-The project's <a href={lean.links.docs.theoremIndex}>index</a> matches each statement of the
-paper with its declarations in Lean. Each name links to its line on GitHub.
+Each project has an index that matches each statement of its paper with its declarations in
+Lean.
+
+### Berger and Leighton's reduction
+
+The team's <a href={lean.links.docs.theoremIndex}>index</a>. Each name links to its line on GitHub.
 
 <LeanIndex />
+
+### Our reduction
+
+Our <a href={shelf.links.docs.theoremIndex}>index</a>, with the numbers of our write-up. Each
+name links to its line on GitHub; the declarations with no prefix `Shelf.` are the team's, in the
+copy of its library that our project builds on.
+
+<LeanIndex cert="shelf" paper="In our write-up" />

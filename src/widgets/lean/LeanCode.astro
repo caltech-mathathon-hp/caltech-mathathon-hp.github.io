@@ -1,22 +1,25 @@
 ---
 /**
- * Lean declarations from the certificate, in one block: definitions with their bodies, theorems
+ * Lean declarations from a certificate, in one block: definitions with their bodies, theorems
  * with their statements only. Highlighted at build time by Shiki; the colours come from
- * tokens.css through the --astro-code-* variables in lean.css. Below the code, a link to each
- * declaration's line on GitHub.
+ * tokens.css through the --astro-code-* variables in lean.css. Below the code, each declaration's
+ * name, linked to its line on GitHub when the project has a public address, else with its file.
  *
  *   <LeanCode names="Residue Sequence Fold" caption="HP strings and folds" />
+ *   <LeanCode cert="shelf" names="Shelf.reductionCorrect" />
  */
 import { Code } from 'astro:components';
 import './lean.css';
-import { decl, names as split, short } from './lean';
+import { decl, names as split } from './lean';
 
 interface Props {
   names: string;
   caption?: string;
+  /** The certificate's id (default "cubic"). */
+  cert?: string;
 }
-const { names, caption } = Astro.props;
-const ds = split(names).map((n) => ({ name: n, ...decl(n) }));
+const { names, caption, cert = 'cubic' } = Astro.props;
+const ds = split(names).map((n) => ({ name: n, ...decl(n, cert) }));
 const code = ds.map((d) => d.code.trimEnd()).join('\n\n');
 ---
 
@@ -26,11 +29,17 @@ const code = ds.map((d) => d.code.trimEnd()).join('\n\n');
   <p class="ln-decl-where">
     <span class="ln-decl-in">Source:</span>
     {
-      ds.map((d) => (
-        <a href={d.href} title={`${d.file}, line ${d.line}`}>
-          <code>{short(d.name)}</code>
-        </a>
-      ))
+      ds.map((d) =>
+        d.href ? (
+          <a href={d.href} title={`${d.file}, line ${d.line}`}>
+            <code>{d.name}</code>
+          </a>
+        ) : (
+          <span title={`line ${d.line}`}>
+            <code>{d.name}</code> <span class="ln-decl-file">in {d.file}</span>
+          </span>
+        ),
+      )
     }
   </p>
 </figure>
