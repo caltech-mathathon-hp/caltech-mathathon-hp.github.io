@@ -3,7 +3,7 @@
  * HpSnakeEgg: an easter egg. It wraps a widget (the folding game on the Playground) and puts a
  * small rainbow button in that widget's top right corner. The button swaps the widget, in place,
  * for HP Snake: a game of folding a string on the lattice one residue at a time, 3D on the cubic
- * lattice and 2D on the square lattice. The same button (or the ✕) swaps the widget back.
+ * lattice and 2D on the square lattice. The same button swaps the widget back.
  *
  *   import HpSnakeEgg from '../../widgets/hp-snake/HpSnakeEgg.astro';
  *   <div class="wide"><HpSnakeEgg><FoldGame client:load … /></HpSnakeEgg></div>
@@ -35,9 +35,6 @@ const games = {
         <button type="button" class="hs-opt" data-dim="2d" aria-pressed="true">2D</button>
       </div>
       <span class="hs-title">HP Snake</span>
-      <button type="button" class="hs-close btn ghost" aria-label="Back to the folding game" title="Back to the folding game">
-        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
-      </button>
     </div>
     <iframe class="hs-frame" title="HP Snake" allow="autoplay"></iframe>
   </section>
@@ -83,10 +80,19 @@ const games = {
       frame.focus({ preventScroll: true });
       frame.contentWindow?.focus();
     };
+    // which game the frame holds: '3d', '2d', or null while it is still empty (about:blank)
+    const shown = (): Dim | null => {
+      try {
+        const m = /hp-snake(-3d)?\.html$/.exec(frame.contentWindow?.location.pathname ?? '');
+        return m ? (m[1] ? '3d' : '2d') : null;
+      } catch {
+        return null;
+      }
+    };
     // load a game into the frame; the frame keeps it (and your progress) while the panel is hidden
     const load = (d: Dim) => {
       mark(d);
-      if (frame.dataset.dim !== d) {
+      if (frame.dataset.dim !== d || !frame.getAttribute('src')) {
         frame.dataset.dim = d;
         frame.src = games[d];
       } else focusGame();
@@ -139,15 +145,15 @@ const games = {
     };
 
     egg.addEventListener('click', () => (isOn() ? hide() : show()));
-    host.querySelector('.hs-close')!.addEventListener('click', hide);
     for (const t of tabs) t.addEventListener('click', () => load(t.dataset.dim as Dim));
     frame.addEventListener('load', () => {
+      // The empty frame fires 'load' for about:blank too, and in Safari and Firefox that can come
+      // after this script runs: it is not a game, so it must not mark one as loaded.
+      const d = shown();
+      if (!d) return;
       // each game links to the other one: keep the switch in step when the frame navigates by itself
-      try {
-        const d: Dim = /hp-snake-3d\.html$/.test(frame.contentWindow?.location.pathname ?? '') ? '3d' : '2d';
-        frame.dataset.dim = d;
-        mark(d);
-      } catch {}
+      frame.dataset.dim = d;
+      mark(d);
       sendTheme();
       if (isOn()) focusGame();
     });

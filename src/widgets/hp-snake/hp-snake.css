@@ -121,23 +121,6 @@
   color: var(--fg);
   white-space: nowrap;
 }
-.hs-close {
-  margin-left: auto;
-  min-width: 2.5rem;
-  min-height: 2.5rem;
-  justify-content: center;
-  padding: 0.4em;
-  color: var(--fg-muted);
-}
-.hs-close:hover {
-  color: var(--fg);
-}
-.hs-close svg {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-}
 
 /* 3D or 2D: the folding game's two segments (.fg-dims) */
 .hs-dims {
@@ -176,8 +159,7 @@
   background: var(--bg-elev);
   box-shadow: var(--shadow-sm);
 }
-.hs-opt:focus-visible,
-.hs-close:focus-visible {
+.hs-opt:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
