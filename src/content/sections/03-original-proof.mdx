@@ -11,6 +11,7 @@ order: 3
 import ProofBoard from '../../widgets/proof-map/ProofBoard.astro';
 import Reduction3D from '../../widgets/reduction-3d/Reduction3D.astro';
 import ExplainerVideo from '../../widgets/explainer/ExplainerVideo.astro';
+import FoldItYourself from '../../widgets/fold-it-yourself/FoldItYourself.astro';
 
 <Theorem kind="Theorem" source="Berger & Leighton 1998" status="cited">
 Given an HP string and a number $m$, deciding whether the string has a fold on the cubic lattice with at least $m$ contacts is NP-complete.
@@ -56,6 +57,14 @@ The string is exactly that of Fig. 3, checked letter by letter, and the frame, t
 - The linkers do not use the switchboard of [13 Untangling the linkers](#step-bl-crossbar). With a dozen of them it is enough to give each linker its own plane in front of the cube. The paper uses up the surplus length with a loop away from the cube; here it is folded into a small box of P's under the cube, which keeps the picture compact.
 
 Every fold is checked as it is built: its letters are those of $S_B$, no site is used twice, the H's fill the cube, and the H–H pairs reach $3n^2(n-1)$. The panel on the left lists these checks.
+
+## Fold it yourself
+
+The widget above folds the string for you. In this game you fold it yourself, on a scale model with a $12\times12\times12$ cube. Three short steps show how a puzzle becomes its string: the puzzle, the four building blocks (rods, ribbons, the core and runs of P's), and $S_B$ block by block, with the place of each block marked on the cube. Then you fold the string piece by piece: the corner rod along nine edges, the back face, the door into the core, the walls, the items in the strips, and the linkers, which you route yourself. Every folding step has hints, **Next step** to skip it, and **Show solution** to watch it played out. The links under **Explanation** open the matching card of the board.
+
+The cube is small because the game takes $q = 2$ for every instance, below what the formula of [4 Spelling the string](#step-bl-string) gives. The pieces have the same shape, with fewer H's, and each linker has $n^2 = 144$ P's instead of $52n+2$.
+
+<div class="wide"><FoldItYourself /></div>
 
 ## Glossary
 

@@ -1,0 +1,31 @@
+---
+/**
+ * FoldItYourself: a game on Berger and Leighton's reduction. A small bin packing instance becomes the string S_B,
+ * and the reader folds it into a 12×12×12 cube piece by piece, with hints, Next step and Show solution.
+ *
+ *   <div class="wide"><FoldItYourself /></div>
+ *
+ * Logic and rendering: game.client.js (mount(root); three.js). Styles: styles.css, every rule scoped under .g-root
+ * (classes prefixed g-, plus the fold game's fg- and the bin-pack game's bp- patterns). One widget per page.
+ * Links in its explanations go to the board's cards on the same page (#step-bl-…).
+ */
+import './styles.css';
+---
+
+<div class="g-root" data-fold-it-yourself>
+  <p class="g-loading">Loading the game…</p>
+</div>
+
+<script>
+  import { mount } from './game.client.js';
+  const roots = document.querySelectorAll<HTMLElement>('[data-fold-it-yourself]');
+  const start = (el: HTMLElement) => { if (el.dataset.mounted) return; el.dataset.mounted = '1'; el.innerHTML = ''; mount(el); };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { io.unobserve(e.target); start(e.target as HTMLElement); }
+    }, { rootMargin: '400px 0px' });
+    roots.forEach((el) => io.observe(el));
+  }
+  // also start once the page has settled, in case the observer never reports (background tabs, old browsers)
+  setTimeout(() => roots.forEach(start), 2500);
+</script>
