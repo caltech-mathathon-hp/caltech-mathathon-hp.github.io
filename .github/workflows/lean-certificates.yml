@@ -61,6 +61,9 @@ jobs:
         run: |
           lake env lean checks/ShelfHardness.lean > checks/local-publication-axioms.txt
           diff -u checks/publication-axioms.txt checks/local-publication-axioms.txt
+      - name: The 3D view's small instances have the sizes Lean computes
+        working-directory: lean/shelf
+        run: lake env lean checks/SmallInstances.lean
       - name: Every lemma rests only on propext, Classical.choice and Quot.sound
         working-directory: lean/shelf
         run: |

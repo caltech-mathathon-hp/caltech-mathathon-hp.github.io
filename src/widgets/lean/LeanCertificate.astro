@@ -18,6 +18,8 @@ interface Props {
   how?: string;
   /** Edge labels by the problem they lead to, in place of "proved in Lean". */
   labels?: Record<string, string>;
+  /** What the project's vendor/ copy holds, for its line in the facts. */
+  vendored?: string;
 }
 const {
   cert = 'cubic',
@@ -25,6 +27,7 @@ const {
   claim = 'Lean checks that HP folding on the cubic lattice is NP-complete, assuming the Cook–Levin theorem.',
   how = 'Each problem in the chain reduces to the next in polynomial time. Lean proves every step after the first, and that both folding problems are in NP.',
   labels = {},
+  vendored = "the team's library",
 } = Astro.props;
 const c = getCert(cert);
 const route = c.route ?? [];
@@ -38,7 +41,7 @@ const clean = [p.sorries === 0 && 'no sorry', p.axioms === 0 && 'no axiom'].filt
 const facts = [
   `Lean ${p.lean}, mathlib ${p.mathlib}`,
   `${num(p.files)} files, ${num(p.lines)} lines`,
-  p.excluded && `plus a copy of the team's library (${num(p.excluded.files)} files)`,
+  p.excluded && `plus a copy of ${vendored} (${num(p.excluded.files)} files)`,
   clean,
   c.source.date && `version of ${date(c.source.date)}`,
 ].filter(Boolean);

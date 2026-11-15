@@ -3,13 +3,13 @@ title: Lean formalization
 slug: lean
 navTitle: Lean
 kicker: Part IV
-lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem twice, once with their reduction and once with ours. HP folding on the cubic lattice is NP-complete, assuming one classical theorem, Cook–Levin. You can download both proofs and check them yourself.
-summary: Berger and Leighton's theorem checked in Lean twice, with their reduction and with ours, assuming the Cook–Levin theorem.
+lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem twice, once with their reduction and once with ours. The team's proof assumes one classical theorem, Cook–Levin. Cook–Levin is now proved in Lean as well, and our project plugs it in, so HP folding on the cubic lattice is NP-complete with no hypothesis left. You can download the three projects and check them yourself.
+summary: Berger and Leighton's theorem checked in Lean twice, with their reduction and with ours, and with the Cook–Levin theorem proved in Lean too.
 order: 6
 status: ready
 ---
 
-import { lean, cert, date } from '../../widgets/lean/lean';
+import { lean, cert, date, asset, size } from '../../widgets/lean/lean';
 import LeanCertificate from '../../widgets/lean/LeanCertificate.astro';
 import LeanCode from '../../widgets/lean/LeanCode.astro';
 import LeanAxioms from '../../widgets/lean/LeanAxioms.astro';
@@ -17,20 +17,23 @@ import LeanCommands from '../../widgets/lean/LeanCommands.astro';
 import LeanIndex from '../../widgets/lean/LeanIndex.astro';
 
 export const shelf = cert('shelf');
+export const cooklevin = cert('cooklevin');
 
 {/* Everything this page shows from the two Lean projects (code, names, links, counts, the zips)
     comes from src/data/lean/certificate*.json and public/lean/, which scripts/build_lean.py writes:
-    certificate.json from lean/cubic, certificate-shelf.json from lean/shelf (see the comments at
-    the top of the two .toml files next to them). Run it again when a project changes. */}
+    certificate.json from lean/cubic, certificate-shelf.json from lean/shelf, certificate-cooklevin.json
+    from lean/cooklevin (see the comments at the top of the .toml files next to them). Run it again
+    when a project changes. */}
 
 <LeanCertificate label="Berger and Leighton's reduction" />
 
 <LeanCertificate
   cert="shelf"
   label="Our reduction, with the bins on one edge"
-  claim="Lean checks the same theorem with our reduction from bin packing to perfect folding."
-  how="Only this step of the chain is ours. The other steps, the definitions and the final statements are the team's, and our project builds on an unchanged copy of them."
-  labels={{ 'Perfect folding': 'our reduction, proved in Lean' }}
+  claim="Lean checks the same theorem with our reduction from bin packing to perfect folding, and with Cook–Levin proved, so no hypothesis is left."
+  how="Only the step to perfect folding is ours. The other steps, the definitions and the final statements are the team's: our project builds on an unchanged copy of the team's library, with the files of the Cook–Levin proof added."
+  labels={{ SAT: 'Cook–Levin, proved in Lean', 'Perfect folding': 'our reduction, proved in Lean' }}
+  vendored="the team's library and the Cook–Levin proof"
 />
 
 ## Why a computer checks it
@@ -71,9 +74,10 @@ checks a proposed fold in polynomial time.
 
 For hardness, Lean follows the chains at the top of this page. Each step is a reduction: a
 function that turns instances of one problem into instances of the next, preserves the answer,
-and is computed by a Turing machine whose running time Lean proves polynomial. Only the first
-step, from every problem in NP to SAT, is assumed. These are the main results as Lean states
-them; their proofs are in the files linked below each block.
+and is computed by a Turing machine whose running time Lean proves polynomial. The team's
+certificate assumes the first step, from every problem in NP to SAT; ours proves it too, as the
+next section explains. These are the main results as Lean states them; their proofs are in the
+files linked below each block.
 
 <LeanCode
   names="cubeBondThreshold PerfectIffThreshold perfectIffThreshold_holds hpStringFold_inNP perfectHPStringFold_inNP perfectHPStringFold_NPHard perfectHPStringFold_NPComplete hpStringFold_NPComplete"
@@ -87,12 +91,12 @@ proved it in 1971 and Levin, independently, in 1973. It has been checked by comp
 <Cite k="gaher2021mechanising" /> and in Isabelle <Cite k="balbach2023cook" />, but not in
 mathlib, Lean's main library, because a proof has to write a whole run of a Turing machine as a
 formula, a long project of its own. A Lean 4 proof by <Cite k="rbarish2026npcompleteness" />
-exists, but it uses its own Turing machines instead of mathlib's, so connecting it to our project
-would take more work, and no person has reviewed it.
+exists, but it uses its own Turing machines instead of mathlib's, so connecting it to the team's
+project would take more work, and no person has reviewed it.
 
-So the project states Cook–Levin as a proposition, `SAT.CookLevin`, and the three hardness
+So the team's project states Cook–Levin as a proposition, `SAT.CookLevin`, and the three hardness
 theorems take it as a hypothesis `hCL`. A hypothesis is not an axiom: Lean checks that the
-theorem follows from it, and a Lean proof of `SAT.CookLevin` would turn the three theorems into
+theorem follows from it, and a Lean proof of `SAT.CookLevin` turns the three theorems into
 unconditional ones.
 
 <LeanCode names="SAT.CookLevin" caption="The hypothesis: SAT is NP-hard" />
@@ -102,9 +106,38 @@ in the theorem's type. This is what Lean prints for three of the main results:
 
 <LeanAxioms names="perfectIffThreshold_holds hpStringFold_inNP hpStringFold_NPComplete" />
 
-Our final theorems rest on the same three axioms:
+### A Lean proof of Cook–Levin
 
-<LeanAxioms cert="shelf" names="Shelf.perfectHPStringFold_NPComplete Shelf.hpStringFold_NPComplete" />
+Such a proof now exists, in a Lean project of its own, `lean/cooklevin`. It is written for the
+team's definitions. It shares 67 files with the team's library, among them `CookLevin.lean` and
+`Complexity.lean`, which define SAT, NP and reductions, and all 67 are byte-identical to the
+team's. So its theorem has exactly the type of the hypothesis `hCL`.
+
+<LeanCode cert="cooklevin" names="SAT.CookLevinUniversal.cookLevin SAT.CookLevinUniversal.inNP_karp" caption="Cook–Levin: SAT is NP-hard, because every problem in NP reduces to it" />
+
+The proof is Cook's. Take a problem in NP and its verifier, a mathlib Turing machine that checks
+a certificate in polynomial time. Write a run of the verifier as a table with one row per step.
+The table is a correct run exactly when every small window of it obeys local rules, and a CNF
+formula can state these rules, so the formula is satisfiable exactly when some certificate makes
+the verifier accept. Most of the proof is the other half: Turing machines that write this formula
+out, with proofs of what they write and that they run in polynomial time. A last machine rewrites
+the formula with at most three literals per clause, so 3-SAT is NP-hard as well. The project's
+<a href={cooklevin.links.docs.readme}>README</a> lists its files step by step.
+
+### Nothing left to assume
+
+Our project copies the 63 files of the Cook–Levin proof that the team's library does not have,
+and plugs the theorem into both chains. This gives Berger and Leighton's theorem with no
+hypothesis, once through our reduction and once through the team's:
+
+<LeanCode cert="shelf" names="Shelf.Unconditional.perfectHPStringFold_NPComplete Shelf.Unconditional.hpStringFold_NPComplete" caption="Through our reduction" />
+
+<LeanCode cert="shelf" names="Shelf.Unconditional.TeamRoute.perfectHPStringFold_NPComplete Shelf.Unconditional.TeamRoute.hpStringFold_NPComplete" caption="Through the team's reduction" />
+
+For Cook–Levin and for these theorems, Lean prints the same three axioms, and the types show no
+hypothesis:
+
+<LeanAxioms cert="shelf" names="SAT.CookLevinUniversal.cookLevin Shelf.Unconditional.hpStringFold_NPComplete Shelf.Unconditional.TeamRoute.hpStringFold_NPComplete" />
 
 ## The definitions
 
@@ -168,7 +201,8 @@ multiplies every size and $B$ by 6, and if $m$ is even it adds one bin and one i
 Then it writes a string $S$ with $n^3$ H's, where $n = m(B+1)+3$. Lean proves both directions:
 a perfect fold of $S$ gives a packing, and from a packing it builds a perfect fold of $S$, site
 by site. It also builds a Turing machine that writes $S$ and proves that it runs in polynomial
-time.
+time. On the instances that the 3D view offers, Lean computes the same side of the cube and the
+same number of H's as the view shows (`checks/SmallInstances.lean`).
 
 <LeanCode cert="shelf" names="Shelf.reductionCorrect Shelf.shelfKarp" caption="Our reduction: correct on every input, and computed in polynomial time" />
 
@@ -194,12 +228,18 @@ Our project:
 
 <LeanCommands cert="shelf" step="zip" />
 
-Both projects are also in the website's repository on GitHub, ours in `lean/shelf`, next to the
-team's. To clone it and go to the team's project:
+The Cook–Levin project has no card; <a href={asset(cooklevin.download.path)} download>download it
+here</a> (zip, {size(cooklevin.download.bytes)}), then:
+
+<LeanCommands cert="cooklevin" step="zip" />
+
+The three projects are also in the website's repository on GitHub, ours in `lean/shelf` and the
+Cook–Levin proof in `lean/cooklevin`, next to the team's. To clone it and go to the team's
+project:
 
 <LeanCommands step="git" />
 
-In either folder, download mathlib's compiled files, build the project and print the main results
+In each folder, download mathlib's compiled files, build the project and print the main results
 with their axioms. Only the last command differs. For the team's project:
 
 <LeanCommands step="build" />
@@ -208,20 +248,30 @@ For ours:
 
 <LeanCommands cert="shelf" step="build" />
 
+In ours, `lake env lean checks/SmallInstances.lean` also recomputes the sizes that the 3D view
+shows, and prints nothing when they agree.
+
+For the Cook–Levin project:
+
+<LeanCommands cert="cooklevin" step="build" />
+
 The first command downloads several gigabytes, and the build checks every proof in the project.
-Ours also builds the team's library from its copy, which takes a few more minutes. For the team's
+Ours also builds the team's library and the Cook–Levin proof from its copy, which takes a few more
+minutes. For the team's
 full audit, install PowerShell 7 and run the script below. It compares every file with its
 recorded hash, searches the code for forbidden commands, and prints the axioms of every public
 declaration.
 
 <LeanCommands step="verify" />
 
-GitHub runs the build and the audit of the team's project again on every change;
-<a href={lean.links.ci}>here are the runs</a>. The team's zip holds the version of
+On every change GitHub builds the three projects again, checks the axioms of their main
+results and runs the team's full audit; <a href={lean.links.ci}>here are the runs</a>. The team's zip holds the version of
 {date(lean.source.date)}, commit <code>{lean.source.commit?.slice(0, 7)}</code>, and its SHA-256 is
 <code class="ln-hash">{lean.download.sha256}</code>. Ours holds the version of
 {date(shelf.source.date)}, commit <code>{shelf.source.commit?.slice(0, 7)}</code>, and its SHA-256
-is <code class="ln-hash">{shelf.download.sha256}</code>.
+is <code class="ln-hash">{shelf.download.sha256}</code>. The Cook–Levin zip holds the version of
+{date(cooklevin.source.date)}, commit <code>{cooklevin.source.commit?.slice(0, 7)}</code>, and its
+SHA-256 is <code class="ln-hash">{cooklevin.download.sha256}</code>.
 
 ## Every statement and where it is
 

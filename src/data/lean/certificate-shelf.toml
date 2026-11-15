@@ -17,13 +17,15 @@ branch = "main"
 # The Lean project's folder in that repo.
 path = "lean/shelf"
 # Declaration names on the page and in docs/theorem-index.md are relative to this namespace.
-# Our own names are under Shelf.; the others come from the team's library in vendor/.
+# Our own names are under Shelf.; the others come from vendor/protein_folding: the team's
+# library, plus the files of the Cook–Levin proof.
 namespace = "ProteinFolding"
 zip = "lean/lean-shelf.zip"   # under public/
 # The file that prints the axioms of the main theorems.
 audit = "checks/ShelfHardness.lean"
-# Folders not counted as the project's own: vendor/ is a copy of the team's library. They are
-# still checked for sorry and axioms, searched for names, and put in the zip.
+# Folders not counted as the project's own: vendor/ is a copy of the team's library and of the
+# Cook–Levin proof. They are still checked for sorry and axioms, searched for names, and put in
+# the zip.
 count_exclude = ["vendor"]
 
 [show]
@@ -39,6 +41,12 @@ extra = [
   # the theorems, and the team's results they are built from
   "Shelf.perfectHPStringFold_NPHard", "Shelf.perfectHPStringFold_NPComplete", "Shelf.hpStringFold_NPComplete",
   "SATPacking.modifiedBinPackingUnary_NPHard", "hpNPHard_of_perfectNPHard",
+  # Cook–Levin, proved (vendor/protein_folding, files CookLevinProof*), and the final theorems
+  # with it plugged in
+  "SAT.CookLevin", "SAT.CookLevinUniversal.cookLevin",
+  "Shelf.Unconditional.perfectHPStringFold_NPComplete", "Shelf.Unconditional.hpStringFold_NPComplete",
+  "Shelf.Unconditional.TeamRoute.perfectHPStringFold_NPComplete",
+  "Shelf.Unconditional.TeamRoute.hpStringFold_NPComplete",
 ]
 
 # The chain of reductions the page draws, in order. Each problem is reached from the one before
@@ -49,8 +57,7 @@ problem = "Every problem in NP"
 
 [[route]]
 problem = "SAT"
-via = "SAT.CookLevin"
-assumed = true
+via = "SAT.CookLevinUniversal.cookLevin"
 
 [[route]]
 problem = "Bin packing"
