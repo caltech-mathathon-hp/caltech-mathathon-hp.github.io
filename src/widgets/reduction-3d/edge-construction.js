@@ -1,6 +1,5 @@
 /**
- * The construction of "Protein folding in the HP model on the cubic lattice is NP-complete: a short
- * proof", executed: the string S for an instance of EXACT PACKING (Section 3) and the perfect fold
+ * The short version of the one-edge construction, executed: the string S for an instance of EXACT PACKING (Section 3) and the perfect fold
  * of S built from a packing (Section 5, Table 1). The instance is encoded on a single edge of the
  * cube, the shelf E* = {(x, 0, 0)}: separators sigma_j cut it into bins of B nodes, and the items are
  * intervals of the shelf.
@@ -348,7 +347,7 @@ export function build(m, B, sizes, given) {
   P.nz.itemOf.forEach((u, i) => { classes[u < 0 ? P.m - 1 : sol.assign[u]].push(i); });
   const fold = buildFold(P, classes);
   const t2 = Date.now();
-  const val = validateFold({ n: P.n }, fold, str.types, { str: 'S (§3)', max: 'a perfect fold' });
+  const val = validateFold({ n: P.n }, fold, str.types, { str: 'S', max: 'a perfect fold' });
   const t3 = Date.now();
   return { P, solvable: true, assign: sol.assign, given: !!sol.given, solverNodes: sol.nodes, str, fold, val, classes, tSolve: t1 - t0, tFold: t2 - t1, tVal: t3 - t2 };
 }

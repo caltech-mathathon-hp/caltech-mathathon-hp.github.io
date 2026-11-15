@@ -1,9 +1,9 @@
 /**
- * The linkers seen from the side, shared by "linkers" (steps 26–28) and the end of "forward"
- * (step 36). We look at the cube from the side. Its front face, edge on, is the row of beads at
- * `ys`: the two holes laid side by side on it, with walls and rods beside them as in the face
- * sketch of steps 20–25. A few rows of the cube's H's below it fade out downwards. Above the face
- * is the space in front of the cube.
+ * The linkers, shared by "linkers" (steps 26–28) and the end of "forward" (step 36). The front
+ * face is drawn as one row of beads at `ys` (labelled "front face", sub-line "its two holes end to
+ * end"): its two holes laid end to end, with walls and rods beside them as in the face sketch of
+ * steps 20–25. A few rows of the cube's H's below it ("inside the cube") fade out downwards. Above
+ * the face is the space in front of the cube, where the linkers run.
  *
  * Linker k joins the end of item ribbon k to the start of item ribbon k + 1 (string order). It
  * leaves the face straight out (three P's), goes into the switchboard, comes out of its far side
@@ -32,7 +32,7 @@ export type Pt = [number, number];
 
 export const BOARD = {
   pitch: 44,
-  /** the front face, edge on: the centres of its beads */
+  /** the front face (its two holes end to end): the centres of its beads */
   ys: 620,
   /** x of the face row's first node; the row has `nRow` nodes */
   row0: 322,
@@ -228,12 +228,14 @@ function straightChain(a: Pt): Chain {
  * Laying a chain, as every string in the video is laid: one tip, in string order. Each new P fades
  * in at its own node, at full size, over FADE frames; the next starts BEAD_DT frames later, so the
  * tip is a soft run of three or four P's. A stick is never stronger than the fainter of its two
- * beads. A wire through the switchboard is drawn from the P before it at an even pace, never in
- * fewer than 12 frames, and the P at its far end fades in as it arrives.
+ * beads. A wire through the switchboard is drawn from the P before it at about the beads' pace
+ * (one pitch every BEAD_DT frames, so about 22 px a frame: WIRE_PACE is a little faster), never in
+ * fewer than 10 frames, and the P at its far end fades in as it arrives.
  */
 export const FADE = 7;
 const BEAD_DT = 2;
-const wireFrames = (w: Wire) => Math.min(26, Math.max(12, wireLen(w) / 34));
+const WIRE_PACE = 24;
+const wireFrames = (w: Wire) => Math.min(36, Math.max(10, wireLen(w) / WIRE_PACE));
 
 interface Plan {
   /** when the fade of node i starts (only for P's laid here) */

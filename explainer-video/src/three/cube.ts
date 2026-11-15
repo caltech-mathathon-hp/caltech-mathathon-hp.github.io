@@ -10,7 +10,7 @@
 import * as M from '../model/toy';
 import type { V3 } from '../model/toy';
 import { C, itemColor } from '../theme/theme';
-import type { Bead, Stick, Shot, Solid, Project } from './Scene3D';
+import type { Bead, Stick, Shot, Solid } from './Scene3D';
 import { R_RES, R_BOND, GAME_DIR, yaw } from './Scene3D';
 import { clamp01, easeBack } from '../lib/anim';
 
@@ -179,19 +179,30 @@ export interface PieceStyle {
   /** only H's, joined in pairs (dominoes): the face-on look, where P's would sit in front */
   dominoes?: boolean;
   /**
-   * How a new bead comes in: 'fade' (the default) fades it in at nearly full size, so no bead is
-   * ever a tiny speck; 'pop' scales it up from nothing with a small overshoot (no caller uses it:
-   * new beads appear at full size); 'fill'
-   * (for a fast fill like the core, laid in front of beads of its own colour) comes in at full
-   * colour and 80% of its size and swells to full: a fading bead there would read as a pale P.
+   * How a new bead comes in:
+   * - 'opacity': at its node and at full size, from see-through to solid (Bead.opacity, eased), so
+   *   what is behind it shows through as it comes; the stick to it comes with it, never stronger
+   *   than its fainter bead. `fade` stays a dimming of the whole piece. Use this one.
+   * - 'fade' (the default, kept for older callers): at nearly full size, painted from the
+   *   background colour to its own (it is opaque, so in front of other beads it shows as a pale disc);
+   * - 'pop': scales up from nothing with a small overshoot (no caller uses it);
+   * - 'fill': at full colour and 80% of its size, swelling to full.
    */
-  appear?: 'pop' | 'fade' | 'fill';
+  appear?: 'pop' | 'fade' | 'fill' | 'opacity';
+  /**
+   * Over how many letters a new bead comes in (default 4). With 'opacity', pass enough letters for
+   * at least 6 frames at the piece's pace: the tip is then a few beads long, never a pop.
+   */
+  soft?: number;
 }
 
-/** how many letters the "pop" of one bead spans, in letters */
+/** how many letters the coming-in of one bead spans, by default */
 const SOFT = 4;
+/** smooth 0..1 (an eased fade in by opacity) */
+const smooth = (t: number) => t * t * (3 - 2 * t);
 
 export function drawPiece(piece: PieceDef, st: PieceStyle, beads: Bead[], sticks: Stick[]) {
+  if ((st.appear ?? 'fade') === 'opacity') return drawPieceSoft(piece, st, beads, sticks);
   const L = piece.letters.length;
   if (st.progress <= 0 || !L) return;
   const color = st.color ?? piece.color;
@@ -228,6 +239,44 @@ export function drawPiece(piece: PieceDef, st: PieceStyle, beads: Bead[], sticks
     const grow = clamp01((head - i - 1) / SOFT);
     if (grow <= 0) break;
     sticks.push({ a: P(i), b: P(i + 1), color: C.backbone, grow, fade: Math.max(fade, 1 - chain) });
+  }
+}
+
+/**
+ * `drawPiece` with appear 'opacity': one tip moving through the letters in string order; each bead
+ * comes in at its node, at full size, from see-through to solid over `soft` letters. A stick is
+ * drawn at full length and is never more solid than the fainter of its two beads.
+ */
+function drawPieceSoft(piece: PieceDef, st: PieceStyle, beads: Bead[], sticks: Stick[]) {
+  const L = piece.letters.length;
+  if (st.progress <= 0 || !L) return;
+  const soft = Math.max(1, st.soft ?? SOFT);
+  const color = st.color ?? piece.color;
+  const ps = st.ps ?? 1;
+  const chain = st.chain ?? 1;
+  const fade = st.fade ?? 0;
+  const off = st.offset ?? [0, 0, 0];
+  const head = clamp01(st.progress) * (L + soft);
+  const P = (i: number): V3 => add(piece.letters[i].pos, off);
+  /** how solid letter i is (0..1) */
+  const op = (i: number) => smooth(clamp01((head - i) / soft));
+  const shown = (i: number) => piece.letters[i].h || (ps > 0 && !st.dominoes);
+  for (let i = 0; i < L; i++) {
+    const o = op(i);
+    if (o <= 0) break;
+    const l = piece.letters[i];
+    if (l.h) beads.push({ pos: P(i), color, fade, opacity: o });
+    else if (shown(i)) beads.push({ pos: P(i), color: C.p, hollow: true, fade, opacity: o * ps });
+  }
+  if (chain <= 0) return;
+  for (let i = 0; i + 1 < L; i++) {
+    const a = piece.letters[i];
+    const b = piece.letters[i + 1];
+    if (!isUnit(sub(b.pos, a.pos))) continue;
+    if (!shown(i) || !shown(i + 1)) continue;
+    const o = Math.min(op(i), op(i + 1)) * (a.h ? 1 : ps) * (b.h ? 1 : ps) * chain;
+    if (o <= 0) break;
+    sticks.push({ a: P(i), b: P(i + 1), color: C.backbone, fade: 1 - (1 - fade) * o });
   }
 }
 
@@ -310,20 +359,25 @@ export interface Panel {
  * The free edges' one look, from the frame scene to the walls: a soft band in the accent colour
  * along the edge's column of nodes, from corner node to corner node, as wide as a bead.
  *
- * It is drawn in SVG *under* the 3D picture (a scene puts it before its Scene3D; the canvas is
- * transparent), so every bead and stick covers it: it never tints a bead, whatever lies behind the
- * open front face. `y0`..`y1` (node rows, bottom up) give a part of it, e.g. one short rod's stretch.
- * Returns a line for `<line strokeWidth={w} strokeLinecap="butt">`.
+ * It is a flat, opaque bar in 3D (pass it in Scene3D's `lines`), set a little behind the front
+ * face, so the beads on the edge cover it, and it covers what lies behind the edge (a far bead
+ * seen through the open front face is hidden by the near bar, not drawn over it). Face-on it looks
+ * like a pale band behind the edge's nodes. `opacity` < 1 draws it see-through (coming or going).
  */
-export const FREE_BAND = { opacity: 0.26, width: 2 * R_RES };
-export function freeEdgeLine(project: Project, side: 0 | 1, y0 = 0, y1 = M.n - 1) {
-  const x = side === 0 ? 0 : M.n - 1;
-  const a = project([x, y0, 0]);
-  const b = project([x, y1, 0]);
-  const m = (y0 + y1) / 2;
-  const u0 = project([x, m - 0.5, 0]);
-  const u1 = project([x, m + 0.5, 0]);
-  return { x1: a[0], y1: a[1], x2: b[0], y2: b[1], w: FREE_BAND.width * Math.hypot(u1[0] - u0[0], u1[1] - u0[1]) };
+export const FREE_BAND = { strength: 0.26, depth: 0.35 };
+export function freeEdgeBands(opacity = 1): Stick[] {
+  if (opacity <= 0.001) return [];
+  const color = mixColor(C.bg, C.accent, FREE_BAND.strength);
+  const z = -FREE_BAND.depth;
+  return [0, M.n - 1].map((x) => ({ a: [x, 0, z] as V3, b: [x, M.n - 1, z] as V3, color, r: R_RES, fade: 1 - Math.min(1, opacity) }));
+}
+/** a colour `t` of the way from `a` to `b` (hex) */
+export function mixColor(a: string, b: string, t: number) {
+  const pa = parseInt(a.slice(1), 16);
+  const pb = parseInt(b.slice(1), 16);
+  const ch = (v: number, s: number) => (v >> s) & 255;
+  const m = (s: number) => Math.round(ch(pa, s) + (ch(pb, s) - ch(pa, s)) * clamp01(t));
+  return `#${((m(16) << 16) | (m(8) << 8) | m(0)).toString(16).padStart(6, '0')}`;
 }
 
 /** a pale H: the cube's body in flat drawings (the linkers' side view) */

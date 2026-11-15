@@ -1,134 +1,156 @@
 /**
- * Scene "end": first the recipe's cube of side 80 next to the toy's cube of side 12, to scale, with
- * their H counts (n³ each), and one plain sentence on why that size is fine; then the plan's
- * pipeline once more, compact (puzzle → HP string → best fold → "fits / does not fit"), with the
- * reference in small type. The last picture holds.
+ * Scene "end": first how big the recipe's cube gets, to scale: the cube for our items 6, 2, 8, 4
+ * next to the cube for the same items with every size tripled, as thin grey wireframes, each with
+ * its items and its side and number of H's. Then the plan's pipeline once more (puzzle → HP string
+ * → best fold → "fits / does not fit"), one pass of the loop, and the reference in small type. The
+ * last picture holds.
  */
 import React from 'react';
 import { useCurrentFrame } from 'remotion';
 import { SceneFrame } from '../ui/SceneFrame';
-import { Scene3D, GAME_DIR, yaw, type Shot } from '../three/Scene3D';
-import { ramp, sec, clamp01 } from '../lib/anim';
-import { C, FONT } from '../theme/theme';
+import { Scene3D, GAME_DIR, yaw } from '../three/Scene3D';
+import { ramp, clamp01 } from '../lib/anim';
+import { C } from '../theme/theme';
 import * as M from '../model/toy';
 import type { V3 } from '../model/toy';
 import type { SceneTime } from '../script';
-import { Label, NAME, SUB, Pipeline, cubeBox, smallCube, smallCubeShot, unitPxAt } from './lib/planPipeline';
+import { Label, NAME, SUB, Pipeline, RUN_FRAMES, gentle, smallCube, smallCubeShot } from './lib/planPipeline';
 
-const BIG = M.REAL.n; // 80
-const TOY = M.n; // 12
-/**
- * The game's camera looks at the cube from about 30° right of straight on, so "to the right on
- * screen" is the floor direction RIGHT. The toy cube stands on the same floor, on that line through
- * the big cube's centre, at about the same distance from the camera.
- */
-const RIGHT: [number, number] = [Math.cos((31 * Math.PI) / 180), -Math.sin((31 * Math.PI) / 180)];
-const BIG_C: V3 = [BIG / 2 - 0.5, BIG / 2 - 0.5, -(BIG / 2 - 0.5)];
-const TOY_D = 82;
-const TOY_C: V3 = [BIG_C[0] + TOY_D * RIGHT[0], TOY / 2 - 0.5, BIG_C[2] + TOY_D * RIGHT[1]];
-const TOY_MIN: V3 = [TOY_C[0] - TOY / 2, -0.5, TOY_C[2] + TOY / 2];
-const MID = 18;
+const lin = (t: number) => clamp01(t);
 const fmt = (k: number) => k.toLocaleString('en-US');
 
-/** right of the cubes: why a cube that big is fine, in one sentence */
-const NOTE_X = 1030;
-const NOTE_Y = 450;
-const sine = (t: number) => (1 - Math.cos(Math.PI * clamp01(t))) / 2;
+/**
+ * The cubes compared: our items, and the same items with every size multiplied (the bins too).
+ * Doubling gives the same cube as our items (B = 20 still has ⌈B^(1/3)⌉ = 3, so q = 6 and n = 80),
+ * so the second cube is for every size tripled (B = 30: q = 8, n = 138).
+ */
+const MULT = [1, 3];
+const CUBES = MULT.map((k) => {
+  const r = M.recipe(M.K, M.B * k);
+  return { sizes: M.SIZES.map((s) => s * k), n: r.n, h: r.h };
+});
+
+// an orthographic view of the cubes from the game's camera direction, turned by `deg` degrees
+const cross = (a: V3, b: V3): V3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const unit = (v: V3): V3 => {
+  const l = Math.hypot(v[0], v[1], v[2]);
+  return [v[0] / l, v[1] / l, v[2] / l];
+};
+const dot = (a: V3, b: V3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const view = (deg: number) => {
+  const d = unit(yaw(GAME_DIR, deg));
+  const right = unit(cross([0, 1, 0], d));
+  const up = cross(d, right);
+  return { d, right, up };
+};
+/** the cube's screen size per lattice unit of side, from the unturned view */
+const V0 = view(0);
+const H_PER = Math.abs(V0.up[0]) + Math.abs(V0.up[1]) + Math.abs(V0.up[2]);
+const W_PER = Math.abs(V0.right[0]) + Math.abs(V0.right[1]) + Math.abs(V0.right[2]);
+/** px per lattice unit: the largest cube is 500 px high */
+const PX = 500 / (H_PER * Math.max(...CUBES.map((c) => c.n)));
+/** the cubes stand on one line, side by side with a gap, centred in the picture */
+const BOTTOM_Y = 690;
+const GAP = 190;
+const LAYOUT = (() => {
+  const ws = CUBES.map((c) => c.n * W_PER * PX);
+  let x = 960 - (ws.reduce((a, b) => a + b, 0) + GAP * (CUBES.length - 1)) / 2;
+  return CUBES.map((c, i) => {
+    const cx = x + ws[i] / 2;
+    x += ws[i] + GAP;
+    // the screen point of the cube's centre: its lowest corner on BOTTOM_Y in the unturned view
+    return { cx, cy: BOTTOM_Y - (c.n * H_PER * PX) / 2 };
+  });
+})();
+
+/** a cube of side n as a thin wireframe, its centre at (cx, cy); the three edges at its hidden corner are left out */
+function WireCube({ n, cx, cy, deg, opacity }: { n: number; cx: number; cy: number; deg: number; opacity: number }) {
+  if (opacity <= 0) return null;
+  const v = view(deg);
+  const centre: V3 = [n / 2, n / 2, -n / 2];
+  const corner = (m: number): V3 => [m & 1 ? n : 0, m & 2 ? n : 0, m & 4 ? -n : 0];
+  const at = (p: V3): [number, number] => {
+    const q: V3 = [p[0] - centre[0], p[1] - centre[1], p[2] - centre[2]];
+    return [cx + dot(q, v.right) * PX, cy - dot(q, v.up) * PX];
+  };
+  // the corner farthest from the camera is hidden behind the cube
+  let hidden = 0;
+  for (let m = 1; m < 8; m++) if (dot(corner(m), v.d) < dot(corner(hidden), v.d)) hidden = m;
+  const lines: React.ReactNode[] = [];
+  for (let m = 0; m < 8; m++)
+    for (const bit of [1, 2, 4]) {
+      if (m & bit) continue;
+      if (m === hidden || (m | bit) === hidden) continue;
+      const a = at(corner(m));
+      const b = at(corner(m | bit));
+      lines.push(<line key={`${m}-${bit}`} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} />);
+    }
+  return (
+    <g opacity={opacity} stroke={C.fgSubtle} strokeWidth={2} strokeLinecap="round" fill="none">
+      {lines}
+    </g>
+  );
+}
 
 export default function EndScene({ scene }: { scene: SceneTime }) {
   const f = useCurrentFrame();
   const [c0, c1] = scene.cueTimes;
 
-  // cue 1: the two cubes
-  const bigIn = ramp(f, c0.from, sec(1.0));
-  const bigLabel = ramp(f, c0.from + sec(0.8), sec(0.6));
-  const toyIn = ramp(f, c0.from + sec(1.8), sec(0.7));
-  const toyLabel = ramp(f, c0.from + sec(2.3), sec(0.6));
-  const note = ramp(f, c0.from + sec(3.2), sec(0.6));
-  const out = ramp(f, c1.from, sec(0.5));
-  const cubes = 1 - out;
+  // cue 1: the two cubes, one after the other, each with its labels; they fade out at the cut to
+  // cue 2 before the pipeline comes
+  const deg = -4 + 8 * (f / scene.duration);
+  const out = ramp(f, c1.from, 15, lin);
+  const cubeIn = (k: number) => ramp(f, c0.from + 75 * k, 18) * (1 - out);
+  const nameIn = (k: number) => ramp(f, c0.from + 75 * k + 16, 12) * (1 - out);
+  const subIn = (k: number) => ramp(f, c0.from + 75 * k + 22, 12) * (1 - out);
 
-  // cue 2: the pipeline again, quicker than in "plan" (all motion done long before the pause)
-  const t = c1.from + sec(0.6);
-  const puzzle = ramp(f, t, sec(0.5));
-  const ref = ramp(f, t + sec(6.2), sec(0.6));
-
-  const turn = -8 + 14 * (f / scene.duration);
+  // cue 2: the pipeline built again, quicker than in "plan", then one pass of the loop; all done
+  // before the pause
+  const t = c1.from + 16;
+  const second = f >= t;
   const cubeTurn = -4 + 8 * (f / scene.duration);
-  const cubesShot: Shot = {
-    target: [BIG_C[0] + MID * RIGHT[0], BIG_C[1], BIG_C[2] + MID * RIGHT[1]],
-    dir: yaw(GAME_DIR, turn),
-    dist: 520,
-    offset: [-430, -100],
-  };
-  const second = f >= c1.from + sec(0.5);
-  const shot = second ? smallCubeShot(cubeTurn) : cubesShot;
-  const unitPx = unitPxAt(cubesShot.dist);
-  // both cubes as plain outlines (a cube of beads would be too small to read here), the toy's in orange
-  const big = cubeBox([-0.5, -0.5, 0.5], BIG, { color: C.fgSubtle, opacity: bigIn * cubes, unitPx, linePx: 2, tint: 0 });
-  const toy = cubeBox(TOY_MIN, TOY, { color: C.h, opacity: toyIn * cubes, unitPx, linePx: 2.5, tint: 0 });
-  const small = second ? smallCube(f, t + sec(2.3), sec(1.5)) : { beads: [], sticks: [], lines: [] };
+  const small = smallCube(f, t + 62);
 
   return (
     <SceneFrame scene={scene}>
-      <Scene3D
-       
-        shot={shot}
-        beads={small.beads}
-        sticks={small.sticks}
-        lines={second ? small.lines : [...big.lines, ...toy.lines]}
-        panels={second ? [] : [...big.panels, ...toy.panels]}
-      >
-        {(project) => {
-          if (!second) {
-            // labels under each cube: centred on the cube, below its lowest corner
-            const bLow = project([BIG - 0.5, -0.5, 0.5])[1];
-            const tLow = project([TOY_MIN[0] + TOY, -0.5, TOY_MIN[2]])[1];
-            const low = Math.max(bLow, tLow);
-            const bBottom = [project(BIG_C)[0], low];
-            const tBottom = [project(TOY_C)[0], low];
-            return (
-              <g opacity={cubes}>
-                <g opacity={note} fontFamily={FONT.sans} fontSize={SUB.size} fontWeight={SUB.weight} fill={SUB.color}>
-                  <text x={NOTE_X} y={NOTE_Y}>Bigger sizes make a bigger cube,</text>
-                  <text x={NOTE_X} y={NOTE_Y + 32}>but bin packing is hard even with small sizes.</text>
+      <Scene3D shot={smallCubeShot(cubeTurn)} beads={second ? small.beads : []} sticks={second ? small.sticks : []}>
+        {() =>
+          !second ? (
+            <g>
+              {CUBES.map((c, k) => (
+                <g key={k}>
+                  <WireCube n={c.n} cx={LAYOUT[k].cx} cy={LAYOUT[k].cy} deg={deg} opacity={cubeIn(k)} />
+                  <Label x={LAYOUT[k].cx} y={BOTTOM_Y + 52} opacity={nameIn(k)} {...NAME}>
+                    {`items ${c.sizes.join(', ')}`}
+                  </Label>
+                  <Label x={LAYOUT[k].cx} y={BOTTOM_Y + 84} opacity={subIn(k)} {...SUB}>
+                    {`side ${c.n}, ${c.n}³ = ${fmt(c.h)} H’s`}
+                  </Label>
                 </g>
-                <Label x={bBottom[0]} y={bBottom[1] + 52} opacity={bigLabel} {...NAME}>
-                  side n = {BIG}
-                </Label>
-                <Label x={bBottom[0]} y={bBottom[1] + 84} opacity={bigLabel} {...SUB}>
-                  {`${BIG}³ = ${fmt(BIG ** 3)} H’s`}
-                </Label>
-                <Label x={tBottom[0]} y={tBottom[1] + 52} opacity={toyLabel} {...NAME}>
-                  side n = {TOY}
-                </Label>
-                <Label x={tBottom[0]} y={tBottom[1] + 84} opacity={toyLabel} {...SUB}>
-                  {`${TOY}³ = ${fmt(TOY ** 3)} H’s`}
-                </Label>
-              </g>
-            );
-          }
-          return (
+              ))}
+            </g>
+          ) : (
             <g>
               <Pipeline
-                puzzle={puzzle}
-                puzzleLabel={ramp(f, t + sec(0.3), sec(0.4))}
-                hard={ramp(f, t + sec(0.5), sec(0.4))}
-                a1={ramp(f, t + sec(0.7), sec(0.5))}
-                str={ramp(f, t + sec(1.0), sec(1.2), sine)}
-                a2={ramp(f, t + sec(2.1), sec(0.5))}
-                cubeLabel={ramp(f, t + sec(3.7), sec(0.5))}
-                a3={ramp(f, t + sec(4.0), sec(1.0))}
-                l3={ramp(f, t + sec(4.7), sec(0.5))}
-                fast={ramp(f, t + sec(5.2), sec(0.5))}
-                asHard={ramp(f, t + sec(5.6), sec(0.5))}
+                puzzle={ramp(f, t, 12)}
+                puzzleLabel={ramp(f, t + 6, 12)}
+                hard={ramp(f, t + 10, 12)}
+                a1={ramp(f, t + 12, 14)}
+                str={gentle(ramp(f, t + 18, 44, lin))}
+                a2={ramp(f, t + 54, 14)}
+                cubeLabel={ramp(f, t + 108, 12)}
+                a3={ramp(f, t + 118, 24)}
+                l3={ramp(f, t + 136, 12)}
+                fast={ramp(f, t + 150, 12)}
+                run={f - (t + 160)}
+                asHard={ramp(f, t + 160 + RUN_FRAMES + 2, 12)}
               />
-              <Label x={960} y={826} opacity={ref} {...SUB}>
+              <Label x={960} y={826} opacity={ramp(f, t + 144, 14)} {...SUB}>
                 Berger and Leighton, J. Comput. Biol. 5(1), 1998
               </Label>
             </g>
-          );
-        }}
+          )
+        }
       </Scene3D>
     </SceneFrame>
   );

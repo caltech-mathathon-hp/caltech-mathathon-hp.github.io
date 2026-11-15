@@ -401,13 +401,19 @@ export interface Scene3DProps {
 
 const boxGeo = new THREE.BoxGeometry(1, 1, 1);
 
+/**
+ * A solid box. At full opacity it is drawn with the solid beads, so see-through sticks in front of
+ * it (drawn later) stay in front: drawn see-through itself, it painted over them, and a fading
+ * stick popped in when it turned solid. A box still fading in stays see-through.
+ */
 function SolidBox({ solid, cue }: { solid: Solid; cue: THREE.Vector3 }) {
+  const opaque = (solid.opacity ?? 1) >= 0.999;
   const mat = useMemo(
     () =>
       new THREE.ShaderMaterial({
         vertexShader: SOLID_VERT,
         fragmentShader: SOLID_FRAG,
-        transparent: true,
+        transparent: !opaque,
         uniforms: {
           uBg: { value: col(C.bg) },
           uColor: { value: new THREE.Color() },
@@ -417,7 +423,7 @@ function SolidBox({ solid, cue }: { solid: Solid; cue: THREE.Vector3 }) {
           uCue: { value: new THREE.Vector3() },
         },
       }),
-    [],
+    [opaque],
   );
   useLayoutEffect(() => () => mat.dispose(), [mat]);
   const u = mat.uniforms;

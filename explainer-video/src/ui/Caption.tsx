@@ -140,9 +140,9 @@ export function ToyBadge({ opacity = 1 }: { opacity?: number }) {
         textAlign: 'right',
       }}
     >
-      <b style={{ color: C.fg }}>Toy size</b>: 2 strips, not 6, so no plugs
+      <b style={{ color: C.fg }}>Our small cube</b>: side 12, not 80
       <br />
-      cube of side 12, not 80
+      2 strips, not 6, so no plugs
     </div>
   );
 }

@@ -161,18 +161,18 @@ export default function CubeScene({ scene }: { scene: SceneTime }) {
   const t1 = (s: number) => c1.from + sec(s);
   const t2 = (s: number) => c2.from + sec(s);
   const out2 = ramp(f, c2.from, sec(0.5)); // the whole picture leaves: slab, cube, stubs and both counts
-  const slabTimes = chainTimes(SLAB.length, t1(0.8), sec(2.0));
-  const stubsA = ramp(f, t1(2.9), sec(0.6));
-  const labelA = Math.min(ramp(f, t1(3.2), sec(0.5)), 1 - out2);
+  const slabTimes = chainTimes(SLAB.length, t1(0.8), sec(2.4), 0.45); // a soft tip of about 3 beads
+  const stubsA = ramp(f, t1(3.3), sec(0.6));
+  const labelA = Math.min(ramp(f, t1(3.6), sec(0.5)), 1 - out2);
   // a gentle ease: a slab moving fast strobes (its beads line up with where their neighbours were)
-  const split = ramp(f, t1(3.9), sec(2.2), ease);
+  const split = ramp(f, t1(4.3), sec(2.2), ease);
   // the copy fades in, as one piece, once the slab has slid clear of the place
-  const copyIn = fadeIn(f, t1(5.7), 0.4);
+  const copyIn = fadeIn(f, t1(6.1), 0.4);
   // the accordion closes a third at a time: the left third swings forwards, then the right third backwards
-  const turnL = ramp(f, t1(6.3), sec(1.0), ease);
-  const turnR = ramp(f, t1(7.45), sec(1.0), ease);
-  const stubsB = ramp(f, t1(8.6), sec(0.6));
-  const labelB = Math.min(ramp(f, t1(8.9), sec(0.5)), 1 - out2);
+  const turnL = ramp(f, t1(6.7), sec(1.0), ease);
+  const turnR = ramp(f, t1(7.85), sec(1.0), ease);
+  const stubsB = ramp(f, t1(9), sec(0.6));
+  const labelB = Math.min(ramp(f, t1(9.3), sec(0.5)), 1 - out2);
   const off: V3 = [LEFT[0] * split, 0, LEFT[2] * split];
   const slabAt = (c: (typeof SLAB)[number]): V3 => add(c.from, off);
   const cubeAt = SLAB.map((c) => folded(c, Math.PI * turnL, Math.PI * turnR));

@@ -5,8 +5,6 @@ turn any bin packing puzzle into an HP string whose best fold on the cubic grid 
 puzzle, so that finding a best fold is NP-complete. Part 1 explains the idea; part 2 runs it on
 the site's running example (items 6, 2, 8, 4 into two bins of 10) in a toy-sized cube.
 
-The video is for understanding the proof. It does not present the team's own proof in `proof/`.
-
 ## Step through it (the main way to watch)
 
 A page plays the video one caption at a time and waits on the finished picture after each, so you
@@ -34,6 +32,23 @@ server.
 The page is `stepper/` (a Vite app around a Remotion Player that plays `src/Video.tsx`); the
 steps come from the captions in `src/script.ts` (`stepper/steps.ts`), so editing a caption or its
 timing updates the page.
+
+## On the website
+
+The website shows the step-through page in an iframe (`src/widgets/explainer/ExplainerVideo.astro`).
+The frame loads a static build of the page from `public/explainer/` with `?embed` in the address.
+In that mode the page shows only the player, its controls and the list of steps, takes the site's
+light or dark theme from the frame, and posts its height to the frame so that it never scrolls.
+
+After changing the video or the page, rebuild that copy from the root of the website repository:
+
+```bash
+bash explainer-video/scripts/publish-to-site.sh
+```
+
+The script runs `npm ci` and `npm run stepper:build` here, then copies `out/stepper/` to
+`public/explainer/`. Commit `public/explainer/` along with the change. The build is about 2 MB,
+1.7 MB of it one JavaScript file (React, Remotion, three.js and the video).
 
 ## Render
 

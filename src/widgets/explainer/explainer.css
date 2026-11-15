@@ -1,0 +1,24 @@
+/* ExplainerVideo: the step-through page in an iframe. Classes prefixed ev-. */
+.ev-root {
+  margin: var(--s-5) 0;
+}
+/* The page in the frame sets the height (it posts it once loaded). Before that, 940px is about
+   its height at the widths of the site's columns, from 343px (a phone) to 992px. */
+.ev-frame {
+  display: block;
+  width: 100%;
+  height: 940px;
+  border: 0;
+  background: transparent;
+}
+.ev-links {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--s-2);
+}
+.ev-open {
+  color: var(--accent);
+}
+.ev-open:hover {
+  color: var(--accent-hover);
+}

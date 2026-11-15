@@ -49,22 +49,40 @@ export function sequence(progress: number, weights: number[]): number[] {
 const hCount = (p: PieceDef) => p.letters.filter((l) => l.h).length;
 
 /**
+ * Split a drawing into the front face (z = 0) and what lies behind it, to fade the back as ONE
+ * picture: draw `back` in its own Scene3D inside a div with CSS opacity 1 - backFade, and `front`
+ * (with the lines and panels) in a second Scene3D on top (Forward does this). Fading bead by bead
+ * instead (`drawFrame`'s `backFade`) lets each half-faded bead show the sticks behind it.
+ */
+export function splitBehind(d: Draw) {
+  const isFront = (p: V3) => p[2] > -0.5; // on the face: z = 0, hole dots a hair behind; the cube: z ≤ −1
+  const front = (s: Stick) => isFront(s.a) && isFront(s.b);
+  return {
+    front: { beads: d.beads.filter((b) => isFront(b.pos)), sticks: d.sticks.filter(front) },
+    back: { beads: d.beads.filter((b) => !isFront(b.pos)), sticks: d.sticks.filter((s) => !front(s)) },
+  };
+}
+
+/**
  * Fade what lies behind the front face (z < 0) by `backFade` (1 = gone). The beads go see-through
- * (`opacity`), never paler: a pale bead is an opaque disc that would hide what is behind it. A
- * stick goes with its beads, never stronger than they are.
+ * (`opacity`), never paler: a pale bead is an opaque disc that would hide what is behind it. The
+ * sticks go first (gone by half way), so they do not show through the half-faded beads in front of
+ * them; a stick is never stronger than its beads. (Fading the back as one picture, `splitBehind`,
+ * looks better still.)
  */
 function fadeBehind(d: Draw, from: { b: number; s: number }, backFade: number) {
   if (backFade <= 0) return;
   const keep = 1 - backFade;
+  const keepStick = clamp01(2 * keep - 1);
   const keepB: Bead[] = d.beads.slice(0, from.b);
   for (const b of d.beads.slice(from.b)) {
-    if (b.pos[2] > -0.01) keepB.push(b);
+    if (b.pos[2] > -0.5) keepB.push(b);
     else if (keep > 0.001) keepB.push({ ...b, opacity: (b.opacity ?? 1) * keep });
   }
   const keepS: Stick[] = d.sticks.slice(0, from.s);
   for (const s of d.sticks.slice(from.s)) {
-    if (Math.min(s.a[2], s.b[2]) > -0.01) keepS.push(s);
-    else if (keep > 0.001) keepS.push({ ...s, fade: 1 - (1 - (s.fade ?? 0)) * keep });
+    if (Math.min(s.a[2], s.b[2]) > -0.5) keepS.push(s);
+    else if (keepStick > 0.001) keepS.push({ ...s, fade: 1 - (1 - (s.fade ?? 0)) * keepStick });
   }
   d.beads.length = 0;
   d.beads.push(...keepB);
@@ -82,7 +100,7 @@ export const FRAME_WEIGHTS = [3, 1, 2.5, 1, 1, 1, 1, 1];
 /**
  * The frame as the "frame" scene leaves it. `build` (0..1) lays it in string order, fast:
  * rod 1, rod 2, core, the five faces (for the example, which rebuilds it in a few seconds).
- * The core is one opaque block (d.solids, pass them to Scene3D), faded out with `backFade`.
+ * The core is one invisible filler block (d.solids, pass them to Scene3D), dropped once `backFade` starts.
  * `context` (0..1, FADE.context when the front face is the subject) quiets rods and faces.
  */
 export function drawFrame(
@@ -95,7 +113,10 @@ export function drawFrame(
   lay(byId.tenth, tenth, { ps: 0, chain: 0 }, d, { whole });
   FACE_ORDER.forEach((id, i) => lay(byId[id], faces[i], { ps: 0, dominoes: true }, d, { whole }));
   if (context > 0) quietFrom(d, mark, context);
-  if (core > 0 && backFade < 0.999) d.solids.push(innerBlock({ opacity: core < 1 ? core : undefined, fade: backFade }));
+  // the core's filler goes as soon as the cube behind the face starts to fade: see-through sticks
+  // do not write depth, so a filler drawn after them would paint over every stick in front of it
+  // in one frame (the shell already hides the faces turned away, so nothing shows through instead)
+  if (core > 0 && backFade <= 0) d.solids.push(innerBlock({ opacity: core < 1 ? core : undefined }));
   fadeBehind(d, mark, backFade);
 }
 

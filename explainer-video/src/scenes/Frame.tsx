@@ -6,16 +6,18 @@
  * the caption colours them).
  *
  * One string: every piece is laid with one growing tip, one piece after another, in string order,
- * each bead coming in at full size. The free edges have one look from here to the walls scene: a
- * soft accent band along the edge's nodes, corner to corner, drawn under the beads. Rod H's are
- * never joined by sticks (a rod is PHP PHP …, its H's are not neighbours in the string); P's are
- * not drawn from here on, and a note says so.
+ * each bead fading in at its node at full size (by opacity, over 7 frames or more: a soft tip a few
+ * beads long). The free edges have one look from here to the walls scene: a pale accent band just
+ * behind the edge's nodes, corner to corner (`freeEdgeBands`). Rod H's are never joined by sticks
+ * (a rod is PHP PHP …, its H's are not neighbours in the string); P's are not drawn from here on,
+ * and a note says so. The cube stays in full colour throughout: no depth cue, no quieting.
+ * At the end the core goes (by opacity) and the open face's empty nodes fade in as it goes.
  */
 import React from 'react';
 import { useCurrentFrame } from 'remotion';
 import { SceneFrame } from '../ui/SceneFrame';
-import { Scene3D, FADE, quiet, projector, R_RES, type Bead, type Stick, type Project } from '../three/Scene3D';
-import { framePieces, drawPiece, cubeOutline, holeBeads, freeEdgeLine, FREE_BAND, FRONT_NODES, FRAME_SHOT, HOLE_COLOR, CUBE_SHELL, type PieceDef } from '../three/cube';
+import { Scene3D, projector, R_RES, type Bead, type Stick, type Project } from '../three/Scene3D';
+import { framePieces, drawPiece, cubeOutline, holeBeads, freeEdgeBands, FRONT_NODES, FRAME_SHOT, HOLE_COLOR, CUBE_SHELL, type PieceDef } from '../three/cube';
 import { ramp, sec, easeOut, clamp01 } from '../lib/anim';
 import { C, FONT } from '../theme/theme';
 import * as M from '../model/toy';
@@ -29,21 +31,36 @@ const FACE_ORDER = M.FACES.map((f) => `face-${f.name}`);
 // ------------------------------------------------------------------ the parts list
 
 type Glyph = 'rod' | 'ribbon' | 'core' | 'open';
-/** a little run of beads in the game's colours: rod PHP PHP…, ribbon PHHP PHHP…, core HHH… */
+/**
+ * A run of beads in the game's colours, broken in the middle (the piece is much longer than shown):
+ * rod PHP PHP … PHP, ribbon PHHP PHHP … PHHP, core HHH … HHH.
+ */
 function Icon({ x, y, kind, opacity }: { x: number; y: number; kind: Glyph; opacity: number }) {
-  const seq = kind === 'rod' ? 'PHPPHPPHP' : kind === 'ribbon' ? 'PHHPPHHP' : kind === 'core' ? 'HHHHHHHH' : 'oooooooo';
-  const step = 19;
-  const r = 7;
-  const xs = [...seq].map((_, i) => x + i * step);
+  const [head, tail] = kind === 'rod' ? ['PHPPHP', 'PHP'] : kind === 'ribbon' ? ['PHHPPH', 'HHP'] : kind === 'core' ? ['HHHHHH', 'HHH'] : ['oooooo', 'ooo'];
+  const seq = head + tail;
+  const step = 17;
+  const gap = 34;
+  const r = 6.5;
+  const xs = [...seq].map((_, i) => x + i * step + (i >= head.length ? gap - step : 0));
+  const xa = xs[head.length - 1];
+  const xb = xs[head.length];
   return (
     <g opacity={opacity}>
-      {kind !== 'open' && <line x1={xs[0]} x2={xs[xs.length - 1]} y1={y} y2={y} stroke={C.backbone} strokeWidth={3} />}
+      {kind !== 'open' && (
+        <>
+          <line x1={xs[0]} x2={xa + 7} y1={y} y2={y} stroke={C.backbone} strokeWidth={3} />
+          <line x1={xb - 7} x2={xs[xs.length - 1]} y1={y} y2={y} stroke={C.backbone} strokeWidth={3} />
+          {[-6, 0, 6].map((d) => (
+            <circle key={d} cx={(xa + xb) / 2 + d} cy={y} r={1.8} fill={C.fgMuted} />
+          ))}
+        </>
+      )}
       {[...seq].map((ch, i) =>
         ch === 'H' ? (
           <circle key={i} cx={xs[i]} cy={y} r={r} fill={C.h} />
         ) : ch === 'P' ? (
           // a P as everywhere else in the video: white, with a blue ring
-          <circle key={i} cx={xs[i]} cy={y} r={r - 1} fill={C.bgElev} stroke={C.p} strokeWidth={2.6} />
+          <circle key={i} cx={xs[i]} cy={y} r={r - 1} fill={C.bgElev} stroke={C.p} strokeWidth={2.4} />
         ) : (
           <circle key={i} cx={xs[i]} cy={y} r={3.2} fill={HOLE_COLOR} />
         ),
@@ -60,7 +77,7 @@ interface Row {
   appear: number;
   /** being laid now (0..1 highlight) */
   active: number;
-  /** laid (0..1 tick) */
+  /** laid (0..1: the tick fades in) */
   done: number;
   /** 0..1, the sub-line saying where the piece goes (it comes in as the piece goes on) */
   sub: number;
@@ -69,38 +86,41 @@ interface Row {
 
 const LIST = { x: 96, y0: 282, dy: 86 };
 
-function PartsList({ rows }: { rows: Row[] }) {
+function PartsList({ rows, heading }: { rows: Row[]; heading: number }) {
   const { x, y0, dy } = LIST;
   return (
     <g fontFamily={FONT.sans}>
+      {heading > 0 && (
+        <text x={x - 22} y={y0 - 70} fontSize={22} fontWeight={500} fill={C.fgMuted} opacity={heading}>
+          the string, in order:
+        </text>
+      )}
       {rows.map((r, i) => {
         if (r.appear <= 0) return null;
         // the front face is not a piece: set apart below a rule
         const apart = r.accent ? 30 : 0;
         const y = y0 + i * dy + apart + (1 - easeOut(r.appear)) * 14;
-        const ink = r.accent ? C.accent : r.done > 0.5 || r.active > 0.5 ? C.fg : C.fgMuted;
+
         return (
           <g key={r.name} opacity={r.appear}>
             {r.accent && <line x1={x - 22} x2={x + 470} y1={y - 56} y2={y - 56} stroke={C.rule} strokeWidth={1.5} />}
             <rect x={x - 22} y={y - 32} width={6} height={64} rx={3} fill={r.accent ? C.accent : C.h} opacity={r.accent ? 1 : r.active * 0.9} />
-            <text x={x} y={y - 6} fontSize={26} fontWeight={600} fill={ink}>
+            <text x={x} y={y - 6} fontSize={26} fontWeight={600} fill={C.fg}>
               {r.name}
             </text>
-            <text x={x} y={y + 24} fontSize={22} fontWeight={500} fill={r.accent ? C.accent : C.fgMuted} opacity={r.sub}>
+            <text x={x} y={y + 24} fontSize={22} fontWeight={500} fill={C.fgMuted} opacity={r.sub}>
               {r.where}
             </text>
-            {r.kind !== 'open' && <Icon x={x + 250} y={y - 2} kind={r.kind} opacity={1} />}
+            {r.kind !== 'open' && <Icon x={x + 236} y={y - 2} kind={r.kind} opacity={1} />}
             {r.done > 0 && (
               <path
                 d={`M${x + 440},${y - 2} l9,10 l18,-22`}
-                opacity={Math.min(1, r.done * 4)}
+                opacity={r.done}
                 fill="none"
                 stroke={C.ok}
                 strokeWidth={4.5}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeDasharray={60}
-                strokeDashoffset={60 * (1 - r.done)}
               />
             )}
           </g>
@@ -134,23 +154,15 @@ function Rod2Label({ project, opacity }: { project: Project; opacity: number }) 
   );
 }
 
-/**
- * Drawn under the 3D picture: the front face's tint (while the cube is still empty) and its two
- * free edges as bands (see `freeEdgeLine`). Beads always cover them.
- */
-function UnderFace({ project, tint, band }: { project: Project; tint: number; band: number }) {
-  if (tint <= 0 && band <= 0) return null;
+/** drawn under the 3D picture: the front face's tint, while the cube is still empty */
+function UnderFace({ project, tint }: { project: Project; tint: number }) {
+  if (tint <= 0) return null;
   const lo = -0.5;
   const hi = M.n - 0.5;
   const quad = ([[lo, lo], [hi, lo], [hi, hi], [lo, hi]] as const).map(([x, y]) => project([x, y, 0.5]).join(',')).join(' ');
   return (
     <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{ position: 'absolute', inset: 0 }}>
-      {tint > 0 && <polygon points={quad} fill={C.accent} opacity={0.07 * tint} />}
-      {band > 0 &&
-        ([0, 1] as const).map((side) => {
-          const l = freeEdgeLine(project, side);
-          return <line key={side} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={C.accent} strokeOpacity={FREE_BAND.opacity * band} strokeWidth={l.w} />;
-        })}
+      <polygon points={quad} fill={C.accent} opacity={0.07 * tint} />
     </svg>
   );
 }
@@ -161,7 +173,6 @@ export default function FrameScene({ scene }: { scene: SceneTime }) {
   const f = useCurrentFrame();
   const [c0, c1, c2] = scene.cueTimes;
   const shot = FRAME_SHOT(f / (scene.duration - 1));
-  const project = projector(shot);
   const beads: Bead[] = [];
   const sticks: Stick[] = [];
 
@@ -178,6 +189,8 @@ export default function FrameScene({ scene }: { scene: SceneTime }) {
   // linear progress: one tip moving at an even pace
   const R = ([s0, d]: number[]) => clamp01((f - s0) / d);
   const end = ([s0, d]: number[]) => s0 + d;
+  /** the soft tip, in letters, for a piece laid over `frames`: each bead fades in over 7 frames */
+  const softOf = (piece: PieceDef, frames: number) => Math.max(4, (7 * piece.letters.length) / Math.max(1, frames - 7));
   const coreEnd = end(T.core);
   const tenthEnd = end(T.tenth);
   const pieceOrder: [PieceDef, number[], 'rod' | 'face'][] = [
@@ -188,47 +201,49 @@ export default function FrameScene({ scene }: { scene: SceneTime }) {
   ];
   // the faces turned away are hidden once the core is in front of them
   const shellAmount = ramp(f, coreEnd - sec(0.4), sec(0.6));
-  // then the front face becomes the subject: the rods and faces step back, the core goes, and the
-  // open face's empty nodes and its two free edges come (back) in, as the walls scene starts
-  const front = ramp(f, c2.from + sec(7.3), sec(0.6));
-  const ctx = FADE.context * front;
-  const holesIn = ramp(f, c2.from + sec(8.0), sec(0.6));
+  // then the front face becomes the subject: the core goes (by opacity, 10 frames), and the open
+  // face's empty nodes and its two free edges fade in as it goes
+  const coreOutAt = c2.from + sec(7.3);
+  const coreKept = 1 - ramp(f, coreOutAt, 12);
+  const holesIn = ramp(f, coreOutAt + 4, 10);
 
   // the front face, tinted while the cube is empty, and its free edges: shown in the first cue;
   // the free edges stay while the rods go on, step aside while the faces and the core fill what
   // lies behind the open face, and come back with the empty nodes
   const shown = ramp(f, c0.from + sec(2.6), sec(0.8));
   const tint = shown * (1 - ramp(f, c1.from, 14));
-  const band = shown * (1 - ramp(f, c2.from, 9)) + holesIn;
+  const band = shown * (1 - ramp(f, c2.from, 10)) + holesIn;
   // the empty cube's wireframe: its inner edges give way before rod 1 reaches any of them
   const inner = 1 - ramp(f, c1.from, 14);
 
   // rod 2 swells once when it is in, and is named; the name goes as the next cue starts
-  const rodLabel = ramp(f, tenthEnd + 4, 14) * (1 - ramp(f, c2.from, 8, clamp01));
+  const rodLabel = ramp(f, tenthEnd + 4, 14) * (1 - ramp(f, c2.from, 8));
   const pulse = 1 + 0.16 * Math.sin(Math.PI * clamp01((f - tenthEnd) / 20));
-  // and while rod 2 is the subject, the far side of the cube (where it lies) is not faded by depth
-  const focus = ramp(f, T.tenth[0] - 6, 15) * (1 - ramp(f, c2.from, 15));
-  const cue = { amount: 0.4 * (1 - 0.7 * focus) };
   // the P's are not drawn from here on: said once, as rod 1 goes on
-  const pNote = ramp(f, T.corner[0] + sec(1.2), sec(0.5)) * (1 - ramp(f, c2.from + sec(7.3), sec(0.5)));
+  const pNote = ramp(f, T.corner[0] + sec(1.2), sec(0.5)) * (1 - ramp(f, coreOutAt, sec(0.5)));
 
   for (const [piece, span, kind] of pieceOrder) {
     const got: Bead[] = [];
-    drawPiece(piece, kind === 'rod' ? { progress: R(span), ps: 0, chain: 0, appear: 'fade' } : { progress: R(span), ps: 0, dominoes: true, appear: 'fade' }, got, sticks);
+    const soft = softOf(piece, span[1]);
+    drawPiece(piece, kind === 'rod' ? { progress: R(span), ps: 0, chain: 0, appear: 'opacity', soft } : { progress: R(span), ps: 0, dominoes: true, appear: 'opacity', soft }, got, sticks);
     beads.push(...(piece === byId.tenth ? got.map((b) => ({ ...b, scale: (b.scale ?? 1) * pulse })) : got));
   }
-  const laid: [Bead[], Stick[]] = [quiet(beads.splice(0), ctx), quiet(sticks.splice(0), ctx)];
-  beads.push(...laid[0]);
-  sticks.push(...laid[1]);
-  // the core: a run of H's, joined bead to bead, laid back to front; it fades into the background
-  // as the front face becomes the subject, and is gone before the empty nodes come in
-  if (front < 1) drawPiece(byId.core, { progress: R(T.core), ps: 0, appear: 'fill', fade: front }, beads, sticks);
+  // the core: a run of H's, joined bead to bead, laid back to front with one soft tip; it goes
+  // (at full size) before the empty nodes come in, as one picture under the rest (its sticks with
+  // its beads: fading bead by bead, the see-through beads would paint over their own sticks). It
+  // lies behind everything else drawn, the faces turned away being hidden, so nothing changes when
+  // it moves to its own picture.
+  const coreOut = f >= coreOutAt;
+  const coreBeads: Bead[] = [];
+  const coreSticks: Stick[] = [];
+  if (coreKept > 0) drawPiece(byId.core, { progress: R(T.core), ps: 0, appear: 'opacity', soft: softOf(byId.core, T.core[1]) }, coreOut ? coreBeads : beads, coreOut ? coreSticks : sticks);
 
-  // the open front face: its empty nodes, the free edges' nodes included
+  // the open front face: its empty nodes, the free edges' nodes included (a hair behind the node,
+  // as the walls scene draws them)
   const open = FRONT_NODES.filter(([, y]) => y > 0 && y < M.n - 1);
-  beads.push(...holeBeads(open, 0.9 * holesIn));
-  // the empty cube's wireframe, then only its contour
-  const lines: Stick[] = [...cubeOutline(0.6, C.fgSubtle, 0.5, inner)];
+  if (holesIn > 0) beads.push(...holeBeads(open, 1).map((b) => ({ ...b, pos: [b.pos[0], b.pos[1], b.pos[2] - 0.02] as V3, fade: undefined, opacity: holesIn })));
+  // the empty cube's wireframe, then only its contour; the free edges' bands
+  const lines: Stick[] = [...cubeOutline(0.6, C.fgSubtle, 0.5, inner), ...freeEdgeBands(band)];
 
   const row = (kind: Glyph, name: string, where: string): Row => ({ kind, name, where, appear: 0, active: 0, done: 0, sub: 0 });
   const rows: Row[] = [
@@ -237,7 +252,7 @@ export default function FrameScene({ scene }: { scene: SceneTime }) {
     row('rod', 'rod 2', '1 more edge'),
     row('ribbon', 'ribbons 2–5', '4 more faces'),
     row('core', 'core', 'the inside'),
-    { ...row('open', 'front face', 'and its 2 free edges: kept for the puzzle'), accent: true },
+    { ...row('open', 'front face', 'and two of its edges: kept for the puzzle'), accent: true },
   ];
   const listIn = (i: number) => ramp(f, c0.from + sec(0.6 + i * 0.4), sec(0.5));
   const spans: [number, number][] = [
@@ -256,6 +271,7 @@ export default function FrameScene({ scene }: { scene: SceneTime }) {
   });
   rows[5].appear = shown;
   rows[5].sub = shown;
+  const heading = ramp(f, c0.from + sec(0.3), sec(0.5));
   const listBottom = LIST.y0 + 5 * LIST.dy + 30;
   // the tail, after the pause (c2.to - 10): the parts list goes, so the last frame is the first
   // frame of "walls"
@@ -263,13 +279,18 @@ export default function FrameScene({ scene }: { scene: SceneTime }) {
 
   return (
     <SceneFrame scene={scene}>
-      <UnderFace project={project} tint={tint} band={band} />
-      <Scene3D shot={shot} beads={beads} sticks={sticks} lines={lines} shell={{ ...CUBE_SHELL, amount: shellAmount }} depthCue={cue}>
+      <UnderFace project={projector(shot)} tint={tint} />
+      {coreOut && coreKept > 0 && (
+        <div style={{ position: 'absolute', inset: 0, opacity: coreKept }}>
+          <Scene3D shot={shot} beads={coreBeads} sticks={coreSticks} shell={{ ...CUBE_SHELL, amount: shellAmount }} />
+        </div>
+      )}
+      <Scene3D shot={shot} beads={beads} sticks={sticks} lines={lines} shell={{ ...CUBE_SHELL, amount: shellAmount }}>
         {(proj) => (
           <>
             {listOut > 0 && (
               <g opacity={listOut}>
-                <PartsList rows={rows} />
+                <PartsList rows={rows} heading={heading} />
               </g>
             )}
             {pNote > 0 && (

@@ -15,6 +15,22 @@ import { FPS, W, H } from '../src/theme/consts';
 import { STEPS, GROUPS, TITLE_FRAME, type Step } from './steps';
 import './stepper.css';
 
+/**
+ * ?embed: the page inside the website's iframe (site/src/widgets/explainer/). It shows only the
+ * player, its controls and the list of steps, on a transparent background. It posts its height to
+ * the frame, and the frame posts back the site's theme (light or dark).
+ */
+const EMBED = new URLSearchParams(window.location.search).has('embed');
+if (EMBED) {
+  const root = document.documentElement;
+  root.classList.add('embed');
+  const height = () => window.parent.postMessage({ explainer: 'height', height: Math.ceil(root.getBoundingClientRect().height) }, '*');
+  new ResizeObserver(height).observe(root);
+  window.addEventListener('message', (e) => {
+    if (e.source === window.parent && e.data?.explainer === 'theme') root.dataset.theme = e.data.theme === 'dark' ? 'dark' : 'light';
+  });
+}
+
 const PARTS: Record<number, string> = { 1: 'The idea', 2: 'An example', 3: 'In general' };
 const RATES = [0.5, 0.75, 1, 1.5, 2];
 const NUDGE = 2 * FPS;
@@ -300,18 +316,20 @@ function App() {
   const step: Step | null = cur >= 0 ? STEPS[cur] : null;
   return (
     <div className="page">
-      <header className="head">
-        <div>
-          <div className="kicker">Berger and Leighton, 1998</div>
-          <h1>Bin packing inside a fold</h1>
-        </div>
-        <div className="keys">
-          <span><kbd>Space</kbd> play / pause</span>
-          <span><kbd>←</kbd><kbd>→</kbd> step</span>
-          <span><kbd>R</kbd> replay</span>
-          <span><kbd>F</kbd> full screen</span>
-        </div>
-      </header>
+      {!EMBED && (
+        <header className="head">
+          <div>
+            <div className="kicker">Berger and Leighton, 1998</div>
+            <h1>Bin packing inside a fold</h1>
+          </div>
+          <div className="keys">
+            <span><kbd>Space</kbd> play / pause</span>
+            <span><kbd>←</kbd><kbd>→</kbd> step</span>
+            <span><kbd>R</kbd> replay</span>
+            <span><kbd>F</kbd> full screen</span>
+          </div>
+        </header>
+      )}
 
       <main className="main">
         <div className="watch">

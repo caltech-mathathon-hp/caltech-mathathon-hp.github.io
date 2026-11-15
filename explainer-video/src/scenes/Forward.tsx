@@ -10,7 +10,7 @@
  * ribbon's start. Then the picture becomes the flat side view of the linkers (lib/linkerBoard):
  * the item beads themselves move onto the face's edge while the rest of the face fades, and the
  * linkers grow one after the other through the switchboard, each from the end of one ribbon to the
- * start of the next.
+ * start of the next, at the pace of steps 27–28 when the cue has room for it.
  *
  * Every cue is also a step of the page, paused at cue.to − 10: each cue's motion ends before that.
  */
@@ -25,9 +25,9 @@ import { C, FONT, W, H, itemColor } from '../theme/theme';
 import * as M from '../model/toy';
 import type { V3 } from '../model/toy';
 import type { SceneTime } from '../script';
-import { newDraw, drawFrame, drawWalls, drawPaddings, drawRibbon, addHoles, faceOutline, stripBox, softFor } from './lib/face';
+import { newDraw, drawFrame, drawWalls, drawPaddings, drawRibbon, addHoles, faceOutline, stripBox, softFor, splitBehind } from './lib/face';
 import { faceShot, faceGeom, holeCells, holeRow, giveWay, BoxLabel, FACE_SHIFT } from './lib/backwardFace';
-import { LinkerBoard, placement, itemPts, routes, type Pt } from './lib/linkerBoard';
+import { LinkerBoard, placement, itemPts, routes, routeFrames, type Pt } from './lib/linkerBoard';
 
 /** the face-on geometry the bins line up with (the shot of cues 1–3) */
 const G = faceGeom(projector(faceShot(1)));
@@ -50,6 +50,10 @@ const PROJ = projector(faceShot(1));
 const RIBBONS = M.placeItems(M.SIZES, M.PACKING);
 const PLACE = placement(M.PACKING);
 const ROUTES = routes(M.PACKING);
+/** the frames each linker takes at its natural pace (the pace of steps 27–28) */
+const ROUTE_FRAMES = ROUTES.map((r) => routeFrames(r));
+/** frames between one linker's end and the next one's start */
+const ROUTE_GAP = 6;
 
 /** a gentle ease for the camera turn: its top speed is half that of the cubic in-out */
 const easeSine = (t: number) => (1 - Math.cos(Math.PI * clamp01(t))) / 2;
@@ -80,8 +84,8 @@ export default function ForwardScene({ scene }: { scene: SceneTime }) {
   // ---- cue 1: the packing; the frame and walls as one picture; the turn to the face; the strips
   const binsIn = ramp(f, c0.from, sec(0.6));
   const cubeIn = ramp(f, c0.from + sec(0.7), sec(0.7));
-  // everything behind the front face fades out (see-through) before the camera starts to turn
-  const backFade = ramp(f, c0.from + sec(4.2), sec(0.8));
+  // everything behind the front face fades out, as one picture, before the camera starts to turn
+  const backFade = ramp(f, c0.from + sec(4.2), sec(0.8), easeSine);
   const turn = ramp(f, c0.from + sec(TURN_AT), sec(2.0), easeSine);
   const stripsIn = ramp(f, c0.from + sec(7.4), sec(0.5));
 
@@ -117,18 +121,36 @@ export default function ForwardScene({ scene }: { scene: SceneTime }) {
   // and only then do the items move: the beads themselves, never a copy over a fading original
   const binsOut = ramp(f, c3.from, sec(0.35));
   const xfade = ramp(f, c3.from + sec(0.05), sec(0.3));
-  const swapped = f >= c3.from + sec(0.35);
+  // the 3D ribbons fade out under the flat items (which cover them), so their slightly different
+  // shading never switches in one frame
+  const under = ramp(f, c3.from + sec(0.35), sec(0.25));
   const fade3D = ramp(f, c3.from + sec(0.4), sec(0.6));
-  const slide = ramp(f, c3.from + sec(0.9), sec(1.2));
-  // the board's cube rows come in only once the 3D face has gone, never under it
-  const band = ramp(f, c3.from + sec(1.2), sec(0.6));
-  const boardLab = ramp(f, c3.from + sec(1.2), sec(0.5));
-  const order = ramp(f, c3.from + sec(1.4), sec(0.5));
-  const box = ramp(f, c3.from + sec(1.6), sec(0.5));
-  const lay = ROUTES.map((_, k) => c3.from + sec(2.2 + 1.6 * k));
-  const grow = lay.map((at) => ramp(f, at, sec(1.5), (t) => t));
-  const glow = lay.map((at, k) => ramp(f, at - sec(0.1), sec(0.3)) * (k === lay.length - 1 ? 1 : 1 - ramp(f, at + sec(1.6), sec(0.4))));
-  const each = ramp(f, c3.from + sec(7.2), sec(0.5));
+  const SLIDE_AT = 0.9;
+  const SLIDE = 1.2;
+  const slide = ramp(f, c3.from + sec(SLIDE_AT), sec(SLIDE));
+  // the board (its cube rows, labels, order discs and switchboard) comes in only once the items
+  // have landed: the 3D face has gone, and no item slides over a bead of the board
+  const boardAt = SLIDE_AT + SLIDE;
+  const band = ramp(f, c3.from + sec(boardAt), sec(0.6));
+  const boardLab = ramp(f, c3.from + sec(boardAt), sec(0.5));
+  const order = ramp(f, c3.from + sec(boardAt + 0.2), sec(0.5));
+  const box = ramp(f, c3.from + sec(boardAt + 0.4), sec(0.5));
+  // the linkers, one after the other, each at the natural pace of steps 27–28; if the cue is too
+  // short for that, all three are sped up by the same factor so that "each" is in before the pause
+  const EACH_GAP = 6;
+  const EACH_IN = sec(0.5);
+  const layFrom = c3.from + sec(boardAt + 0.6);
+  const room = c3.to - 10 - 4 - EACH_IN - EACH_GAP - layFrom - ROUTE_GAP * (ROUTES.length - 1);
+  const natural = ROUTE_FRAMES.reduce((a, b) => a + b, 0);
+  const dur = ROUTE_FRAMES.map((n) => Math.round(n * Math.min(1, room / natural)));
+  const lay: number[] = [];
+  dur.forEach((_, k) => lay.push(k === 0 ? layFrom : lay[k - 1] + dur[k - 1] + ROUTE_GAP));
+  const grow = lay.map((at, k) => ramp(f, at, dur[k], lin));
+  // the linker being laid is darker; it steps back just after it is done, gently (a quick
+  // dark-to-grey switch reads as a flicker)
+  const glow = lay.map((at, k) => ramp(f, at - 3, 9) * (k === lay.length - 1 ? 1 : 1 - ramp(f, at + dur[k] + 3, sec(0.8), easeSine)));
+  // "each" comes once the last linker has grown
+  const each = ramp(f, lay[lay.length - 1] + dur[dur.length - 1] + EACH_GAP, EACH_IN);
   const inBoard = f >= c3.from;
 
   // camera: the cube turning slowly (moved left, to leave the bins room), then the face
@@ -138,16 +160,19 @@ export default function ForwardScene({ scene }: { scene: SceneTime }) {
   const project = projector(shot);
 
   const d = newDraw();
-  drawFrame(d, { backFade });
+  drawFrame(d);
   drawWalls(d, 1);
   drawPaddings(d, pads, { frames: PAD_FRAMES });
   // each ribbon fades in bead by bead as its bar gives way; after the swap of cue 4 the board's
   // beads stand where they were
-  if (!swapped) FLY.forEach((it, i) => fly[i].revealing && drawRibbon(d, it.cells, itemColor(it.u), 1, { beadOpacity: fly[i].way.bead }));
+  if (under < 1) FLY.forEach((it, i) => fly[i].revealing && drawRibbon(d, it.cells, itemColor(it.u), 1, { beadOpacity: (k) => fly[i].way.bead(k) * (1 - under) }));
   addHoles(d, { opacity: 0.9, free: 0 });
   // the cube's outline as the camera sees it, all through the turn: the far edges of the top and
   // right faces fade with the cube behind the face, then the front square is the outline
   d.lines.push(...faceOutline(0.6, backFade, C.fgSubtle, true));
+
+  // the front face (and what stands out of it towards the viewer), and the cube behind it
+  const { front, back } = splitBehind(d);
 
   const binsO = binsIn * (1 - binsOut);
   const faceO = 1 - fade3D;
@@ -157,7 +182,14 @@ export default function ForwardScene({ scene }: { scene: SceneTime }) {
     <SceneFrame scene={scene}>
       {/* the cube: one picture, coming in and going as a whole */}
       <div style={{ position: 'absolute', inset: 0, opacity: cubeIn * faceO }}>
-        <Scene3D shot={shot} beads={d.beads} sticks={d.sticks} lines={d.lines} panels={d.panels} solids={d.solids} shell={CUBE_SHELL} />
+        {/* the cube behind the front face is its own picture, under the face's: it fades out as
+            a whole (its sticks with their beads), never bead by bead */}
+        {backFade < 1 && (
+          <div style={{ position: 'absolute', inset: 0, opacity: 1 - backFade }}>
+            <Scene3D shot={shot} beads={back.beads} sticks={back.sticks} solids={d.solids} shell={CUBE_SHELL} />
+          </div>
+        )}
+        <Scene3D shot={shot} beads={front.beads} sticks={front.sticks} lines={d.lines} panels={d.panels} shell={CUBE_SHELL} />
       </div>
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} textRendering="geometricPrecision" style={{ position: 'absolute', inset: 0, overflow: 'visible' }}>
         <g fontFamily={FONT.sans}>
@@ -232,7 +264,7 @@ export default function ForwardScene({ scene }: { scene: SceneTime }) {
               return { u: p.u, opacity: xfade, pts: to.map((q, i) => [lerp(from[i][0], q[0], slide), lerp(from[i][1], q[1], slide)] as Pt) };
             })}
             band={band}
-            routes={ROUTES.map((r, k) => ({ r, grow: grow[k], glow: glow[k] }))}
+            routes={ROUTES.map((r, k) => ({ r, grow: grow[k], frames: dur[k], glow: glow[k] }))}
             box={box}
             lab={{ face: boardLab, cube: boardLab, holes: boardLab, out: boardLab, order, switchboard: box, depths: each, each, eachText: `${M.TOY.linker} P’s each` }}
           />

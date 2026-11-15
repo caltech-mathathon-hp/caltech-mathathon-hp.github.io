@@ -35,14 +35,16 @@ const ROUTES_B = routesOf(PLACE_B);
 /** the linker followed end to end: from the end of item 1 to the start of item 2 */
 const HI = 0;
 /**
- * cue 3: how far each hole's row moves, and the height of its arch: each row goes along one smooth
- * arch into the other hole (up, across, down, never stopping), hole 2's row high enough to pass over
- * hole 1's row and its stubs (at least 39 px clear at every moment)
+ * cue 3: how far each hole's row moves, and the height of its arch. Each row goes along one smooth
+ * arch into the other hole (up, across, down, never stopping). The sideways part starts slowly, so
+ * hole 1's row is clear of the wall beads before it moves over them (at least 17 px between beads);
+ * hole 2's row arches high enough to pass over hole 1's row and its stubs (at least 39 px clear at
+ * every moment) and stays below the "the bins swapped" label.
  */
 const SHIFT = HOLE_X[1] - HOLE_X[0];
-const ARCH = [40, 330];
-/** the arch: a cubic Bézier from (0, 0) via (0, −h) and (S, −h) to (S, 0) */
-const arch = (s: number, S: number, h: number): Pt => [S * s * s * (3 - 2 * s), -3 * h * s * (1 - s)];
+const ARCH = [70, 280];
+/** the arch at s ∈ [0, 1]: across by a smootherstep, up by a parabola of height h */
+const arch = (s: number, S: number, h: number): Pt => [S * s * s * s * (s * (6 * s - 15) + 10), -4 * h * s * (1 - s)];
 /** a gentle ease, for moves along a curve: its top speed is half that of the cubic in-out */
 const sine = (t: number) => (1 - Math.cos(Math.PI * clamp01(t))) / 2;
 /** routes laid one after the other at their natural pace, `gap` frames apart */
@@ -72,7 +74,7 @@ export default function LinkersScene({ scene }: { scene: SceneTime }) {
 
   // ---- cue 1: the items come down onto the face (once the scene has faded in); linkers straight
   // out, one after the other
-  const morph = ramp(f, 10, sec(1.5));
+  const morph = ramp(f, 8, sec(1.65), sine);
   const outLab = ramp(f, at(c0, 1.4), sec(0.5));
   const STRAIGHT = sec(1.1);
   const straightAt = [0, 1, 2].map((k) => at(c0, 2.0 + 1.25 * k));
@@ -86,23 +88,23 @@ export default function LinkersScene({ scene }: { scene: SceneTime }) {
   const topOut = ramp(f, at(c1, 0.15), sec(0.35));
   const stubsOnly = f >= at(c1, 0.5);
   /** the switchboard steps back while the rows change holes through it (cue 3) */
-  const box = ramp(f, at(c1, 0.6), sec(0.5)) * (1 - 0.7 * (ramp(f, at(c2, 0.8), sec(0.4)) - ramp(f, at(c2, 3.2), sec(0.4))));
-  const boxLab = ramp(f, at(c1, 0.9), sec(0.5));
-  const routeAt = schedule(at(c1, 1.5), DUR_A, 6);
+  const box = ramp(f, at(c1, 0.5), sec(0.5)) * (1 - 0.7 * (ramp(f, at(c2, 0.8), sec(0.4)) - ramp(f, at(c2, 3.4), sec(0.4))));
+  const boxLab = ramp(f, at(c1, 0.7), sec(0.5));
+  const routeAt = schedule(at(c1, 1.2), DUR_A, 6);
   const routeGrow = routeAt.map((t0, k) => ramp(f, t0, DUR_A[k], lin));
   const routesDone = routeAt[2] + DUR_A[2];
   const cue2Out = 1 - ramp(f, c2.from, sec(0.3));
   const depthsA = ramp(f, routesDone + sec(0.2), sec(0.5)) * cue2Out;
-  const hiOn = ramp(f, routesDone + sec(0.8), sec(0.6)) * (1 - ramp(f, c2.from, sec(0.4)));
-  const sides = ramp(f, routesDone + sec(1.3), sec(0.5)) * cue2Out;
-  const loop = ramp(f, routesDone + sec(1.9), sec(0.5)) * cue2Out;
+  const hiOn = ramp(f, routesDone + sec(0.7), sec(0.6), sine) * (1 - ramp(f, c2.from, sec(0.6), sine));
+  const sides = ramp(f, routesDone + sec(1.1), sec(0.5)) * cue2Out;
+  const loop = ramp(f, routesDone + sec(1.6), sec(0.5)) * cue2Out;
 
   // ---- cue 3: the bins swapped; the rows change holes with their stubs; the same linkers rerouted
   const another = ramp(f, at(c2, 0.5), sec(0.5));
-  const bodyOut = ramp(f, at(c2, 0.6), sec(0.4));
-  const swap = ramp(f, at(c2, 1.2), sec(2.0), sine);
-  const swapped = f >= at(c2, 3.3);
-  const rerouteAt = schedule(at(c2, 3.5), DUR_B, 6);
+  const bodyOut = ramp(f, at(c2, 0.6), sec(0.5), sine);
+  const swap = ramp(f, at(c2, 1.2), sec(2.2), sine);
+  const swapped = f >= at(c2, 3.5);
+  const rerouteAt = schedule(at(c2, 3.7), DUR_B, 6);
   const reroute = rerouteAt.map((t0, k) => ramp(f, t0, DUR_B[k], lin));
   const reroutesDone = rerouteAt[2] + DUR_B[2];
   const depthsB = ramp(f, reroutesDone + sec(0.2), sec(0.5));

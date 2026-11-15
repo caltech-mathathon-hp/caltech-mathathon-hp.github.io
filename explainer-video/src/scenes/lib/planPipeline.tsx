@@ -15,63 +15,31 @@ import { C, FONT, itemColor } from '../../theme/theme';
 import { Arrow, BAR, BinTrack, ItemBar, slotX, slotY, trackHeight, trackWidth } from '../../ui/Bins';
 import { type Letter } from '../../three/cube';
 import { yaw, type Bead, type Shot, type Stick } from '../../three/Scene3D';
-import { clamp01, easeInOut, lerp } from '../../lib/anim';
+import { clamp01, lerp } from '../../lib/anim';
 
 // ------------------------------------------------------------------ the puzzle
 
 const GAP = 24;
 const U = BAR.unit;
 const TH = trackHeight();
-/** the items' size chips, in px on screen */
-const CHIP_PX = 24;
+const BW = trackWidth(M.B);
 
 /**
- * Two layouts of the same puzzle, in px before scaling:
- *  - wide (compact = 0): the four items in one row (the tray), the two bins below;
- *  - compact (compact = 1): the items in two rows, each row the items of one bin in the packing
- *    (6 + 4, then 2 + 8) and exactly as wide as a bin, above the two bins: the narrow form that
- *    fits the pipeline's left stage. (Rows 6, 2 / 8, 4 read as a packing that does not fit.)
- * The bins are named "bin 1", "bin 2" in both.
+ * One layout, in px before scaling (the puzzle only moves and scales, so it looks the same in
+ * every step): the four items in one row in their order (the tray), and below it the two bins side
+ * by side, exactly as wide as the tray. Between the tray and the bins runs a lane as high as an
+ * item, clear of both: an item goes down into the lane, along it, and down into its bin, so it never
+ * passes over another item, a bin it does not go into, or a label. The bins' names sit under them.
  */
-interface Layout {
-  w: number;
-  h: number;
-  tray: [number, number][];
-  binX: number;
-  binY: [number, number];
-}
-const WIDE: Layout = (() => {
-  const xs = M.SIZES.reduce<number[]>((acc, _s, i) => [...acc, i === 0 ? 0 : acc[i - 1] + M.SIZES[i - 1] * U + GAP], []);
-  const w = xs[xs.length - 1] + M.SIZES[M.SIZES.length - 1] * U;
-  const binY: [number, number] = [150, 150 + TH + 72];
-  return { w, h: binY[1] + TH, tray: xs.map((x) => [x, 0] as [number, number]), binX: (w - (M.B * U + 9)) / 2, binY };
-})();
-/** the gap between the two items of a row in the compact layout: a row of 10 units is then as wide as a bin */
-const ROW_GAP = 8;
-const COMPACT: Layout = (() => {
-  const w = trackWidth(M.B);
-  const tray: [number, number][] = [];
-  M.PACKING.forEach((r, k) => {
-    const rowW = r.reduce((t, u) => t + M.SIZES[u] * U, 0) + (r.length - 1) * ROW_GAP;
-    let x = (w - rowW) / 2;
-    for (const u of r) {
-      tray[u] = [x, k * (BAR.h + 14)];
-      x += M.SIZES[u] * U + ROW_GAP;
-    }
-  });
-  // room above each bin for its name
-  const top = 2 * BAR.h + 14 + 56;
-  const binY: [number, number] = [top, top + TH + 48];
-  return { w, h: binY[1] + TH, tray, binX: 0, binY };
-})();
-/** in between: the items first move down to their row, then across, so no two ever overlap */
-const mix = (k: number): Layout => ({
-  w: lerp(WIDE.w, COMPACT.w, k),
-  h: lerp(WIDE.h, COMPACT.h, k),
-  tray: WIDE.tray.map((p, u) => [lerp(p[0], COMPACT.tray[u][0], easeInOut(clamp01(k * 2 - 0.8))), lerp(p[1], COMPACT.tray[u][1], easeInOut(clamp01(k * 2)))] as [number, number]),
-  binX: lerp(WIDE.binX, COMPACT.binX, k),
-  binY: [lerp(WIDE.binY[0], COMPACT.binY[0], k), lerp(WIDE.binY[1], COMPACT.binY[1], k)],
-});
+const TRAY_X = M.SIZES.reduce<number[]>((acc, _s, i) => [...acc, i === 0 ? 0 : acc[i - 1] + M.SIZES[i - 1] * U + GAP], []);
+const PW = TRAY_X[TRAY_X.length - 1] + M.SIZES[M.SIZES.length - 1] * U;
+/** the top of an item in the lane, and the bins' top */
+const LANE_Y = 66;
+const BIN_Y = 150;
+const BIN_X = [0, PW - BW];
+const PH = BIN_Y + TH;
+/** the radius of the path's corners, in px before scaling */
+const TURN_R = 46;
 
 /** the bin and slot each item goes to in the packing 6 + 4, 2 + 8 */
 const TARGET: { bin: number; slot: number }[] = (() => {
@@ -86,19 +54,70 @@ const TARGET: { bin: number; slot: number }[] = (() => {
   return out;
 })();
 
-/** where a puzzle sits: its centre on screen, its scale, and how far it is in its compact layout (0..1) */
+/**
+ * Item u's way from the tray to its bin (the top-left corner of the bar): down into the lane,
+ * along it, down into the bin, with rounded corners, as one smooth path. `at(s)` is the point at
+ * arc length s.
+ */
+const PATHS = M.SIZES.map((_, u) => {
+  const x0 = TRAY_X[u];
+  const tg = TARGET[u];
+  const x1 = slotX(BIN_X[tg.bin], tg.slot);
+  const y1 = slotY(BIN_Y);
+  const dx = x1 - x0;
+  const sx = Math.sign(dx);
+  const r = Math.min(TURN_R, Math.abs(dx) / 2);
+  type Seg = { len: number; at: (s: number) => [number, number] };
+  const line = (a: [number, number], b: [number, number]): Seg => {
+    const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    return { len, at: (s) => [lerp(a[0], b[0], len ? s / len : 0), lerp(a[1], b[1], len ? s / len : 0)] };
+  };
+  const segs: Seg[] = [];
+  if (r < 1) segs.push(line([x0, 0], [x1, y1]));
+  else {
+    const q = (r * Math.PI) / 2;
+    segs.push(line([x0, 0], [x0, LANE_Y - r]));
+    // down, turning towards the bin
+    segs.push({ len: q, at: (s) => [x0 + sx * r * (1 - Math.cos(s / r)), LANE_Y - r + r * Math.sin(s / r)] });
+    segs.push(line([x0 + sx * r, LANE_Y], [x1 - sx * r, LANE_Y]));
+    // along, turning down into the bin
+    segs.push({ len: q, at: (s) => [x1 - sx * r + sx * r * Math.sin(s / r), LANE_Y + r - r * Math.cos(s / r)] });
+    segs.push(line([x1, LANE_Y + r], [x1, y1]));
+  }
+  const len = segs.reduce((t, g) => t + g.len, 0);
+  const at = (s: number): [number, number] => {
+    let rest = Math.min(Math.max(0, s), len);
+    for (const g of segs) {
+      if (rest <= g.len) return g.at(rest);
+      rest -= g.len;
+    }
+    return [x1, y1];
+  };
+  return { len, at };
+});
+/**
+ * Frames for each item's way into its bin: one eased move at a calm speed (at least 24 frames,
+ * the longest about 1.8 s). Callers pass `place` as plain time (0..1 over these frames); the
+ * puzzle eases it, once, at the two ends of the path.
+ */
+export const FLIGHT_FRAMES = PATHS.map((p) => Math.round(Math.min(56, Math.max(24, 14 + p.len / 16))));
+/** an ease with no flat ends and a gentle middle (top speed 1.57 times the mean) */
+const sine = (t: number) => (1 - Math.cos(Math.PI * clamp01(t))) / 2;
+
+/** where a puzzle sits: its centre on screen, its scale, and how far its bins' names have gone (0..1) */
 export interface PuzzleAt {
   cx: number;
   cy: number;
   scale: number;
+  /** 0 = the bins' names under the bins (the puzzle on its own), 1 = without them (a stage of the pipeline) */
   compact: number;
 }
 /** the pipeline's row: the y of the centres of its three stages */
 export const PIPE_Y = 390;
 /** full-size puzzle in the middle of the picture (cue 1 of "plan" and "instance") */
 export const PUZZLE_BIG: PuzzleAt = { cx: 960, cy: 400, scale: 1.15, compact: 0 };
-/** the puzzle as the left stage of the pipeline */
-export const PUZZLE_SMALL: PuzzleAt = { cx: 390, cy: PIPE_Y, scale: 0.85, compact: 1 };
+/** the puzzle as the left stage of the pipeline: the same picture, smaller, from x = 60 */
+export const PUZZLE_SMALL: PuzzleAt = { cx: 60 + (PW * 0.6) / 2, cy: PIPE_Y, scale: 0.6, compact: 1 };
 export const mixAt = (p: PuzzleAt, q: PuzzleAt, t: number, tc = t): PuzzleAt => ({
   cx: lerp(p.cx, q.cx, t),
   cy: lerp(p.cy, q.cy, t),
@@ -108,9 +127,9 @@ export const mixAt = (p: PuzzleAt, q: PuzzleAt, t: number, tc = t): PuzzleAt => 
 
 export interface PuzzleProps {
   at: PuzzleAt;
-  /** per item, 0..1: how far it has moved from the tray into its bin */
+  /** per item, 0..1, plain time: how far it is on its way from the tray into its bin */
   place?: number[];
-  /** per item, 0..1: appearance (scale-in) */
+  /** per item, 0..1: its opacity (an item comes and goes by fading, at full size) */
   appear?: number[];
   /** the bins' opacity (0..1) */
   bins?: number;
@@ -119,73 +138,53 @@ export interface PuzzleProps {
 
 export function Puzzle({ at, place = [0, 0, 0, 0], appear = [1, 1, 1, 1], bins = 1, opacity = 1 }: PuzzleProps) {
   if (opacity <= 0) return null;
-  const L = mix(clamp01(at.compact));
-  const landed = [0, 0];
-  const count = [0, 0];
-  M.SIZES.forEach((s, u) => {
-    if (place[u] >= 1) {
-      landed[TARGET[u].bin] += s;
-      count[TARGET[u].bin]++;
-    }
-  });
-  // a bin's border turns green as its second item settles (over the last fifth of its flight)
+  // a bin's border turns green as its second item settles (over the last fifth of its way), and
+  // goes with its items when they fade
   const fullIn = [0, 1].map((b) => {
     const mine = M.SIZES.map((_, u) => u).filter((u) => TARGET[u].bin === b);
-    return mine.length === 2 && mine.reduce((a, u) => a + M.SIZES[u], 0) === M.B ? clamp01((Math.min(...mine.map((u) => place[u])) - 0.8) / 0.2) : 0;
+    if (mine.length !== 2 || mine.reduce((a, u) => a + M.SIZES[u], 0) !== M.B) return 0;
+    return clamp01((Math.min(...mine.map((u) => place[u])) - 0.8) / 0.2) * Math.min(...mine.map((u) => clamp01(appear[u])));
   });
   const items = M.SIZES.map((size, u) => {
-    const t = easeInOut(place[u]);
-    const tg = TARGET[u];
-    const bx = slotX(L.binX, tg.slot);
-    const by = slotY(L.binY[tg.bin]);
-    const x = lerp(L.tray[u][0], bx, t);
-    const arc = Math.sin(Math.PI * t) * 46;
-    const y = lerp(L.tray[u][1], by, t) - arc;
-    const a = clamp01(appear[u]);
-    const lift = Math.sin(Math.PI * t);
-    const s = 0.85 + 0.15 * a;
-    return { u, size, x, y, a, lift, s, moving: t > 0 && t < 1 };
+    const t = clamp01(place[u]);
+    const [x, y] = PATHS[u].at(sine(t) * PATHS[u].len);
+    return { u, size, x, y, a: clamp01(appear[u]), lift: Math.sin(Math.PI * t), moving: t > 0 && t < 1 };
   });
-  // moving items are drawn last, on top
+  // a moving item is drawn last, on top (it passes over nothing, but its shadow may)
   items.sort((p, q) => Number(p.moving) - Number(q.moving));
-  // the bins' names, in the sub-line style of the bins elsewhere (22 px on screen whatever the scale)
-  const nameFont = 22 / at.scale;
-  // the size chips keep about 24 px on screen whatever the scale (the bar's own chip would shrink with it)
-  const chipFont = Math.min(28, Math.max(20, CHIP_PX / at.scale));
-  const chipH = Math.min(BAR.h - 6, chipFont * 1.4);
+  // the size chips: at least 20 px on screen whatever the scale, and never taller than the bar
+  const chipFont = Math.max(20 / at.scale, Math.min(28, 24 / at.scale));
+  const chipH = Math.min(BAR.h - 6, chipFont * 1.2);
   const chipW = chipFont * 1.45;
-  const x0 = at.cx - (L.w * at.scale) / 2;
-  const y0 = at.cy - (L.h * at.scale) / 2;
+  // the bins' names: a name and a sub-line, at their usual size on screen whatever the scale
+  const names = bins * clamp01(1 - 2.5 * at.compact);
+  const k = 1 / at.scale;
+  const x0 = at.cx - (PW * at.scale) / 2;
+  const y0 = at.cy - (PH * at.scale) / 2;
   return (
     <g opacity={opacity} transform={`translate(${x0} ${y0}) scale(${at.scale})`}>
       {[0, 1].map((b) => (
-        <BinTrack
-          key={b}
-          x={L.binX}
-          y={L.binY[b]}
-          B={M.B}
-          opacity={bins}
-          covered={landed[b]}
-          full={fullIn[b]}
-        />
+        <BinTrack key={b} x={BIN_X[b]} y={BIN_Y} B={M.B} opacity={bins} full={fullIn[b]} />
       ))}
-      {[0, 1].map((b) => (
-        <text key={b} x={L.binX + 2} y={L.binY[b] - 12} fontFamily={FONT.sans} fontSize={nameFont} fontWeight={500} fill={C.fgMuted} opacity={bins}>
-          bin {b + 1} · size {M.B}
-        </text>
-      ))}
+      {names > 0 &&
+        [0, 1].map((b) => (
+          <g key={b} opacity={names} fontFamily={FONT.sans}>
+            <text x={BIN_X[b] + 2} y={PH + 32 * k} fontSize={26 * k} fontWeight={600} fill={C.fg}>
+              bin {b + 1}
+            </text>
+            <text x={BIN_X[b] + 2} y={PH + 61 * k} fontSize={22 * k} fontWeight={500} fill={C.fgMuted}>
+              size {M.B}
+            </text>
+          </g>
+        ))}
       {items.map((it) =>
         it.a <= 0 ? null : (
-          <g key={it.u} transform={`translate(${it.x + (it.size * U) / 2} ${it.y + BAR.h / 2}) scale(${it.s}) translate(${-(it.x + (it.size * U) / 2)} ${-(it.y + BAR.h / 2)})`}>
-            <ItemBar x={it.x} y={it.y} size={it.size} color={itemColor(it.u)} opacity={it.a} lift={it.lift} chip={false} />
-            {it.a > 0 && (
-              <g opacity={it.a}>
-                <rect x={it.x + (it.size * U) / 2 - chipW / 2} y={it.y + BAR.h / 2 - chipH / 2} width={chipW} height={chipH} rx={5} fill={C.bgElev} />
-                <text x={it.x + (it.size * U) / 2} y={it.y + BAR.h / 2 + chipFont * 0.35} textAnchor="middle" fontFamily={FONT.sans} fontWeight={650} fontSize={chipFont} fill={C.fg} style={{ fontVariantNumeric: 'tabular-nums' }}>
-                  {it.size}
-                </text>
-              </g>
-            )}
+          <g key={it.u} opacity={it.a}>
+            <ItemBar x={it.x} y={it.y} size={it.size} color={itemColor(it.u)} lift={it.lift} chip={false} />
+            <rect x={it.x + (it.size * U) / 2 - chipW / 2} y={it.y + BAR.h / 2 - chipH / 2} width={chipW} height={chipH} rx={5} fill={C.bgElev} />
+            <text x={it.x + (it.size * U) / 2} y={it.y + BAR.h / 2 + chipFont * 0.35} textAnchor="middle" fontFamily={FONT.sans} fontWeight={650} fontSize={chipFont} fill={C.fg} style={{ fontVariantNumeric: 'tabular-nums' }}>
+              {it.size}
+            </text>
           </g>
         ),
       )}
@@ -193,24 +192,29 @@ export function Puzzle({ at, place = [0, 0, 0, 0], appear = [1, 1, 1, 1], bins =
   );
 }
 
-/** screen box of a puzzle placement (for arrows and labels) */
+/** screen box of a puzzle placement, without the bins' names (for arrows and labels) */
 export const puzzleBox = (at: PuzzleAt) => {
-  const L = mix(clamp01(at.compact));
-  const w = L.w * at.scale;
-  const h = L.h * at.scale;
+  const w = PW * at.scale;
+  const h = PH * at.scale;
   return { left: at.cx - w / 2, right: at.cx + w / 2, top: at.cy - h / 2, bottom: at.cy + h / 2, cx: at.cx, cy: at.cy };
 };
 
+
 // ------------------------------------------------------------------ an HP string, flat
 
-/** how many letters behind the tip a newly written bead of a FlatString takes to fade in */
-const FLAT_FADE = 3.5;
+/**
+ * How many letters behind the tip a newly written bead of a FlatString takes to fade in: the
+ * string's soft tip. A caller gives the string at least 2 frames per letter at its fastest, so a
+ * bead takes at least 6 frames.
+ */
+const FLAT_FADE = 3;
 
 /**
  * An HP string as the fold game draws it in 2D: H filled orange, P a white disc with a blue rim,
- * grey backbone. It is written with one tip, left to right: the backbone grows from bead to bead,
- * and each bead appears at full size, fading in as the tip reaches it. The backbone runs between
- * the beads' rims, so nothing shows through a bead while it fades in.
+ * grey backbone. It is written with one tip, left to right: each bead fades in at full size as the
+ * tip reaches it, and the backbone to it (and a break mark before it) comes with it, never
+ * stronger than the fainter of the two beads it joins. The backbone runs between the beads' rims,
+ * so nothing shows through a bead while it fades in.
  */
 export function FlatString({
   x,
@@ -233,29 +237,28 @@ export function FlatString({
   tail?: boolean;
 }) {
   const R = 0.27 * step;
-  const r0 = R / step;
   const xs: number[] = [];
   let cx = x + R;
   for (let i = 0; i < seq.length; i++) {
     xs.push(cx);
     cx += step + (breakAfter.includes(i) ? step * 0.9 : 0);
   }
-  // the tip, in letters: at -r0 it touches the first bead's rim, at seq.length - 1 + 1 the tail is out
-  const end = seq.length - 1 + (tail ? 1 : 0) + FLAT_FADE;
-  const head = -r0 + clamp01(progress) * (end + r0);
-  const beadO = (i: number) => clamp01((head - (i - r0)) / FLAT_FADE);
+  // the tip, in letters: it reaches bead i at i; the tail ("…") counts as one more letter
+  const n = seq.length;
+  const end = n - 1 + (tail ? 1 : 0) + FLAT_FADE;
+  const head = clamp01(progress) * end;
+  const beadO = (i: number) => sine(clamp01((head - i) / FLAT_FADE));
   const sw = 0.075 * step;
   const parts: React.ReactNode[] = [];
-  for (let i = 0; i + 1 < seq.length; i++) {
-    // the stick from bead i's rim to bead i + 1's rim, grown by the tip
-    const g = clamp01((head - (i + r0)) / (1 - 2 * r0));
-    if (g <= 0) break;
+  for (let i = 0; i + 1 < n; i++) {
+    const o = Math.min(beadO(i), beadO(i + 1));
+    if (o <= 0) break;
     const x1 = xs[i] + R;
     const x2 = xs[i + 1] - R;
     if (breakAfter.includes(i)) {
       const mx = (xs[i] + xs[i + 1]) / 2;
       parts.push(
-        <g key={`b${i}`} opacity={g}>
+        <g key={`b${i}`} opacity={o}>
           <line x1={x1} x2={mx - 7} y1={y} y2={y} stroke={C.backbone} strokeWidth={sw} strokeLinecap="butt" />
           <line x1={mx + 7} x2={x2} y1={y} y2={y} stroke={C.backbone} strokeWidth={sw} strokeLinecap="butt" />
           <line x1={mx - 10} x2={mx - 2} y1={y + 10} y2={y - 10} stroke={C.fgSubtle} strokeWidth={2} strokeLinecap="round" />
@@ -263,17 +266,17 @@ export function FlatString({
         </g>,
       );
     } else {
-      parts.push(<line key={`l${i}`} x1={x1} x2={lerp(x1, x2, g)} y1={y} y2={y} stroke={C.backbone} strokeWidth={sw} strokeLinecap="butt" />);
+      parts.push(<line key={`l${i}`} x1={x1} x2={x2} y1={y} y2={y} stroke={C.backbone} strokeWidth={sw} strokeLinecap="butt" opacity={o} />);
     }
   }
-  for (let i = 0; i < seq.length; i++) {
+  for (let i = 0; i < n; i++) {
     const o = beadO(i);
     if (o <= 0) break;
     const h = seq[i] === 'H';
     parts.push(<circle key={`c${i}`} cx={xs[i]} cy={y} r={R} fill={h ? C.h : C.bgElev} stroke={h ? C.h : C.p} strokeWidth={0.07 * step} opacity={o} />);
   }
   if (tail) {
-    const t = clamp01((head - (seq.length - 1 + r0)) / FLAT_FADE);
+    const t = beadO(n);
     const ex = xs[xs.length - 1] + R + 14;
     parts.push(
       <g key="tail" opacity={t}>
@@ -285,6 +288,14 @@ export function FlatString({
   }
   return <g>{parts}</g>;
 }
+/**
+ * The ease for writing a FlatString or laying a chain: the tip starts and ends at 0.7 of its mean
+ * speed and is never faster than 1.3 times it, so its soft tip keeps the same length.
+ */
+export const gentle = (t: number) => {
+  t = clamp01(t);
+  return t - (0.3 * Math.sin(2 * Math.PI * t)) / (2 * Math.PI);
+};
 /** width of a FlatString in px */
 export const flatStringWidth = (seq: string, step = 32, breaks = 0, tail = true) => (seq.length - 1) * step + 0.54 * step + breaks * step * 0.9 + (tail ? 14 + 22 + 3 : 0);
 
@@ -333,7 +344,7 @@ const SMALL_LETTERS: Letter[] = (() => {
 const SMALL_CENTER: V3 = [(SIDE - 1) / 2, (SIDE - 1) / 2, -(SIDE - 1) / 2];
 
 /** where the pipeline's cube sits on screen */
-export const CUBE_SCREEN = { x: 1636, y: PIPE_Y };
+export const CUBE_SCREEN = { x: 1690, y: PIPE_Y };
 
 /**
  * The view of a 3 × 3 × 3 cube of beads used in "plan", "cube" and "end": about 36° round from
@@ -349,17 +360,18 @@ export const CUBE3_DIR: V3 = (() => {
 
 // ------------------------------------------------------------------ laying a chain, one tip at a time
 
-/** frames a newly laid bead takes to fade in, at full size */
+/** frames a newly laid bead takes to fade in, at full size (eased) */
 export const BEAD_FADE = 6;
 
 /**
  * When the tip of a chain being laid reaches each of its `n` letters, laying from frame `from` for
- * `dur` frames as one eased move: the tip starts and ends at about a third of its top speed (a
- * full ease would crawl over the first beads and then rush the middle).
+ * `dur` frames as one move: the tip's speed is 1 − a times its mean at the two ends and 1 + a
+ * times it in the middle (a full ease would crawl over the first beads and then rush the middle).
+ * With BEAD_FADE = 6, a tip that reaches a new bead every 2 frames or more at its fastest has at
+ * most three beads fading in at once.
  */
-export function chainTimes(n: number, from: number, dur: number): number[] {
-  const a = 0.6;
-  // the tip has gone a fraction s(t) of the way at time fraction t; speed 1 − a at the ends, 1 + a in the middle
+export function chainTimes(n: number, from: number, dur: number, a = 0.6): number[] {
+  // the tip has gone a fraction s(t) of the way at time fraction t
   const s = (t: number) => t - (a * Math.sin(2 * Math.PI * t)) / (2 * Math.PI);
   const inv = (x: number) => {
     let lo = 0;
@@ -383,34 +395,35 @@ export interface ChainLetter {
 }
 
 /**
- * A chain laid with one growing tip, in string order (the protein is one string): the stick from
- * letter i grows to letter i + 1 between their times, and each bead appears at full size, fading
- * in from the moment the tip reaches its surface. `fade` (0..1) fades the whole chain out.
- * Sticks join only letters that are lattice neighbours.
+ * A chain laid with one tip, in string order (the protein is one string): each bead fades in at
+ * its node, at full size, when the tip reaches it (by opacity, so it is see-through while it comes
+ * and never a pale disc), and the stick from the bead before comes with it, never stronger than
+ * the fainter of its two beads. `fade` (0..1) takes the whole chain away, the same way.
+ * Sticks join only letters that are lattice neighbours, unless `joinAll`.
  */
 export function layChain(f: number, times: number[], letters: ChainLetter[], beads: Bead[], sticks: Stick[], opts: { fade?: number; stickR?: number; joinAll?: boolean } = {}) {
-  const fade = opts.fade ?? 0;
-  if (fade >= 1) return;
+  const keep = 1 - clamp01(opts.fade ?? 0);
+  if (keep <= 0) return;
   const n = letters.length;
   const unit = (a: V3, b: V3) => Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]) + Math.abs(a[2] - b[2]) === 1;
+  const o = letters.map((_, i) => beadIn(f, times, i) * keep);
   for (let i = 0; i + 1 < n; i++) {
-    const g = clamp01((f - times[i]) / Math.max(1e-3, times[i + 1] - times[i]));
-    if (g <= 0) break;
+    const m = Math.min(o[i], o[i + 1]);
+    if (m <= 0) break;
     if (!opts.joinAll && !unit(letters[i].pos, letters[i + 1].pos)) continue;
-    sticks.push({ a: letters[i].pos, b: letters[i + 1].pos, color: C.backbone, r: opts.stickR, grow: g, fade: fade > 0 ? fade : undefined });
+    sticks.push({ a: letters[i].pos, b: letters[i + 1].pos, color: C.backbone, r: opts.stickR, fade: m < 0.999 ? 1 - m : undefined });
   }
   for (let i = 0; i < n; i++) {
+    if (o[i] <= 0) break;
     const l = letters[i];
-    const o = beadIn(f, times, i, l.r);
-    if (o <= 0) break;
-    beads.push({ pos: l.pos, color: l.color, hollow: l.hollow, r: l.r, fade: 1 - o * (1 - fade) });
+    beads.push({ pos: l.pos, color: l.color, hollow: l.hollow, r: l.r, opacity: o[i] < 0.999 ? o[i] : undefined });
   }
 }
 
-/** how far bead i of a chain laid with `times` has faded in (0..1): from when the tip touches its surface */
-export function beadIn(f: number, times: number[], i: number, r = 0.3): number {
-  const start = i === 0 ? times[0] : lerp(times[i - 1], times[i], 1 - r);
-  return clamp01((f - start) / BEAD_FADE);
+/** how far bead i of a chain laid with `times` has faded in (0..1, eased): from when the tip reaches it */
+export function beadIn(f: number, times: number[], i: number): number {
+  const t = clamp01((f - times[i]) / BEAD_FADE);
+  return (1 - Math.cos(Math.PI * t)) / 2;
 }
 
 /** the radius of a dashed link: a contact (gold) or a contact lost (red) */
@@ -447,14 +460,18 @@ export function dashLink(a: V3, b: V3, color: string, opts: { ra?: number; rb?: 
 /** the small cube's letters, as a chain to lay */
 const SMALL_CHAIN: ChainLetter[] = SMALL_LETTERS.map((l) => (l.h ? { pos: l.pos, color: C.h } : { pos: l.pos, color: C.p, hollow: true }));
 
+/** frames the small cube takes to lay: a new bead every 2 frames, at an even pace */
+export const SMALL_CUBE_FRAMES = 2 * (SMALL_CHAIN.length - 1);
+
 /**
- * Beads and sticks of the small cube, laid in chain order with one tip from frame `from` for `dur`
- * frames, and a faint outline of its cube (the contour only) with opacity `box`.
+ * Beads and sticks of the small cube, laid in chain order with one tip from frame `from` (a new
+ * bead every 2 frames, so at most three fade in at once), and a faint outline of its cube (the
+ * contour only) with opacity `box`.
  */
-export function smallCube(f: number, from: number, dur: number, box = 0): { beads: Bead[]; sticks: Stick[]; lines: Stick[] } {
+export function smallCube(f: number, from: number, box = 0): { beads: Bead[]; sticks: Stick[]; lines: Stick[] } {
   const beads: Bead[] = [];
   const sticks: Stick[] = [];
-  if (f >= from) layChain(f, chainTimes(SMALL_CHAIN.length, from, dur), SMALL_CHAIN, beads, sticks);
+  if (f >= from) layChain(f, chainTimes(SMALL_CHAIN.length, from, SMALL_CUBE_FRAMES, 0), SMALL_CHAIN, beads, sticks);
   const lines = box > 0 ? contourBox([-0.5, -0.5, -SIDE + 0.5], [SIDE - 0.5, SIDE - 0.5, 0.5], box) : [];
   return { beads, sticks, lines };
 }
@@ -590,11 +607,17 @@ export const unitPxAt = (dist: number, fov = 30) => 1080 / (2 * dist * Math.tan(
 
 // ------------------------------------------------------------------ the whole pipeline (plan, end)
 
-const STEP = 32;
+const STEP = 30;
 const STR_W = flatStringWidth(PIPE_SEQ, STEP, PIPE_BREAKS.length);
-const STR_X = 815;
+const BOX_S = puzzleBox(PUZZLE_SMALL);
+/** arrow 1 ("we write") and the string */
+const A1_FROM = BOX_S.right + 25;
+const STR_X = A1_FROM + 90 + 25;
 /** centre x of the pipeline's string */
 export const STRING_CX = STR_X + STR_W / 2;
+/** arrow 2 ("fold"): long enough for "a fast program?" under it, clear of the string and the cube */
+const A2_FROM = STR_X + STR_W + 25;
+const A2_TO = CUBE_SCREEN.x - CUBE_HALF - 10;
 /** the stages' names, under the row */
 export const PIPE_LABEL_Y = PIPE_Y + 196;
 /** a stage's second line, small and grey, under its name */
@@ -603,6 +626,75 @@ export const PIPE_SUB_Y = PIPE_LABEL_Y + 32;
 const BACK_END_Y = PIPE_SUB_Y + 28;
 const BACK_Y = 905;
 const BACK_LABEL_Y = 730;
+const BACK_MID = (BOX_S.cx + CUBE_SCREEN.x) / 2;
+
+/** a polyline through a curve, and the point at arc length s along it */
+type Track = { pts: [number, number][]; cum: number[]; len: number };
+const track = (pts: [number, number][]): Track => {
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  return { pts, cum, len: cum[cum.length - 1] };
+};
+const trackAt = (t: Track, s: number): [number, number] => {
+  s = Math.max(0, Math.min(t.len, s));
+  let i = 1;
+  while (i < t.pts.length - 1 && t.cum[i] < s) i++;
+  const g = t.cum[i] - t.cum[i - 1];
+  const k = g > 0 ? (s - t.cum[i - 1]) / g : 0;
+  return [lerp(t.pts[i - 1][0], t.pts[i][0], k), lerp(t.pts[i - 1][1], t.pts[i][1], k)];
+};
+const line = (a: [number, number], b: [number, number]) => track(Array.from({ length: 21 }, (_, i) => [lerp(a[0], b[0], i / 20), lerp(a[1], b[1], i / 20)] as [number, number]));
+const quad = (a: [number, number], c: [number, number], b: [number, number]) =>
+  track(
+    Array.from({ length: 81 }, (_, i) => {
+      const t = i / 80;
+      return [(1 - t) * (1 - t) * a[0] + 2 * (1 - t) * t * c[0] + t * t * b[0], (1 - t) * (1 - t) * a[1] + 2 * (1 - t) * t * c[1] + t * t * b[1]] as [number, number];
+    }),
+  );
+/**
+ * The loop a fast program would run, as three legs: write the string, fold it, read off the
+ * answer. Each leg: when it starts (frames after the run starts), how long its move takes, its
+ * track (it ends where the arrow's head is) and the length of its trail.
+ */
+const RUN_LEGS = [
+  { from: 0, dur: 18, tr: line([A1_FROM, PIPE_Y], [STR_X - 25, PIPE_Y]), trail: 50 },
+  { from: 20, dur: 20, tr: line([A2_FROM, PIPE_Y], [A2_TO, PIPE_Y]), trail: 70 },
+  { from: 42, dur: 58, tr: quad([CUBE_SCREEN.x, BACK_END_Y], [BACK_MID, BACK_Y], [BOX_S.cx, BACK_END_Y]), trail: 140 },
+];
+/** frames from the start of the run until its last leg has faded at the puzzle */
+export const RUN_FRAMES = RUN_LEGS[2].from + RUN_LEGS[2].dur + 8;
+
+/**
+ * One pass of the loop: an accent dot with a short fading trail runs along each arrow in turn,
+ * as one eased move per arrow, and fades in at the arrow's tail and out at its head. `run` is
+ * frames since the pass started.
+ */
+function RunPulse({ run }: { run: number }) {
+  const out: React.ReactNode[] = [];
+  RUN_LEGS.forEach((leg, k) => {
+    const t = (run - leg.from) / leg.dur;
+    if (t <= 0 || run > leg.from + leg.dur + 8) return;
+    const o = clamp01((run - leg.from) / 7) * clamp01((leg.from + leg.dur + 8 - run) / 8);
+    if (o <= 0) return;
+    const s = sine(t) * leg.tr.len;
+    const N = 10;
+    const tail = Math.min(leg.trail, s);
+    const segs: React.ReactNode[] = [];
+    for (let i = 0; i < N; i++) {
+      const p = trackAt(leg.tr, s - tail + (tail * i) / N);
+      const q = trackAt(leg.tr, s - tail + (tail * (i + 1)) / N);
+      segs.push(<line key={i} x1={p[0]} y1={p[1]} x2={q[0]} y2={q[1]} stroke={C.accent} strokeWidth={5} strokeLinecap="round" opacity={((i + 1) / N) * 0.9} />);
+    }
+    const [hx, hy] = trackAt(leg.tr, s);
+    out.push(
+      <g key={k} opacity={o}>
+        {segs}
+        <circle cx={hx} cy={hy} r={8} fill={C.accent} stroke={C.bg} strokeWidth={3} />
+      </g>,
+    );
+  });
+  return <g>{out}</g>;
+}
 
 export interface PipelineProps {
   /** the puzzle's placement (it moves in "plan") */
@@ -611,7 +703,7 @@ export interface PipelineProps {
   appear?: number[];
   /**
    * 0..1 each: the puzzle's opacity, its name, its second line ("a hard puzzle"), arrow 1, the
-   * string, arrow 2, the cube's name, the arrow back, its label, the note under the fold arrow
+   * string, arrow 2, the cube's name, the arrow back, its label, the name under the fold arrow
    * ("a fast program?") and the cube's second line ("at least as hard")
    */
   puzzle?: number;
@@ -625,20 +717,19 @@ export interface PipelineProps {
   l3?: number;
   fast?: number;
   asHard?: number;
+  /** frames since one pass of the loop started (a dot runs along the three arrows in turn); none if undefined */
+  run?: number;
 }
 
 /**
  * The SVG half of the pipeline puzzle → HP string → best fold, and the arrow back
  * ("fits / does not fit"). The cube itself is 3D: draw smallCube() in a Scene3D with smallCubeShot().
- * Layout (px): puzzle 182–598, arrow, string 815–1316, arrow, cube 1486–1786; names at PIPE_LABEL_Y,
- * second lines at PIPE_SUB_Y.
+ * Layout (px): puzzle 60–679, arrow 1 ("we write"), string 819–1291, arrow 2 ("fold", with
+ * "a fast program?" under it), cube about 1567–1814; names at PIPE_LABEL_Y, second lines at PIPE_SUB_Y.
  */
-export function Pipeline({ at = PUZZLE_SMALL, place, appear, puzzle = 1, puzzleLabel = 1, hard = 1, a1 = 1, str = 1, a2 = 1, cubeLabel = 1, a3 = 1, l3 = 1, fast = 0, asHard = 0 }: PipelineProps) {
-  const box = puzzleBox(PUZZLE_SMALL);
+export function Pipeline({ at = PUZZLE_SMALL, place, appear, puzzle = 1, puzzleLabel = 1, hard = 1, a1 = 1, str = 1, a2 = 1, cubeLabel = 1, a3 = 1, l3 = 1, fast = 0, asHard = 0, run }: PipelineProps) {
+  const box = BOX_S;
   const y = PIPE_Y;
-  const mid = (box.cx + CUBE_SCREEN.x) / 2;
-  const foldFrom = STR_X + STR_W + 25;
-  const foldTo = CUBE_SCREEN.x - CUBE_HALF - 25;
   return (
     <g>
       <Puzzle at={at} place={place} appear={appear} opacity={puzzle} />
@@ -648,13 +739,13 @@ export function Pipeline({ at = PUZZLE_SMALL, place, appear, puzzle = 1, puzzleL
       <Label x={box.cx} y={PIPE_SUB_Y} opacity={hard} {...SUB}>
         a hard puzzle
       </Label>
-      <Arrow from={[box.right + 25, y]} to={[STR_X - 25, y]} progress={a1} opacity={clamp01(a1 / 0.25)} label="we write" />
+      <Arrow from={[A1_FROM, y]} to={[STR_X - 25, y]} progress={a1} opacity={clamp01(a1 / 0.25)} label="we write" />
       {str > 0 && <FlatString x={STR_X} y={y} seq={PIPE_SEQ} step={STEP} breakAfter={PIPE_BREAKS} progress={str} />}
       <Label x={STRING_CX} y={PIPE_LABEL_Y} opacity={clamp01(str * 2 - 1)} {...NAME}>
         HP string
       </Label>
-      <Arrow from={[foldFrom, y]} to={[foldTo, y]} progress={a2} opacity={clamp01(a2 / 0.25)} label="fold" />
-      <Label x={(foldFrom + foldTo) / 2} y={y + 36} opacity={fast} {...SUB}>
+      <Arrow from={[A2_FROM, y]} to={[A2_TO, y]} progress={a2} opacity={clamp01(a2 / 0.25)} label="fold" />
+      <Label x={(A2_FROM + A2_TO) / 2} y={y + 48} opacity={fast} {...NAME}>
         a fast program?
       </Label>
       <Label x={CUBE_SCREEN.x} y={PIPE_LABEL_Y} opacity={cubeLabel} {...NAME}>
@@ -663,11 +754,12 @@ export function Pipeline({ at = PUZZLE_SMALL, place, appear, puzzle = 1, puzzleL
       <Label x={CUBE_SCREEN.x} y={PIPE_SUB_Y} opacity={asHard} {...SUB}>
         at least as hard
       </Label>
-      {/* the arrow back is a step of logic, not the next stage: accent, as the arrows of steps 23–25 */}
-      <CurvedArrow a={[CUBE_SCREEN.x, BACK_END_Y]} c={[mid, BACK_Y]} b={[box.cx, BACK_END_Y]} progress={a3} color={C.accent} />
-      <Label x={mid} y={BACK_LABEL_Y} opacity={l3} {...NAME} color={C.accent}>
+      {/* the arrow back is a step of logic, not the next stage: accent, as the arrows of steps 23–25; its words are a dark name */}
+      <CurvedArrow a={[CUBE_SCREEN.x, BACK_END_Y]} c={[BACK_MID, BACK_Y]} b={[box.cx, BACK_END_Y]} progress={a3} color={C.accent} />
+      <Label x={BACK_MID} y={BACK_LABEL_Y} opacity={l3} {...NAME}>
         fits / does not fit
       </Label>
+      {run !== undefined && run > 0 && <RunPulse run={run} />}
     </g>
   );
 }

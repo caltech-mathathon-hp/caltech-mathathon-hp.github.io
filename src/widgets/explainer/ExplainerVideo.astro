@@ -1,0 +1,59 @@
+---
+/**
+ * ExplainerVideo: the explainer video's step-through page, in an iframe.
+ *
+ *   import ExplainerVideo from '../../widgets/explainer/ExplainerVideo.astro';
+ *   <div class="wide"><ExplainerVideo /></div>
+ *
+ * The page is a static build of explainer-video/stepper in public/explainer/; rebuild it with
+ * explainer-video/scripts/publish-to-site.sh. With ?embed the page shows only the player, its
+ * controls and the list of steps. It posts its height to this frame (so the frame never scrolls),
+ * and the frame posts back the site's theme. "Open full screen" opens the page on its own, at the
+ * step the frame shows.
+ * Styles: explainer.css (classes prefixed ev-).
+ */
+import './explainer.css';
+import { withBase } from '../../lib/url';
+
+const page = withBase('/explainer/index.html');
+---
+
+<figure class="ev-root">
+  <iframe
+    class="ev-frame"
+    src={`${page}?embed`}
+    title="Explainer video of Berger and Leighton's reduction, one step at a time"
+    loading="lazy"
+    allow="fullscreen"
+  ></iframe>
+  <figcaption class="ev-links ui">
+    <a class="ev-open" href={page} target="_blank" rel="noopener">Open full screen</a>
+  </figcaption>
+</figure>
+
+<script>
+  const frames = [...document.querySelectorAll<HTMLIFrameElement>('.ev-frame')];
+  const theme = () => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  const sendTheme = (f: HTMLIFrameElement) => f.contentWindow?.postMessage({ explainer: 'theme', theme: theme() }, '*');
+
+  // the page in the frame reports its height; answer with the theme, which it needs from the start
+  window.addEventListener('message', (e) => {
+    const f = frames.find((x) => x.contentWindow === e.source);
+    if (!f || e.data?.explainer !== 'height' || !(e.data.height > 0)) return;
+    f.style.height = `${e.data.height}px`;
+    sendTheme(f);
+  });
+  new MutationObserver(() => frames.forEach(sendTheme)).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // "Open full screen" opens the step the frame is on (the page keeps it in its address: #12)
+  for (const f of frames) {
+    const a = f.closest('.ev-root')?.querySelector<HTMLAnchorElement>('.ev-open');
+    a?.addEventListener('click', () => {
+      try {
+        a.hash = f.contentWindow?.location.hash ?? '';
+      } catch {
+        // another origin: open the first step
+      }
+    });
+  }
+</script>

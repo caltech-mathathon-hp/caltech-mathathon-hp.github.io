@@ -2,7 +2,7 @@
  * Berger and Leighton's construction (construction.js) for the 3D viewer (reduction.client.js):
  * the presets, the formula of S_B, the steps of §3.2.3 with their texts and proof-board cards, the
  * strip labels on the front face and the pieces of the string bar. adapter-edge.js does the same
- * for the short proof, with the encoding on one edge.
+ * for the short version of the one-edge construction.
  */
 import * as THREE from 'three';
 import * as C from './construction.js';

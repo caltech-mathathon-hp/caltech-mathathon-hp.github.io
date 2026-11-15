@@ -60,6 +60,7 @@ export function ItemBar({ x, y, size, color, unit = BAR.unit, h = BAR.h, opacity
   // the drawn part: [x0, x1], inset 2 px at the bar's own ends only
   const x0 = x + a * unit + (a <= 0 ? 2 : 0);
   const x1 = x + b * unit - (b >= size ? 2 : 0);
+  if (x1 - x0 <= 0) return null; // a bar shrunk to less than its end insets
   const lines = [];
   for (let k = 1; k < size; k++) if (k > a + 0.05 && k < b - 0.05) lines.push(<line key={k} x1={x + k * unit} x2={x + k * unit} y1={y + 2} y2={y + h - 2} stroke={C.bgElev} strokeOpacity={0.5} strokeWidth={1.2} />);
   const label = typeof chip === 'string' ? chip : String(size);

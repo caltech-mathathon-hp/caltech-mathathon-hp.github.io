@@ -9,6 +9,8 @@ order: 3
 ---
 
 import ProofBoard from '../../widgets/proof-map/ProofBoard.astro';
+import Reduction3D from '../../widgets/reduction-3d/Reduction3D.astro';
+import ExplainerVideo from '../../widgets/explainer/ExplainerVideo.astro';
 
 <Theorem kind="Theorem" source="Berger & Leighton 1998" status="cited">
 Given an HP string and a number $m$, deciding whether the string has a fold on the cubic lattice with at least $m$ contacts is NP-complete.
@@ -22,7 +24,38 @@ The dots on a card say how hard its step is to check, from one to three. Three s
 
 <div class="full"><ProofBoard map="bl" lanes={{ setup: { title: 'Setting up the reduction', note: '§2, §3.1, §3.2.2' }, left: { title: 'A perfect fold gives a packing', note: '§3.2.4 · about 1½ pages' }, right: { title: 'A packing gives a perfect fold', note: '§3.2.3 · about 3½ pages' }, end: { title: 'Both directions together', note: '§§2–3' } }} groups={{ forced: { title: 'Rods and walls are forced', caption: "A perfect fold has almost no freedom: counting puts the rods on the edges and the ribbons on the faces. The rod lengths leave no slack, so the walls run straight across the front face and cut it into equal strips." }, frame: { title: 'Folding all but the items', caption: "Given a packing, we first fold everything that does not depend on it: the pieces that fill ten edges, five faces and the inside, then the walls that cut the front face into strips. The paper gives only where these routes start and end, so this is the longest part to check." }, links: { title: 'Joining the scattered items', caption: "Consecutive items in the string are joined by long runs of P's, which must cross in front of the cube because the packing scatters the items. The hardest idea of the proof is a switchboard of paths that lets them pass each other, and loops use up their fixed length." } }} /></div>
 
-The right-hand column runs on a computer in [Original proof, visualization](../folded/): pack a small instance and watch its string fold into the cube, step by step.
+## The argument as a video
+
+The video tells the same story one caption at a time and waits on the picture after each step. Part 1 explains the idea. Part 2 runs it on the running example of the cards, items 6, 2, 8 and 4 in two bins of 10, in a cube much smaller than the real one.
+
+<div class="wide"><ExplainerVideo /></div>
+
+## Folding a small instance
+
+The right-hand column of the board runs here on a computer. Choose an instance and drag its items into the bins, or leave them and let the solver pack them. The sizes and the bin size may be odd: the construction needs them even, so the widget then doubles all of them first, which changes nothing about which items fit together ([2 Why bin packing](#step-bl-problems)). Then press **Fold the string**: the string $S_B$ of the instance appears as a straight chain, and every press of <kbd>→</kbd> folds its next piece as in §3.2.3 of the paper, until the H's fill an $n\times n\times n$ cube and the strips of its front face show the packing.
+
+<div class="full"><Reduction3D /></div>
+
+### Reading the picture
+
+The big red beads are the H's and the small grey ones the P's, as the legend in the corner says. The H's of the edges are a stronger red, those of the faces, the core and the paddings paler, and the walls dark; every item ribbon has its own bright colour, the same as on the packing board. The sun and moon button switches between a day and a night view, and *View* offers one colour per step of the construction, hides the P's, or cuts a corner off the cube.
+
+Under the cube you see only the name of the current step. **Explain** opens the rest: the list of steps in the order of the string, what each step folds and why, links to its cards on the board above, and counters of the letters placed and the H–H pairs, which the paper counts with consecutive H's included, so that a perfect fold reaches $3n^2(n-1)$ (see [Pairs and contacts](#pairs-and-contacts)). The piece being folded is also marked in the formula on the left.
+
+The bar under the step's name is the whole string $S_B$, from its first letter to its last: H pieces in their colours, runs of P's as a thin grey line, the part not yet folded faded. The arrow marks the letter the fold has reached. Drag along the bar to fold or unfold to any letter, or step with <kbd>→</kbd> and <kbd>←</kbd>. Drag the cube to turn it and zoom with <kbd>+</kbd> and <kbd>−</kbd>; scrolling scrolls the page.
+
+### Why the cube is so big
+
+Even small instances give a large cube. With two bins of size at most 8 (at most 4 if some number is odd, since everything is then doubled), $q = 2\max(K, \lceil B^{1/3}\rceil) = 4$, so $n = q(2q+1)+2 = 38$: 54,872 H's and about 85,000 letters. The running example of the proof cards has bins of size 10, which already needs $q = 6$ and $n = 80$, that is 512,000 H's. It is among the presets, but slow on older computers. The longest pieces are the linkers: each has $52n+2$ P's, far more than it needs, and here each folds its surplus into a small box of P's under the cube.
+
+### How close this is to the paper
+
+The string is exactly that of Fig. 3, checked letter by letter, and the frame, the periods and the spaced rod sit at the coordinates of §3.2.3 (Figs. 4–8). Two kinds of route are only asserted in the paper, so we had to choose them:
+
+- The short hops of four or seven P's between faces are found by a small search that keeps them at distance at least 2 from the cube.
+- The linkers do not use the switchboard of [13 Untangling the linkers](#step-bl-crossbar). With a dozen of them it is enough to give each linker its own plane in front of the cube. The paper uses up the surplus length with a loop away from the cube; here it is folded into a small box of P's under the cube, which keeps the picture compact.
+
+Every fold is checked as it is built: its letters are those of $S_B$, no site is used twice, the H's fill the cube, and the H–H pairs reach $3n^2(n-1)$. The panel on the left lists these checks.
 
 ## Glossary
 

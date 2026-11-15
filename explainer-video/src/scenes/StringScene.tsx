@@ -5,7 +5,9 @@
  * shown again five times wider. Rods, ribbons and walls are all orange, split by white rules; only
  * the core is a lighter tint. Then a zoom into the end of the string, piece after piece in string
  * order: the end of the walls, then each padding and item ribbon after a linker of 626 P's. A
- * bracket says that the three linkers before the items are routed in front of the cube too.
+ * bracket says that the three linkers before the items are routed in front of the cube too, and a
+ * grey sub-line under the row says why the row is longer than the part of the bar it enlarges: the
+ * bar counts only the H's.
  *
  * The bar counts H's, not letters: most letters of the toy string are the P's of its six linkers
  * (6 × 624 of 6,386), but the caption is about the H's, one per node of the cube.
@@ -134,27 +136,58 @@ const LAST_WALL = (() => {
 /** P's between two ribbons: the linker's own run plus the P at each ribbon end (PHHP…PHHP) */
 const LINKER_PS = (SEGS.find((s) => s.origin === 'linker')?.len ?? 0) + 2;
 
+/**
+ * Cue 1: the bar grows with one tip at one steady pace, GROW_RATE H's a frame (so each piece of
+ * the frame, about 100 H's, takes 8 frames), easing only over its first and last few frames. A
+ * piece's name fades in over 6 frames once the tip has passed the piece's end.
+ */
+const GROW_RATE = 12.5;
+const GROW_FRAMES = Math.round(TOTAL_H / GROW_RATE);
+const NAME_FADE_H = 6 * GROW_RATE;
+/** linear in the middle, eased over the first and last `e` of the way (0..1 → 0..1) */
+const steady = (t: number, e = 0.06) => {
+  t = clamp01(t);
+  const v = 1 / (1 - e); // speed in the middle, so that the whole way is 1
+  if (t < e) return (v * t * t) / (2 * e);
+  if (t > 1 - e) return 1 - (v * (1 - t) * (1 - t)) / (2 * e);
+  return v * (t - e / 2);
+};
+
+/** the header's text, and the gap between it and the bracket line on each side */
+const HEAD_TEXT_W = 500;
+const HEAD_GAP = 12;
+
 export default function StringScene({ scene }: { scene: SceneTime }) {
   const f = useCurrentFrame();
   const [c0, c1] = scene.cueTimes;
 
   // cue 1
   const head = ramp(f, c0.from, sec(0.6));
-  const grow = ramp(f, c0.from + sec(0.7), sec(2.8));
+  const growAt = c0.from + sec(0.7);
+  const grow = ramp(f, growAt, GROW_FRAMES, steady);
   const growH = grow * TOTAL_H;
-  /** a group's label fades in over the last 40 H's of the group, so it is full once the group is drawn */
-  const labelIn = (g: Group) => clamp01((growH - SPANS[g].to) / 40 + 1);
-  /** a frame piece's name, once the bar has passed it */
-  const pieceIn = (to: number) => clamp01((growH - to) / 30 + 1);
-  const insetIn = ramp(f, c0.from + sec(3.6), sec(0.7));
+  /** a group's label fades in over 6 frames once the tip has passed the group's end */
+  const labelIn = (g: Group) => clamp01((growH - SPANS[g].to) / NAME_FADE_H);
+  /** a frame piece's name, likewise once the tip has passed the piece */
+  const pieceIn = (to: number) => clamp01((growH - to) / NAME_FADE_H);
+  const insetIn = ramp(f, growAt + GROW_FRAMES + sec(0.3), sec(0.7));
 
   // cue 2
   const zoomOut = ramp(f, c1.from, sec(0.5));
   const lines = ramp(f, c1.from + sec(0.3), sec(0.9));
   /** the row, piece after piece in string order: each fades in whole before the next starts */
-  const ROW_FADE = sec(0.38);
-  const rowT = (i: number) => ramp(f, c1.from + sec(0.9 + i * 0.4), ROW_FADE);
-  const routedNote = ramp(f, c1.from + sec(0.9 + ROW.length * 0.4 + 0.1), sec(0.4));
+  // (9 frames apart, so the whole row and both notes are in place a good second before the step ends)
+  const ROW_STEP = 0.3;
+  const ROW_FADE = sec(ROW_STEP);
+  const rowT = (i: number) => ramp(f, c1.from + sec(0.9 + i * ROW_STEP), ROW_FADE);
+  /** a linker's P's are laid at one tip, one after the other, each fading in over 6 frames (FlatString
+   * fades a bead over 3 of its 8 letter steps), so a linker takes 16 frames and runs on a little
+   * while the next piece, to its right, comes in */
+  const LINK_FRAMES = 16;
+  const linkT = (i: number) => ramp(f, c1.from + sec(0.9 + i * ROW_STEP), LINK_FRAMES, (x) => x);
+  const rowDone = 0.9 + ROW.length * ROW_STEP;
+  const routedNote = ramp(f, c1.from + sec(rowDone + 0.1), sec(0.4));
+  const hsOnly = ramp(f, c1.from + sec(rowDone + 0.4), sec(0.5));
 
   const segClip = 'string-bar-clip';
   return (
@@ -168,10 +201,11 @@ export default function StringScene({ scene }: { scene: SceneTime }) {
 
         {/* header: one H per node */}
         <g opacity={head}>
-          <line x1={BAR_X} x2={BAR_X + BAR_W} y1={BAR_Y - 26} y2={BAR_Y - 26} stroke={C.fgSubtle} strokeWidth={1.5} />
+          {/* the bracket over the whole bar, broken for its text with a clear gap on each side */}
+          <line x1={BAR_X} x2={960 - HEAD_TEXT_W / 2 - HEAD_GAP} y1={BAR_Y - 26} y2={BAR_Y - 26} stroke={C.fgSubtle} strokeWidth={1.5} />
+          <line x1={960 + HEAD_TEXT_W / 2 + HEAD_GAP} x2={BAR_X + BAR_W} y1={BAR_Y - 26} y2={BAR_Y - 26} stroke={C.fgSubtle} strokeWidth={1.5} />
           <line x1={BAR_X} x2={BAR_X} y1={BAR_Y - 34} y2={BAR_Y - 18} stroke={C.fgSubtle} strokeWidth={1.5} />
           <line x1={BAR_X + BAR_W} x2={BAR_X + BAR_W} y1={BAR_Y - 34} y2={BAR_Y - 18} stroke={C.fgSubtle} strokeWidth={1.5} />
-          <rect x={960 - 250} y={BAR_Y - 46} width={500} height={40} fill={C.bg} />
           <text x={960} y={BAR_Y - 18} textAnchor="middle" fontFamily={FONT.sans} fontSize={26} fontWeight={600} fill={C.fg}>
             1,728 <tspan fill={C.h}>H</tspan>’s, one for each node of the cube
           </text>
@@ -280,13 +314,12 @@ export default function StringScene({ scene }: { scene: SceneTime }) {
             );
           }
           if (e.kind === 'linker') {
+            const lt = linkT(i);
             return (
               <g key={i}>
                 {join}
-                <g opacity={t}>
-                  <FlatString x={e.x} y={ROW_Y + 23} seq={LINK_SEQ} step={LINK_STEP} breakAfter={[2]} tail={false} progress={t} />
-                </g>
-                <Label x={e.x + e.w / 2} y={ROW_Y - 12} size={22} opacity={clamp01(t * 2 - 1)}>
+                <FlatString x={e.x} y={ROW_Y + 23} seq={LINK_SEQ} step={LINK_STEP} breakAfter={[2]} tail={false} progress={lt} />
+                <Label x={e.x + e.w / 2} y={ROW_Y - 12} size={22} opacity={clamp01(lt * 1.5 - 0.5)}>
                   {`${LINKER_PS} P’s`}
                 </Label>
               </g>
@@ -294,7 +327,7 @@ export default function StringScene({ scene }: { scene: SceneTime }) {
           }
           const color = e.kind === 'padding' ? C.pad : itemColor(e.index);
           const h = e.w / UNIT;
-          // a ribbon too narrow for its size chip carries it above, in the row of the P counts
+          // a ribbon too narrow for its size chip carries it just under it, clear of the P counts above
           const narrow = e.w < 30 + 16;
           return (
             <g key={i}>
@@ -304,14 +337,14 @@ export default function StringScene({ scene }: { scene: SceneTime }) {
               </g>
               {narrow && (
                 <g opacity={t} fontFamily={FONT.sans}>
-                  <rect x={e.x + e.w / 2 - 15} y={ROW_Y - 37} width={30} height={30} rx={5} fill={C.bgElev} stroke={C.ruleStrong} strokeWidth={1.5} />
-                  <text x={e.x + e.w / 2} y={ROW_Y - 15} textAnchor="middle" fontWeight={650} fontSize={20} fill={C.fg}>
+                  <rect x={e.x + e.w / 2 - 15} y={ROW_Y + 52} width={30} height={30} rx={5} fill={C.bgElev} stroke={C.ruleStrong} strokeWidth={1.5} />
+                  <text x={e.x + e.w / 2} y={ROW_Y + 74} textAnchor="middle" fontWeight={650} fontSize={20} fill={C.fg}>
                     {h}
                   </text>
                 </g>
               )}
               {e.kind === 'padding' && (
-                <Label x={e.x + e.w / 2} y={ROW_Y + 84} size={22} opacity={clamp01(t * 2 - 1)}>
+                <Label x={e.x + e.w / 2} y={ROW_Y + 84} size={22} opacity={clamp01(t * 1.5 - 0.5)}>
                   padding
                 </Label>
               )}
@@ -337,18 +370,22 @@ export default function StringScene({ scene }: { scene: SceneTime }) {
         {/* the items, bracketed */}
         {(() => {
           const items = ROW.filter((e) => e.kind === 'item');
-          const t = clamp01(rowT(ROW.length - 1) * 2 - 1);
+          const t = clamp01(rowT(ROW.length - 1) * 1.5 - 0.5);
           const l = items[0].x;
           const r = items[items.length - 1].x + items[items.length - 1].w;
           return (
             <g opacity={t}>
-              <path d={`M${l},${ROW_Y + 62} L${l},${ROW_Y + 70} L${r},${ROW_Y + 70} L${r},${ROW_Y + 62}`} fill="none" stroke={C.fgSubtle} strokeWidth={1.5} />
-              <Label x={(l + r) / 2} y={ROW_Y + 98} size={22}>
+              <path d={`M${l},${ROW_Y + 92} L${l},${ROW_Y + 100} L${r},${ROW_Y + 100} L${r},${ROW_Y + 92}`} fill="none" stroke={C.fgSubtle} strokeWidth={1.5} />
+              <Label x={(l + r) / 2} y={ROW_Y + 128} size={22}>
                 one ribbon per item
               </Label>
             </g>
           );
         })()}
+        {/* why the row is longer than the part of the bar it enlarges */}
+        <Label x={960} y={ROW_Y + 176} size={22} opacity={hsOnly}>
+          the bar above counts only the H’s; the linkers’ P’s come in between
+        </Label>
       </svg>
     </SceneFrame>
   );

@@ -2,7 +2,7 @@
  * A reduction, folded: the string of a hardness proof for a bin packing instance, folded into a
  * perfect cube step by step. Two constructions share this viewer, chosen by data-construction on
  * the root: Berger and Leighton's S_B (adapter-bl.js, construction.js; the "Folded in 3D" section)
- * and the short proof with the instance on one edge (adapter-edge.js, edge-construction.js).
+ * and the short version of the one-edge construction, with the instance on one edge (adapter-edge.js, edge-construction.js).
  *
  * mount(root) takes the markup of Reduction3D.astro (ids prefixed rd-, one widget per page) and
  * builds everything inside it: the packing board (drag and drop), the formula of the string with
@@ -595,7 +595,7 @@ export function mount(root) {
       p.classList.toggle('cur', i === cur.k);
       p.classList.toggle('done', i < cur.k);
     });
-    $('#rd-stepTag').innerHTML = prettyTitle(`Step ${cur.k} of ${V.steps.length - 1} · ${st.tag}`);
+    $('#rd-stepTag').innerHTML = prettyTitle(`Step ${cur.k} of ${V.steps.length - 1}${st.tag ? ` · ${st.tag}` : ''}`);
     $('#rd-stepTitle').innerHTML = prettyTitle(st.title);
     $('#rd-stepBody').innerHTML = st.body + A.refs(st, X);
     $('#rd-stepinfo').scrollTop = 0;
@@ -773,7 +773,7 @@ export function mount(root) {
   let onScreen = true;
   new IntersectionObserver((es) => { for (const e of es) onScreen = e.isIntersecting; }).observe(root);
   window.addEventListener('keydown', (e) => {
-    if (!V || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (!V || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return;
     const a = document.activeElement;
     if (!root.contains(a) && !inView()) return;
     if (a && /INPUT|SELECT|TEXTAREA/.test(a.tagName)) return;

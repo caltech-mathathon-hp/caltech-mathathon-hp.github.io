@@ -158,40 +158,6 @@ const cubesFor: Record<string, ArtCube[]> = {
 };
 const artCubes = cubesFor[slug] ?? [];
 
-// ---------- folded: the string, straight, and the cube it folds into, a packing on its front ----------
-// a 3×3×3 cube in a flatter oblique view than the one above; the front face (z = 1) shows two
-// strips of items (the proof figures' item colours) with a row of wall H's between them.
-const fdSeq = 'PHPPHHPPHP';
-const fdChain: Bead[] = fdSeq.split('').map((ch, k) => ({ x: 16 + k * 13, y: 66, kind: ch === 'H' ? 'H' : 'P' }));
-const fdIso = (x: number, y: number, z: number): Pt => [254 + x * 31 - z * 15, 66 + x * 7 + z * 12 - y * 31];
-const fdFront: Record<string, string> = {
-  '-1,1': 'var(--item-1)', '0,1': 'var(--item-1)', '1,1': 'var(--item-2)',
-  '-1,-1': 'var(--item-3)', '0,-1': 'var(--item-4)', '1,-1': 'var(--item-4)',
-};
-const fdBeads: { x: number; y: number; fill: string | null; d: number }[] = [];
-for (const x of [-1, 0, 1])
-  for (const y of [-1, 0, 1])
-    for (const z of [-1, 0, 1]) {
-      const [px, py] = fdIso(x, y, z);
-      fdBeads.push({ x: px, y: py, fill: z === 1 ? (fdFront[`${x},${y}`] ?? null) : null, d: z + 0.5 * y + 0.3 * x });
-    }
-fdBeads.sort((a, b) => a.d - b.d);
-
-// ---------- edge-folded: the same, with the packing on one edge of the cube ----------
-// a 5×5×5 cube; its bottom front edge (y = -2, z = 2) alternates separators (dark) and items
-const edIso = (x: number, y: number, z: number): Pt => [252 + x * 19 - z * 9, 66 + x * 4 + z * 7.5 - y * 19];
-const edShelf: Record<number, string> = { [-1]: 'var(--item-1)', 1: 'var(--item-2)' };
-const edBeads: { x: number; y: number; kind: 'h' | 'sep' | 'item'; fill?: string; d: number }[] = [];
-for (const x of [-2, -1, 0, 1, 2])
-  for (const y of [-2, -1, 0, 1, 2])
-    for (const z of [-2, -1, 0, 1, 2]) {
-      const [px, py] = edIso(x, y, z);
-      const shelf = y === -2 && z === 2;
-      const kind = !shelf ? 'h' : edShelf[x] ? 'item' : 'sep';
-      edBeads.push({ x: px, y: py, kind, fill: shelf ? edShelf[x] : undefined, d: z + 0.5 * y + 0.3 * x });
-    }
-edBeads.sort((a, b) => a.d - b.d);
-
 // ---------- context: the cited works by year, the two 1998 proofs in H colour ----------
 const works = [
   'abel2013', 'aichholzer2003', 'atkins1999', 'bahi2013', 'balbach2023', 'berger1998', 'berman2004',
@@ -249,7 +215,7 @@ const leanEdges = [
 ---
 
 {
-  ['playground', 'original-proof', 'one-edge-proof', 'compare', 'folded', 'edge-folded', 'context', 'lean'].includes(slug) && (
+  ['playground', 'original-proof', 'one-edge-proof', 'compare', 'context', 'lean'].includes(slug) && (
     <svg class="section-art" viewBox="0 0 320 130" aria-hidden="true" focusable="false">
       <defs>
         <radialGradient id={id('h')} cx="0.36" cy="0.32" r="0.75">
@@ -339,38 +305,6 @@ const leanEdges = [
           )}
         </g>
       ))}
-
-      {slug === 'folded' && (
-        <g>
-          <polyline points={fdChain.map((b) => `${b.x},${b.y}`).join(' ')} class="sa-chain" />
-          {fdChain.map((b) =>
-            b.kind === 'H' ? <circle cx={b.x} cy={b.y} r="6.5" fill={`url(#${id('h')})`} /> : <circle cx={b.x} cy={b.y} r="5" class="sa-p" />,
-          )}
-          <line x1="150" y1="66" x2="188" y2="66" class="sa-arrow" marker-end={`url(#${id('arrow')})`} />
-          {fdBeads.map((b) =>
-            b.fill ? <circle cx={b.x} cy={b.y} r="7" class="sa-item" style={`fill:${b.fill}`} /> : <circle cx={b.x} cy={b.y} r="7" fill={`url(#${id('h')})`} />,
-          )}
-        </g>
-      )}
-
-      {slug === 'edge-folded' && (
-        <g>
-          <polyline points={fdChain.map((b) => `${b.x},${b.y}`).join(' ')} class="sa-chain" />
-          {fdChain.map((b) =>
-            b.kind === 'H' ? <circle cx={b.x} cy={b.y} r="6.5" fill={`url(#${id('h')})`} /> : <circle cx={b.x} cy={b.y} r="5" class="sa-p" />,
-          )}
-          <line x1="150" y1="66" x2="188" y2="66" class="sa-arrow" marker-end={`url(#${id('arrow')})`} />
-          {edBeads.map((b) =>
-            b.kind === 'item' ? (
-              <circle cx={b.x} cy={b.y} r="5.6" class="sa-item" style={`fill:${b.fill}`} />
-            ) : b.kind === 'sep' ? (
-              <circle cx={b.x} cy={b.y} r="5.6" class="sa-sep" />
-            ) : (
-              <circle cx={b.x} cy={b.y} r="5.6" fill={`url(#${id('h')})`} />
-            ),
-          )}
-        </g>
-      )}
 
       {slug === 'context' && (
         <g>
@@ -492,11 +426,6 @@ const leanEdges = [
   }
   .sa-face.side {
     fill: color-mix(in srgb, var(--h) 26%, var(--bg-elev));
-  }
-  .sa-sep {
-    fill: color-mix(in srgb, var(--h) 55%, black);
-    stroke: color-mix(in srgb, var(--fg) 25%, transparent);
-    stroke-width: 1;
   }
   .sa-axis {
     stroke: var(--rule-strong);

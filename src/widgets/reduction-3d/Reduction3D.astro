@@ -6,7 +6,7 @@
  *   <div class="full"><Reduction3D /></div>
  *     Berger and Leighton: S_B folded as in §3.2.3, the packing on the front face
  *   <div class="full"><Reduction3D construction="edge" /></div>
- *     the short proof: S folded as in Section 5, the packing on one edge
+ *     the short version of the one-edge construction: S folded, the packing on one edge
  *
  * Left: the instance (folded away), the packing board, the formula of S_B, the checks.
  * Right: the three.js stage (day or night) with a dock: the step, ◀ ▶, and the whole string as a
@@ -60,7 +60,7 @@ const str = edge ? 'S' : 'S_B';
     </section>
 
     <section class="rd-card">
-      <h3><span>{edge ? <Fragment>The string <i>S</i> (§3)</Fragment> : <Fragment>The string S<sub>B</sub> (Fig. 3)</Fragment>}</span> <button class="rd-tog" id="rd-fmtTog" type="button">show numbers</button></h3>
+      <h3><span>{edge ? <Fragment>The string <i>S</i></Fragment> : <Fragment>The string S<sub>B</sub> (Fig. 3)</Fragment>}</span> <button class="rd-tog" id="rd-fmtTog" type="button">show numbers</button></h3>
       <div id="rd-formula"></div>
     </section>
 

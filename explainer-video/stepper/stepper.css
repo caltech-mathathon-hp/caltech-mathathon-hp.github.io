@@ -476,3 +476,41 @@ button.primary:hover:not(:disabled) {
     flex-grow: 2;
   }
 }
+
+/* ?embed: inside the website's iframe. No header and no margins, the site's background shows
+   through, and the page is as wide as the frame (it tells the frame its height, so no scrollbar).
+   The few pixels of padding keep focus rings inside the frame. */
+html.embed,
+html.embed body {
+  background: transparent;
+  overflow: hidden;
+}
+html.embed .page {
+  --pw: calc(100vw - 8px - var(--toc) - var(--gap));
+  padding: 4px;
+}
+html.embed .stage {
+  box-shadow: none;
+}
+/* the site's dark theme (values from site/src/styles/tokens.css) for the controls and the list of
+   steps; the video keeps its light colours. color-scheme must match the site's, or the browser
+   paints the frame opaque. */
+html.embed[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #131417;
+  --bg-elev: #1b1c20;
+  --bg-sunk: #0e0f11;
+  --fg: #e7e5e0;
+  --fg-muted: #a6a5ad;
+  --fg-subtle: #75747d;
+  --rule: #2c2d33;
+  --rule-strong: #3d3e45;
+  --accent: #85aee6;
+  --accent-weak: #1c2838;
+}
+html.embed[data-theme='dark'] :is(button.primary, .pill.is-current) {
+  color: #0e0f11;
+}
+html.embed[data-theme='dark'] .speed select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23a6a5ad' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}

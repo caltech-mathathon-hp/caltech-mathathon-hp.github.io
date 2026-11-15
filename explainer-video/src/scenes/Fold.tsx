@@ -51,17 +51,59 @@ if (CONTACTS.length !== 4) throw new Error(`fold: expected 4 contacts, got ${CON
 CONTACTS.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 
 /**
- * The track: a straight run along −x ending at the first node, then the fold's path. Letter i sits at
- * track parameter i + 12u: at u = 0 the string lies straight, at u = 1 every letter is on its node.
+ * The track the letters slide along: a straight run along −x ending at the first node, then the
+ * fold's path, with its corners rounded on quarter circles of radius `r` (0 ≤ r ≤ 0.5). `trackAt(s, r)`
+ * is the point at arc length s from the first node (s < 0: on the straight run).
+ *
+ * Letter i sits at s = i − 12(1 − u): at u = 0 the string lies straight, at u = 1 every letter is on
+ * its node. Letters one apart along a track with sharp corners close up to 0.71 of a spacing where
+ * they straddle a corner (they nearly touch); on corners of radius 0.5 they stay at least 0.84 apart.
+ * The corners sharpen over the last half spacing of the slide, so the letters at the corners land on
+ * their nodes.
  */
-const track = (s: number): V3 => {
-  if (s <= L) return [-L + s, 0, 0];
-  const t = s - L;
-  const k = Math.min(L - 2, Math.floor(t));
-  const f = t - k;
-  const a = PATH[k];
-  const b = PATH[k + 1];
-  return [lerp(a[0], b[0], f), lerp(a[1], b[1], f), lerp(a[2], b[2], f)];
+type Piece = { len: number; at: (s: number) => V3 };
+const sub3 = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const add3 = (a: V3, b: V3, k = 1): V3 => [a[0] + k * b[0], a[1] + k * b[1], a[2] + k * b[2]];
+const len3 = (a: V3) => Math.hypot(a[0], a[1], a[2]);
+const roundedPath = (r: number): Piece[] => {
+  const out: Piece[] = [];
+  const line = (a: V3, b: V3): Piece => {
+    const l = len3(sub3(b, a));
+    return { len: l, at: (s) => add3(a, sub3(b, a), l > 0 ? s / l : 0) };
+  };
+  let cur = PATH[0];
+  for (let k = 1; k < PATH.length; k++) {
+    const din = sub3(PATH[k], PATH[k - 1]);
+    const dout = k + 1 < PATH.length ? sub3(PATH[k + 1], PATH[k]) : null;
+    const turns = dout !== null && din[0] * dout[0] + din[1] * dout[1] + din[2] * dout[2] === 0;
+    if (turns && r > 1e-6) {
+      const a = add3(PATH[k], din, -r);
+      out.push(line(cur, a));
+      // a quarter circle from a (heading din) to PATH[k] + r·dout (heading dout)
+      const c = add3(a, dout, r);
+      out.push({ len: (Math.PI / 2) * r, at: (s) => add3(add3(c, dout, -r * Math.cos(s / r)), din, r * Math.sin(s / r)) });
+      cur = add3(PATH[k], dout, r);
+    } else {
+      out.push(line(cur, PATH[k]));
+      cur = PATH[k];
+    }
+  }
+  return out;
+};
+const trackAt = (pieces: Piece[], s: number): V3 => {
+  if (s <= 0) return [s, 0, 0];
+  for (let k = 0; k < pieces.length; k++) {
+    const p = pieces[k];
+    if (s <= p.len || k === pieces.length - 1) return p.at(s);
+    s -= p.len;
+  }
+  return PATH[PATH.length - 1];
+};
+/** where the letters are at slide progress u (0..1) */
+const lettersAt = (u: number): V3[] => {
+  const rest = L * (1 - u);
+  const pieces = roundedPath(0.5 * clamp01(rest / 0.5));
+  return Array.from({ length: L }, (_, i) => trackAt(pieces, i - rest));
 };
 
 const FOLD_CENTER: V3 = [1.5, 0, -1];
@@ -105,6 +147,12 @@ const SEGS: Seg[] = (() => {
   return out;
 })();
 const D_MAX = Math.max(...SEGS.filter((s) => !s.floor).map((s) => s.d));
+/**
+ * The grid is drawn just below the beads (their radius is 0.3, a little more while one swells), so
+ * its lines pass under the beads instead of through their lower half.
+ */
+const GRID_DROP = 0.34;
+const down = (p: V3): V3 => [p[0], p[1] - GRID_DROP, p[2]];
 
 /** the view from (yaw, elevation) in degrees */
 const dirOf = (yawDeg: number, elDeg: number): V3 => {
@@ -151,7 +199,7 @@ export default function FoldScene({ scene }: { scene: SceneTime }) {
   const grid = ramp(f, c0.from + sec(1.6), sec(1.0));
   const bigGrid = ramp(f, c2.from + sec(0.6), sec(2.4));
 
-  const pos = Array.from({ length: L }, (_, i) => track(i + L * u));
+  const pos = lettersAt(u);
 
   // camera: from the straight string to the fold (high enough that the contacts between the arms
   // show between the beads), then out and lower for the cubic grid, raised clear of the caption
@@ -199,7 +247,7 @@ export default function FoldScene({ scene }: { scene: SceneTime }) {
   const lines: Stick[] = [];
   for (const sg of SEGS) {
     const o = sg.floor ? grid : clamp01(bigGrid * 1.6 - (sg.d / D_MAX) * 0.6);
-    if (o > 0) lines.push({ a: sg.a, b: sg.b, color: C.lattice, r: 0.016, fade: 1 - 0.8 * o });
+    if (o > 0) lines.push({ a: down(sg.a), b: down(sg.b), color: C.lattice, r: 0.016, fade: 1 - 0.8 * o });
   }
 
   return (
