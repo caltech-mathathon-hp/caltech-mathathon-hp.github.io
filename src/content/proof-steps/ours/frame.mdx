@@ -1,0 +1,82 @@
+---
+title: Folding the frame
+caption: 'Given a packing, we first place the pieces that do not depend on it. The corner rod, the tenth-edge rod, five face ribbons and the core fill ten edges, five faces and the inside, and leave the front face and its two edges empty.'
+lane: right
+group: fixed
+order: 2
+difficulty: 2
+figure: bl-skeleton
+source: '“Packing all but the front face of the cube”, p. 34, Figs. 4–7'
+---
+
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+Most of $S$ does not depend on the packing, and we place that part first: the **frame**, made of the corner rod, the first face ribbon, the tenth-edge rod, three more face ribbons, the core and the fifth face ribbon. The linkers between them come later ([15 Seven corner routes](#step-ours-corner-routes)).
+
+Hold the cube with the front face towards us. The corner rod runs round the edges of the top face, down one edge at the back and round the bottom face, as in the original proof. The first face ribbon fills the back face by a snake, and the tenth-edge rod fills the back left edge. The next three face ribbons fill the left, bottom and right faces by snakes. The core enters through the top face, fills the inside layer by layer and comes back out to the top face, and the fifth face ribbon fills the top face around the core's two ends. Since $n-2$ is even, every snake ends on the side where it began, which puts the ends of the pieces where the linkers can reach them.
+
+### Statement
+
+Leaving out its linkers, the frame can be placed so that its H's fill every node of the cube except the front face and its two free edges, with each P outside the cube next to its own H.
+
+### Exact statement
+
+Take coordinates $(i,j,k)$, $0\le i,j,k\le n-1$, with the faces back $k=n-1$, front $k=0$, left $i=0$, right $i=n-1$, bottom $j=0$ and top $j=n-1$. Leaving out its linkers, the frame of $S$ has a placement, with no node used twice, in which:
+
+1. the H's fill every node of the cube except the $(n-2)^2$ face nodes of the front face and the two free edges $(0,j,0)$ and $(n-1,j,0)$, $1\le j\le n-2$;
+2. every P lies outside the cube, next to its own H;
+3. the four groups of pieces that linkers join start and end as follows, each end P pointing straight out of the face named:
+
+| Group | First H | Last H, end P |
+|---|---|---|
+| corner rod to tenth-edge rod | $(n-2,n-1,n-1)$ | $(0,n-2,n-1)$, behind |
+| left face ribbon | $(0,1,1)$ | $(0,n-2,1)$, left |
+| bottom face ribbon | $(n-2,0,n-2)$ | $(n-2,0,1)$, below |
+| right face ribbon | $(n-1,1,n-2)$ | $(n-1,n-2,n-2)$, right |
+| core and top face ribbon | $(n-2,n-1,1)$ | $(n-3,n-1,1)$, above |
+
+### Uses
+
+[4 Spelling the string](#step-ours-string): the frame, and $n$ even. [12 Placing a piece](#step-ours-placements).
+
+### Proof
+
+Every P is placed next to its own H outside the cube, so by [12 Placing a piece](#step-ours-placements) (4) no two P's collide. It remains to give the H's of each piece and check that consecutive pieces meet at neighbours.
+
+1. **Corner rod.** Its H's run from $(n-2,n-1,n-1)$ around the four edges of the top face, down the back right edge to $(n-1,0,n-1)$, and around the four edges of the bottom face to $(n-2,0,n-1)$ (More). That is $9n-10$ nodes. It is placed by [12 Placing a piece](#step-ours-placements) (3) with its last P at $(n-2,0,n)$, behind.
+2. **Back face.** A snake of $n-2$ columns, $i=n-2,\dots,1$, from $(n-2,1,n-1)$ up the first column, down the second, and so on, to $(1,1,n-1)$, each P behind its H. It starts next to the corner rod's last H, and its first P $(n-2,1,n)$ is next to the rod's last P.
+3. **Tenth-edge rod.** Its H's fill $(0,j,n-1)$, $j=1,\dots,n-2$. Since $n-2$ is even, [12 Placing a piece](#step-ours-placements) (3) puts both its end P's behind: $(0,1,n)$, next to the back face's last P $(1,1,n)$, and $(0,n-2,n)$.
+4. **Left, bottom and right faces.** Three snakes with the ends of the table, each P straight out of its face (More).
+5. **Core.** A P at $(n-2,n,1)$, then H's at $(n-2,n-1,1)$, through the $(n-2)^3$ interior nodes layer by layer from $(n-2,n-2,1)$ to $(n-2,n-2,n-2)$ (More), and at $(n-2,n-1,n-2)$, then a P at $(n-2,n,n-2)$. That is $(n-2)^3+2$ H's.
+6. **Top face.** Take the snake of the top face from $(n-2,n-1,n-2)$ to $(n-2,n-1,1)$, in rows $k=n-2,\dots,1$ with $i$ going down in the first row. Without its first and last node, which hold the core's end H's, it runs from $(n-3,n-1,n-2)$ to $(n-3,n-1,1)$ and has $(n-2)^2-2$ nodes. The fifth face ribbon follows it with its P's above. Its first P $(n-3,n,n-2)$ is next to the core's last P.
+7. **What is filled.** The two rods fill the 8 corners and 10 edges, all but $(0,j,0)$ and $(n-1,j,0)$. The ribbons fill the back, left, bottom and right faces, and the top face with the core's two ends. The core fills the interior. Only the front face and its two edges are left.
+
+<More title="Coordinates of the frame">
+
+**Corner rod.** The corners it passes, in order: $(0,n-1,n-1)$, $(0,n-1,0)$, $(n-1,n-1,0)$, $(n-1,n-1,n-1)$, $(n-1,0,n-1)$, $(n-1,0,0)$, $(0,0,0)$, $(0,0,n-1)$. It starts at $(n-2,n-1,n-1)$ on the top back edge and ends at $(n-2,0,n-1)$ on the bottom back edge, and covers every edge except $(0,j,n-1)$, $(0,j,0)$ and $(n-1,j,0)$.
+
+**Left face**, from $(0,1,1)$ to $(0,n-2,1)$: for $j=1,\dots,n-2$ in turn, $k$ runs up from 1 to $n-2$ when $j$ is odd and down when $j$ is even.
+
+**Bottom face**, from $(n-2,0,n-2)$ to $(n-2,0,1)$: for $k=n-2,\dots,1$ in turn, $i$ runs down from $n-2$ to 1 in the first row and alternates after that.
+
+**Right face**, from $(n-1,1,n-2)$ to $(n-1,n-2,n-2)$: for $j=1,\dots,n-2$ in turn, $k$ runs down from $n-2$ to 1 when $j$ is odd and up when $j$ is even.
+
+**Core.** Layer $k=1$ is the snake of the square $1\le i,j\le n-2$ that starts at $(n-2,n-2,1)$, runs along rows $j=n-2,\dots,1$ with $i$ going down in the first row, and ends at $(n-2,1,1)$. Layer $k=2$ runs the same snake backwards, from $(n-2,1,2)$ to $(n-2,n-2,2)$, and the layers keep alternating. Since $n-2$ is even, layer $k=n-2$ ends at $(n-2,n-2,n-2)$.
+
+Since $n-2$ is even, each snake ends where the table says. The face ribbons have $(n-2)^2$ H's, an even number, as tool (2) of [12 Placing a piece](#step-ours-placements) needs.
+
+</More>
+
+### Where in the paper
+
+“Packing all but the front face of the cube”, p. 34, Figs. 4–7. The corner rod, the back face and the tenth-edge rod are placed as there. The paper fills the faces in the order left, bottom, right, top and then the core, and joins them by short runs of P's.
+
+### Rating
+
+2: coordinates, but every piece is a snake or a path along the edges.
+
+### Our note
+
+We take the coordinates from our notes on the one-edge construction. Using linkers between the faces spares the short detours <Seq s="P^4" />, <Seq s="P^7" /> and <Seq s="P^{8+q}" /> of the original frame, which we found the hardest part of the paper to check. The price is seven long routes around the cube, in [15 Seven corner routes](#step-ours-corner-routes).

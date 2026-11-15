@@ -1,0 +1,86 @@
+---
+title: Spelling the string
+caption: 'The string fills the cube like the original one, but its bins are gaps on one edge. $K+1$ rods called separators hang on that edge between two walls, and each item is a rod with as many H''s as its size.'
+lane: setup
+order: 3
+difficulty: 1
+source: 'Fig. 3, p. 34, for the frame; the rest is new'
+---
+
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+The principle is that of the original string ([4 Spelling the string](../original-proof/#step-bl-string)). In a perfect fold every P lies outside the cube, so a P next to an H in the string sits on a neighbour of that H outside the cube. An H between two P's can only sit on an edge or at a corner, an H with one P beside it only on the surface, and only an H with no P beside it can go inside. So the string is made of **rods** such as <Seq s="(PHP)^3" />, whose H's each sit between two P's, **ribbons** such as <Seq s="(PHHP)^3" />, whose H's come two at a time, and a **core**, a long run of H's with a P at each end. A rod's **length** is its number of H's.
+
+The first part of the string, the **frame**, fills all of the cube but one face and two of its edges. A **corner rod** passes every corner and covers nine edges, and the **tenth-edge rod** a tenth ([6 Two edges stay free](#step-ours-skeleton)). Five **face ribbons** fill five faces, one of them two H's short, and the core fills the inside. The two edges left are the **free edges**, and the face between them the **front face**.
+
+Then comes the part that makes the bins. A **single**, the rod <Seq s="PHP" /> with one H, and an **anchor rod** of $n-3$ H's will fill one free edge, the **anchor edge**. Between them in the string lie a **wall**, a ribbon as long as a row of the front face, then $K+1$ **separators**, rods of $B+6$ H's, and a second wall. Consecutive separators are joined by a **spacer** of $B+2$ P's. The separators will lie on the other free edge, the **bin edge**, and the runs of nodes between them, the **gaps**, play the bins. A ribbon called the **filler** fills the front face between the two walls.
+
+Last come the items. Each item becomes an **item rod** with as many H's as its size, and these fill the gaps. Long runs of $8n$ P's, the **linkers**, join the big pieces: the face ribbons, the core, the front part, the filler and the item rods. They are long enough to reach from any piece to the next around the outside of the cube.
+
+The side $n$ of the cube is set by the bin edge. It has $n-2$ nodes, and we want room for exactly $K+1$ separators and $K$ gaps of $B$ nodes. So $n-2=(K+1)(B+6)+KB$.
+
+### Statement
+
+The string $S$ has exactly $n^3$ H's, with as many of each kind as the cube has places for them, and about $n^3$ letters in all. Its bin edge has room for exactly $K+1$ separators and $K$ gaps of size $B$.
+
+### Exact statement
+
+A **rod** <Seq s="(PHP)^t" /> holds $t$ **lone H's**, each between two P's. A **ribbon** <Seq s="(PHHP)^{t/2}" /> holds $t$ H's, for $t$ even, each with one P beside it. For an instance $U$, $s$, $K$, $B$ as in [2 Why bin packing](#step-ours-problems), with $K\ge2$, set
+
+$$g=B+6,\qquad n=(K+1)g+KB+2 .$$
+
+In string order, $S$ consists of:
+
+- **Frame.** The **corner rod**, with $9n-10$ lone H's; a face ribbon of $(n-2)^2$ H's; the **tenth-edge rod**, with $n-2$ lone H's; three more face ribbons; the **core**, a run of $(n-2)^3+2$ H's with a P at each end; and a fifth face ribbon, two H's short.
+- **Front part.** The **single**, a rod of one H; a **wall**, a ribbon of $n-2$ H's; $K+1$ **separators**, rods of $g$ H's, with a **spacer** of $B+2$ P's between each two; a second wall; and the **anchor rod**, with $n-3$ lone H's.
+- **Filler.** A ribbon of $(n-2)(n-4)$ H's.
+- **Item part.** One **item rod** <Seq s="(PHP)^{s(u)}" /> for each item $u$, in any fixed order.
+
+A **linker**, a run of $8n$ P's, comes after the tenth-edge rod, after each of the next three face ribbons, after the fifth face ribbon, after the anchor rod, and before each item rod. Elsewhere the pieces follow each other directly. The string has these properties:
+
+1. $g$ and $n$ are even, and $n\ge30$.
+2. $g>B+5$, and $n-2>2KB\ge4|U|$.
+3. $S$ has $12n-16$ lone H's, $6(n-2)^2-2$ H's in ribbons and $(n-2)^3+2$ H's in the core: $n^3$ H's in all.
+4. $S$ has $n^3+O(n^2)$ letters, and $n=O(KB)$.
+5. No P of $S$ has an H on both sides.
+6. $S$ has $(n-2)^3+3(n-2)^2$ pairs of consecutive H's, so a fold of $S$ has at least $3n^2(n-1)$ H–H pairs exactly when it has at least $2n^3-4$ contacts.
+
+### Uses
+
+[2 Why bin packing](#step-ours-problems): the instance, with $K\ge2$ and even sizes.
+
+### Proof
+
+1. $B$ is even, so $g$ and $n$ are. With $K\ge2$ and $B\ge2$, $g\ge8$ and $n-2\ge3\cdot8+2\cdot2=28$.
+2. $g=B+6$ by definition. $(K+1)g>KB$, so $n-2>2KB$. Every size is at least 2 and the sizes add up to $KB$, so $|U|\le KB/2$.
+3. Lone H's: $9n-10$, $n-2$, $1$, $(K+1)g$, $n-3$, and $KB$ in the item rods. Since $(K+1)g+KB=n-2$, they add up to $12n-16$. Ribbon H's: $5(n-2)^2-2$ in the face ribbons, $2(n-2)$ in the walls and $(n-2)(n-4)$ in the filler, $6(n-2)^2-2$ in all. With $m=n-2$, the total is $(12m+8)+(6m^2-2)+(m^3+2)=(m+2)^3=n^3$.
+4. Count the P's. Rods have two per lone H and ribbons one per H, $O(n^2)$ in all, the core has two, and the spacers $K(B+2)<n$. There are $|U|+6$ linkers of $8n$ P's, and $|U|<n$ by property 2. Finally $n=(K+1)(B+6)+KB+2=O(KB)$.
+5. Every piece begins and ends with P, and inside a piece no P lies between two H's.
+6. A ribbon of $t$ H's has $t/2$ pairs <Seq s="HH" />, and the core has $(n-2)^3+1$. That is $(3(n-2)^2-1)+((n-2)^3+1)$. With $m=n-2$, $3(m+2)^2(m+1)-m^3-3m^2=2m^3+12m^2+24m+12=2n^3-4$. In every fold the contacts are the H–H pairs minus the pairs <Seq s="HH" /> of the string.
+
+<More title="The string in full">
+
+With $g=B+6$ and $n=(K+1)g+KB+2$, $S$ is the following, in this order:
+
+- **Frame:** <Seq s="(PHP)^{9n−10}" /><wbr /><Seq s="(PHHP)^{(n−2)²/2}" /><wbr /><Seq s="(PHP)^{n−2}" /><wbr /><Seq s="P^{8n}" />, then <Seq s="((PHHP)^{(n−2)²/2}P^{8n})^3" />, then the core <Seq s="PH^{(n−2)³+2}P" /> followed at once by <Seq s="(PHHP)^{(n−2)²/2−1}" /><wbr /><Seq s="P^{8n}" />.
+- **Front part:** <Seq s="PHP" /><wbr /><Seq s="(PHHP)^{(n−2)/2}" /><wbr /><Seq s="(PHP)^g" /><wbr /><Seq s="(P^{B+2}(PHP)^g)^K" /><wbr /><Seq s="(PHHP)^{(n−2)/2}" /><wbr /><Seq s="(PHP)^{n−3}" /><wbr /><Seq s="P^{8n}" />.
+- **Filler:** <Seq s="(PHHP)^{(n−2)(n−4)/2}" />.
+- **Item part:** for each item $u$ in turn, <Seq s="P^{8n}(PHP)^{s(u)}" />.
+
+Between the last H of one piece and the first H of the next lie two P's where the pieces meet directly, $B+4$ P's across a spacer and $8n+2$ P's across a linker.
+
+</More>
+
+### Where in the paper
+
+The frame follows Fig. 3, p. 34: the same corner rod, face ribbon and tenth-edge rod, then the faces and the core. The paper joins the frame's pieces by short runs of P's; we use linkers. The front part, the filler and the item rods are new.
+
+### Rating
+
+1: a definition; the facts are direct checks.
+
+### Our note
+
+The linker length $8n$ is generous. The routes of [15 Seven corner routes](#step-ours-corner-routes) and [16 Joining the items](#step-ours-item-routes) need at most $3n+75$ steps and take up the rest by moving their far end. The separators have $B+6$ H's because the proof of [9 Separators line up](#step-ours-order) needs them longer than the $B+5$ steps across a spacer.

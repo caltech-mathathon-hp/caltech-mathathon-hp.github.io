@@ -1,0 +1,58 @@
+---
+title: Filling the front face
+caption: 'The two walls fill the top and bottom rows of the front face, the separators run down the bin edge with their spacers just in front of the gaps, and the filler takes the rows in between. Each bin of the packing fills one gap with its item rods.'
+lane: right
+group: fixed
+order: 3
+difficulty: 2
+source: 'New'
+---
+
+### The idea
+
+The frame leaves the front face and its two edges empty. The front part of the string fills them in one sweep. The single sits at the top of the left edge. The first wall runs along the top row to the right edge, and the separators run down the right edge, the bin edge, from top to bottom. The second wall runs back along the bottom row, and the anchor rod climbs the left edge to just below the single. The filler fills the rows in between by a snake.
+
+The separators sit at fixed places, with $B$ empty nodes between each two. These gaps are where the packing comes in: the item rods of each bin fill one gap, side by side. The spacer between two separators runs just in front of their gap, two steps out from the cube, since the P's of the item rods take the nodes one step out.
+
+All P's of the item rods point to the right or to the front of the bin edge, and the end P's to the right. That keeps the space in front of the face, and to the right beyond the first layer, free for the linkers.
+
+### Statement
+
+Given a packing, the single, the walls, the separators, the anchor rod, the filler and the item rods can be placed on the front face and its two edges, with the items of each bin in one gap.
+
+### Exact statement
+
+In the coordinates of [13 Folding the frame](#step-ours-frame), with $g=B+6$, let $I_m$ be the run of rows $1+m(g+B)$ to $g+m(g+B)$, for $0\le m\le K$. Given a packing $U_1,\dots,U_K$, the front part of $S$, the filler and the item rods have a placement, with no node used twice and none used by the frame, in which:
+
+1. the single is at $(0,n-2,0)$; the first wall fills row $n-2$; the separators fill $(n-1,j,0)$ for $j$ in $I_K,I_{K-1},\dots,I_0$ in this order, each run from top to bottom; the second wall fills row 1; and the anchor rod fills $(0,j,0)$, $1\le j\le n-3$;
+2. the spacer between a separator ending at row $b$ and the next, which starts at row $c=b-B-1$, is the walk $(n-1,b,-2),(n-1,b-1,-2),\dots,(n-1,c,-2)$;
+3. the filler fills rows 2 to $n-3$ of the front face, from $(n-2,2,0)$ to $(n-2,n-3,0)$;
+4. the item rods of $U_m$ fill the gap between $I_{m-1}$ and $I_m$, one after another upwards, each with both end P's to the right, at $(n,j,0)$;
+5. every item rod starts at an odd row and ends at an even row; so no two item ends share a row, and all of them lie at rows at most $n-2-g$;
+6. the ends where linkers attach are: the single's first P $(-1,n-2,0)$, the anchor rod's last P $(-1,n-3,0)$, the filler's first and last P $(n-2,2,-1)$ and $(n-2,n-3,-1)$, and the end P's of the item rods.
+
+### Uses
+
+[4 Spelling the string](#step-ours-string): the front part, $g$ and $n$ even, and $n-2=(K+1)g+KB$. [12 Placing a piece](#step-ours-placements). [13 Folding the frame](#step-ours-frame): what is left free.
+
+### Proof
+
+1. **Single and first wall.** The single's P's are at $(-1,n-2,0)$ and $(0,n-2,-1)$. The first wall runs along row $n-2$ from $i=1$ to $i=n-2$ with its P's in front, at $k=-1$; its first P $(1,n-2,-1)$ is next to the single's last P.
+2. **Separators.** $I_K$ ends at row $g+K(g+B)=(K+1)g+KB=n-2$, so the first separator starts next to the wall's last H $(n-2,n-2,0)$. Each separator has $g$ H's, an even number, so by [12 Placing a piece](#step-ours-placements) (3) both its end P's can point to the front. The last separator ends at row 1.
+3. **Spacers.** A separator on $I_m$, run downwards, ends at row $b=1+m(g+B)$, and the next starts at the top of $I_{m-1}$, row $c=g+(m-1)(g+B)=b-B-1$. The walk of (2) has $b-c+1=B+2$ nodes, the length of a spacer. It joins $(n-1,b,-1)$ to $(n-1,c,-1)$, the end P's of the two separators, and it lies in front of the gap of rows $c$ to $b$, at $k=-2$.
+4. **Second wall and anchor rod.** The second wall runs along row 1 from $i=n-2$ to $i=1$, P's in front. The anchor rod fills $(0,j,0)$ for $j=1,\dots,n-3$. It has $n-3$ H's, an odd number, so its first P can be in front, at $(0,1,-1)$ next to the wall's last P, and its last P to the left, at $(-1,n-3,0)$.
+5. **Filler.** A snake of the $n-4$ rows $j=2,\dots,n-3$, starting at $(n-2,2,0)$ with $i$ going down, P's in front. Since $n-4$ is even it ends at $(n-2,n-3,0)$, and it has $(n-2)(n-4)$ nodes.
+6. **Items.** The gap between $I_{m-1}$ and $I_m$ is the $B$ rows from $g+(m-1)(g+B)+1$ to $m(g+B)$; its first row is odd, since $g$ and $g+B$ are even. Its item rods take its rows one after another upwards; their sizes add up to $B$, so they fill it. Each size is even, so each rod starts at an odd row and ends at an even one, and by [12 Placing a piece](#step-ours-placements) (3) both its end P's can point to the right. The last gap ends at row $K(g+B)=n-2-g$.
+7. **No collisions.** All P's but the spacers' lie next to their own H's, so they do not collide ([12 Placing a piece](#step-ours-placements) (4)). The spacers lie at $k=-2$ with $i=n-1$, and no other P is there. The H's fill the front face and its edges, which the frame left free.
+
+### Where it comes from
+
+New. The front face of the original proof holds $2q$ walls, $q$ paddings and the plugs ([11 Building the walls](../original-proof/#step-bl-build-walls) and [12 Filling the strips](../original-proof/#step-bl-fill-strips)).
+
+### Rating
+
+2: coordinates, with a parity check for the item rods.
+
+### Our note
+
+The order of the items inside a gap, and which bin goes into which gap, are free. The routes of [16 Joining the items](#step-ours-item-routes) work for any choice, because they only need that no two item ends share a row.

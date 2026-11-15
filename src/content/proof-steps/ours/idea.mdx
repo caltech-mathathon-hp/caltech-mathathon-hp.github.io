@@ -1,0 +1,53 @@
+---
+title: Bins on one edge
+caption: 'As in the original proof, a perfect fold fills a cube and the string is a jigsaw with almost no freedom. But the bins are now gaps between long rods on a single edge of the cube, and each item is a rod that fills part of a gap.'
+lane: top
+order: 1
+difficulty: 1
+source: 'Our variant of §3.2, pp. 32–33'
+---
+
+### The idea
+
+Berger and Leighton turn a packing puzzle into an HP string whose perfect folds, the folds whose H's fill a cube, match the packings ([the original proof](../original-proof/)). Their bins are strips of one face of the cube. Walls cut the strips out, and each item is a ribbon that fills part of a strip. To give the strips the right size they also need paddings, plugs, rods of two lengths on the free edges and a spaced rod.
+
+We keep their cube, their frame and their way of forcing pieces into place, and change where the bins are. A bin becomes a **gap**: a run of nodes on one edge of the cube between two long rods, which we call **separators**. An item becomes a rod with as many H's as its size. A rod on that edge covers consecutive nodes, so the items in a gap sit side by side like books on a shelf. Only two walls cross the front face. They pin the first and the last separator to the two ends of the edge, and a single ribbon, the **filler**, covers the rest of the face.
+
+Each gap must hold exactly $B$ nodes. Between two separators the string has only $B+4$ P's, and these P's must find their way around the rods already lying in the gap. That rules out a gap of more than $B$ nodes ([10 Every gap holds B](#step-ours-gaps)). The edge has room for exactly $K$ gaps of $B$ nodes, so no gap can be smaller either.
+
+### Statement
+
+For every bin packing puzzle we build one HP string that has a perfect fold exactly when the puzzle has a solution, and its bins all lie on one edge of the cube.
+
+### Exact statement
+
+Given items of even sizes to be packed into $K\ge2$ bins of size $B$ ([2 Why bin packing](#step-ours-problems)), we build a string $S$ with $n^3$ H's, where $n$ grows linearly with $KB$, such that
+
+$$S \text{ has a perfect fold} \iff \text{the items fit into the bins.}$$
+
+By [3 Why a cube](#step-ours-cube) and [4 Spelling the string](#step-ours-string), the perfect folds of $S$ are exactly its folds with at least $3n^2(n-1)$ H–H pairs, or equivalently with at least $2n^3-4$ contacts.
+
+### Uses
+
+No earlier card. This card says what the board proves.
+
+### Proof
+
+The plan, card by card:
+
+1. **Setup.** [2 Why bin packing](#step-ours-problems) and [3 Why a cube](#step-ours-cube) are as in the original proof. [4 Spelling the string](#step-ours-string) builds $S$.
+2. **Left lane: if $S$ folds perfectly, the items fit.** The local rules put the rods on the edges and the ribbons on the faces. The corner rod leaves two edges free. One of them takes the separators and the items, and the two walls run straight between the two. The separators then lie in order along that edge, and every gap holds exactly $B$ nodes, so the items in each gap form a bin.
+3. **Right lane: if the items fit, $S$ folds perfectly.** Given a packing, each piece is placed in coordinates: first the frame, then the front face, and the item rods in the gaps that their bins choose. The long runs of P's between pieces are routed outside the cube.
+4. **End.** [17 Folding is NP-complete](#step-ours-conclusion) puts the two lanes together.
+
+### Where it comes from
+
+Our notes on the one-edge construction. The cube, the local rules and most of the frame are those of Berger and Leighton (§3.1, §3.2.1, §3.2.3). The bins on one edge, the separators and the bound on the gaps are new.
+
+### Rating
+
+1: an outline; the other cards hold the proofs.
+
+### Our note
+
+This is not a short proof of the theorem. It keeps the cube, the frame and the long runs of P's outside the cube. What becomes simpler is the part that makes the bins. It needs two walls instead of $2q$, no paddings or plugs, separators of one length, and no bound between $B$ and $K$. The runs of P's between items need no switchboard either, since all item ends lie on one edge.

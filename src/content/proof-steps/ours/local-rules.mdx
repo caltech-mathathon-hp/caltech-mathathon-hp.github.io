@@ -1,0 +1,61 @@
+---
+title: The counts match
+caption: 'The string has exactly as many H''s between P''s as the cube has edge and corner nodes, so the rods fill the edges and the ribbons the faces. Two H''s with `PP` between them always touch, which makes every rod and every ribbon an unbroken path.'
+lane: left
+group: forced
+order: 1
+difficulty: 2
+figure: bl-blocks
+source: 'Facts 3.9–3.11, p. 37'
+---
+
+### The idea
+
+We now read a packing off a perfect fold of $S$. As [4 Spelling the string](#step-ours-string) explained, the P's next to an H limit where it can sit. Counting turns these limits into exact places. The string has exactly as many lone H's as the cube has edge and corner nodes, so the rods fill those nodes and nothing else does. The inner H's of the core are exactly as many as the nodes inside the cube, and the ribbons with the core's two end H's fill the faces.
+
+One more fact holds the pieces together: in <Seq s="HPPH" /> the two H's are neighbours in the fold. Three steps lead from one H to the other, and each step changes the sum of the coordinates by one, so the H's are 1 or 3 steps apart. If they were 3 apart, the walk would be a shortest path, and a shortest path never leaves the box between its ends. That box lies in the cube, so the P's would lie in the cube too. So consecutive H's of a rod are neighbours, every rod runs as an unbroken path along the edges, and every ribbon as a path in one face.
+
+For the bins we need one more consequence. An edge node has just two neighbours outside the cube, and its rod H puts its two P's on both. So no other P can pass right next to an edge node.
+
+### Statement
+
+In a perfect fold, the rods fill the edges and corners, the inner H's of the core fill the inside, and the ribbons with the core's two end H's fill the faces. Each rod is a path along the edges, each ribbon a path in one face, and the two nodes just outside each edge node hold the P's of its rod.
+
+### Exact statement
+
+A node of the cube is a **corner**, an **edge node**, a **face node** or an **interior node** if it lies on 3, 2, 1 or 0 faces of the cube. The **skeleton** is the set of corners and edge nodes: $12(n-2)+8=12n-16$ nodes. The **surface** is the skeleton with the face nodes. In a perfect fold of $S$:
+
+- **(a)** an H next to a P in the string lies on the surface;
+- **(b)** a lone H lies on the skeleton;
+- **(c)** two H's separated by <Seq s="PP" /> in the string, as in <Seq s="HPPH" />, lie on neighbouring nodes;
+- **(d)** the lone H's fill the skeleton, the inner $(n-2)^3$ H's of the core fill the interior, and the ribbon H's and the two end H's of the core fill the face nodes;
+- **(e)** the two neighbours outside the cube of an edge node hold the two P's beside the H on that node.
+
+So the H's of a rod form a path in the skeleton, and the H's of a ribbon form a path of face nodes, which lies in one face. Where two pieces meet directly, as a rod and a ribbon in <Seq s="PHPPHHP" />, their end H's are neighbours.
+
+### Uses
+
+[4 Spelling the string](#step-ours-string): the counts of lone, ribbon and core H's, and the fact that no P of $S$ has an H on both sides. [3 Why a cube](#step-ours-cube): a perfect fold fills a cube.
+
+### Proof
+
+The cube holds $n^3$ H's on its $n^3$ nodes, so every node of the cube holds an H and every P lies outside.
+
+1. **(a)** An interior node has all six neighbours in the cube, so an H there has no P beside it.
+2. **(b)** A lone H has two P's beside it, on two different nodes outside the cube. A face node has one neighbour outside the cube and an interior node none.
+3. **(c)** Let the H's be at $u$ and $v$. Each step changes the sum of the coordinates by 1, so after three steps $u$ and $v$ are 1 or 3 apart. If they were 3 apart, the three steps would form a shortest path from $u$ to $v$. Along a shortest path every coordinate moves in one direction only, so the path stays in the box with opposite corners $u$ and $v$. That box lies in the cube, and the two P's of the path would lie in the cube. So $u$ and $v$ are neighbours.
+4. **(d)** By (b) the $12n-16$ lone H's lie on the $12n-16$ nodes of the skeleton, so they fill it. By (a) only H's with no P beside them can be interior. These are the $(n-2)^3$ inner H's of the core, as many as there are interior nodes, so they fill the interior. The remaining H's fill the face nodes.
+5. **(e)** An edge node has exactly two neighbours outside the cube. By (d) it holds a lone H, whose two P's lie on two different neighbours outside the cube, so on these two.
+6. A rod's H's lie on the skeleton by (b), and consecutive ones are neighbours by (c). A ribbon's H's lie on face nodes by (d), and consecutive ones are neighbours, directly or by (c). Two neighbouring face nodes lie on the same face. Two pieces that meet directly have <Seq s="PP" /> between their end H's, so (c) applies.
+
+### Where in the paper
+
+Facts 3.9–3.11, p. 37, argued in the intuition of §3.2.1, pp. 32–33. Rules (d) and (e) are not stated there.
+
+### Rating
+
+2: three local checks and a count.
+
+### Our note
+
+Rules (a), (b) and (d) are those of [5 The counts match](../original-proof/#step-bl-local-rules) on the original board. The proof of (c) is different: shortest paths stay in the box between their ends, which covers face nodes, edge nodes and corners at once. Rule (e) is weaker than the original card's rule (e) and is all that [10 Every gap holds B](#step-ours-gaps) needs.

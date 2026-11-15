@@ -1,0 +1,50 @@
+---
+title: One face is left
+caption: 'Four face ribbons fill four faces, and the fifth fills a fifth face but for two nodes, which the ends of the core take. The two walls and the filler fill the sixth face, the front face.'
+lane: left
+group: forced
+order: 3
+difficulty: 1
+source: 'New; compare “Packing the items into bins”, p. 38'
+---
+
+### The idea
+
+By [5 The counts match](#step-ours-local-rules) the ribbons and the two end H's of the core fill the face nodes, and each ribbon stays in one face. A face has $(n-2)^2$ face nodes. Four face ribbons have exactly that many H's, so each fills a face. The fifth face ribbon is two H's short, so it fills a fifth face but for two nodes.
+
+What is left is the sixth face, the two nodes of the fifth, and three ribbons: the two walls and the filler. Each of them has far more than two H's, so all three lie on the sixth face, and they fill it exactly. The core's two end H's sit next to P's, so they lie on face nodes too, and the only ones left are the two in the fifth face. We call the sixth face the **front face**.
+
+### Statement
+
+Five faces are filled by the face ribbons and the ends of the core. The two walls and the filler fill the sixth face, the front face.
+
+### Exact statement
+
+In a perfect fold:
+
+1. each of the four face ribbons of $(n-2)^2$ H's fills the face nodes of one face, a different face for each;
+2. the fifth face ribbon lies in a fifth face, whose two other face nodes hold the two end H's of the core;
+3. the two walls and the filler lie in the sixth face, the **front face**, and fill its face nodes.
+
+### Uses
+
+[4 Spelling the string](#step-ours-string): the ribbon lengths and $n\ge30$. [5 The counts match](#step-ours-local-rules): (d), and that a ribbon lies in one face.
+
+### Proof
+
+1. **Four faces.** By (d), the ribbon H's and the two end H's of the core fill the $6(n-2)^2$ face nodes, and every ribbon lies in one face. A face ribbon of $(n-2)^2$ H's fills the face nodes of its face, so the four of them fill four different faces.
+2. **The fifth face.** The fifth face ribbon has $(n-2)^2-2$ H's, so it lies in one of the two faces left and leaves two of its face nodes free.
+3. **The front face.** The walls have $n-2$ H's and the filler $(n-2)(n-4)$, more than 2 since $n\ge30$. So none of them fits into the two free nodes of the fifth face, and all three lie in the sixth face. They have $2(n-2)+(n-2)(n-4)=(n-2)^2$ H's, so they fill it.
+4. **The ends of the core.** Each end H of the core has a P beside it, so by (d) it lies on a face node. The only face nodes left are the two of step 2.
+
+### Where it comes from
+
+New. In the original proof the same count places the five face ribbons, and the ends of the core may land in a strip, which [9 Reading off a packing](../original-proof/#step-bl-packing) handles by an exchange.
+
+### Rating
+
+1: a count of face nodes.
+
+### Our note
+
+Here no exchange is needed: the walls and the filler fill the front face exactly, so the ends of the core can only take the two holes of the fifth face.

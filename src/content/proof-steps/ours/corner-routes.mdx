@@ -1,0 +1,102 @@
+---
+title: Seven corner routes
+caption: 'Seven linkers join the frame''s pieces, the front part and the filler. Each one leaves a face, goes round the edge it shares with the next face and comes back in, every route at its own depth. Moving the far end of the loop gives each exactly $8n$ P''s.'
+lane: right
+group: links
+order: 4
+difficulty: 3
+source: 'New; replaces the runs of P''s of pp. 34–35'
+---
+
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+Every piece is now in place, and only the linkers are left. Seven of them come before the first item: one after the tenth-edge rod, one after each of the next four face ribbons, one after the anchor rod and one after the filler. Each joins the end of a piece on one face of the cube to the start of the next piece on a neighbouring face.
+
+All seven routes have the same shape. Leave the first face straight out, cross over the edge the two faces share, run along that edge to a turning point and back one step further out, cross back over the second face to above its port, and go straight in. Each route uses its own depth: the $j$-th stays $4+2j$ or $5+2j$ steps out from the faces it passes. Routes at different depths can only meet where a later route's straight stem pokes out through an earlier one, and the ports are placed so that this does not happen.
+
+A linker must have exactly $8n$ P's. The shortest route of this shape has at most $3n+75$ steps, and moving the turning point one node further adds two. The two ends of every linker have opposite parity, so the count comes out exactly.
+
+### Statement
+
+The seven linkers before the item rods can be routed outside the cube, each around one edge at its own depth, with exactly $8n$ P's each, without meeting each other or any piece.
+
+### Exact statement
+
+A linker between the last H $p$ of one piece and the first H $p'$ of the next, together with the end P's of the two pieces, is a walk of $8n+3$ steps from $p$ to $p'$ whose inner nodes lie outside the cube. In the placement of [13 Folding the frame](#step-ours-frame) and [14 Filling the front face](#step-ours-front-face), the seven linkers before the first item join the ports below, where $v_1$ is the first row of the first item rod:
+
+| $j$ | From | To |
+|---|---|---|
+| 1 | tenth-edge rod, $(0,n-2,n-1)$ | left face, $(0,1,1)$ |
+| 2 | left face, $(0,n-2,1)$ | bottom face, $(n-2,0,n-2)$ |
+| 3 | bottom face, $(n-2,0,1)$ | right face, $(n-1,1,n-2)$ |
+| 4 | right face, $(n-1,n-2,n-2)$ | core, $(n-2,n-1,1)$ |
+| 5 | top face ribbon, $(n-3,n-1,1)$ | single, $(0,n-2,0)$ |
+| 6 | anchor rod, $(0,n-3,0)$ | filler, $(n-2,2,0)$ |
+| 7 | filler, $(n-2,n-3,0)$ | first item rod, $(n-1,v_1,0)$ |
+
+These seven walks can be chosen so that no two of them share a node, none uses a node of a piece other than its two end P's, and each has exactly $8n+3$ steps.
+
+### Uses
+
+[4 Spelling the string](#step-ours-string): the linkers and $n\ge30$. [13 Folding the frame](#step-ours-frame) and [14 Filling the front face](#step-ours-front-face): the ports, the directions of their end P's, and that every P of a piece lies at most two steps from the cube.
+
+### Proof
+
+1. **The shape.** Let $F$ and $F'$ be the faces of the two ports, numbered so that the port on $F$ is further along the common edge (More). The walk leaves $F$ straight out to depth $h$, moves parallel to $F$ until it is $h+1$ beyond $F'$, runs parallel to the common edge to a turning point, steps out to depth $h+1$ from $F$, runs back to the level of the port on $F'$, moves parallel to $F'$ to above that port, and goes straight in. Its first and last steps are the end P's of the two pieces, which point straight out of $F$ and $F'$. If the port on $F$ is the later one in the string, the walk is run backwards.
+2. **Simple.** The outgoing and returning runs along the edge lie at different depths from $F$, and the return reaches the level of the port on $F'$ before it gets to the outgoing run, so a route does not meet itself.
+3. **Depths.** Route $j$ uses $h_j=4+2j$, so $6\le h_j\le18$. Apart from its two straight **stems**, route $j$ lies at depth $h_j$ or $h_j+1$ outside some face, and inside the box that extends the cube by $h_j+1$ on every side.
+4. **No meetings.** A later route lies, apart from its stems, outside the box of every earlier route. Stems are straight runs out of the cube from different ports, so they do not meet each other. An earlier route can therefore meet a later route only at a later stem, and only where it runs over that stem's face. The ports are placed so that this never happens (More).
+5. **Missing the pieces.** Every P of a piece lies at most two steps from the cube. The routes lie at depth at least 6 except for their stems, and a stem's first node is the end P of its own piece. The only P's two steps out are the spacers, at $i=n-1$ and $k=-2$, and no stem passes there.
+6. **Length.** With the turning point one node past the further port, route $j$ has $\ell_j=4h_j+s+r+|t-t'|+6$ steps, where $s$ and $r$ say how far the two ports lie from the common edge and $t$, $t'$ are their positions along it. All of these are at most $n-1$, so $\ell_j\le72+3(n-1)+6=3n+75<8n+3$.
+7. **Exact length.** Every piece starts at a node whose coordinates add up to an even number and ends at one where they add up to an odd number, so $\ell_j$ and $8n+3$ are both odd. Moving the turning point one node further adds two steps and changes nothing above. Moving it $(8n+3-\ell_j)/2$ nodes further gives exactly $8n+3$ steps.
+
+<More title="The route in coordinates, and why the routes miss each other">
+
+**Local coordinates.** For a route, let $u$ be the distance outside the plane of $F$ ($u\le0$ in the cube), $v$ the same for $F'$, and $t$ the coordinate along their common edge. The ports are $p=(0,-s,t_0)$ on $F$ and $p'=(-r,0,t_1)$ on $F'$, with $0\le r,s\le n-1$ and $t_0>t_1$. With turning point $\bar t>t_0$, the route is the walk along straight segments
+
+$$(0,-s,t_0)\to(h,-s,t_0)\to(h,h+1,t_0)\to(h,h+1,\bar t)\to(h+1,h+1,\bar t)\to(h+1,h+1,t_1)\to(-r,h+1,t_1)\to(-r,0,t_1).$$
+
+Its second segment is the **arm over $F$**, its sixth the **arm over $F'$**, and its first and last the stems. The third to fifth segments form the **outer part**, where both $u$ and $v$ are $h$ or $h+1$.
+
+**The seven routes.** $F$, $F'$ and the common coordinate $t$:
+
+| $j$ | $F$ | $F'$ | $t$ | $t_0$, $t_1$ |
+|---|---|---|---|---|
+| 1 | back | left | $j$ | $n-2$, $1$ |
+| 2 | bottom | left | $k$ | $n-2$, $1$ |
+| 3 | right | bottom | $k$ | $n-2$, $1$ |
+| 4 | right | top | $k$ | $n-2$, $1$ |
+| 5 | top | left | $k$ | $1$, $0$ |
+| 6 | left | front | $j$ | $n-3$, $2$ |
+| 7 | front | right | $j$ | $n-3$, $v_1$ |
+
+Routes 2 and 3 run backwards, from $p'$ to $p$. Every pair of ports is distinct, and $v_1\le n-2-g<n-3$ by [14 Filling the front face](#step-ours-front-face) (5).
+
+**Why the routes miss each other.**
+
+- *Outer parts* have two coordinates outside the cube, while a stem has only one, so outer parts never meet stems. Two adjacent pairs of faces always share an axis. On that axis the two outer parts lie at different depths, or on opposite sides of the cube.
+- *An outer part and an arm* of another route on the same two axes lie at different depths. If the axes differ, the axis along which the arm stays fixed is one of the outer part's two axes. The outer part lies outside the cube on that axis, while the arm's fixed coordinate is between $0$ and $n-1$.
+- *An earlier arm and a later stem* can meet only over the same face. These are the cases, face by face:
+  - **Left.** Route 1's arm has $j=1$ and $k\ge1$, and route 2's arm has $k=1$. The later stems on the left face are at $(0,n-2,1)$ and at $k=0$. Route 5's arm runs at $k=0$ from $j=n-2$ upwards, away from route 6's port at $j=n-3$.
+  - **Bottom.** Route 2's arm has $k=n-2$; route 3's port on the bottom has $k=1$.
+  - **Right.** Routes 3 and 4 have their arms at $k=n-2$, and the item ports have $k=0$. Route 3's arm runs from $j=1$ downwards, away from route 4's port at $j=n-2$.
+  - **Top.** Route 4's arm runs at $k=1$ from $i=n-2$ outwards; route 5's port has $i=n-3$.
+  - **Front.** Route 6's arm has $j=2$; route 7's port has $j=n-3$.
+
+These checks do not depend on the turning points, so each route can be lengthened on its own.
+
+</More>
+
+### Where it comes from
+
+New. The original frame joins its pieces by short runs of P's next to the cube (p. 34, Figs. 4–7), and only the linkers of the item part go far out.
+
+### Rating
+
+3: one simple shape, but checking that seven routes miss each other and every piece is a long case analysis.
+
+### Our note
+
+The route and the case analysis are from our notes. A coordinate checker built all seven routes, with every other part of the fold, for five instances, the largest with 1,825,956 letters, and found no node used twice. That is a check of examples, not a replacement for the argument above.

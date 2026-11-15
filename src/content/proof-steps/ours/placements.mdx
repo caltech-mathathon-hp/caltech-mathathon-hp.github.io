@@ -1,0 +1,54 @@
+---
+title: Placing a piece
+caption: 'From a packing we build a perfect fold piece by piece, with three tools. Snakes fill rectangles and boxes, a ribbon follows any path on a face with its P''s straight out, and a rod follows any path along the edges.'
+lane: right
+group: fixed
+order: 1
+difficulty: 1
+figure: bl-rod-ribbon
+source: 'Figs. 1–2, p. 33'
+---
+
+### The idea
+
+Now the other direction: given a packing, we fold $S$ perfectly. We place the pieces in coordinates, and three tools do almost all of the work.
+
+A **snake** fills a rectangle row by row, going along one row and back along the next. A box is filled layer by layer, each layer by a snake that runs the previous one backwards, so that each layer starts where the last one ended.
+
+A ribbon can follow any path of face nodes on one face, as long as the path has an even number of nodes. Each P goes straight out from its H, and two P's next to each other in the string sit in front of two neighbouring H's, so they are neighbours too.
+
+A rod can follow any path along the edges. Between two consecutive H's the two P's must be neighbours, so they stick out on the same side. Along a straight edge there are only two sides, so the P's alternate: a rod with an even number of H's can have its first and last P on the same side, a rod with an odd number on different sides. At a corner there are three sides, and the P's may change pattern there.
+
+### Statement
+
+Snakes fill rectangles and boxes, a ribbon fits on any path of an even number of face nodes, and a rod fits on any path in the skeleton, with its last P on a side of our choice. P's placed next to different H's never collide.
+
+### Exact statement
+
+1. **Snakes.** The nodes of a rectangle can be listed row by row, back and forth, as a path. The nodes of a box can be listed layer by layer as a path, each layer by such a snake, run backwards in every second layer.
+2. **Ribbons.** Let $h_1,\dots,h_{2t}$ be a path of face nodes of one face, and $\nu$ the unit vector pointing out of that face. Putting the H's of <Seq s="(PHHP)^t" /> on $h_1,\dots,h_{2t}$ and each P at $h+\nu$, next to its H $h$, is a fold.
+3. **Rods.** Let $h_1,\dots,h_t$ be a path in the skeleton and $\nu'$ a unit vector pointing out of the cube at $h_t$. The rod <Seq s="(PHP)^t" /> has a fold with its H's on $h_1,\dots,h_t$, each P next to its H outside the cube, and its last P at $h_t+\nu'$. If the path runs straight along one edge, the sides of the P's alternate, so the first and last P lie on the same side exactly when $t$ is even.
+4. **No collisions.** A node outside the cube is next to at most one node of the cube. So P's placed next to different H's of the cube never share a node.
+
+### Uses
+
+No earlier card; these are tools.
+
+### Proof
+
+1. **Snakes.** Two consecutive rows of a snake meet at neighbouring ends, and so do two consecutive layers of a box, since a layer run backwards starts above the node where the layer before it ended.
+2. **Ribbons.** Inside a block <Seq s="PHHP" /> on $h_{2s-1}+\nu$, $h_{2s-1}$, $h_{2s}$, $h_{2s}+\nu$ every step is to a neighbour. Between two blocks the P's at $h_{2s}+\nu$ and $h_{2s+1}+\nu$ are neighbours because $h_{2s}$ and $h_{2s+1}$ are. The P's lie outside the cube, on different nodes by (4).
+3. **Rods.** Write the P's of the rod as $h_1+\nu_0$; then $h_s+\nu_s$ and $h_{s+1}+\nu_s$ between $h_s$ and $h_{s+1}$; and last $h_t+\nu_t$. The two P's between $h_s$ and $h_{s+1}$ are neighbours, and they lie outside the cube if $\nu_s$ points out of the cube at both nodes. Two neighbouring skeleton nodes lie on one edge, and exactly two directions point out of the cube at both. The two P's of $h_s$ must differ, so we need $\nu_{s-1}\ne\nu_s$. Choose $\nu_t=\nu'$, then $\nu_{t-1},\dots,\nu_1$ in turn, each one of the two shared directions that differs from the one chosen before it, and finally $\nu_0$, pointing out at $h_1$, different from $\nu_1$. On a straight edge only two directions point out, so the $\nu_s$ alternate and $\nu_0=\nu_t$ exactly when $t$ is even.
+4. **No collisions.** A node outside the cube has a coordinate $-1$ or $n$, and its only neighbour in the cube changes that coordinate to $0$ or $n-1$.
+
+### Where in the paper
+
+Figs. 1–2, p. 33, show a rod on an edge and a ribbon on a face. §3.2.3 uses snakes on pp. 34–36.
+
+### Rating
+
+1: local checks.
+
+### Our note
+
+Tool (3) is what our frame needs in place of the paper's remark that the corner rod's P's are placed "so as to keep the string connected" (p. 34). The order of choice matters: going backwards from the last P lets us fix the side on which the rod ends, which is where its linker starts.

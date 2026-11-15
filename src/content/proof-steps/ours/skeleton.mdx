@@ -1,0 +1,56 @@
+---
+title: Two edges stay free
+caption: 'The corner rod is as long as a path along the edges can be, so it must pass all 8 corners and cover 9 edges. The tenth-edge rod takes a tenth edge, and every later rod lies on one of the two edges left.'
+lane: left
+group: forced
+order: 2
+difficulty: 2
+figure: bl-skeleton
+source: '“Forming the bins”, p. 37'
+---
+
+### The idea
+
+This step is the same as in the original proof ([6 Two edges stay free](../original-proof/#step-bl-skeleton)): our corner rod and tenth-edge rod are the original ones. The rods fill the edges and corners of the cube, 8 corners joined by 12 edges of $n-2$ nodes each, and each rod lies along them as a path ([5 The counts match](#step-ours-local-rules)).
+
+A path along the edges turns only at corners. Between two corners it covers a whole edge, and before its first corner and after its last it covers at most one edge each. So a path through $r$ corners has at most $r+(r+1)(n-2)$ nodes. The corner rod has $9n-10=8+9(n-2)$, so it passes all 8 corners and covers 9 whole edges. At each corner it uses two of the three edges, so the three edges it misses share no corner. The tenth-edge rod fills one of them, and the other two stay empty: the free edges.
+
+Every corner is now taken, so the two free edges are two separate runs of $n-2$ nodes. Each later rod is a path, so it lies on consecutive nodes of one free edge. This is what lets the items sit side by side in the gaps.
+
+### Statement
+
+The first two rods fill ten of the twelve edges, and the two edges left share no corner. Every later rod lies on consecutive nodes of one of them.
+
+### Exact statement
+
+Here an **edge** means the $n-2$ edge nodes between two corners. In a perfect fold:
+
+1. the corner rod <Seq s="(PHP)^{9n−10}" /> covers all 8 corners and all nodes of 9 edges;
+2. the tenth-edge rod <Seq s="(PHP)^{n−2}" /> fills one of the 3 edges left;
+3. the other two, the **free edges**, share no corner;
+4. every later rod, that is the single, the separators, the anchor rod and the item rods, fills a run of consecutive nodes of one free edge.
+
+### Uses
+
+[4 Spelling the string](#step-ours-string): the rod lengths. [5 The counts match](#step-ours-local-rules): (b), (d), and the fact that a rod's H's form a path in the skeleton.
+
+### Proof
+
+1. The skeleton consists of 12 paths of $n-2$ edge nodes, joined at 8 corners, with 3 edges at each corner. Two skeleton nodes are neighbours only along these paths.
+2. A path in the skeleton that meets $r$ corners has at most $r+(r+1)(n-2)$ nodes. Between two consecutive corners it runs along a whole edge, and before the first and after the last corner it covers at most $n-2$ nodes each.
+3. The corner rod is such a path with $9n-10=8+9(n-2)$ nodes. Since $r\le8$, step 2 forces $r=8$ and both end runs complete. So the rod covers the 8 corners, the 7 edges between consecutive corners, and the 2 edges of its end runs: 9 edges. Its two ends are not corners.
+4. Every corner lies inside the path, so the rod uses two of its three edges there. So each corner meets at most one of the 3 edges left, and no two of them share a corner.
+5. The tenth-edge rod is a path of $n-2$ lone H's on skeleton nodes not yet used: the nodes of the 3 edges left. Their corners are taken, so no node of one of these edges is a neighbour of a node of another. So the rod fills one of them.
+6. What is left of the skeleton is the two free edges, two runs of $n-2$ nodes with no neighbours in common. A later rod is a path on these nodes, so it lies in one run and fills consecutive nodes of it.
+
+### Where in the paper
+
+“Forming the bins”, p. 37, first paragraph, for the corner rod and the tenth-edge rod.
+
+### Rating
+
+2: a counting argument.
+
+### Our note
+
+Proof steps 1–5 are those of the original card. Step 6 is new and does the work that the rods of lengths $q$ and $2q+1$ do in the original: an item rod is a run of consecutive nodes of a free edge, so items cannot spread out.

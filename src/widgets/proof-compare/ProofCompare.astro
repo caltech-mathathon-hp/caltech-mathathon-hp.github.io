@@ -1,0 +1,224 @@
+---
+/**
+ * Two proof boards compared step by step, drawn as a proof board itself (board.css), with the places
+ * of the original board: the idea on top, the setup row, the split into the two directions side by
+ * side, and the merge into the conclusion. Each place holds comparison cards (PairCard.astro):
+ * stacks that say what changes and open in place to show the cards of both boards side by side.
+ *
+ *   import ProofCompare from '../../widgets/proof-compare/ProofCompare.astro';
+ *   <div class="full"><ProofCompare /></div>
+ *
+ * The pairing of steps lives in stages.ts; the cards come from src/content/proof-steps/<map>/, keep
+ * their board numbers, and link to the step on their own board. Without JavaScript the stacks still
+ * open one by one; with it, one button opens or closes them all. Styles: compare.css (prefix pc-).
+ */
+import { getCollection } from 'astro:content';
+import Pips from '../proof-map/Pips.astro';
+import { withBase } from '../../lib/url';
+import PairCard from './PairCard.astro';
+import { SIDES, STAGES, type Place, type Stage } from './stages';
+import '../proof-map/board.css';
+import './compare.css';
+
+interface Props {
+  /** Label on the split into the two directions. */
+  fork?: string;
+}
+const { fork = 'Two directions to prove' } = Astro.props;
+
+const LANES = ['top', 'setup', 'left', 'right', 'end'] as const;
+type Card = { slug: string; n: number; title: string; caption: string; difficulty: 1 | 2 | 3; href: string };
+
+/* The cards of each board, numbered as ProofBoard numbers them. */
+const boards = await Promise.all(
+  SIDES.map(async (side) => {
+    const entries = await getCollection('proofSteps', (e) => e.id.startsWith(`${side.map}/`));
+    if (entries.length === 0) throw new Error(`[ProofCompare] no cards in src/content/proof-steps/${side.map}/`);
+    entries.sort((a, b) => LANES.indexOf(a.data.lane) - LANES.indexOf(b.data.lane) || a.data.order - b.data.order);
+    const page = withBase(side.page);
+    const cards = new Map<string, Card>();
+    entries.forEach((e, i) => {
+      const slug = e.id.slice(side.map.length + 1);
+      cards.set(slug, {
+        slug,
+        n: i + 1,
+        title: e.data.title,
+        caption: e.data.caption,
+        difficulty: e.data.difficulty,
+        href: `${page}#step-${side.map}-${slug}`,
+      });
+    });
+    return cards;
+  }),
+);
+
+/* Every card of each board appears in exactly one stage. */
+SIDES.forEach((side, k) => {
+  const used = STAGES.flatMap((s) => s.cards[k]);
+  for (const slug of used) {
+    if (!boards[k].has(slug)) throw new Error(`[ProofCompare] stages.ts names ${side.map}/${slug}, which does not exist`);
+  }
+  for (const slug of boards[k].keys()) {
+    const times = used.filter((u) => u === slug).length;
+    if (times !== 1) throw new Error(`[ProofCompare] ${side.map}/${slug} appears ${times} times in stages.ts, not once`);
+  }
+});
+
+const cardsOf = (s: Stage): [Card[], Card[]] => [
+  s.cards[0].map((slug) => boards[0].get(slug)!),
+  s.cards[1].map((slug) => boards[1].get(slug)!),
+];
+const at = (p: Place) => STAGES.filter((s) => s.place === p);
+const top = at('top');
+const setup = at('setup');
+const left = at('left');
+const right = at('right');
+const end = at('end');
+
+/* "original 5–9 · one edge 5–11": the steps of each board in a place. */
+const span = (list: Stage[]) =>
+  SIDES.map((side, k) => {
+    const ns = list.flatMap((s) => cardsOf(s)[k].map((c) => c.n));
+    const lo = Math.min(...ns);
+    const hi = Math.max(...ns);
+    return `${side.short} ${lo === hi ? lo : `${lo}–${hi}`}`;
+  }).join(' · ');
+
+const LANE = {
+  setup: 'Setting up the reduction',
+  left: 'A perfect fold gives a packing',
+  right: 'A packing gives a perfect fold',
+  end: 'Both directions together',
+} as const;
+---
+
+<div class="pb pc" data-compare>
+  <div class="pb-top ui">
+    <p class="pb-hint">Each card compares one step of the two proofs. Open it to see both boards' cards side by side.</p>
+    <button
+      class="btn ghost pb-expand"
+      type="button"
+      data-open-all
+      data-more="Open all the cards"
+      data-less="Close all the cards"
+      hidden
+    >
+      Open all the cards
+    </button>
+    <ul class="pb-legend" aria-label="Difficulty (our rating)">
+      <li><Pips d={1} /></li>
+      <li><Pips d={2} /></li>
+      <li><Pips d={3} /></li>
+    </ul>
+  </div>
+
+  <div class="pb-board">
+    {
+      top.length > 0 && (
+        <section class="pb-row pb-row-top" data-count={top.length} aria-label="The idea">
+          <ol class="pb-cards" role="list">
+            {top.map((s) => (
+              <li class="pb-item pb-item-group">
+                <PairCard stage={s} sides={SIDES} cards={cardsOf(s)} />
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    {top.length > 0 && <div class="pb-down" aria-hidden="true"><i></i></div>}
+
+    {
+      setup.length > 0 && (
+        <section class="pb-row pb-row-setup" data-count={setup.length} aria-label={LANE.setup}>
+          <header class="pb-lane-head">
+            <h3 class="pb-lane-title">{LANE.setup}</h3>
+            <p class="pb-lane-note">{span(setup)}</p>
+          </header>
+          <ol class="pb-cards" role="list">
+            {setup.map((s, k) => (
+              <li class="pb-item pb-item-group">
+                {k > 0 && <span class="pb-hop" aria-hidden="true" />}
+                <PairCard stage={s} sides={SIDES} cards={cardsOf(s)} />
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    <div class="pb-split" aria-hidden="true">
+      <i></i>
+      <i></i>
+      <span class="pb-fork">{fork}</span>
+    </div>
+
+    <div class="pb-lanes">
+      {
+        (['left', 'right'] as const).map((key) => {
+          const list = key === 'left' ? left : right;
+          return (
+            <section class={`pb-lane pb-lane-${key}`} aria-labelledby={`pc-${key}`}>
+              <header class="pb-lane-head">
+                <h3 class="pb-lane-title" id={`pc-${key}`}>
+                  {LANE[key]}
+                </h3>
+                <p class="pb-lane-note">{span(list)}</p>
+              </header>
+              <ol class="pb-cards" role="list">
+                {list.map((s) => (
+                  <li class="pb-item pb-item-group">
+                    <PairCard stage={s} sides={SIDES} cards={cardsOf(s)} />
+                  </li>
+                ))}
+              </ol>
+            </section>
+          );
+        })
+      }
+    </div>
+
+    {
+      end.length > 0 && (
+        <>
+          <div class="pb-merge" aria-hidden="true">
+            <i></i>
+            <i></i>
+          </div>
+          <section class="pb-row pb-row-end" data-count={end.length} aria-label={LANE.end}>
+            <header class="pb-lane-head">
+              <h3 class="pb-lane-title">{LANE.end}</h3>
+              <p class="pb-lane-note">{span(end)}</p>
+            </header>
+            <ol class="pb-cards" role="list">
+              {end.map((s) => (
+                <li class="pb-item pb-item-group">
+                  <PairCard stage={s} sides={SIDES} cards={cardsOf(s)} />
+                </li>
+              ))}
+            </ol>
+          </section>
+        </>
+      )
+    }
+  </div>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-compare]')) {
+    const btn = root.querySelector<HTMLButtonElement>('[data-open-all]');
+    const stacks = [...root.querySelectorAll<HTMLDetailsElement>('details.pc-pair')];
+    if (!btn || !stacks.length) continue;
+    const label = () => {
+      btn.textContent = (stacks.every((d) => d.open) ? btn.dataset.less : btn.dataset.more) ?? '';
+    };
+    btn.addEventListener('click', () => {
+      const open = !stacks.every((d) => d.open);
+      stacks.forEach((d) => (d.open = open));
+      label();
+    });
+    stacks.forEach((d) => d.addEventListener('toggle', label));
+    btn.hidden = false;
+  }
+</script>

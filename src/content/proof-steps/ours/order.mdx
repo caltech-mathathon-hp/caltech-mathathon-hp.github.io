@@ -1,0 +1,52 @@
+---
+title: Separators line up
+caption: 'Each separator is longer than the run of P''s that leads to the next one, so the next separator can only follow on, in the same direction. The separators lie in string order along the whole bin edge and leave $K$ gaps between them.'
+lane: left
+group: bins
+order: 5
+difficulty: 2
+source: 'New'
+---
+
+### The idea
+
+The separators are rods of $B+6$ H's, and between two consecutive ones the string has $B+4$ P's, so their facing ends are at most $B+5$ steps apart. Now look at a separator that ends at some row of the bin edge. The next separator is a run of $B+6$ nodes that does not overlap it. If it lay on the other side, or on this side but run backwards, the end it starts with would be at least $B+6$ rows away. So it must start just past the end of this one and run in the same direction.
+
+So all $K+1$ separators lie along the bin edge in string order, all in one direction. From the first H of the first to the last H of the last they span at least $(K+1)(B+6)-1$ rows, far more than 1. By [8 Walls fix the ends](#step-ours-anchors) that span is then $n-3$ rows: the separators run from one end of the bin edge to the other. What they leave free are $K$ gaps, one between each two consecutive separators, with $KB$ nodes in all.
+
+### Statement
+
+The separators lie in string order along the whole bin edge, all in the same direction, and leave $K$ gaps between them with $KB$ nodes in all.
+
+### Exact statement
+
+In a perfect fold, in the coordinates of [8 Walls fix the ends](#step-ours-anchors):
+
+1. the $K+1$ separators fill disjoint runs of the bin edge, which follow each other along the edge in string order, all traversed in the same direction;
+2. the first separator starts at one end of the bin edge, $j=1$ or $j=n-2$, and the last ends at the other;
+3. the nodes of the bin edge outside the separators form $K$ **gaps**, one between each two consecutive separators, with $KB$ nodes in all, and the item rods fill them.
+
+### Uses
+
+[4 Spelling the string](#step-ours-string): $g=B+6$ and the spacers. [6 Two edges stay free](#step-ours-skeleton): (4). [8 Walls fix the ends](#step-ours-anchors): (2) and (5).
+
+### Proof
+
+Write $g=B+6$. Every separator fills a run of $g$ consecutive nodes of the bin edge by [8 Walls fix the ends](#step-ours-anchors) (2), and the runs of different separators are disjoint.
+
+1. **Short joins.** Between the last H of one separator and the first H of the next, the string has $B+4$ P's: the rod's last P, the $B+2$ of the spacer and the next rod's first P. So these two H's are at most $B+5$ steps apart, and fewer than $g$ rows apart.
+2. **One step of the induction.** Say a separator runs in increasing $j$ and ends at row $b$, so it covers rows $b-g+1$ to $b$. If the next separator lies below, both its ends are at row $b-g$ or lower, at least $g$ rows from $b$. If it lies above and runs in decreasing $j$, it starts at its top end, at row $b+g$ or higher. Both contradict step 1. So it lies above and runs in increasing $j$. The case of decreasing $j$ is the same, upside down.
+3. **The whole train.** By induction the $K+1$ separators follow each other in string order, in one direction. So the first H of the first and the last H of the last are at least $(K+1)g-1>1$ rows apart. By [8 Walls fix the ends](#step-ours-anchors) (5) they are then $n-3$ rows apart, so they lie in rows 1 and $n-2$, the two ends of the bin edge. This proves (1) and (2).
+4. **The gaps.** The nodes left are those between consecutive separators, $K$ runs, some possibly empty, with $(n-2)-(K+1)g=KB$ nodes in all. By [8 Walls fix the ends](#step-ours-anchors) (2) the item rods fill them. This proves (3).
+
+### Where it comes from
+
+New. The original proof fixes its rods by a common-factor argument on the lengths $q$ and $2q+1$ ([7 One length per edge](../original-proof/#step-bl-free-edges)).
+
+### Rating
+
+2: an induction on a one-dimensional picture.
+
+### Our note
+
+At this point a gap may still hold any number of nodes, even none. [10 Every gap holds B](#step-ours-gaps) shows that each holds exactly $B$.

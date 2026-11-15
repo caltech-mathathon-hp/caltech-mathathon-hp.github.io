@@ -1,0 +1,53 @@
+---
+title: Every gap holds B
+caption: 'The $B+4$ P''s between two separators must go around the gap outside the cube, but the rods in the gap have already taken the nodes just outside it. That costs two extra steps, so a gap holds at most $B$ nodes, and then exactly $B$.'
+lane: left
+group: bins
+order: 6
+difficulty: 2
+source: 'New'
+---
+
+### The idea
+
+This is the new idea of the one-edge proof. Take two consecutive separators with a gap of $r$ nodes between them. The $B+4$ P's of the join must lead, outside the cube, from the end of one separator to the start of the next. These two H's are $r+1$ rows apart, so the walk between them has at least $r+1$ steps, and two more to leave the cube and come back.
+
+The shortest such walk would step out, run along the edge and step back in: $r+3$ steps. But it would pass right next to every node of the gap, and those nodes hold H's of item rods. An edge node has only two neighbours outside the cube, and the two P's of its own rod already sit there ([5 The counts match](#step-ours-local-rules) (e)). So that walk is blocked. Walks have the parity of the distance between their ends, so the next possible length is $r+5$. The join has $B+5$ steps, hence $r\le B$.
+
+The gaps hold $KB$ nodes in all, and there are $K$ of them. If each holds at most $B$, each holds exactly $B$.
+
+### Statement
+
+Every gap between two consecutive separators holds exactly $B$ nodes.
+
+### Exact statement
+
+**Gap bound.** In a perfect fold, a gap of $r$ nodes between two consecutive separators has $r\le B$.
+
+Hence each of the $K$ gaps of [9 Separators line up](#step-ours-order) has exactly $B$ nodes.
+
+### Uses
+
+[5 The counts match](#step-ours-local-rules): (e). [8 Walls fix the ends](#step-ours-anchors): coordinates and (2). [9 Separators line up](#step-ours-order).
+
+### Proof
+
+1. **The join.** By [9 Separators line up](#step-ours-order), turning the picture upside down if needed, one separator ends at $x=(n-1,b,0)$ and the next starts at $y=(n-1,b+r+1,0)$. Between them the string has $B+4$ P's, so a walk of $B+5$ steps leads from $x$ to $y$, and all its inner nodes lie outside the cube. If $r=0$ there is nothing to prove, so let $r\ge1$.
+2. **Blocked nodes.** The gap nodes $(n-1,j,0)$, $b<j\le b+r$, hold H's of item rods. By (e), their neighbours outside the cube, $(n,j,0)$ and $(n-1,j,-1)$, hold P's of those item rods, which are not among the $B+4$ P's of the join. So the walk avoids these $2r$ nodes.
+3. **Parity.** $x$ and $y$ are $r+1$ apart, and each step changes the sum of the coordinates by 1. So the walk has $r+1$, $r+3$, $r+5$, … steps.
+4. **Not $r+1$.** A walk of $r+1$ steps from $x$ to $y$ only increases $j$, so it passes through the gap nodes, which lie in the cube.
+5. **Not $r+3$.** The walk's first step leaves the cube, by $+1$ in $i$ or $-1$ in $k$, since $x$ has no other neighbour outside. Some later step must undo it, and the walk still needs $r+1$ steps that increase $j$. For a walk of $r+3$ steps that is all of them: a step out, $r+1$ steps that increase $j$, and a step back in. So the walk visits $(n,j,0)$ for every $j$ from $b$ to $b+r+1$, or $(n-1,j,-1)$ for every such $j$. Both include blocked nodes of step 2.
+6. **The bound.** So the walk has at least $r+5$ steps, and $B+5\ge r+5$.
+7. **Exactly $B$.** The $K$ gaps hold $KB$ nodes in all and each holds at most $B$, so each holds exactly $B$.
+
+### Where it comes from
+
+New, and the main change from the original proof, where the bins have their size because the walls run straight ([8 Walls run straight](../original-proof/#step-bl-walls)).
+
+### Rating
+
+2: short, but the step that makes the construction work.
+
+### Our note
+
+The blocked nodes are essential. A count that ignores them gives only $r+3\le B+5$, so gaps of up to $B+2$ nodes, and then the gaps would not be forced to size $B$. This is why the spacer has $B+2$ P's. Our coordinate checker confirms by search that, with the nodes of the gap blocked, the shortest walk around a gap of $r$ nodes has $r+5$ steps for $1\le r\le12$, and 3 steps for $r=0$.

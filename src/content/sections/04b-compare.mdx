@@ -1,0 +1,33 @@
+---
+title: The two proofs side by side
+slug: compare
+navTitle: Compare
+kicker: Part II
+lede: The original proof and ours, step by step. They share their setup, part ways where the string makes its bins, and meet again at the end.
+summary: The original proof and the one-edge proof side by side, stage by stage, with what changes between them.
+order: 4.5
+status: draft
+---
+
+import ProofCompare from '../../widgets/proof-compare/ProofCompare.astro';
+
+[The original proof](../original-proof/) and [the proof with bins on one edge](../one-edge-proof/) prove the same theorem in the same way. Both turn a bin packing puzzle into one HP string whose perfect folds match the packings. They share the puzzle and the cube, and they part ways at the string. The original makes its bins from strips of one face, while ours makes them from gaps on one edge of the cube.
+
+The board below has the shape of the original one. Each card compares one step of the two proofs, says whether it is the same or what changes, and lists the steps of each board that carry it. Open a card to see the cards of both boards side by side, and open one of those to read its step on its own board. Five steps are the same on both boards apart from our numbers: the puzzle, the cube, the local rules, the two rods that leave two edges free, and the conclusion.
+
+<div class="full"><ProofCompare /></div>
+
+## In numbers
+
+| | The original proof | Bins on one edge |
+|---|---|---|
+| Steps on the board | 15, three of them hard | 17, one of them hard |
+| Bins | $q$ strips of the front face | $K$ gaps on one edge |
+| Items | ribbons <Seq s="(PHHP)^{s(u)/2}" /> | rods <Seq s="(PHP)^{s(u)}" /> |
+| Walls across the front face | $2q$ | 2 |
+| Pieces that give the bins their size | short and long rods, a spaced rod, paddings, plugs | $K+1$ separators of one length |
+| Condition on the puzzle | $q\ge 2B^{1/3}$, so that a padding fills more than half a strip | none beyond even sizes |
+| Side of the cube | $q(2q+1)+2$, with $q=2\max(K,\lceil B^{1/3}\rceil)$ | $(K+1)(B+6)+KB+2$ |
+| Why a bin has size $B$ | the walls run straight, and a padding takes $T-B$ nodes of its strip | the P's between two separators are too few to go round a larger gap |
+| Long runs of P's | $2q-K+\lvert U\rvert$ linkers of $52n+2$ P's, and short runs in the frame | $\lvert U\rvert+6$ linkers of $8n+2$ P's |
+| Joining the items | a switchboard in front of the cube | one rectangle per linker, each in its own plane |
