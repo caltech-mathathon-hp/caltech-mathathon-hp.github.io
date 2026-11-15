@@ -1,0 +1,202 @@
+{
+  "_comment": "Written by scripts/build_lean.py from lean/tetrahedral. Do not edit by hand.",
+  "id": "tetrahedral",
+  "source": {
+    "ref": "HEAD",
+    "path": "lean/tetrahedral",
+    "commit": "6b3e2e754c1b1f2d044d9287f64707c317eb3788",
+    "date": "2026-11-15"
+  },
+  "project": {
+    "lean": "4.24.0",
+    "mathlib": "v4.24.0",
+    "files": 922,
+    "lines": 96742,
+    "declarations": 9713,
+    "theorems": 7962,
+    "sorries": 0,
+    "axioms": 0,
+    "nativeDecide": 0,
+    "checks": {
+      "audit": "ProteinFolding/Tetrahedral/FinalAudit.lean",
+      "verify": null
+    },
+    "excluded": {
+      "paths": [
+        "ProteinFolding/Common",
+        "ProteinFolding/Cubic",
+        "ProteinFolding/Square"
+      ],
+      "files": 213,
+      "lines": 24921,
+      "theorems": 1762
+    }
+  },
+  "links": {
+    "repo": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io",
+    "tree": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/tree/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral",
+    "clone": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io.git",
+    "branch": "main",
+    "ci": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/actions/workflows/tetrahedral-lean.yml",
+    "docs": {
+      "readme": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/README.md",
+      "audit": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/FinalAudit.lean"
+    }
+  },
+  "download": {
+    "path": "lean/lean-tetrahedral.zip",
+    "folder": "lean-tetrahedral",
+    "bytes": 1966258,
+    "sha256": "395588ff5bc6197b452ffdf759bab78430166e163cbad3b9bb4832b2ef91fced"
+  },
+  "index": [],
+  "route": [
+    {
+      "problem": "Every problem in NP",
+      "via": null,
+      "assumed": false,
+      "np": null
+    },
+    {
+      "problem": "SAT",
+      "via": "SAT.CookLevinUniversal.cookLevin",
+      "assumed": false,
+      "np": null
+    },
+    {
+      "problem": "Bin packing",
+      "via": "Tetrahedral.PackingSource.fromCNF_karp",
+      "assumed": false,
+      "np": null
+    },
+    {
+      "problem": "HP folding, diamond lattice",
+      "via": "Tetrahedral.ReductionTM2.Canonical.reduction_correct",
+      "assumed": false,
+      "np": "Tetrahedral.hp_inNP"
+    }
+  ],
+  "decls": {
+    "Tetrahedral.InASublattice": {
+      "full": "ProteinFolding.Tetrahedral.InASublattice",
+      "kw": "def",
+      "file": "ProteinFolding/Tetrahedral/Statement.lean",
+      "line": 27,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/Statement.lean#L27",
+      "code": "/-- The even sublattice A: all coordinates even, with sum divisible by four. -/\ndef InASublattice (p : Coordinates) : Prop :=\n  (∀ k, p k % 2 = 0) ∧ coordinateSum p % 4 = 0"
+    },
+    "Tetrahedral.InBSublattice": {
+      "full": "ProteinFolding.Tetrahedral.InBSublattice",
+      "kw": "def",
+      "file": "ProteinFolding/Tetrahedral/Statement.lean",
+      "line": 31,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/Statement.lean#L31",
+      "code": "/-- The odd sublattice B: all coordinates odd, with sum congruent to three. -/\ndef InBSublattice (p : Coordinates) : Prop :=\n  (∀ k, p k % 2 = 1) ∧ coordinateSum p % 4 = 3"
+    },
+    "Tetrahedral.bondVector": {
+      "full": "ProteinFolding.Tetrahedral.bondVector",
+      "kw": "def",
+      "file": "ProteinFolding/Tetrahedral/Statement.lean",
+      "line": 53,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/Statement.lean#L53",
+      "code": "/-- The manuscript's t₁, t₂, t₃, t₄, indexed by 0, 1, 2, 3. -/\ndef bondVector (d : Fin 4) : Coordinates :=\n  ![![1, 1, 1], ![1, -1, -1], ![-1, 1, -1], ![-1, -1, 1]] d"
+    },
+    "Tetrahedral.tetrahedralLattice": {
+      "full": "ProteinFolding.Tetrahedral.tetrahedralLattice",
+      "kw": "def",
+      "file": "ProteinFolding/Tetrahedral/Statement.lean",
+      "line": 73,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/Statement.lean#L73",
+      "code": "/-- The undirected diamond lattice: A-sites step by +t_d and B-sites by -t_d.\nThis is the four-neighbour graph of the manuscript, not the FCC lattice. -/\ndef tetrahedralLattice : SimpleGraph Site where\n  Adj x y := DirectedBond x y ∨ DirectedBond y x\n  symm := by\n    intro x y h\n    exact h.elim Or.inr Or.inl\n  loopless := by\n    intro x h\n    rcases h with h | h\n    · exact sublattices_disjoint x.val h.1 h.2.1\n    · exact sublattices_disjoint x.val h.1 h.2.1"
+    },
+    "Tetrahedral.HPStringFold": {
+      "full": "ProteinFolding.Tetrahedral.HPStringFold",
+      "kw": "def",
+      "file": "ProteinFolding/Tetrahedral/Statement.lean",
+      "line": 89,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/Statement.lean#L89",
+      "code": "/-- A self-avoiding fold attaining at least m H-H bonds, including backbone\nbonds. The shared definition counts each unordered pair exactly once. -/\ndef HPStringFold (S : Sequence) (m : ℤ) : Prop :=\n  ProteinFolding.HPStringFold (G := tetrahedralLattice) S m"
+    },
+    "Tetrahedral.HPInstance": {
+      "full": "ProteinFolding.Tetrahedral.HPInstance",
+      "kw": "structure",
+      "file": "ProteinFolding/Tetrahedral/Statement.lean",
+      "line": 93,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/Statement.lean#L93",
+      "code": "/-- The finite input: a word and a signed threshold. Empty words are allowed. -/\nstructure HPInstance where\n  sequence : Sequence\n  minBonds : ℤ\n  deriving Repr"
+    },
+    "Tetrahedral.HPInstance.Accepts": {
+      "full": "ProteinFolding.Tetrahedral.HPInstance.Accepts",
+      "kw": "def",
+      "file": "ProteinFolding/Tetrahedral/Statement.lean",
+      "line": 98,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/Statement.lean#L98",
+      "code": "def HPInstance.Accepts (I : HPInstance) : Prop :=\n  HPStringFold I.sequence I.minBonds"
+    },
+    "Tetrahedral.PackingSource.Accepts": {
+      "full": "ProteinFolding.Tetrahedral.PackingSource.Accepts",
+      "kw": "def",
+      "file": "ProteinFolding/Tetrahedral/PackingSource.lean",
+      "line": 19,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/PackingSource.lean#L19",
+      "code": "/-- Positive item sizes, positive capacity and number of bins, total load KB,\nand an occurrence-preserving partition into exactly full bins. -/\ndef Accepts (I : Instance) : Prop :=\n  Packing.WellFormed I ∧ I.sizes.sum = I.bins * I.capacity ∧\n    ∃ parts : List (List ℕ), Packing.Exact I parts"
+    },
+    "Tetrahedral.PackingSource.unary_exact_capacity_npHard": {
+      "full": "ProteinFolding.Tetrahedral.PackingSource.unary_exact_capacity_npHard",
+      "kw": "theorem",
+      "file": "ProteinFolding/Tetrahedral/PackingSource.lean",
+      "line": 75,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/PackingSource.lean#L75",
+      "code": "/-- Unconditional strong unary exact-packing hardness, in the project's\nuniversal finite-machine definition of NP-hardness. -/\ntheorem unary_exact_capacity_npHard : NPHard instanceEncoding Accepts"
+    },
+    "Tetrahedral.HPStringFoldNPComplete": {
+      "full": "ProteinFolding.Tetrahedral.HPStringFoldNPComplete",
+      "kw": "def",
+      "file": "ProteinFolding/Tetrahedral/MainTheorem.lean",
+      "line": 21,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/MainTheorem.lean#L21",
+      "code": "/-- The target theorem: single-chain HP folding on the fixed infinite diamond\nlattice, with all H-H bonds counted, is NP-complete under the stated encoding. -/\ndef HPStringFoldNPComplete : Prop :=\n  NPComplete hpEncoding (fun I : HPInstance => I.Accepts)"
+    },
+    "Tetrahedral.tetrahedral_hp_npComplete": {
+      "full": "ProteinFolding.Tetrahedral.tetrahedral_hp_npComplete",
+      "kw": "theorem",
+      "file": "ProteinFolding/Tetrahedral/NPCompleteness.lean",
+      "line": 22,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/NPCompleteness.lean#L22",
+      "code": "theorem tetrahedral_hp_npComplete : HPStringFoldNPComplete"
+    },
+    "SAT.CookLevinUniversal.cookLevin": {
+      "full": "ProteinFolding.SAT.CookLevinUniversal.cookLevin",
+      "kw": "theorem",
+      "file": "ProteinFolding/Common/CookLevinProofUniversal.lean",
+      "line": 19,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Common/CookLevinProofUniversal.lean#L19",
+      "code": "theorem cookLevin : CookLevin"
+    },
+    "Tetrahedral.PackingSource.fromCNF_karp": {
+      "full": "ProteinFolding.Tetrahedral.PackingSource.fromCNF_karp",
+      "kw": "theorem",
+      "file": "ProteinFolding/Tetrahedral/PackingSource.lean",
+      "line": 69,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/PackingSource.lean#L69",
+      "code": "theorem fromCNF_karp :\n    KarpReduces SAT.cnfEncoding instanceEncoding SAT.Satisfiable Accepts"
+    },
+    "Tetrahedral.ReductionTM2.Canonical.reduction_correct": {
+      "full": "ProteinFolding.Tetrahedral.ReductionTM2.Canonical.reduction_correct",
+      "kw": "theorem",
+      "file": "ProteinFolding/Tetrahedral/NPCompleteness.lean",
+      "line": 14,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/NPCompleteness.lean#L14",
+      "code": "theorem reduction_correct (I : Packing.Instance) :\n    (reduction I).Accepts ↔ PackingSource.Accepts I"
+    },
+    "Tetrahedral.hp_inNP": {
+      "full": "ProteinFolding.Tetrahedral.hp_inNP",
+      "kw": "theorem",
+      "file": "ProteinFolding/Tetrahedral/CertificatesTM2Correctness.lean",
+      "line": 112,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/6b3e2e754c1b1f2d044d9287f64707c317eb3788/lean/tetrahedral/ProteinFolding/Tetrahedral/CertificatesTM2Correctness.lean#L112",
+      "code": "/-- HP folding on the fixed diamond lattice belongs to NP under the frozen\nword/signed-threshold encoding and the actual mathlib TM2 model. -/\ntheorem hp_inNP : InNP hpEncoding HPInstance.Accepts"
+    }
+  },
+  "axiomReport": []
+}

@@ -3,8 +3,8 @@ title: Lean formalization
 slug: lean
 navTitle: Lean
 kicker: Part IV
-lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem twice, once with their reduction and once with ours. The team has also proved in Lean the one classical theorem the proof uses, Cook–Levin, so HP folding on the cubic lattice is NP-complete with no hypothesis left. You can download the three projects and check them yourself.
-summary: Berger and Leighton's theorem checked in Lean twice, with their reduction and with ours, and with the Cook–Levin theorem proved in Lean too.
+lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem twice, once with their reduction and once with ours. The team has also proved in Lean the one classical theorem the proof uses, Cook–Levin, so HP folding on the cubic lattice is NP-complete with no hypothesis left. The team has also proved in Lean that HP folding is NP-complete on a second lattice, the diamond lattice. You can download the four projects and check them yourself.
+summary: Berger and Leighton's theorem checked in Lean twice, with their reduction and with ours, with the Cook–Levin theorem proved in Lean too, and the same result on the diamond lattice.
 order: 6
 status: ready
 ---
@@ -18,12 +18,13 @@ import LeanIndex from '../../widgets/lean/LeanIndex.astro';
 
 export const shelf = cert('shelf');
 export const cooklevin = cert('cooklevin');
+export const tetrahedral = cert('tetrahedral');
 
-{/* Everything this page shows from the two Lean projects (code, names, links, counts, the zips)
+{/* Everything this page shows from the Lean projects (code, names, links, counts, the zips)
     comes from src/data/lean/certificate*.json and public/lean/, which scripts/build_lean.py writes:
     certificate.json from lean/cubic, certificate-shelf.json from lean/shelf, certificate-cooklevin.json
-    from lean/cooklevin (see the comments at the top of the .toml files next to them). Run it again
-    when a project changes. */}
+    from lean/cooklevin, certificate-tetrahedral.json from lean/tetrahedral (see the comments at the
+    top of the .toml files next to them). Run it again when a project changes. */}
 
 <LeanCertificate
   label="Berger and Leighton's reduction"
@@ -223,6 +224,47 @@ The final theorems are the team's statements, proved through our step:
 
 <LeanCode cert="shelf" names="Shelf.perfectHPStringFold_NPComplete Shelf.hpStringFold_NPComplete" caption="Our final theorems" />
 
+## The diamond lattice
+
+The team has also proved in Lean that HP folding is NP-complete on a second lattice, the diamond
+lattice. Its sites sit like the carbon atoms of a diamond: every site has four neighbours, at the
+corners of a regular tetrahedron around it.
+
+<LeanCertificate
+  cert="tetrahedral"
+  label="A second lattice"
+  claim="Lean checks that HP folding on the diamond lattice is NP-complete, with no hypothesis."
+  how="The source problem and its hardness are the team's, from SAT through 3D matching to bin packing, with Cook–Levin proved. The new step is a reduction from bin packing to folding on the diamond lattice."
+  labels={{ SAT: 'Cook–Levin, proved in Lean' }}
+  vendored="the parts of the team's library and of the Cook–Levin proof it uses"
+/>
+
+In coordinates the lattice has two kinds of sites. A-sites have even coordinates whose sum is
+divisible by 4, and B-sites have odd coordinates whose sum leaves 3 modulo 4. Each A-site is
+joined to the four B-sites at $(1,1,1)$, $(1,-1,-1)$, $(-1,1,-1)$ and $(-1,-1,1)$ from it. Every
+bond joins an A-site to a B-site, as on the cubic lattice every bond joins a black and a white
+site of the checkerboard, so two residues can be neighbours only if their positions on the string
+differ by an odd number.
+
+<LeanCode cert="tetrahedral" names="Tetrahedral.InASublattice Tetrahedral.InBSublattice Tetrahedral.bondVector Tetrahedral.tetrahedralLattice" caption="The diamond lattice" />
+
+The question is the one asked on the cubic lattice: does a string of H's and P's have a fold with
+at least $m$ pairs of H's on neighbouring sites? As in the team's cubic project, the count includes
+pairs of H's that are neighbours on the string, and strings, folds, NP and reductions are the team's
+definitions.
+
+<LeanCode cert="tetrahedral" names="Tetrahedral.HPStringFold Tetrahedral.HPInstance Tetrahedral.HPInstance.Accepts Tetrahedral.HPStringFoldNPComplete" caption="HP folding on the diamond lattice, and the statement to prove" />
+
+The proof reduces from bin packing with every bin exactly full and the sizes written in unary, the
+source our reduction uses too. Its hardness is the team's chain from SAT, with Cook–Levin proved,
+so the final theorem has no hypothesis. The new part is the step to folding: a Turing machine turns
+a packing instance into a string and a threshold, and Lean proves that the string reaches the
+threshold exactly when the items fit. The geometry rests on a sharp bound on the number of H–H
+bonds a fold can have, with a description of the folds that reach it. The project's
+<a href={tetrahedral.links.docs.readme}>README</a> lists the steps of the proof and their files.
+
+<LeanCode cert="tetrahedral" names="Tetrahedral.PackingSource.unary_exact_capacity_npHard Tetrahedral.ReductionTM2.Canonical.reduction_correct Tetrahedral.tetrahedral_hp_npComplete" caption="The source is NP-hard and the reduction is correct, so folding on the diamond lattice is NP-complete" />
+
 ## Check it yourself
 
 You need [elan](https://github.com/leanprover/elan), Lean's installer, which fetches the right
@@ -240,9 +282,13 @@ here</a> (zip, {size(cooklevin.download.bytes)}), then:
 
 <LeanCommands cert="cooklevin" step="zip" />
 
-The three projects are also in the website's repository on GitHub, ours in `lean/shelf` and the
-Cook–Levin proof in `lean/cooklevin`, next to the team's. To clone it and go to the team's
-project:
+The diamond-lattice project:
+
+<LeanCommands cert="tetrahedral" step="zip" />
+
+The four projects are also in the website's repository on GitHub, ours in `lean/shelf`, the
+Cook–Levin proof in `lean/cooklevin` and the diamond lattice in `lean/tetrahedral`, next to the
+team's. To clone it and go to the team's project:
 
 <LeanCommands step="git" />
 
@@ -262,6 +308,13 @@ For the Cook–Levin project:
 
 <LeanCommands cert="cooklevin" step="build" />
 
+For the diamond lattice:
+
+<LeanCommands cert="tetrahedral" step="build" />
+
+There, `python3 checks/verify.py` then compares every file with the hash in its manifest and checks
+the type and the axioms of the final theorem again.
+
 The first command downloads several gigabytes, and the build checks every proof in the project.
 Ours also builds the team's library and the Cook–Levin proof from its copy, which takes a few more
 minutes. For the team's
@@ -271,14 +324,18 @@ declaration.
 
 <LeanCommands step="verify" />
 
-On every change GitHub builds the three projects again, checks the axioms of their main
-results and runs the team's full audit; <a href={lean.links.ci}>here are the runs</a>. The team's zip holds the version of
+On every change GitHub builds the team's project, ours and the Cook–Levin proof again, checks the
+axioms of their main results and runs the team's full audit; <a href={lean.links.ci}>here are the runs</a>. The diamond-lattice project,
+the largest, has <a href={tetrahedral.links.ci}>runs of its own</a>, which start only when it
+changes. The team's zip holds the version of
 {date(lean.source.date)}, commit <code>{lean.source.commit?.slice(0, 7)}</code>, and its SHA-256 is
 <code class="ln-hash">{lean.download.sha256}</code>. Ours holds the version of
 {date(shelf.source.date)}, commit <code>{shelf.source.commit?.slice(0, 7)}</code>, and its SHA-256
 is <code class="ln-hash">{shelf.download.sha256}</code>. The Cook–Levin zip holds the version of
 {date(cooklevin.source.date)}, commit <code>{cooklevin.source.commit?.slice(0, 7)}</code>, and its
-SHA-256 is <code class="ln-hash">{cooklevin.download.sha256}</code>.
+SHA-256 is <code class="ln-hash">{cooklevin.download.sha256}</code>. The diamond-lattice zip holds
+the version of {date(tetrahedral.source.date)}, commit <code>{tetrahedral.source.commit?.slice(0, 7)}</code>,
+and its SHA-256 is <code class="ln-hash">{tetrahedral.download.sha256}</code>.
 
 ## Every statement and where it is
 

@@ -618,7 +618,7 @@ def build(files: dict[str, bytes], cfg: dict, commit: str | None, date: str | No
         "tree": f"{repo_url}/tree/{at}/{path}",
         "clone": f"{repo_url}.git",
         "branch": branch,
-        "ci": f"{repo_url}/actions/workflows/{CI_WORKFLOW}",
+        "ci": f"{repo_url}/actions/workflows/{src_cfg.get('ci', CI_WORKFLOW)}",  # [source] ci: its own workflow
         "docs": {key: blob(f"{path}/{rel}") for key, rel in docs.items()},
     }
     folder = Path(zip_path).stem  # the zip holds one folder, named like the zip

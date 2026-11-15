@@ -1,0 +1,43 @@
+name: Tetrahedral Lean proof
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lean/tetrahedral/**'
+      - '.gitattributes'
+      - '.github/workflows/tetrahedral-lean.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tetrahedral-lean-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      LEAN_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the pinned proof and full declaration audit
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: lean/tetrahedral
+          auto-config: false
+          build: true
+          use-mathlib-cache: true
+      - name: Verify source hashes and exact theorem axioms
+        working-directory: lean/tetrahedral
+        run: python3 checks/verify.py
+      - name: Upload verification output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tetrahedral-verification
+          path: lean/tetrahedral/checks/local-*
+          if-no-files-found: ignore

@@ -1,0 +1,63 @@
+# Settings for scripts/build_lean.py, which writes certificate-tetrahedral.json (next to this file)
+# and public/lean/lean-tetrahedral.zip from the team's proof for the diamond lattice
+# (lean/tetrahedral). Edit by hand, then run
+#   python3 scripts/build_lean.py --config src/data/lean/certificate-tetrahedral.toml \
+#     --out src/data/lean/certificate-tetrahedral.json --zip public/lean/lean-tetrahedral.zip
+# (add --check to see if both are up to date, --repo PATH to read another clone).
+
+[source]
+# Which certificate this is; the page tells them apart by it.
+id = "tetrahedral"
+# Where the Lean project lives on GitHub; the page's links are built from this.
+repo_url = "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io"
+# The git ref the script reads, in the repo given by --repo (default: the repo holding site/).
+ref = "HEAD"
+# The branch name, for links when no commit is known.
+branch = "main"
+# The Lean project's folder in that repo.
+path = "lean/tetrahedral"
+# Names on the page are relative to this namespace.
+namespace = "ProteinFolding"
+zip = "lean/lean-tetrahedral.zip"   # under public/
+# The file that prints the axioms of the main results (it is also built by lake build).
+audit = "ProteinFolding/Tetrahedral/FinalAudit.lean"
+# The project has no docs/theorem-index.md; its README lists the steps of the proof.
+index = false
+# Its own GitHub workflow: the build is long, so it runs only when lean/tetrahedral changes.
+ci = "tetrahedral-lean.yml"
+# Folders not counted as the project's own: unchanged copies of files of the team's library and
+# of the Cook–Levin proof (all byte-identical to the other projects' copies). They are still
+# checked for sorry and axioms, searched for names, and put in the zip.
+count_exclude = ["ProteinFolding/Common", "ProteinFolding/Cubic", "ProteinFolding/Square"]
+
+[show]
+# Declarations the page shows besides those in [[route]] below (names relative to the namespace).
+extra = [
+  # the diamond lattice and the folding problem on it
+  "Tetrahedral.InASublattice", "Tetrahedral.InBSublattice", "Tetrahedral.bondVector",
+  "Tetrahedral.tetrahedralLattice", "Tetrahedral.HPStringFold", "Tetrahedral.HPInstance",
+  "Tetrahedral.HPInstance.Accepts",
+  # the source problem, the reduction and the final theorem
+  "Tetrahedral.PackingSource.Accepts", "Tetrahedral.PackingSource.unary_exact_capacity_npHard",
+  "Tetrahedral.HPStringFoldNPComplete", "Tetrahedral.tetrahedral_hp_npComplete",
+]
+
+# The chain of reductions the page draws, in order. Each problem is reached from the one before
+# by `via`; `np` proves the problem is in NP. Every name must resolve, and the page shows its
+# declaration. The last step links the reduction's correctness on every input; the theorem that
+# it is computed in polynomial time is ReductionTM2.Canonical.computable, next to it.
+[[route]]
+problem = "Every problem in NP"
+
+[[route]]
+problem = "SAT"
+via = "SAT.CookLevinUniversal.cookLevin"
+
+[[route]]
+problem = "Bin packing"
+via = "Tetrahedral.PackingSource.fromCNF_karp"
+
+[[route]]
+problem = "HP folding, diamond lattice"
+via = "Tetrahedral.ReductionTM2.Canonical.reduction_correct"
+np = "Tetrahedral.hp_inNP"
