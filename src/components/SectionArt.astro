@@ -88,6 +88,76 @@ const cubeBeads: Bead[] = chain3
     return { x, y, kind: n === 0 || n === 9 ? 'P' : 'H', r: 9 };
   });
 
+// ---------- one-edge proof and compare: the same packing on a cube, along one edge or on the front ----------
+// A cabinet view: the front face is a square, depth goes up and to the right at half length.
+interface Cube {
+  x: number; // bottom-left corner of the front face
+  y: number;
+  s: number; // side
+}
+const pts = (ps: Pt[]) => ps.map((p) => p.join(',')).join(' ');
+const cabinet = ({ x, y, s }: Cube) => {
+  const [dx, dy] = [0.433 * s, -0.25 * s];
+  return {
+    front: pts([[x, y], [x + s, y], [x + s, y - s], [x, y - s]]),
+    top: pts([[x, y - s], [x + s, y - s], [x + s + dx, y - s + dy], [x + dx, y - s + dy]]),
+    right: pts([[x + s, y], [x + s + dx, y + dy], [x + s + dx, y - s + dy], [x + s, y - s]]),
+  };
+};
+// The one-edge proof's shelf: the front bottom edge holds a separator, the items of the first bin,
+// a separator, the items of the second bin and a last separator (B = 5, so 13 nodes).
+const shelf = (c: Cube, barH: number) => {
+  const unit = c.s / (bins.length * (bin.B + 1) + 1);
+  const seps: Pt[] = [];
+  const items: { x: number; w: number; size: number; color: string }[] = [];
+  let k = 0;
+  const sep = () => {
+    seps.push([c.x + (k + 0.5) * unit, c.y]);
+    k += 1;
+  };
+  sep();
+  for (const b of bins) {
+    for (const it of b.items) {
+      items.push({ x: c.x + k * unit, w: it.size * unit, size: it.size, color: it.color });
+      k += it.size;
+    }
+    sep();
+  }
+  return { unit, seps, items, barH, x: c.x, y: c.y, s: c.s };
+};
+// The original proof's bins: two strips across the front face, with walls of H's between them.
+const strips = (c: Cube) => {
+  const m = 0.1 * c.s;
+  const unit = (c.s - 2 * m) / bin.B;
+  const h = 0.2 * c.s;
+  const top = c.y - c.s;
+  return bins.flatMap((b, bi) => {
+    const y = top + 0.17 * c.s + bi * 0.38 * c.s;
+    let k = 0;
+    return b.items.map((it) => {
+      const r = { x: c.x + m + k * unit, y, w: it.size * unit, h, size: it.size, unit, color: it.color };
+      k += it.size;
+      return r;
+    });
+  });
+};
+interface ArtCube {
+  faces: ReturnType<typeof cabinet>;
+  shelf?: ReturnType<typeof shelf>;
+  strips?: ReturnType<typeof strips>;
+}
+const oeCube: Cube = { x: 174, y: 117, s: 92 };
+const cmpLeft: Cube = { x: 16, y: 116, s: 82 };
+const cmpRight: Cube = { x: 176, y: 116, s: 82 };
+const cubesFor: Record<string, ArtCube[]> = {
+  'one-edge-proof': [{ faces: cabinet(oeCube), shelf: shelf(oeCube, 10) }],
+  compare: [
+    { faces: cabinet(cmpLeft), strips: strips(cmpLeft) },
+    { faces: cabinet(cmpRight), shelf: shelf(cmpRight, 9) },
+  ],
+};
+const artCubes = cubesFor[slug] ?? [];
+
 // ---------- folded: the string, straight, and the cube it folds into, a packing on its front ----------
 // a 3×3×3 cube in a flatter oblique view than the one above; the front face (z = 1) shows two
 // strips of items (the proof figures' item colours) with a row of wall H's between them.
@@ -164,7 +234,7 @@ const leanEdges = [
 ---
 
 {
-  ['playground', 'original-proof', 'folded', 'context', 'lean'].includes(slug) && (
+  ['playground', 'original-proof', 'one-edge-proof', 'compare', 'folded', 'context', 'lean'].includes(slug) && (
     <svg class="section-art" viewBox="0 0 320 130" aria-hidden="true" focusable="false">
       <defs>
         <radialGradient id={id('h')} cx="0.36" cy="0.32" r="0.75">
@@ -192,7 +262,7 @@ const leanEdges = [
         </g>
       )}
 
-      {slug === 'original-proof' && (
+      {(slug === 'original-proof' || slug === 'one-edge-proof') && (
         <g>
           {bins.map((b) => (
             <g>
@@ -209,7 +279,12 @@ const leanEdges = [
               ))}
             </g>
           ))}
-          <line x1="136" y1="72" x2="182" y2="72" class="sa-arrow" marker-start={`url(#${id('arrow')})`} marker-end={`url(#${id('arrow')})`} />
+          <line x1="136" y1="72" x2={slug === 'original-proof' ? 182 : 162} y2="72" class="sa-arrow" marker-start={`url(#${id('arrow')})`} marker-end={`url(#${id('arrow')})`} />
+        </g>
+      )}
+
+      {slug === 'original-proof' && (
+        <g>
           <polyline points={chain3.map((p) => iso(...p).join(',')).join(' ')} class="sa-chain" />
           {cubeContacts.map(([a, b]) => <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} class="sa-contact" />)}
           {cubeBeads.map((b) =>
@@ -217,6 +292,38 @@ const leanEdges = [
           )}
         </g>
       )}
+
+      {slug === 'compare' && <line x1="160" y1="16" x2="160" y2="120" class="sa-axis" />}
+
+      {artCubes.map((c) => (
+        <g>
+          <polygon points={c.faces.right} class="sa-face side" />
+          <polygon points={c.faces.top} class="sa-face top" />
+          <polygon points={c.faces.front} class="sa-face" />
+          {c.strips?.map((r) => (
+            <g>
+              <rect x={r.x + 0.6} y={r.y} width={r.w - 1.2} height={r.h} rx="2.5" class="sa-item" style={`fill:${r.color}`} />
+              {Array.from({ length: r.size - 1 }, (_, k) => (
+                <line x1={r.x + (k + 1) * r.unit} x2={r.x + (k + 1) * r.unit} y1={r.y + 2.5} y2={r.y + r.h - 2.5} class="sa-unit" />
+              ))}
+            </g>
+          ))}
+          {c.shelf && (
+            <g>
+              <rect x={c.shelf.x} y={c.shelf.y - c.shelf.barH / 2} width={c.shelf.s} height={c.shelf.barH} rx={c.shelf.barH / 2} class="sa-bin" />
+              {c.shelf.items.map((it) => (
+                <g>
+                  <rect x={it.x + 0.5} y={c.shelf!.y - c.shelf!.barH / 2 + 1} width={it.w - 1} height={c.shelf!.barH - 2} rx="2" class="sa-item" style={`fill:${it.color}`} />
+                  {Array.from({ length: it.size - 1 }, (_, k) => (
+                    <line x1={it.x + (k + 1) * c.shelf!.unit} x2={it.x + (k + 1) * c.shelf!.unit} y1={c.shelf!.y - c.shelf!.barH / 2 + 2} y2={c.shelf!.y + c.shelf!.barH / 2 - 2} class="sa-unit" />
+                  ))}
+                </g>
+              ))}
+              {c.shelf.seps.map(([x, y]) => <circle cx={x} cy={y} r={c.shelf!.barH * 0.62} fill={`url(#${id('h')})`} />)}
+            </g>
+          )}
+        </g>
+      ))}
 
       {slug === 'folded' && (
         <g>
@@ -338,6 +445,19 @@ const leanEdges = [
   .sa-item {
     stroke: color-mix(in srgb, var(--fg) 25%, transparent);
     stroke-width: 1;
+  }
+  /* a cube of H's: H-tinted faces, the top lightest */
+  .sa-face {
+    fill: color-mix(in srgb, var(--h) 16%, var(--bg-elev));
+    stroke: color-mix(in srgb, var(--h) 45%, var(--bg-elev));
+    stroke-width: 1;
+    stroke-linejoin: round;
+  }
+  .sa-face.top {
+    fill: color-mix(in srgb, var(--h) 8%, var(--bg-elev));
+  }
+  .sa-face.side {
+    fill: color-mix(in srgb, var(--h) 26%, var(--bg-elev));
   }
   .sa-axis {
     stroke: var(--rule-strong);

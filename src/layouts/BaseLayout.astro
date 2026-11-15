@@ -22,6 +22,7 @@ interface Props {
 const { title, description = SITE.tagline, current } = Astro.props;
 const pageTitle = title ? `${title} · ${SITE.shortTitle}` : SITE.title;
 const sections = await listedSections();
+const isHome = Astro.url.pathname === withBase('/');
 ---
 
 <!doctype html>
@@ -63,6 +64,9 @@ const sections = await listedSections();
         </button>
         <nav id="site-nav" aria-label="Sections">
           <ul>
+            <li>
+              <a href={withBase('/')} aria-current={isHome ? 'page' : undefined}>Home</a>
+            </li>
             {
               sections.map((s) => (
                 <li>
