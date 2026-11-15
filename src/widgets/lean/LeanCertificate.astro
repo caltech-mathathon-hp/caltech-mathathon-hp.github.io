@@ -6,6 +6,8 @@
  *
  *   <LeanCertificate />                                   the team's certificate
  *   <LeanCertificate cert="shelf" label="…" claim="…" how="…" labels={{ 'Perfect folding': '…' }} />
+ *   <LeanCertificate provedIn={{ SAT: { cert: 'cooklevin', name: 'SAT.CookLevinUniversal.cookLevin' } }} />
+ *                         a step the project assumes, drawn as proved and linked to its proof in another one
  */
 import './lean.css';
 import { asset, cert as getCert, date, decl, num, size } from './lean';
@@ -20,6 +22,8 @@ interface Props {
   labels?: Record<string, string>;
   /** What the project's vendor/ copy holds, for its line in the facts. */
   vendored?: string;
+  /** Steps the project assumes but another certificate proves, by the problem they lead to. */
+  provedIn?: Record<string, { cert: string; name: string }>;
 }
 const {
   cert = 'cubic',
@@ -28,13 +32,20 @@ const {
   how = 'Each problem in the chain reduces to the next in polynomial time. Lean proves every step after the first, and that both folding problems are in NP.',
   labels = {},
   vendored = "the team's library",
+  provedIn = {},
 } = Astro.props;
 const c = getCert(cert);
 const route = c.route ?? [];
 if (route.length === 0) throw new Error(`Lean page: the "${cert}" certificate has no [[route]].`);
 const d = (name: string) => decl(name, cert);
+/** The declaration a step links to, and whether it is still assumed. */
+const via = (s: (typeof route)[number]) => {
+  const other = provedIn[s.problem];
+  return other ? { ...decl(other.name, other.cert), assumed: false } : { ...d(s.via!), assumed: !!s.assumed };
+};
 const edge = (s: (typeof route)[number]) =>
-  labels[s.problem] ?? (s.assumed ? (s.via === 'SAT.CookLevin' ? 'Cook–Levin, assumed' : 'assumed') : 'proved in Lean');
+  labels[s.problem] ??
+  (via(s).assumed ? (s.via === 'SAT.CookLevin' ? 'Cook–Levin, assumed' : 'assumed') : 'proved in Lean');
 
 const p = c.project;
 const clean = [p.sorries === 0 && 'no sorry', p.axioms === 0 && 'no axiom'].filter(Boolean).join(', ');
@@ -59,14 +70,14 @@ const facts = [
       route.map((s, i) => (
         <li class:list={['ln-step', { 'is-goal': i === route.length - 1, 'is-start': !s.via }]}>
           {s.via && (
-            <p class={`ln-via is-${s.assumed ? 'premise' : 'proved'}`}>
+            <p class={`ln-via is-${via(s).assumed ? 'premise' : 'proved'}`}>
               <i class="ln-stick" aria-hidden="true" />
-              {d(s.via).href ? (
-                <a href={d(s.via).href} title={d(s.via).full}>
+              {via(s).href ? (
+                <a href={via(s).href} title={via(s).full}>
                   {edge(s)}
                 </a>
               ) : (
-                <span title={d(s.via).full}>{edge(s)}</span>
+                <span title={via(s).full}>{edge(s)}</span>
               )}
             </p>
           )}

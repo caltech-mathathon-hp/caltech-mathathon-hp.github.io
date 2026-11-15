@@ -5,20 +5,34 @@
  *
  *   <LeanIndex />                 the team's certificate
  *   <LeanIndex cert="shelf" paper="Our paper" />
+ *   <LeanIndex cookLevin={{ cert: 'cooklevin', name: 'SAT.CookLevinUniversal.cookLevin' }} />
+ *       Cook–Levin is proved in another certificate: rows proved assuming it count as proved,
+ *       and the row that assumes it links to its proof.
  */
 import './lean.css';
 import Dot from './Dot.astro';
-import { cert as getCert } from './lean';
+import { cert as getCert, decl } from './lean';
 
 interface Props {
   /** The certificate's id (default "cubic"). */
   cert?: string;
   /** The first column's heading. */
   paper?: string;
+  /** Where Cook–Levin is proved, if in another certificate. */
+  cookLevin?: { cert: string; name: string };
 }
-const { cert = 'cubic', paper = 'In the paper' } = Astro.props;
+const { cert = 'cubic', paper = 'In the paper', cookLevin } = Astro.props;
 const c = getCert(cert);
-const link = (n: string) => c.decls[n]?.href;
+const own = (n: string) => ({ name: n, href: c.decls[n]?.href });
+const proof = cookLevin && { name: cookLevin.name, href: decl(cookLevin.name, cookLevin.cert).href };
+const assumesCL = (r: (typeof c.index)[number]) => r.status === 'premise' && r.names.includes('SAT.CookLevin');
+const rows = c.index.map((r) => {
+  const names = r.names.map(own);
+  if (proof && assumesCL(r)) return { ...r, names: [...names, proof], status: 'proved' as const, label: 'Proved separately' };
+  if (proof && r.status === 'conditional')
+    return { ...r, names, status: 'proved' as const, label: 'Proved, with Cook–Levin proved separately' };
+  return { ...r, names, label: undefined };
+});
 ---
 
 <div class="ln ln-table-wrap wide">
@@ -32,21 +46,21 @@ const link = (n: string) => c.decls[n]?.href;
     </thead>
     <tbody>
       {
-        c.index.map((r) => (
+        rows.map((r) => (
           <tr>
             <td>
               {r.concept}
               <span class="ln-names ln-names-narrow">
-                {r.names.map((n) => (link(n) ? <a href={link(n)}><code>{n}</code></a> : <code>{n}</code>))}
+                {r.names.map((n) => (n.href ? <a href={n.href}><code>{n.name}</code></a> : <code>{n.name}</code>))}
               </span>
             </td>
             <td class="ln-col-lean">
               <span class="ln-names">
-                {r.names.map((n) => (link(n) ? <a href={link(n)}><code>{n}</code></a> : <code>{n}</code>))}
+                {r.names.map((n) => (n.href ? <a href={n.href}><code>{n.name}</code></a> : <code>{n.name}</code>))}
               </span>
             </td>
             <td>
-              <Dot status={r.status} />
+              <Dot status={r.status} label={r.label} />
             </td>
           </tr>
         ))

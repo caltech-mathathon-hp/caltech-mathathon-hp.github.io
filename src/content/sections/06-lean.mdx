@@ -27,8 +27,10 @@ export const cooklevin = cert('cooklevin');
 
 <LeanCertificate
   label="Berger and Leighton's reduction"
-  how="Each problem in the chain reduces to the next in polynomial time. This project proves every step after the first, and that both folding problems are in NP. A separate project proves the first step, and ours, below, plugs it into this chain too."
-  labels={{ SAT: 'Cook–Levin, assumed here, proved below' }}
+  claim="Lean checks that HP folding on the cubic lattice is NP-complete."
+  how="Each problem in the chain reduces to the next in polynomial time, and both folding problems are in NP. The team's project proves all of this except the first step, which it takes as a hypothesis. A separate project proves that step, the Cook–Levin theorem, and ours, below, plugs it into this chain."
+  labels={{ SAT: 'Cook–Levin, proved in a separate project' }}
+  provedIn={{ SAT: { cert: 'cooklevin', name: 'SAT.CookLevinUniversal.cookLevin' } }}
 />
 
 <LeanCertificate
@@ -281,13 +283,14 @@ SHA-256 is <code class="ln-hash">{cooklevin.download.sha256}</code>.
 ## Every statement and where it is
 
 Each project has an index that matches each statement of its paper with its declarations in
-Lean.
+Lean. Where an index marks a statement as proved assuming Cook–Levin, the tables show it as
+proved, because the Cook–Levin project proves that assumption.
 
 ### Berger and Leighton's reduction
 
 The team's <a href={lean.links.docs.theoremIndex}>index</a>. Each name links to its line on GitHub.
 
-<LeanIndex />
+<LeanIndex cookLevin={{ cert: 'cooklevin', name: 'SAT.CookLevinUniversal.cookLevin' }} />
 
 ### Our reduction
 
@@ -295,4 +298,8 @@ Our <a href={shelf.links.docs.theoremIndex}>index</a>, with the numbers of our w
 name links to its line on GitHub; the declarations with no prefix `Shelf.` are the team's, in the
 copy of its library that our project builds on.
 
-<LeanIndex cert="shelf" paper="In our write-up" />
+<LeanIndex
+  cert="shelf"
+  paper="In our write-up"
+  cookLevin={{ cert: 'cooklevin', name: 'SAT.CookLevinUniversal.cookLevin' }}
+/>
