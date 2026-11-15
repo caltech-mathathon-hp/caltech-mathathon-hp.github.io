@@ -23,8 +23,9 @@ team has since proved it. The theorem is
 `ProteinFolding.SAT.CookLevinUniversal.cookLevin`, in
 `ProteinFolding/Common/CookLevinProofUniversal.lean`.
 
-The team keeps this proof as a Lean project of its own, which has the files of
-the library that the proof needs and 63 new files, all named
+The team keeps this proof as a Lean project of its own, the folder
+`lean/cooklevin` of the website repository. It has the files of the library
+that the proof needs and 63 new files, all named
 `ProteinFolding/Common/CookLevinProof*.lean`.
 
 - Copied from that project: the 57 of the 63 files that the proof of
@@ -44,8 +45,15 @@ team's Cook–Levin project:
 shasum -a 256 -c <path to this folder>/cook_levin_files.sha256
 ```
 
-It prints `OK` for each file. The same command in `vendor/protein_folding`,
-with `../cook_levin_files.sha256`, checks the copies here against the list.
+It prints `OK` for each file. In the website repository this project is the
+folder `lean/shelf`, so there the command is
+
+```bash
+cd lean/cooklevin && shasum -a 256 -c ../shelf/vendor/cook_levin_files.sha256
+```
+
+The same command in `vendor/protein_folding`, with
+`../cook_levin_files.sha256`, checks the copies here against the list.
 
 The library's own root file, `ProteinFolding.lean`, does not import the 57
 files. Our file `Shelf/Unconditional.lean` imports
