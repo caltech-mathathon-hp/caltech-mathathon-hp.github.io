@@ -2,24 +2,26 @@
 /**
  * HpSnakeEgg: an easter egg. It wraps a widget (the folding game on the Playground) and puts a
  * small rainbow button in that widget's top right corner. The button swaps the widget, in place,
- * for HP Snake: a game of folding a string on the lattice one residue at a time, 2D on the square
- * lattice and 3D on the cubic lattice. The same button (or the ✕) swaps the widget back.
+ * for HP Snake: a game of folding a string on the lattice one residue at a time, 3D on the cubic
+ * lattice and 2D on the square lattice. The same button (or the ✕) swaps the widget back.
  *
  *   import HpSnakeEgg from '../../widgets/hp-snake/HpSnakeEgg.astro';
  *   <div class="wide"><HpSnakeEgg><FoldGame client:load … /></HpSnakeEgg></div>
  *
  * The games are standalone pages in public/hp-snake/ (no build step, no dependencies), shown in
- * an iframe inside the panel. They keep their own dark arcade look with red H's and grey P's, so
- * unlike the other widgets they do not use tokens.css; only the button and the panel frame live
- * here. The page opens the game when its address ends in #hp-snake (or #hp-snake-3d).
+ * an iframe inside a card like the folding game's: same place, same border, a 3D/2D switch like
+ * the game's, so the page does not move when the two swap. The games follow the site's theme
+ * (they read localStorage 'theme', and this widget posts {hpSnake: 'theme'} when it changes).
+ * While the snake is shown, its keys reach it even if the focus is still on the page.
+ * The page opens the game when its address ends in #hp-snake (or #hp-snake-3d).
  * Styles: hp-snake.css (classes prefixed hs-).
  */
 import './hp-snake.css';
 import { withBase } from '../../lib/url';
 
 const games = {
-  '2d': withBase('/hp-snake/hp-snake.html'),
   '3d': withBase('/hp-snake/hp-snake-3d.html'),
+  '2d': withBase('/hp-snake/hp-snake.html'),
 };
 ---
 
@@ -28,15 +30,16 @@ const games = {
 
   <section class="hs-panel" aria-label="HP Snake" hidden>
     <div class="hs-bar">
-      <span class="hs-title"><span aria-hidden="true">🐍</span> HP Snake</span>
-      <div class="hs-tabs" role="group" aria-label="Lattice">
-        <button type="button" data-dim="2d" aria-pressed="true">2D</button>
-        <button type="button" data-dim="3d" aria-pressed="false">3D</button>
+      <div class="hs-dims" role="group" aria-label="Lattice">
+        <button type="button" class="hs-opt" data-dim="3d" aria-pressed="false">3D</button>
+        <button type="button" class="hs-opt" data-dim="2d" aria-pressed="true">2D</button>
       </div>
-      <a class="hs-open" href={games['2d']} target="_blank" rel="noopener">Full screen ↗</a>
-      <button type="button" class="hs-close" aria-label="Back to the folding game" title="Back to the folding game">✕</button>
+      <span class="hs-title">HP Snake</span>
+      <button type="button" class="hs-close btn ghost" aria-label="Back to the folding game" title="Back to the folding game">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+      </button>
     </div>
-    <iframe class="hs-frame" title="HP Snake" allow="fullscreen; autoplay"></iframe>
+    <iframe class="hs-frame" title="HP Snake" allow="autoplay"></iframe>
   </section>
 
   <button type="button" class="hs-egg" aria-pressed="false" aria-label="Secret game: HP Snake" title="Psst… a secret game">
@@ -46,13 +49,22 @@ const games = {
 
 <script>
   type Dim = '2d' | '3d';
+  // the keys the two games use; while the snake is shown they go to it, wherever the focus is
+  const GAME_KEYS = new Set([
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyQ', 'KeyE',
+    'PageUp', 'PageDown', 'KeyZ', 'Backspace', 'KeyH', 'KeyR', 'KeyN', 'KeyM', 'KeyO', 'KeyV',
+    'KeyI', 'KeyJ', 'KeyK', 'KeyL', 'Escape', 'Enter', 'NumpadEnter',
+  ]);
+  const ENTER_KEYS = new Set(['Enter', 'NumpadEnter']);
+  const theme = () => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+
   for (const host of document.querySelectorAll<HTMLElement>('.hs-host')) {
     const games = JSON.parse(host.dataset.games ?? '{}') as Record<Dim, string>;
+    const widget = host.querySelector<HTMLElement>('.hs-widget')!;
     const egg = host.querySelector<HTMLButtonElement>('.hs-egg')!;
     const panel = host.querySelector<HTMLElement>('.hs-panel')!;
     const frame = host.querySelector<HTMLIFrameElement>('.hs-frame')!;
-    const open = host.querySelector<HTMLAnchorElement>('.hs-open')!;
-    const tabs = [...host.querySelectorAll<HTMLButtonElement>('.hs-tabs button')];
+    const tabs = [...host.querySelectorAll<HTMLButtonElement>('.hs-dims button')];
 
     let dim: Dim = '2d';
     try {
@@ -62,11 +74,11 @@ const games = {
     const mark = (d: Dim) => {
       dim = d;
       for (const t of tabs) t.setAttribute('aria-pressed', String(t.dataset.dim === d));
-      open.href = games[d];
       try {
         localStorage.setItem('hpsnake.egg.dim', d);
       } catch {}
     };
+    const sendTheme = () => frame.contentWindow?.postMessage({ hpSnake: 'theme', theme: theme() }, '*');
     const focusGame = () => {
       frame.focus({ preventScroll: true });
       frame.contentWindow?.focus();
@@ -81,27 +93,48 @@ const games = {
     };
     const isOn = () => host.classList.contains('is-snake');
 
+    // the visible card: the panel while the snake is shown, the folding game otherwise. The game
+    // sits in an <astro-island> (display: contents), so measure the slot's wrapper: its margins
+    // collapse with the card's, so its box is the card's box.
+    const card = () => (isOn() ? panel : widget);
+    // swap the two cards without moving the page: the new card's top lands where the old one's was
+    const swap = (fn: () => void) => {
+      const top = card().getBoundingClientRect().top;
+      fn();
+      const dy = card().getBoundingClientRect().top - top;
+      if (Math.abs(dy) > 0.5) window.scrollBy(0, dy);
+    };
+    // the panel takes the folding game's height, but stays within the window so its controls show
+    const fitPanel = (gameHeight: number) => {
+      const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) * 16 || 56;
+      const room = innerHeight - header - 24;
+      panel.style.height = `${Math.round(Math.max(420, Math.min(gameHeight, room)))}px`;
+    };
+
+    let gameHeight = 0;
     const show = (d: Dim = dim) => {
       if (!isOn()) {
-        host.classList.add('is-snake');
-        panel.hidden = false;
+        gameHeight = card().getBoundingClientRect().height;
+        swap(() => {
+          fitPanel(gameHeight);
+          host.classList.add('is-snake');
+          panel.hidden = false;
+        });
         egg.setAttribute('aria-pressed', 'true');
         egg.title = 'Back to the folding game';
-        // bring the whole game into view if part of it is off screen
-        const r = panel.getBoundingClientRect();
-        const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) * 16 || 56;
-        if (r.top < header || r.bottom > innerHeight) panel.scrollIntoView({ block: 'start' });
       }
       load(d);
     };
     const hide = () => {
       if (!isOn()) return;
-      host.classList.remove('is-snake');
-      panel.hidden = true;
+      swap(() => {
+        host.classList.remove('is-snake');
+        panel.hidden = true;
+        // the folding game was hidden: let it measure itself again
+        window.dispatchEvent(new Event('resize'));
+      });
       egg.setAttribute('aria-pressed', 'false');
       egg.title = 'Psst… a secret game';
-      // the folding game was hidden: let it measure itself again
-      window.dispatchEvent(new Event('resize'));
       egg.focus({ preventScroll: true });
     };
 
@@ -115,12 +148,34 @@ const games = {
         frame.dataset.dim = d;
         mark(d);
       } catch {}
+      sendTheme();
       if (isOn()) focusGame();
+    });
+    new MutationObserver(sendTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // keys pressed on the page (focus on the button, on the page body…) go to the game
+    window.addEventListener('keydown', (e) => {
+      if (!isOn() || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || !GAME_KEYS.has(e.code)) return;
+      const t = e.target as HTMLElement | null;
+      if (t?.closest?.('input, textarea, select, [contenteditable=""], [contenteditable="true"]')) return;
+      // Enter goes to the game (next level, retry) unless it is pressing a button or link here
+      if (ENTER_KEYS.has(e.code) && t?.closest?.('button, a[href], summary, [role="button"]')) return;
+      const r = panel.getBoundingClientRect();
+      if (r.bottom < 80 || r.top > innerHeight - 80) return; // the game is scrolled out of view
+      const win = frame.contentWindow;
+      if (!win) return;
+      e.preventDefault();
+      win.dispatchEvent(new KeyboardEvent('keydown', { key: e.key, code: e.code, shiftKey: e.shiftKey, bubbles: true, cancelable: true }));
+      focusGame();
+    });
+    window.addEventListener('resize', () => {
+      if (isOn()) fitPanel(gameHeight);
     });
 
     const fromHash = () => {
-      if (location.hash === '#hp-snake') show();
-      else if (location.hash === '#hp-snake-3d') show('3d');
+      if (location.hash !== '#hp-snake' && location.hash !== '#hp-snake-3d') return;
+      show(location.hash === '#hp-snake-3d' ? '3d' : '2d');
+      panel.scrollIntoView({ block: 'center' });
     };
     window.addEventListener('hashchange', fromHash);
     fromHash();

@@ -5,39 +5,77 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Snake meets the 3-D HP protein folding problem: steer the growing chain step by step through an infinite cubic lattice, hug as many H's together as you can, and don't bite yourself.">
 <title>HP Snake 3D</title>
+<script>
+  // Light or dark, like the website: the ?theme= parameter, else the site's own choice in localStorage.
+  // The script at the end of the page follows later changes.
+  (function () {
+    var t = null;
+    try { t = new URLSearchParams(location.search).get('theme'); } catch (e) { /* old browser */ }
+    if (t !== 'light' && t !== 'dark') { try { t = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light'; } catch (e) { t = 'light'; } }
+    document.documentElement.dataset.theme = t;
+  })();
+</script>
 <style>
+  /* Colours: the website's tokens (site/src/styles/tokens.css), copied, since this page has no build step.
+     Light is the default; dark applies under html[data-theme='dark']. The canvas reads the same variables. */
   :root {
-    --bg: #0b1019; --ink: #e9eef6; --muted: #8e9ab0; --faint: #5d677b;
-    --panel: rgba(16, 22, 34, .86); --line: rgba(148, 163, 184, .16);
-    --h: #ef4444; --p: #9ca3af; --gold: #fbbf24; --ok: #34d399; --bad: #f87171;
+    --bg: #fbfaf7; --bg-elev: #ffffff; --bg-sunk: #f2f0eb;
+    --ink: #1c1c21; --muted: #55555f; --faint: #8b8b95;
+    --line: #e2ded5; --line-strong: #c9c3b7;
+    --accent: #1f4f8f; --accent-hover: #163a6b; --accent-weak: #e7eef7; --on-accent: #ffffff;
+    --h: #c4532f; --p: #4f7aa3; --p-fill: #e6ecf2;
+    --bond: #d99a1e; --gold: #a86f12; --on-gold: #1c1c21;
+    --backbone: #6d6d78; --ghost: #1f4f8f;
+    --ok: #2f7a4d; --bad: #b3261e;
+    --panel: rgba(255, 255, 255, .92);
+    --shadow: 0 2px 4px rgba(28, 28, 33, .05), 0 8px 24px rgba(28, 28, 33, .07);
+    --scrim: rgba(28, 28, 33, .32);
     --round: ui-rounded, "SF Pro Rounded", "Nunito", "Segoe UI", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  html[data-theme='dark'] {
+    --bg: #131417; --bg-elev: #1b1c20; --bg-sunk: #0e0f11;
+    --ink: #e7e5e0; --muted: #a6a5ad; --faint: #75747d;
+    --line: #2c2d33; --line-strong: #3d3e45;
+    --accent: #85aee6; --accent-hover: #a9c7f0; --accent-weak: #1c2838; --on-accent: #0e0f11;
+    --h: #e2774f; --p: #86a9cc; --p-fill: #2a3038;
+    --bond: #ebb444; --gold: #ebb444; --on-gold: #0e0f11;
+    --backbone: #8e8d97; --ghost: #85aee6;
+    --ok: #6cc08f; --bad: #f08078;
+    --panel: rgba(27, 28, 32, .92);
+    --shadow: 0 2px 4px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
+    --scrim: rgba(0, 0, 0, .55);
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   [hidden] { display: none !important; }
-  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink);
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg-sunk); color: var(--ink);
     font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased; touch-action: none; user-select: none; -webkit-user-select: none; }
   canvas#cv { position: fixed; inset: 0; display: block; cursor: grab; }
   canvas#cv.drag { cursor: grabbing; }
   canvas#cv.pointy { cursor: pointer; }
   button { font: inherit; color: inherit; }
-  a { color: var(--gold); }
+  a { color: var(--accent); }
 
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,.35); }
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: var(--shadow); }
 
   /* ---------- top-left: title + level */
   #tl { position: fixed; left: 16px; top: 16px; padding: 10px 14px 11px; max-width: min(340px, calc(50vw - 24px)); }
   .brand { font: 800 20px/1.1 var(--round); letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
   .cube { display: inline-grid; grid-template-columns: repeat(2, 7px); gap: 2px; transform: rotate(-12deg) skewX(-8deg); }
   .cube i { width: 7px; height: 7px; border-radius: 50%; display: block; }
+  /* H filled, P hollow, as everywhere on the site */
+  i.h, .dot.h { background: var(--h); }
+  i.p, .dot.p { background: var(--p-fill); box-shadow: inset 0 0 0 var(--ring, 1.5px) var(--p); }
   .brand sup { font-size: 11px; color: var(--gold); font-weight: 800; margin-left: -4px; }
   #lvlName { margin-top: 5px; font-weight: 650; font-size: 13.5px; }
   #lvlMeta { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
   .chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
   .chip { font-size: 11.5px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line);
     color: var(--muted); background: transparent; cursor: pointer; white-space: nowrap; }
-  .chip:hover { color: var(--ink); border-color: rgba(148,163,184,.4); }
+  .chip:hover { color: var(--ink); border-color: var(--line-strong); }
   .chip.off { opacity: .55; text-decoration: line-through; }
 
   /* ---------- top-right: energy */
@@ -50,9 +88,9 @@
   #eYou.bump { animation: bump .35s ease-out; }
   @keyframes bump { 30% { transform: scale(1.18); color: var(--gold); } }
   #eOpt { color: var(--gold); }
-  .bar { position: relative; height: 8px; border-radius: 99px; background: rgba(148,163,184,.14); margin: 11px 0 7px; overflow: hidden; }
+  .bar { position: relative; height: 8px; border-radius: 99px; background: var(--bg-sunk); margin: 11px 0 7px; overflow: hidden; }
   #barFill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 99px;
-    background: linear-gradient(90deg, #f87171, #ef4444 55%, #fbbf24); transition: width .25s; }
+    background: linear-gradient(90deg, color-mix(in srgb, var(--h) 65%, var(--bg-elev)), var(--h) 55%, var(--bond)); transition: width .25s; }
   .small { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
   #reach.bad { color: var(--bad); } #reach.ok { color: var(--ok); }
 
@@ -61,19 +99,19 @@
     display: flex; flex-direction: column; align-items: center; pointer-events: none; }
   #strip { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--gap, 4px); padding: 9px 12px; max-width: 100%; }
   #strip i { width: var(--d, 14px); height: var(--d, 14px); border-radius: 50%; display: block; transition: transform .15s, opacity .2s; }
-  #strip i.h { background: var(--h); } #strip i.p { background: var(--p); }
   #strip i.done { opacity: .25; }
-  #strip i.next { transform: scale(1.45); box-shadow: 0 0 0 2px #121a28, 0 0 0 3.5px #fff; }
+  #strip i.next { transform: scale(1.45); box-shadow: 0 0 0 2px var(--bg-elev), 0 0 0 3.5px var(--ink); }
+  #strip i.p.next { box-shadow: inset 0 0 0 1.5px var(--p), 0 0 0 2px var(--bg-elev), 0 0 0 3.5px var(--ink); }
   #keys { font-size: 11.5px; color: var(--faint); margin-top: 6px; text-align: center; }
-  kbd { font: 600 10.5px/1 ui-monospace, Menlo, monospace; padding: 2px 5px; border-radius: 5px; border: 1px solid var(--line);
-    color: var(--muted); background: rgba(148,163,184,.08); }
+  kbd { font: 600 10.5px/1 ui-monospace, Menlo, monospace; padding: 2px 5px; border-radius: 5px; border: 1px solid var(--line-strong);
+    color: var(--muted); background: var(--bg-elev); }
 
   #prompt { position: fixed; left: 50%; transform: translateX(-50%); font: 700 14.5px var(--round); color: var(--ink);
     background: var(--panel); padding: 8px 15px; border-radius: 999px; border: 1px solid var(--line);
     animation: pulse 1.6s ease-in-out infinite; pointer-events: none; white-space: nowrap; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; }
   @keyframes pulse { 50% { opacity: .55; } }
   #banner { position: fixed; left: 50%; transform: translateX(-50%); font: 700 13px var(--round); color: var(--gold);
-    background: var(--panel); padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(251,191,36,.35); white-space: nowrap; }
+    background: var(--panel); padding: 7px 14px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--bond) 55%, transparent); white-space: nowrap; }
 
   /* ---------- result card */
   #result { position: fixed; left: 50%; transform: translateX(-50%); width: min(560px, calc(100vw - 32px)); padding: 14px 18px 16px; text-align: center; }
@@ -82,47 +120,47 @@
   .rsub { color: var(--muted); margin-top: 4px; font-size: 13.5px; }
   .rstats { margin-top: 8px; font-variant-numeric: tabular-nums; font-size: 13px; }
   .rstats b { font-weight: 700; }
-  .newbest { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 700; color: #0b1019; background: var(--gold); border-radius: 99px; padding: 1px 7px; vertical-align: 1px; }
-  .stars { font-size: 28px; letter-spacing: 4px; color: var(--gold); line-height: 1; margin-bottom: 4px; }
-  .stars .off, .ms .off { color: rgba(148,163,184,.25); }
+  .newbest { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 700; color: var(--on-gold); background: var(--bond); border-radius: 99px; padding: 1px 7px; vertical-align: 1px; }
+  .stars { font-size: 28px; letter-spacing: 4px; color: var(--bond); line-height: 1; margin-bottom: 4px; }
+  .stars .off, .ms .off { color: var(--line-strong); }
   .btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 13px; }
-  .btn { font: 650 13px var(--round); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line);
-    background: rgba(148,163,184,.08); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
-  .btn:hover { background: rgba(148,163,184,.17); }
-  .btn.primary { background: var(--h); border-color: transparent; color: #fff; }
-  .btn.primary:hover { filter: brightness(1.1); }
+  .btn { font: 650 13px var(--round); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line-strong);
+    background: var(--bg-elev); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { background: var(--bg-sunk); border-color: var(--faint); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
   .btn:disabled { opacity: .38; cursor: default; }
   .btn kbd { margin-left: 6px; }
-  .btn.primary kbd { color: #fff; border-color: rgba(255,255,255,.4); background: rgba(255,255,255,.12); }
+  .btn.primary kbd { color: var(--on-accent); border-color: color-mix(in srgb, var(--on-accent) 40%, transparent); background: color-mix(in srgb, var(--on-accent) 12%, transparent); }
 
   /* ---------- menu overlay */
-  #ov { position: fixed; inset: 0; background: rgba(6,9,15,.66); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  #ov { position: fixed; inset: 0; background: var(--scrim); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
     overflow-y: auto; padding: 28px 16px; touch-action: pan-y; }
   #menuCard { width: min(900px, 100%); margin: 0 auto; padding: 24px 26px 22px; position: relative; }
   .title { font: 900 46px/1 var(--round); letter-spacing: -.03em; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
   .title .cube { grid-template-columns: repeat(2, 13px); gap: 4px; }
-  .title .cube i { width: 13px; height: 13px; }
+  .title .cube i { width: 13px; height: 13px; --ring: 2.5px; }
   .title sup { font-size: 20px; color: var(--gold); margin-left: -8px; }
   .tag { color: var(--muted); font-size: 15.5px; margin-top: 7px; }
   .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 18px; }
   @media (max-width: 560px) { .rules { grid-template-columns: 1fr; } }
-  .rule { background: rgba(148,163,184,.06); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13px; color: #c3ccda; }
+  .rule { background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13px; color: var(--muted); }
   .rule b { color: var(--ink); }
-  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: -1px; }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: -1px; --ring: 2px; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   .kind { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin: 18px 0 8px; font-weight: 700; }
   .lvgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 9px; }
-  .lv { text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: rgba(148,163,184,.05); cursor: pointer; }
-  .lv:hover { border-color: rgba(248,113,113,.65); background: rgba(239,68,68,.08); }
-  .lv.cur { border-color: rgba(251,191,36,.55); }
+  .lv { text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-elev); cursor: pointer; }
+  .lv:hover { border-color: var(--accent); background: var(--accent-weak); }
+  .lv.cur { border-color: var(--bond); }
   .lvtop { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-weight: 700; }
-  .ms { color: var(--gold); font-size: 12px; letter-spacing: 1px; }
+  .ms { color: var(--bond); font-size: 12px; letter-spacing: 1px; }
   .lvdots { display: flex; flex-wrap: wrap; gap: 2px; margin: 7px 0 6px; }
-  .lvdots i { width: 6px; height: 6px; border-radius: 50%; display: block; }
+  .lvdots i { width: 6px; height: 6px; border-radius: 50%; display: block; --ring: 1.2px; }
   .lvmeta { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
   #custom { flex: 1; min-width: 200px; font: 13px ui-monospace, Menlo, monospace; padding: 9px 11px; border-radius: 10px;
-    border: 1px solid var(--line); background: rgba(0,0,0,.25); color: var(--ink); text-transform: uppercase; user-select: text; -webkit-user-select: text; }
-  #custom:focus { outline: none; border-color: rgba(248,113,113,.6); }
+    border: 1px solid var(--line-strong); background: var(--bg-elev); color: var(--ink); text-transform: uppercase; user-select: text; -webkit-user-select: text; }
+  #custom:focus { outline: none; border-color: var(--accent); }
   .err { color: var(--bad); font-size: 12.5px; min-height: 1.2em; margin-top: 6px; }
   .foot { color: var(--faint); font-size: 12px; margin-top: 14px; line-height: 1.55; }
   .foot b { color: var(--muted); }
@@ -134,7 +172,7 @@
   #dpad button { border-radius: 12px; border: 1px solid var(--line); background: var(--panel); font-size: 19px; color: var(--ink); touch-action: none; }
   #dpad button.depth { font-size: 22px; color: var(--gold); }
   #dpad button.rot { font-size: 17px; color: var(--muted); }
-  #dpad button:active { background: rgba(239,68,68,.35); }
+  #dpad button:active { background: var(--accent-weak); }
 
   @media (max-width: 640px) {
     #tl { padding: 8px 10px; } .brand { font-size: 16px; } #lvlName { font-size: 12.5px; }
@@ -150,7 +188,7 @@
 <canvas id="cv"></canvas>
 
 <div id="tl" class="panel">
-  <div class="brand"><span class="cube"><i style="background:var(--h)"></i><i style="background:var(--p)"></i><i style="background:var(--p)"></i><i style="background:var(--h)"></i></span>HP Snake <sup>3D</sup></div>
+  <div class="brand"><span class="cube"><i class="h"></i><i class="p"></i><i class="p"></i><i class="h"></i></span>HP Snake <sup>3D</sup></div>
   <div id="lvlName">—</div>
   <div id="lvlMeta">—</div>
   <div class="chips">
@@ -194,12 +232,63 @@
 const DV = [[1, 0, 0], [0, 1, 0], [0, 0, 1], [-1, 0, 0], [0, -1, 0], [0, 0, -1]];
 const OPP = d => (d + 3) % 6;
 const MOVES = 'RUFLDB';                                   // move letters, same order as DV
-const COL = { h: '#ef4444', p: '#9ca3af', bond: '#cbd5e1', gold: '#fbbf24', bad: '#f87171' };
-const SHADE = {                                           // sphere gradients: highlight, body, rim
-  h: ['#ffb4b4', '#ef4444', '#7a1414'],
-  p: ['#f3f4f6', '#9ca3af', '#3b4250'],
-};
 const TAU = Math.PI * 2;
+
+// =====================================================================================
+//  Theme: light or dark, like the website. The page starts in the theme the script in <head>
+//  chose, then follows the site: the 'storage' event when the site page changes localStorage.theme,
+//  and messages {hpSnake: 'theme', theme: 'light' | 'dark'} from the page that frames this one.
+//  Every colour the canvas draws with comes from PAL, which is rebuilt from the CSS variables.
+// =====================================================================================
+const rgbOf = hex => { const v = parseInt(hex.trim().replace('#', ''), 16); return [(v >> 16) & 255, (v >> 8) & 255, v & 255]; };
+const mixC = (a, b, t) => { const p = rgbOf(a), q = rgbOf(b); return '#' + p.map((v, i) => Math.round(v + (q[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+const rgb = hex => rgbOf(hex).join(',');                // for rgba(), when the alpha changes per frame
+const rgba = (c, a) => `rgba(${c.startsWith('#') ? rgb(c) : c},${a})`;
+let PAL = null;
+function readPalette() {
+  const cs = getComputedStyle(document.documentElement), v = k => cs.getPropertyValue(k).trim();
+  const dark = document.documentElement.dataset.theme === 'dark';
+  const bg = v('--bg-sunk'), glow = v('--bg-elev'), ink = v('--ink'), h = v('--h'), p = v('--p'), pFill = v('--p-fill');
+  const bond = v('--bond'), backbone = v('--backbone'), lineStrong = v('--line-strong'), fog = mixC(bg, glow, 0.6);
+  PAL = {
+    dark, bg, h, p, bond, ghost: v('--ghost'),
+    hRGB: rgb(h), badRGB: rgb(v('--bad')), bad: v('--bad'),
+    vignette: glow, vignetteA: dark ? 0.8 : 0.9,           // a soft light in the middle of the board
+    fog, fogRGB: rgb(fog),                                  // far beads fade towards the background
+    gridRGB: rgb(lineStrong), gridA: 0.9,
+    shadowRGB: dark ? '0,0,0' : rgb(ink), shadowA: dark ? 0.45 : 0.16,
+    guide: rgba(ink, 0.25), startRing: rgba(ink, 0.4),     // drop line under the head, ring round residue 1
+    // sphere gradients (highlight, body, rim): H filled, P hollow with a ring of --p, as in the site's 3D game
+    shadeH: [mixC(h, '#ffffff', 0.6), h, mixC(h, '#000000', 0.4)],
+    shadeP: [mixC(pFill, '#ffffff', dark ? 0.15 : 1), pFill, mixC(pFill, p, 0.4)],
+    labelH: rgba(glow, 0.9), labelP: p,                     // as the site's string: H in the card colour, P in --p
+    bondOutRGB: rgb(dark ? mixC(backbone, '#000000', 0.35) : backbone),   // the chain: a dark tube, a light core
+    bondInRGB: rgb(mixC(backbone, '#ffffff', dark ? 0.4 : 0.6)),
+    bondGlow: rgba(bond, dark ? 0.7 : 0.45),
+    cap: rgba(glow, 0.95), capLine: lineStrong, capInk: ink, // key caps look like the site's <kbd>
+    capDepth: rgba(bond, 0.95), onGold: v('--on-gold'),
+    badgeLine: bg,
+    eyeWhite: '#ffffff', pupil: '#1c1c21', eyeInkH: '#1c1c21', eyeInkP: dark ? ink : '#1c1c21',
+    gold: v('--gold'), halo: rgba(bg, 0.85),               // the floating "+1 hug", outlined in the background colour
+    spark: dark ? '#ffffff' : v('--accent'),               // the white sparks of the dark theme
+  };
+}
+function setTheme(t) {
+  if (t !== 'light' && t !== 'dark') return;
+  if (document.documentElement.dataset.theme !== t) document.documentElement.dataset.theme = t;
+  readPalette();
+  if (VW) draw(performance.now());                      // at once, even if frames are throttled
+}
+addEventListener('storage', e => {
+  if (e.key !== 'theme' && e.key !== null) return;       // null: localStorage was cleared
+  let t = null; try { t = localStorage.getItem('theme'); } catch (err) { /* blocked */ }
+  setTheme(t === 'dark' ? 'dark' : 'light');
+});
+addEventListener('message', e => {
+  const d = e.data;
+  if (d && typeof d === 'object' && d.hpSnake === 'theme') setTheme(d.theme);
+});
+readPalette();
 
 // opt = max # of H–H contacts (E* = −opt); fold = move string of an optimal fold (R/L = ±x, U/D = ±y, F/B = ±z).
 // Every fold below was checked to reach `opt`; that `opt` is the maximum was shown by exhaustive search
@@ -491,7 +580,7 @@ function place(x, y, z) {
     const j = G.occ.get(keyOf(x + d[0], y + d[1], z + d[2]));
     if (j !== undefined && j < k - 1 && G.H[j]) {
       G.contacts.push([j, k, now]); g++;
-      burst((x + G.xs[j]) / 2, (y + G.ys[j]) / 2, (z + G.zs[j]) / 2, 16, [COL.gold, COL.h, '#fff']);
+      burst((x + G.xs[j]) / 2, (y + G.ys[j]) / 2, (z + G.zs[j]) / 2, 16, [PAL.bond, PAL.h, PAL.spark]);
     }
   }
   if (g) {
@@ -530,7 +619,7 @@ function die(type, info) {
   G.state = 'dead'; G.death = Object.assign({ type, t: performance.now() }, info);
   cam.shake = 1; sfx.die();
   const k = G.k - 1, c = type === 'clash';
-  burst(c ? (G.xs[k] + info.x) / 2 : G.xs[k], c ? (G.ys[k] + info.y) / 2 : G.ys[k], c ? (G.zs[k] + info.z) / 2 : G.zs[k], 26, [COL.bad, '#fff', COL.p], 4.5);
+  burst(c ? (G.xs[k] + info.x) / 2 : G.xs[k], c ? (G.ys[k] + info.y) / 2 : G.ys[k], c ? (G.zs[k] + info.z) / 2 : G.zs[k], 26, [PAL.bad, PAL.spark, PAL.p], 4.5);
   updateHUD(); updatePrompt(); showResult();
 }
 
@@ -747,7 +836,7 @@ function starsFor(c, opt) {
   return r >= 0.75 ? 2 : r >= 0.5 ? 1 : 0;
 }
 const starsHTML = n => '★'.repeat(n) + `<span class="off">${'★'.repeat(3 - n)}</span>`;
-const dotsHTML = seq => Array.from(seq, ch => `<i style="background:var(--${ch === 'H' ? 'h' : 'p'})"></i>`).join('');
+const dotsHTML = seq => Array.from(seq, ch => `<i class="${ch === 'H' ? 'h' : 'p'}"></i>`).join('');
 
 function buildStrip() {
   const st = $('#strip'); st.innerHTML = '';
@@ -881,14 +970,14 @@ function renderMenu() {
       <div class="lvmeta">${L.seq.length} residues · E* = ${fmtE(-L.opt)}${b != null ? ' · best ' + fmtE(-b) : ''}</div></button>`;
   };
   const inGame = G && (G.state === 'running' || G.state === 'ready');
-  const cube = '<span class="cube"><i style="background:var(--h)"></i><i style="background:var(--p)"></i><i style="background:var(--p)"></i><i style="background:var(--h)"></i></span>';
+  const cube = '<span class="cube"><i class="h"></i><i class="p"></i><i class="p"></i><i class="h"></i></span>';
   $('#menuCard').innerHTML = `
     ${G ? `<button class="btn x" data-act="close">${inGame && G.k > 1 ? 'Resume' : 'Close'}<kbd>Esc</kbd></button>` : ''}
     <div class="title">${cube}HP Snake <sup>3D</sup></div>
     <div class="tag">Same snake, one more dimension to get tangled in.</div>
     <div class="rules">
       <div class="rule"><b>You are the growing chain.</b> Starting at the origin of an infinite cubic lattice, every key press (or tap on a bubble) lays down the next residue of a known H/P sequence (shown at the bottom). Nothing moves until you do.</div>
-      <div class="rule"><span class="dot" style="background:var(--h)"></span> <b>H</b> is hydrophobic. Two H’s on neighbouring sites that aren’t bonded in the chain form a contact worth <b>E&nbsp;=&nbsp;−1</b>. <span class="dot" style="background:var(--p)"></span> <b>P</b> is polar and doesn’t care.</div>
+      <div class="rule"><span class="dot h"></span> <b>H</b> is hydrophobic. Two H’s on neighbouring sites that aren’t bonded in the chain form a contact worth <b>E&nbsp;=&nbsp;−1</b>. <span class="dot p"></span> <b>P</b> is polar and doesn’t care.</div>
       <div class="rule"><b>Steering in 3-D:</b> arrows / WASD move across the screen, <b>Q</b> pushes into it, <b>E</b> pulls towards you. Each bubble around the head shows its key, and keys follow the camera. Drag to orbit, scroll or pinch to zoom.</div>
       <div class="rule"><b>Just like snake:</b> bite yourself or seal yourself in and the protein denatures. <b>Goal:</b> finish with your energy as close as you can to the theoretical minimum <b style="color:var(--gold)">E*</b> (top right).</div>
     </div>
@@ -901,7 +990,7 @@ function renderMenu() {
       <input id="custom" placeholder="or type your own, e.g. HPHPPHHPHH" maxlength="80" spellcheck="false" autocomplete="off">
       <button class="btn" data-act="custom">Fold it</button></div>
     <div id="customErr" class="err"></div>
-    <div class="foot"><b>Pro tip:</b> the cubic lattice is a 3-D checkerboard, so residues <i>i</i> and <i>j</i> can only ever touch when <i>i − j</i> is odd. Each H has at most 4 free sides (5 at the chain ends), which gives the bound shown while E* is being computed. The red glow (hints) marks reachable free sites next to exposed H’s that a later H of the right parity could still claim.<br>
+    <div class="foot"><b>Pro tip:</b> the cubic lattice is a 3-D checkerboard, so residues <i>i</i> and <i>j</i> can only ever touch when <i>i − j</i> is odd. Each H has at most 4 free sides (5 at the chain ends), which gives the bound shown while E* is being computed. The orange glow (hints) marks reachable free sites next to exposed H’s that a later H of the right parity could still claim.<br>
       <b>Where E* comes from:</b> every level’s optimum was proved by exhaustive search (for the 27-H cube by the discrete isoperimetric inequality: only a 3×3×3 cube scores 28). Random and custom chains are solved in your browser by branch &amp; bound over self-avoiding walks; past ~16 residues it may stop at the best fold it found.<br>
       <b>Keys:</b> ← ↑ → ↓ / WASD across the screen · Q / E (or Shift + ↑ / ↓) into / out of it · J L I K orbit · V reset view · Z undo · O peek optimum · H hints · M sound · R restart · Esc menu</div>
     <div class="dimlink"><a class="btn" href="hp-snake.html">▦ Back to flatland: HP Snake 2-D</a></div>`;
@@ -986,7 +1075,7 @@ function burst(x, y, z, n, colors, speed = 3) {
   }
 }
 function launchConfetti() {
-  const cols = [COL.h, COL.p, COL.gold, '#fff', '#f87171'];
+  const cols = [PAL.h, PAL.p, PAL.bond, PAL.spark, PAL.bad];
   for (let i = 0; i < 180; i++) confetti.push({
     x: Math.random() * VW, y: -20 - Math.random() * VH * 0.5, vx: (Math.random() - 0.5) * 80, vy: 90 + Math.random() * 160,
     rot: Math.random() * TAU, vr: (Math.random() - 0.5) * 10, w: 6 + Math.random() * 6, h: 3 + Math.random() * 4, c: pick(cols),
@@ -1030,37 +1119,43 @@ function drawFloor() {
     const d = Math.hypot((x1 + x2) / 2 - cam.x, (z1 + z2) / 2 - cam.z) / ext;
     if (d >= 1) return;
     const a = proj(x1, fy, z1), b = proj(x2, fy, z2);
-    ctx.strokeStyle = `rgba(148,163,184,${0.2 * Math.pow(1 - d, 1.4)})`;
+    ctx.strokeStyle = `rgba(${PAL.gridRGB},${PAL.gridA * Math.pow(1 - d, 1.4)})`;
     ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
   };
   for (let i = -ext; i <= ext; i++) for (let j = -ext; j < ext; j++) { seg(cx + i, cz + j, cx + i, cz + j + 1); seg(cx + j, cz + i, cx + j + 1, cz + i); }
 }
 
 function shadeBead(X, Y, rad, isH, fog, alpha = 1) {
-  const s = isH ? SHADE.h : SHADE.p;
+  const s = isH ? PAL.shadeH : PAL.shadeP;
   const g = ctx.createRadialGradient(X - rad * 0.38, Y - rad * 0.42, rad * 0.08, X, Y, rad);
   g.addColorStop(0, s[0]); g.addColorStop(0.45, s[1]); g.addColorStop(1, s[2]);
   ctx.globalAlpha = alpha;
   ctx.beginPath(); ctx.arc(X, Y, rad, 0, TAU); ctx.fillStyle = g; ctx.fill();
-  if (fog > 0.01) { ctx.fillStyle = `rgba(11,16,25,${fog})`; ctx.fill(); }
+  if (fog > 0.01) { ctx.fillStyle = `rgba(${PAL.fogRGB},${fog})`; ctx.fill(); }
+  if (!isH) {                                            // P is hollow: a ring of --p, inside the bead
+    const lw = Math.max(1, rad * 0.12);
+    ctx.strokeStyle = fog > 0.01 ? mixC(PAL.p, PAL.fog, fog) : PAL.p; ctx.lineWidth = lw;
+    ctx.beginPath(); ctx.arc(X, Y, Math.max(0.5, rad - lw / 2), 0, TAU); ctx.stroke();
+  }
   ctx.globalAlpha = 1;
 }
 
-function drawEyes(X, Y, r, mood, now, look) {
+function drawEyes(X, Y, r, mood, now, look, ink) {
   for (const side of [-1, 1]) {
     const ex = X + r * 0.38 * side + look[0] * r * 0.12, ey = Y - r * 0.12 + look[1] * r * 0.12;
     if (mood === 'dead') {
       const q = r * 0.17;
-      ctx.strokeStyle = '#1b1f27'; ctx.lineWidth = Math.max(1.5, r * 0.11); ctx.lineCap = 'round';
+      ctx.strokeStyle = ink; ctx.lineWidth = Math.max(1.5, r * 0.11); ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(ex - q, ey - q); ctx.lineTo(ex + q, ey + q); ctx.moveTo(ex + q, ey - q); ctx.lineTo(ex - q, ey + q); ctx.stroke();
     } else if (mood === 'happy') {
-      ctx.strokeStyle = '#1b1f27'; ctx.lineWidth = Math.max(1.5, r * 0.11); ctx.lineCap = 'round';
+      ctx.strokeStyle = ink; ctx.lineWidth = Math.max(1.5, r * 0.11); ctx.lineCap = 'round';
       ctx.beginPath(); ctx.arc(ex, ey + r * 0.06, r * 0.17, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
     } else {
       const blink = (now % 3400) < 110;
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = PAL.eyeWhite;
       ctx.beginPath(); ctx.ellipse(ex, ey, r * 0.23, blink ? r * 0.04 : r * 0.23, 0, 0, TAU); ctx.fill();
-      if (!blink) { ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(ex + look[0] * r * 0.09, ey + look[1] * r * 0.09, r * 0.11, 0, TAU); ctx.fill(); }
+      ctx.strokeStyle = rgba(ink, 0.35); ctx.lineWidth = Math.max(0.8, r * 0.04); ctx.stroke();   // shows on a pale P
+      if (!blink) { ctx.fillStyle = PAL.pupil; ctx.beginPath(); ctx.arc(ex + look[0] * r * 0.09, ey + look[1] * r * 0.09, r * 0.11, 0, TAU); ctx.fill(); }
     }
   }
 }
@@ -1085,12 +1180,12 @@ function drawScene(now) {
   for (let i = 0; i < c.k; i++) {
     const [x, y, z] = W3[i], q = proj(x, cam.floor, z), h = Math.max(0, y - cam.floor);
     const rx = R0 * 1.15 * S * q[2];
-    ctx.fillStyle = `rgba(0,0,0,${0.34 / (1 + 0.45 * (h - 1))})`;
+    ctx.fillStyle = `rgba(${PAL.shadowRGB},${PAL.shadowA / (1 + 0.45 * (h - 1))})`;
     ctx.beginPath(); ctx.ellipse(q[0], q[1], rx, rx * sp, 0, 0, TAU); ctx.fill();
   }
   if (c.k && live) {
     const [x, y, z] = W3[c.k - 1], a = P[c.k - 1], b = proj(x, cam.floor, z);
-    ctx.save(); ctx.setLineDash([3, 4]); ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.lineWidth = 1.2;
+    ctx.save(); ctx.setLineDash([3, 4]); ctx.strokeStyle = PAL.guide; ctx.lineWidth = 1.2;
     ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); ctx.restore();
   }
 
@@ -1140,12 +1235,12 @@ function drawScene(now) {
       if (c.born) { const t = (now - c.born[i]) / 240; if (t < 1) rr *= Math.max(0.2, easeOutBack(Math.max(0, t))); }
       shadeBead(X, Y, rr, isH, fogOf(it.Z));
       if (i === 0) {
-        ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = 'rgba(255,255,255,0.38)'; ctx.lineWidth = 1.2;
+        ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = PAL.startRing; ctx.lineWidth = 1.2;
         ctx.beginPath(); ctx.arc(X, Y, rr * 1.45, 0, TAU); ctx.stroke(); ctx.restore();
       }
       if (i !== headI && rr > 9) {
         ctx.font = `700 ${Math.round(rr * 0.9)}px ui-rounded, system-ui, sans-serif`;
-        ctx.fillStyle = isH ? 'rgba(255,255,255,0.86)' : 'rgba(31,41,55,0.72)';
+        ctx.fillStyle = isH ? PAL.labelH : PAL.labelP;
         ctx.fillText(isH ? 'H' : 'P', X, Y + 0.5);
       }
       if (i === headI) {
@@ -1155,21 +1250,21 @@ function drawScene(now) {
         const dv = DV[dirOf(c.xs, c.ys, c.zs, c.k)];
         let lx = dv[0] * B.r[0] + dv[1] * B.r[1] + dv[2] * B.r[2], ly = -(dv[0] * B.u[0] + dv[1] * B.u[1] + dv[2] * B.u[2]);
         const ll = Math.hypot(lx, ly); if (ll > 1) { lx /= ll; ly /= ll; }
-        drawEyes(X, Y, rr, mood, now, [lx, ly]);
+        drawEyes(X, Y, rr, mood, now, [lx, ly], isH ? PAL.eyeInkH : PAL.eyeInkP);
       }
     } else if (it.t === 1) {                             // backbone bond
       const a = P[it.i - 1], b = P[it.i], k = (a[2] + b[2]) / 2, fog = fogOf(it.Z);
       ctx.lineCap = 'round';
-      ctx.strokeStyle = `rgba(71,85,105,${1 - fog})`; ctx.lineWidth = Math.max(2.5, S * 0.16 * k);
+      ctx.strokeStyle = `rgba(${PAL.bondOutRGB},${1 - fog})`; ctx.lineWidth = Math.max(2.5, S * 0.16 * k);
       ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
-      ctx.strokeStyle = `rgba(226,232,240,${0.9 - fog})`; ctx.lineWidth = Math.max(1.2, S * 0.07 * k);
+      ctx.strokeStyle = `rgba(${PAL.bondInRGB},${0.9 - fog})`; ctx.lineWidth = Math.max(1.2, S * 0.07 * k);
       ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
     } else if (it.t === 2) {                             // H–H contact
       const [i, j, born] = it.ct, a = P[i], b = P[j], k = (a[2] + b[2]) / 2;
       const flash = born ? Math.max(0, 1 - (now - born) / 700) : 0;
       ctx.save();
       ctx.lineCap = 'round'; ctx.setLineDash([Math.max(3, S * k * 0.12), Math.max(2.5, S * k * 0.09)]); ctx.lineDashOffset = -now / 35;
-      ctx.strokeStyle = COL.gold; ctx.shadowColor = 'rgba(251,191,36,0.75)'; ctx.shadowBlur = Math.max(4, S * 0.25);
+      ctx.strokeStyle = PAL.bond; ctx.shadowColor = PAL.bondGlow; ctx.shadowBlur = Math.max(4, S * 0.25);
       ctx.globalAlpha = 1 - fogOf(it.Z) * 0.8;
       ctx.lineWidth = Math.max(1.5, S * k * 0.07) * (1 + 1.6 * flash);
       ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
@@ -1177,13 +1272,13 @@ function drawScene(now) {
     } else if (it.t === 3) {                             // bubble for the next residue
       const { q } = it.gh, rr = R0 * S * q[2] * 0.9, isH = G.H[G.k];
       shadeBead(q[0], q[1], rr, isH, 0, 0.3);
-      ctx.save(); ctx.globalAlpha = 0.6; ctx.setLineDash([3, 3]); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2;
+      ctx.save(); ctx.globalAlpha = 0.6; ctx.setLineDash([3, 3]); ctx.strokeStyle = PAL.ghost; ctx.lineWidth = 1.2;
       ctx.beginPath(); ctx.arc(q[0], q[1], rr, 0, TAU); ctx.stroke(); ctx.restore();
     } else {                                             // hint glow
       const [X, Y, k] = it.q, R = S * k * 0.42;
       const g = ctx.createRadialGradient(X, Y, 0, X, Y, R);
-      g.addColorStop(0, `rgba(239,68,68,${(0.12 + 0.09 * it.n) * pulse})`);
-      g.addColorStop(1, 'rgba(239,68,68,0)');
+      g.addColorStop(0, `rgba(${PAL.hRGB},${(0.12 + 0.09 * it.n) * pulse})`);
+      g.addColorStop(1, `rgba(${PAL.hRGB},0)`);
       ctx.fillStyle = g; ctx.fillRect(X - R, Y - R, 2 * R, 2 * R);
     }
   }
@@ -1195,14 +1290,15 @@ function drawScene(now) {
     ctx.font = `800 ${fs}px ui-rounded, system-ui, sans-serif`;
     const w = Math.max(fs * 1.25, ctx.measureText(lab).width + 8), h = fs * 1.3;
     const depth = it === 'in' || it === 'out';
-    ctx.fillStyle = depth ? 'rgba(251,191,36,0.92)' : 'rgba(233,238,246,0.92)';
+    ctx.fillStyle = depth ? PAL.capDepth : PAL.cap;
     ctx.beginPath(); roundRect(X - w / 2, Y - h / 2, w, h, 5); ctx.fill();
-    ctx.fillStyle = '#111827'; ctx.fillText(lab, X, Y + 1);
+    if (!depth) { ctx.strokeStyle = PAL.capLine; ctx.lineWidth = 1; ctx.stroke(); }
+    ctx.fillStyle = depth ? PAL.onGold : PAL.capInk; ctx.fillText(lab, X, Y + 1);
     if (gh.g > 0) {
       const bx = X + rr * 0.95, by = Y - rr * 0.95, br = Math.max(8, rr * 0.5);
-      ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fillStyle = COL.gold; ctx.fill();
-      ctx.strokeStyle = '#1b1f27'; ctx.lineWidth = 1.5; ctx.stroke();
-      ctx.fillStyle = '#1b1f27'; ctx.font = `800 ${Math.round(br * 1.1)}px ui-rounded, system-ui, sans-serif`;
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fillStyle = PAL.bond; ctx.fill();
+      ctx.strokeStyle = PAL.badgeLine; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = PAL.onGold; ctx.font = `800 ${Math.round(br * 1.1)}px ui-rounded, system-ui, sans-serif`;
       ctx.fillText('+' + gh.g, bx, by + 0.5);
     }
   }
@@ -1217,7 +1313,7 @@ function drawDeath(now) {
   const d = G.death, k = G.k - 1, p = 0.5 + 0.5 * Math.sin(now / 110);
   const q = d.type === 'clash' ? proj(d.x, d.y, d.z) : proj(G.xs[k], G.ys[k], G.zs[k]);
   const r = cam.s * 0.31 * q[2];
-  ctx.strokeStyle = `rgba(248,113,113,${0.45 + 0.55 * p})`; ctx.lineWidth = Math.max(2, cam.s * 0.07);
+  ctx.strokeStyle = `rgba(${PAL.badRGB},${0.45 + 0.55 * p})`; ctx.lineWidth = Math.max(2, cam.s * 0.07);
   ctx.beginPath(); ctx.arc(q[0], q[1], r * (1.45 + 0.25 * p), 0, TAU); ctx.stroke();
   if (d.type === 'clash') {
     const s = r * 0.7;
@@ -1239,9 +1335,9 @@ function drawFX(now) {
     const t = (now - f.t0) / 1200, q = proj(f.x, f.y, f.z);
     ctx.globalAlpha = Math.max(0, 1 - t * t);
     ctx.font = `800 ${Math.round(clamp(S * 0.42, 14, 24))}px ui-rounded, system-ui, sans-serif`;
-    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(11,16,25,0.85)';
+    ctx.lineWidth = 4; ctx.strokeStyle = PAL.halo;
     const X = q[0], Y = q[1] - t * S * 1.1;
-    ctx.strokeText(f.text, X, Y); ctx.fillStyle = COL.gold; ctx.fillText(f.text, X, Y);
+    ctx.strokeText(f.text, X, Y); ctx.fillStyle = PAL.gold; ctx.fillText(f.text, X, Y);
   }
   ctx.globalAlpha = 1;
   for (const p of confetti) {
@@ -1253,9 +1349,9 @@ function drawFX(now) {
 
 function draw(now) {
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  ctx.fillStyle = '#0b1019'; ctx.fillRect(0, 0, VW, VH);
+  ctx.fillStyle = PAL.bg; ctx.fillRect(0, 0, VW, VH);
   const vg = ctx.createRadialGradient(VW / 2, view.cy, 0, VW / 2, view.cy, Math.max(VW, VH) * 0.7);
-  vg.addColorStop(0, 'rgba(30,41,64,0.55)'); vg.addColorStop(1, 'rgba(30,41,64,0)');
+  vg.addColorStop(0, rgba(PAL.vignette, PAL.vignetteA)); vg.addColorStop(1, rgba(PAL.vignette, 0));
   ctx.fillStyle = vg; ctx.fillRect(0, 0, VW, VH);
   if (!G) return;
   drawFloor();

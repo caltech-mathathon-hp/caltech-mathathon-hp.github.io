@@ -2,13 +2,21 @@
  * HP Snake easter egg (HpSnakeEgg.astro). Classes prefixed hs-.
  * The button sits in the top right corner of the widget it wraps (.hs-host), level with the
  * folding game's 3D/2D switch: that switch starts var(--s-3) below the card's 1px border and is
- * 48px tall. Pressed, it swaps the widget for a panel of the same width that frames the games in
- * public/hp-snake/. Those pages have their own dark look, so the panel's colours match them, not
- * tokens.css.
+ * 48px tall. Pressed, it swaps the widget for a panel drawn like the folding game's card
+ * (fold-game/styles.css: .fg, .fg-head, .fg-dims), whose bar has the same switch at the same
+ * height, so the button stays where it is. Colours come from tokens.css; the games in
+ * public/hp-snake/ follow the site's theme themselves.
  */
 
 .hs-host {
   position: relative;
+  /* the folding game's inner padding (--fg-pad), which drops to --s-3 below 48rem */
+  --hs-pad: var(--s-4);
+}
+@media (max-width: 47.99rem) {
+  .hs-host {
+    --hs-pad: var(--s-3);
+  }
 }
 .hs-host.is-snake > .hs-widget {
   display: none;
@@ -18,7 +26,7 @@
 .hs-egg {
   position: absolute;
   top: calc(1px + var(--s-3) + 24px - 14px);
-  right: calc(1px + var(--s-3));
+  right: calc(1px + var(--hs-pad));
   z-index: 2;
   display: block;
   width: 28px;
@@ -47,9 +55,8 @@
 .hs-egg:active {
   transform: scale(0.94);
 }
-/* while the game is shown, the button sits in the game's bar and glows */
+/* while the game is shown, the button glows */
 .hs-host.is-snake > .hs-egg {
-  top: calc(1px + 25px - 14px); /* centred on the 50px bar under the panel's 1px border */
   opacity: 1;
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.6), 0 0 12px rgba(255, 140, 90, 0.55);
 }
@@ -80,130 +87,110 @@
   }
 }
 
-/* ---------- the game panel, in place of the widget ---------- */
+/* ---------- the game panel: the folding game's card ---------- */
 .hs-panel {
   display: flex;
   flex-direction: column;
-  /* the folding game's card: same margins, corners and border */
   margin: var(--s-6) 0;
-  height: clamp(460px, calc(100svh - var(--header-h) - 2 * var(--s-4)), 800px);
-  border: 1px solid #1e2738;
+  /* the script sets the height to the folding game's (within the window) */
+  height: clamp(420px, calc(100svh - var(--header-h) - 24px), 800px);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+  color: var(--fg);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
-  background: #0b1019;
-  color: #e9eef6;
-  box-shadow: var(--shadow-md);
-  animation: hs-in 0.3s ease-out;
 }
 .hs-panel[hidden] {
   display: none;
 }
-@keyframes hs-in {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
+
+/* the bar: like the folding game's header row (.fg-head), room on the right for the button */
+.hs-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-3) calc(var(--hs-pad) + 28px + var(--s-3)) var(--s-3) var(--hs-pad);
+  border-bottom: 1px solid var(--rule);
 }
-@media (prefers-reduced-motion: reduce) {
-  .hs-panel {
-    animation: none;
+.hs-title {
+  font-weight: 650;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.hs-close {
+  margin-left: auto;
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+  justify-content: center;
+  padding: 0.4em;
+  color: var(--fg-muted);
+}
+.hs-close:hover {
+  color: var(--fg);
+}
+.hs-close svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+/* 3D or 2D: the folding game's two segments (.fg-dims) */
+.hs-dims {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  padding: 3px;
+  background: var(--bg-sunk);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+}
+.hs-opt {
+  display: grid;
+  place-items: center;
+  min-width: 3.25rem;
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  font: inherit;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  color: var(--fg-muted);
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radius-md) - 2px);
+  cursor: pointer;
+  transition:
+    background-color 120ms,
+    color 120ms;
+}
+.hs-opt:hover {
+  color: var(--fg);
+}
+.hs-opt[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-sm);
+}
+.hs-opt:focus-visible,
+.hs-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+@media (max-width: 22.4rem) {
+  .hs-title {
+    display: none;
   }
 }
 
-.hs-bar {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-height: 50px;
-  /* room on the right for the rainbow button */
-  padding: 6px calc(var(--s-3) + 28px + 12px) 6px 14px;
-  background: #101724;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
-  font-family: var(--font-sans);
-  font-size: 13px;
-}
-.hs-bar::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #ff5f5f, #ffb347, #ffe066, #5fd68a, #4fb3ff, #8a7dff, #e07dff);
-}
-.hs-title {
-  font-weight: 800;
-  font-size: 15px;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-}
-.hs-tabs {
-  display: flex;
-  padding: 2px;
-  border-radius: 8px;
-  background: rgba(148, 163, 184, 0.12);
-}
-.hs-tabs button {
-  border: 0;
-  padding: 3px 12px;
-  border-radius: 6px;
-  background: transparent;
-  color: #8e9ab0;
-  font: 700 13px var(--font-sans);
-  cursor: pointer;
-}
-.hs-tabs button:hover {
-  color: #e9eef6;
-}
-.hs-tabs button[aria-pressed='true'] {
-  background: #ef4444;
-  color: #fff;
-}
-.hs-open {
-  margin-left: auto;
-  color: #8e9ab0;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.hs-open:hover {
-  color: #e9eef6;
-}
-.hs-close {
-  width: 30px;
-  height: 30px;
-  flex: none;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 8px;
-  background: rgba(148, 163, 184, 0.08);
-  color: #e9eef6;
-  font-size: 14px;
-  cursor: pointer;
-}
-.hs-close:hover {
-  background: rgba(239, 68, 68, 0.35);
-}
-.hs-tabs button:focus-visible,
-.hs-close:focus-visible,
-.hs-open:focus-visible {
-  outline: 2px solid #fbbf24;
-  outline-offset: 2px;
-}
-@media (max-width: 480px) {
-  .hs-bar {
-    gap: 8px;
-  }
-  .hs-open {
-    display: none;
-  }
-  .hs-close {
-    margin-left: auto;
-  }
-}
 .hs-frame {
   flex: 1;
   display: block;
   width: 100%;
   border: 0;
-  background: #0b1019;
+  background: var(--bg-sunk);
 }
