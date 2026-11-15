@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "stepper",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "stepper"],
+      "port": 5199
+    }
+  ]
+}

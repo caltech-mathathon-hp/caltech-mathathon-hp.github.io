@@ -1,0 +1,50 @@
+/*
+ * Light-theme tokens copied from site/src/styles/tokens.css (2026-11-14), so the video looks like
+ * the site. If the site's palette changes, copy the changed values here.
+ */
+:root {
+  --font-serif: 'Source Serif 4 Variable', 'Source Serif Pro', Georgia, serif;
+  --font-sans: 'Inter Variable', Inter, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  --bg: #fbfaf7;
+  --bg-elev: #ffffff;
+  --bg-sunk: #f2f0eb;
+  --fg: #1c1c21;
+  --fg-muted: #55555f;
+  --fg-subtle: #8b8b95;
+  --rule: #e2ded5;
+  --rule-strong: #c9c3b7;
+  --accent: #1f4f8f;
+  --accent-weak: #e7eef7;
+
+  --h: #c4532f;
+  --h-weak: #f6e1d8;
+  --p: #4f7aa3;
+  --p-weak: #e3ebf3;
+  --bond: #d99a1e;
+  --backbone: #6d6d78;
+  --lattice: #d8d4cb;
+  --invalid: #b3261e;
+
+  --diff-1-ink: #2b6844;
+  --diff-3-ink: #93232e;
+  --st-lean: #0f6f73;
+  --st-conjecture: #7a4b9e;
+
+  --item-1: var(--st-lean);
+  --item-2: var(--bond);
+  --item-3: var(--st-conjecture);
+  --item-4: color-mix(in srgb, var(--st-conjecture) 45%, var(--h));
+  --item-pad: var(--fg-subtle);
+  --item-plug: color-mix(in srgb, var(--item-pad) 50%, var(--bg-elev));
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
