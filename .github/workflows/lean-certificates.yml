@@ -91,3 +91,50 @@ jobs:
           name: shelf-verification
           path: lean/shelf/checks/local-*
           if-no-files-found: ignore
+
+  cooklevin:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the Cook–Levin proof
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: lean/cooklevin
+          auto-config: false
+          build: true
+          use-mathlib-cache: true
+      - name: Cook–Levin rests only on propext, Classical.choice and Quot.sound
+        working-directory: lean/cooklevin
+        run: |
+          lake env lean checks/AxiomAudit.lean > checks/local-axioms.txt
+          cat checks/local-axioms.txt
+          grep -q "'ProteinFolding.SAT.CookLevinUniversal.cookLevin' depends on axioms" checks/local-axioms.txt
+          python3 - checks/local-axioms.txt <<'PY'
+          import re, sys
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          bad, seen = [], 0
+          for path in sys.argv[1:]:
+              for line in open(path, encoding="utf-8"):
+                  m = re.search(r"depends on axioms: \[(.*)\]", line)
+                  if m:
+                      seen += 1
+                      extra = {a.strip() for a in m.group(1).split(",")} - allowed
+                      if extra:
+                          bad.append(f"{path}: {line.strip()}")
+          print(f"{seen} axiom reports read")
+          if bad or seen == 0:
+              print("\n".join(bad) or "no axiom reports found")
+              sys.exit(1)
+          PY
+      - name: The regression checks of three compilers pass
+        working-directory: lean/cooklevin
+        run: |
+          for f in checks/CookLevin*Regression.lean; do echo "$f"; lake env lean "$f"; done
+      - name: Upload the output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cooklevin-verification
+          path: lean/cooklevin/checks/local-*
+          if-no-files-found: ignore
