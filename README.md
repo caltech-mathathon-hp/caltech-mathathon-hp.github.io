@@ -7,6 +7,16 @@ and the plan for a proof in Lean.
 
 **Site:** <https://mathathon-caltech-hp.github.io/>
 
+## Lean certificates (3D cubic lattice)
+
+The [`lean-certificates` branch](https://github.com/mathathon-caltech-hp/mathathon-caltech-hp.github.io/tree/lean-certificates/lean/cubic)
+contains the [Lean 4.24.0 project](lean/cubic/README.md),
+[theorem index](lean/cubic/docs/theorem-index.md), full project-local proof
+dependencies, pinned mathlib configuration, and build/axiom-check CI.
+The final cubic NP-completeness results retain an explicit Cook–Levin premise.
+Start with [lean/README.md](lean/README.md); the website and Lean package have
+separate build commands. This branch does not deploy the live website.
+
 ## Run it locally
 
 ```bash
@@ -24,3 +34,8 @@ The site is written in the team's main repository and copied here by a script th
 push to `main` rebuilds the site with GitHub Pages (`.github/workflows/pages.yml`). Files changed
 directly in this repository, other than this README, the workflow and `.gitignore`, are replaced by
 the next copy.
+
+The Lean distribution is maintained separately on `lean-certificates`. Preserve
+`lean/`, `.gitattributes`, and `.github/workflows/lean-certificates.yml` if site
+changes are synchronized to this branch; the website copy process is not a
+source of Lean certificates.

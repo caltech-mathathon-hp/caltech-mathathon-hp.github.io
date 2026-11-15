@@ -1,0 +1,22 @@
+Cubic certificate publication validation
+Recorded: 2026-11-14T17:09:35.0721371-08:00
+
+Lean: 4.24.0; mathlib: v4.24.0 (locked Lake manifest).
+Command: lake build (from lean/cubic)
+Result: Build completed successfully (1426 jobs).
+Cache provenance: reused the existing workspace .lake via a local ignored junction.
+This was a successful cached build, not a fresh Linux/CI build.
+
+Command: pwsh -NoProfile -File checks/Verify.ps1
+Source integrity: 285 Lean files (284 imported modules plus entry point).
+All project-local imports present; all original module bytes preserved.
+Six frozen source hashes match; comment/string-aware forbidden-token scan passed.
+Main audit: 20 declarations; only propext, Classical.choice, Quot.sound.
+All-source audit: 4189 declarations in 284 modules; zero module exclusions; exit 0.
+All-source audit: no unexpected axioms. Private/anonymous/compiler-generated names
+are not independently enumerated; main result dependencies are audited transitively.
+
+Git index SHA comparison: every manifest file preserved byte-for-byte.
+Documentation relative links resolve; git diff --cached --check passed.
+GitHub CI has not run at the time of this local validation.
+Final complexity theorem types retain the explicit SAT.CookLevin premise.

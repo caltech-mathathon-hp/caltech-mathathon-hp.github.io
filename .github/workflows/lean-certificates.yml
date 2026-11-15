@@ -1,0 +1,43 @@
+name: Cubic Lean certificates
+
+on:
+  push:
+    branches: [lean-certificates]
+    paths: ['lean/**', '.gitattributes', '.github/workflows/lean-certificates.yml']
+  pull_request:
+    paths: ['lean/**', '.gitattributes', '.github/workflows/lean-certificates.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cubic-lean-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build pinned Lean project
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: lean/cubic
+          auto-config: false
+          build: true
+          use-mathlib-cache: true
+      - name: Check source integrity and Lean axioms
+        working-directory: lean/cubic
+        shell: pwsh
+        run: ./checks/Verify.ps1
+      - name: Upload verification output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-verification
+          path: |
+            lean/cubic/checks/local-*
+            lean/cubic/checks/CubicSourceAudit.lean
+          if-no-files-found: ignore

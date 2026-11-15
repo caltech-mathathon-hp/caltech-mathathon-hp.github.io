@@ -1,0 +1,2381 @@
+{
+  "schemaVersion": 1,
+  "scope": "Cubic certificate entry point and its complete project-local import closure",
+  "originalSourcesUnmodified": true,
+  "toolchain": "leanprover/lean4:v4.24.0",
+  "roots": [
+    "ProteinFolding.Cubic.Proofs.Hardness",
+    "ProteinFolding.Cubic.Examples",
+    "ProteinFolding.Cubic.ComplexityExamples",
+    "ProteinFolding.Cubic.Proofs.VerifierChecks",
+    "ProteinFolding.Cubic.Proofs.CertificatesChecks"
+  ],
+  "frozenFiles": [
+    {
+      "path": "ProteinFolding/Common/Statement.lean",
+      "sha256": "9bc3081e5337c8165b4eb63c3549e5dc484dd947a966a1590180db26da364e1d"
+    },
+    {
+      "path": "ProteinFolding/Common/Encodings.lean",
+      "sha256": "0a6ce4711cfadbee0065eb11903c1d6f784d1ea8d5ddbea329c11583c7dfcf9c"
+    },
+    {
+      "path": "ProteinFolding/Common/Complexity.lean",
+      "sha256": "30c18a7b2f834a8461e7763f5f3e8777beb8e6d5072a71061f81e90cc10ab36e"
+    },
+    {
+      "path": "ProteinFolding/Cubic/Statement.lean",
+      "sha256": "c3029f1b94faccd28a79f76fefe548511d038083aeed49959a5b796a2760677d"
+    },
+    {
+      "path": "ProteinFolding/Cubic/Encodings.lean",
+      "sha256": "2485592d8ee73d648f85bea18eb38c7f59ef1235b88a455bcf44cc8b1c474a45"
+    },
+    {
+      "path": "ProteinFolding/Cubic/MainTheorem.lean",
+      "sha256": "d47fc316926ca06fd5cacf15433d018da7045cd978420bf9e2439308afd9ed01"
+    }
+  ],
+  "files": [
+    {
+      "path": "lake-manifest.json",
+      "sha256": "41e88b75701787302ddf7ca1f49eee7b0c62b7bc8d65a8c72cfd9f5a274f19a7",
+      "imports": []
+    },
+    {
+      "path": "lakefile.toml",
+      "sha256": "e8c50154824f1eadf75b226d4c07c35e5231669dfbc8bfe3ddf8617fe7958d7f",
+      "imports": []
+    },
+    {
+      "path": "lean-toolchain",
+      "sha256": "42779d67b81608af8a12aa4328d2ab47ca201925b3b2bd68369587b5340bb434",
+      "imports": []
+    },
+    {
+      "path": "ProteinFolding.lean",
+      "sha256": "37dee4f823c5792324409087c1aa33d7814c3338410dbf7da8680294d6256ee9",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.Hardness",
+        "ProteinFolding.Cubic.Examples",
+        "ProteinFolding.Cubic.ComplexityExamples",
+        "ProteinFolding.Cubic.Proofs.VerifierChecks",
+        "ProteinFolding.Cubic.Proofs.CertificatesChecks"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/Complexity.lean",
+      "sha256": "30c18a7b2f834a8461e7763f5f3e8777beb8e6d5072a71061f81e90cc10ab36e",
+      "imports": [
+        "ProteinFolding.Common.Encodings",
+        "Mathlib.Computability.TMComputable"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/ComplexityBoolean.lean",
+      "sha256": "9b4a1682b14514f2fa4866b375c502e34e6cacca53aceebd4e5deb58f5648594",
+      "imports": [
+        "ProteinFolding.Common.TM2ProductMap",
+        "ProteinFolding.Common.TM2Boolean"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/ComplexityComposition.lean",
+      "sha256": "70ad7eef7057216ee60afecc0f3965bd4361f193fa1e8674d46b7c8d4df14ee4",
+      "imports": [
+        "ProteinFolding.Common.ComplexityLemmas",
+        "ProteinFolding.Common.TM2CompositionPoly"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/ComplexityLemmas.lean",
+      "sha256": "3fed6260047802966323269fab57cb92efe1601a0154109c42ea2608c24745cf",
+      "imports": [
+        "ProteinFolding.Common.CookLevin"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/Contacts.lean",
+      "sha256": "7910ff72f044730744eadf3773c597937994b4bf233eb1c44a60e52c3ac7f72f",
+      "imports": [
+        "ProteinFolding.Common.Statement"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/CookLevin.lean",
+      "sha256": "cd9e602a338699dc7379e6eeaaf11cf06e0fc0f691dfd421e7d9a057b9f9dfbc",
+      "imports": [
+        "ProteinFolding.Common.Complexity"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/Encodings.lean",
+      "sha256": "0a6ce4711cfadbee0065eb11903c1d6f784d1ea8d5ddbea329c11583c7dfcf9c",
+      "imports": [
+        "ProteinFolding.Common.Statement",
+        "Mathlib.Computability.Encoding"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/FoldConcatenation.lean",
+      "sha256": "2e5a96e33e4852facdacd79479b9afbc2bb429bccd6e73dfbb36acf874f02735",
+      "imports": [
+        "ProteinFolding.Common.Statement",
+        "Mathlib.Data.Fin.Tuple.Basic",
+        "Lean.Elab.Tactic.Omega"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/GapLabels.lean",
+      "sha256": "f8f0ca94afc7283e120dff7e25f6d8957f9469b728d99f1fc5f17a7cf47c6ebe",
+      "imports": [
+        "Mathlib.Data.List.Chain",
+        "Mathlib.Data.Finset.Card"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/GreedyLabels.lean",
+      "sha256": "6f25f5f21d9c29191db16285bacc742ccc5c0dab4d7c72f3c4c24d0dfce06888",
+      "imports": [
+        "Mathlib.Data.List.Chain",
+        "Mathlib.Data.List.Forall2",
+        "Mathlib.Data.List.OfFn",
+        "Mathlib.Data.Finset.Card"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/NumericPacking.lean",
+      "sha256": "40113e0c01b4a4730c26d9d99a6ec41b91ee18ea7e06edfa8a8630ebf20d2e96",
+      "imports": [
+        "Mathlib.Data.List.Basic",
+        "Mathlib.Tactic.Linarith",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/NumericPackingBins.lean",
+      "sha256": "66c7cb6e31100c0bd31565168890517e6bf5d29b23d138a52f6b3f587280ef09",
+      "imports": [
+        "ProteinFolding.Common.NumericPackingTokens"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/NumericPackingClassification.lean",
+      "sha256": "e3fc799ca730f5de84ec2f42a0af95b68dc81a9277f1621e86ffd341e381c7e1",
+      "imports": [
+        "ProteinFolding.Common.NumericPackingBins",
+        "Mathlib.Data.List.Perm.Basic"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/NumericPackingTokens.lean",
+      "sha256": "0f90f7c2ea558a7e9b3ed0dd8d831aa907aad48b805f2c2f230d5bd3a76ce8a9",
+      "imports": [
+        "ProteinFolding.Common.NumericPacking",
+        "Mathlib.Algebra.BigOperators.Group.List.Basic"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/CNFMatchingReduction.lean",
+      "sha256": "e2dacc0c0b6deaa284bcfaa8599ccd132f628595c5b062dfb344d85865e798ca",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingComputable",
+        "ProteinFolding.Common.SAT.MatchingRelationCorrect",
+        "ProteinFolding.Common.ComplexityComposition"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/CNFToMatching.lean",
+      "sha256": "779adbb11a02f2e1f210c61e05ea5df119066b0e6022e231cc15289d5f2ff588",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingGadgetRaw"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/CNFToMatchingBounds.lean",
+      "sha256": "19e371ed0768d5b16eb1f9506ec29874b30998a2568e29b5f05d4c378f99f825",
+      "imports": [
+        "ProteinFolding.Common.SAT.CNFToMatching"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/FormulaOccurrences.lean",
+      "sha256": "83188fddd8c5435ec919bce087a0e0a96e90bde749a0ce424c7f4f1252d594d1",
+      "imports": [
+        "ProteinFolding.Common.SAT.OccurrenceCycles",
+        "ProteinFolding.Common.SAT.ThreeCNFBounds"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingClauseQuery.lean",
+      "sha256": "af7a2a84e92f47726ee6fffbc50c8b164aed8a93ae525817b6686a1bef446061",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingSourceQueries",
+        "ProteinFolding.Common.TM2UnarySuccessor"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingComputable.lean",
+      "sha256": "49ba60a15e05fa172a345125b437b331aff26240b446d080a6a1b0b12202b534",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingEnumerationCorrect",
+        "ProteinFolding.Common.SAT.CNFToMatching"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingCycle.lean",
+      "sha256": "78a1484c03051e5909d116e1c3a86ef648be6b1422eaa380975aa62ef8998183",
+      "imports": [
+        "ProteinFolding.Common.SAT.ThreeDimensionalMatching",
+        "Mathlib.Logic.Equiv.Fin.Rotate"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingEnumeration.lean",
+      "sha256": "b9753fceb085f3dbfc03792797ec067fb9f294965ad8e8ad29acd205ff555214",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingRelation",
+        "ProteinFolding.Common.TM2UnaryRange"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingEnumerationCorrect.lean",
+      "sha256": "df768053fb58b7eed35de9db6c312d2bd50f81be459f53619a4d387e70f51f9a",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingEnumeration",
+        "ProteinFolding.Common.SAT.MatchingGraph"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingEquivalences.lean",
+      "sha256": "673a3a70beb580f5bbb22714213484e894661d6af022f0c60ca634680c548422",
+      "imports": [
+        "ProteinFolding.Common.SAT.ThreeDimensionalMatching",
+        "Mathlib.Data.List.FinRange",
+        "Mathlib.Logic.Equiv.Fin.Basic"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingGadget.lean",
+      "sha256": "34e586f955bfe0db15ce9423b5bd4af07f8504326b2d2d31adf2b2056fe6bf0e",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingCycle"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingGadgetComplete.lean",
+      "sha256": "ed4c3282e8bbded416ba5682fc2d366f65488fd83fdb14fd20c83af857926ae7",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingGadget",
+        "Mathlib.Data.Fintype.EquivFin",
+        "Mathlib.Logic.Equiv.Set"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingGadgetRaw.lean",
+      "sha256": "6aa8b55488d954698dc318ad79fe8b87976e2f06496c7af460a6778543aebb55",
+      "imports": [
+        "ProteinFolding.Common.SAT.FormulaOccurrences",
+        "ProteinFolding.Common.SAT.MatchingGraph"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingGraph.lean",
+      "sha256": "02436947fb5591ccd5ce22ab69fcaf1abb7800dcb0d2230c1c86ee78406d20e5",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingEquivalences"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingNextVariable.lean",
+      "sha256": "83c19913f910171588da95f460ecee0354b570b34b39a75a1d3353e53940b2e9",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingSourceQueries",
+        "ProteinFolding.Common.TM2BoundedSearch",
+        "ProteinFolding.Common.TM2UnaryComparison",
+        "ProteinFolding.Common.TM2Conditional",
+        "ProteinFolding.Common.TM2Boolean"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingNextVariableCorrect.lean",
+      "sha256": "40722a9fd3402e87e5fc773b7ab7f1c7b52bef1f392e2511a060a4fe9341f364",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingNextVariable",
+        "ProteinFolding.Common.SAT.OccurrenceCyclesOrder"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingRelation.lean",
+      "sha256": "3cdb27964257df32a4ea1674446aa2435323fe253f21ada0252f644a3c90ad89",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingClauseQuery",
+        "ProteinFolding.Common.SAT.MatchingNextVariableCorrect",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectArithmetic"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingRelationCorrect.lean",
+      "sha256": "35d77a16fd5f86fe06b5e64ae91eb88652779b41cdca1093b841f1fcc472c55d",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingRelation",
+        "ProteinFolding.Common.SAT.MatchingGadgetRaw"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingSourceCounts.lean",
+      "sha256": "1247c07e99b629c99199f6e71fb1501ef32ef338d982bdca02d6886b966b6ea1",
+      "imports": [
+        "ProteinFolding.Common.SAT.CNFToMatchingBounds",
+        "ProteinFolding.Common.TM2PairProjections"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/MatchingSourceQueries.lean",
+      "sha256": "470e281d7cc22f50a893269b31594de012a2e26d10ba2d16722380816a57a471",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingSourceCounts",
+        "ProteinFolding.Common.TM2EncodingWords",
+        "ProteinFolding.Common.TM2WordSegmentsSemantics",
+        "ProteinFolding.Common.TM2WordTakeWhile",
+        "ProteinFolding.Common.TM2ProductMap",
+        "ProteinFolding.Common.TM2WordEquality",
+        "ProteinFolding.Common.TM2Constants"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/OccurrenceCycles.lean",
+      "sha256": "0db94bcc1d17fea57ad160151ccef8d61fa3884e5161ae6460cc22ba76c4909d",
+      "imports": [
+        "ProteinFolding.Common.SAT.MatchingGadgetComplete",
+        "Mathlib.Data.Finset.Sort"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/OccurrenceCyclesOrder.lean",
+      "sha256": "b750eb16d1b2717c8c22d64600d512c646bd6edf963e3af32d0015cb866d4010",
+      "imports": [
+        "ProteinFolding.Common.SAT.OccurrenceCycles"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/ThreeCNF.lean",
+      "sha256": "d1903c915b71eef3099d34a35315e7b3b70692a88c6dbe07a5a6496f94788257",
+      "imports": [
+        "ProteinFolding.Common.CookLevin",
+        "Mathlib.Data.Nat.Pairing"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/ThreeCNFBounds.lean",
+      "sha256": "42f7804a7a22b555a3812f2212035a6b19e3e09142644e693c8005bc9499fdc3",
+      "imports": [
+        "ProteinFolding.Common.SAT.ThreeCNF",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/SAT/ThreeDimensionalMatching.lean",
+      "sha256": "19b5e5c20eb99961b37683a3d5fa2a22d9d13e179996f0f6f51451a04dbe2fc1",
+      "imports": [
+        "ProteinFolding.Common.CookLevin",
+        "Mathlib.Data.List.Perm.Subperm",
+        "Mathlib.Data.List.Range"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/Statement.lean",
+      "sha256": "9bc3081e5337c8165b4eb63c3549e5dc484dd947a966a1590180db26da364e1d",
+      "imports": [
+        "Mathlib.Combinatorics.SimpleGraph.Basic",
+        "Mathlib.Data.Finset.Card",
+        "Mathlib.Data.Finset.Prod",
+        "Mathlib.Algebra.BigOperators.Group.Finset.Basic",
+        "Mathlib.Data.Int.Basic"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ArithmeticBits.lean",
+      "sha256": "8bdc45b8b07066a7beacadb97029a0b132573908b7ae93e1fbb3ed0820f6e7e6",
+      "imports": [
+        "ProteinFolding.Common.Complexity"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ArithmeticComparator.lean",
+      "sha256": "30e461f7a341658d5212e085e913d19616c73415d9f07f7d2f702523a2c7b8f5",
+      "imports": [
+        "ProteinFolding.Common.TM2ArithmeticBits",
+        "ProteinFolding.Common.TM2Transfer"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ArithmeticComparison.lean",
+      "sha256": "b4d1284ca6c6edd4dc1c99a2d0a3827f045a15c172cf1a78e67393d05a2f6db2",
+      "imports": [
+        "ProteinFolding.Common.TM2ArithmeticRuns",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ArithmeticEquality.lean",
+      "sha256": "32e43231a467dd170256aa73fdc3dd9b84e566b71090b017d434d14a868e57fc",
+      "imports": [
+        "ProteinFolding.Common.TM2ArithmeticSignedUnary"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ArithmeticParsing.lean",
+      "sha256": "f82a9da23f2fe456b871767a0fd10e99bf86ba28b120a3deae8a65f68e4649f5",
+      "imports": [
+        "ProteinFolding.Common.TM2ArithmeticComparison"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ArithmeticRuns.lean",
+      "sha256": "fc9fe9ebe01232071470b0769417c782cab9c1a08f90875f4bdadd8cf61d5dbb",
+      "imports": [
+        "ProteinFolding.Common.TM2ArithmeticComparator"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ArithmeticSignedUnary.lean",
+      "sha256": "e03ea4fb2b3164f481db8803007f52c3e5393ed2dbb6fdc970eff214057c6c0a",
+      "imports": [
+        "ProteinFolding.Common.TM2ArithmeticParsing"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2Boolean.lean",
+      "sha256": "098a753a9c430a22a58c868263a6bc3c6d3e764e593e48c833684d418be079c7",
+      "imports": [
+        "ProteinFolding.Common.TM2Constants"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearch.lean",
+      "sha256": "ea3e74201b700cd378a602292f8ac2d76758aceda6abffe5df00754953c43abe",
+      "imports": [
+        "ProteinFolding.Common.TM2BoundedSearchLoop"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearchCleanup.lean",
+      "sha256": "2c1640a5fbe22bce454fccc133d167109d7e391be41a75dbad2e5d2553ca3ae6",
+      "imports": [
+        "ProteinFolding.Common.TM2BoundedSearchStacks"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearchInput.lean",
+      "sha256": "c19a1a3f120f92b1bb4a53b1f38cbc98814e6106a5eed76fef2c814339a6fb04",
+      "imports": [
+        "ProteinFolding.Common.TM2BoundedSearchStacks"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearchLoop.lean",
+      "sha256": "2d156fb8d4324f29f202d8f9a306b9df4b35c2a2d0ebaca2f559cabbe76a092a",
+      "imports": [
+        "ProteinFolding.Common.TM2BoundedSearchRound",
+        "ProteinFolding.Common.TM2BoundedSearchCleanup",
+        "ProteinFolding.Common.TM2PolynomialTime",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearchMachine.lean",
+      "sha256": "71eeb22e3639233032222968e2891abc030564d2afad27d59b8618fb76b665b1",
+      "imports": [
+        "ProteinFolding.Common.TM2BoundedSearchModel",
+        "ProteinFolding.Common.TM2Renaming"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearchModel.lean",
+      "sha256": "44d1b90964c7d905dec1687be8f387d151b0167d108f0f2edd9bc6cf2853e818",
+      "imports": [
+        "ProteinFolding.Common.TM2ProductMap"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearchOutput.lean",
+      "sha256": "b383b9b050a5639943c11f68debf0e81a5f0c820cc35534de02bdcd17baf0590",
+      "imports": [
+        "ProteinFolding.Common.TM2BoundedSearchStacks"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearchPrepare.lean",
+      "sha256": "ef4cb6c4fdebff3776a439e61efbbd38a5edac9bb38411b8082fc416de852876",
+      "imports": [
+        "ProteinFolding.Common.TM2BoundedSearchStacks",
+        "ProteinFolding.Common.TM2RenamingExtra"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearchRound.lean",
+      "sha256": "d8277e6334404c6675fc1928f09c2b66bedac2059e645897df1e0f3806d3dc7c",
+      "imports": [
+        "ProteinFolding.Common.TM2BoundedSearchInput",
+        "ProteinFolding.Common.TM2BoundedSearchPrepare",
+        "ProteinFolding.Common.TM2BoundedSearchOutput"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2BoundedSearchStacks.lean",
+      "sha256": "935dc8bf97651456c803a344ebd433396958084cfec18ebfd5e5c56b5f1ca87b",
+      "imports": [
+        "ProteinFolding.Common.TM2BoundedSearchMachine"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2Bounds.lean",
+      "sha256": "168fc62119d80954610e75a4295c19fea2e499c55132b14f83554894fa7619d5",
+      "imports": [
+        "ProteinFolding.Common.Complexity",
+        "Mathlib.Data.Finset.Lattice.Fold"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2Composition.lean",
+      "sha256": "86123ea3120088868bc1d1e67cfa18a0399341eb0f08c5a54740e768f0bb1b18",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2CompositionPoly.lean",
+      "sha256": "a00f6df90056bb41cb9b9dffa228b4d611faca3dae93e7289cfcdcec01a5c909",
+      "imports": [
+        "ProteinFolding.Common.TM2Composition",
+        "ProteinFolding.Common.TM2PolynomialTime"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2Conditional.lean",
+      "sha256": "f88ad3319c27477aacafb97cec258f5c52ca40490f5f0f14eb1f7bf6349cd340",
+      "imports": [
+        "ProteinFolding.Common.TM2WordTemplates",
+        "ProteinFolding.Common.TM2ProductMap"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2Constants.lean",
+      "sha256": "6ee5ad1b600f29eb23e8fe34665dd0ccdb06bde86c1f98633dce317b30ee6ceb",
+      "imports": [
+        "ProteinFolding.Common.TM2Embedding"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2Embedding.lean",
+      "sha256": "82c8115fc186b6b684b3c186beb53e48afa5a7b4a5225d98aa8db76d90456a09",
+      "imports": [
+        "ProteinFolding.Common.TM2Bounds"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2EncodingWords.lean",
+      "sha256": "1a02f84d4145179925386dae328b278306c356c75b2b7e536b4e254302b942b3",
+      "imports": [
+        "ProteinFolding.Common.TM2PairProjections"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2Fanout.lean",
+      "sha256": "2ac1257b89979c8effd60815462e6f743c134ed1e61112d9ea66b8daa2a6d712",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer",
+        "ProteinFolding.Common.TM2WordMap"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2FanoutLeft.lean",
+      "sha256": "e8b1ac1641a00bd01b4b7d9f35392b156d5540c8908dd78eae56369248e369d7",
+      "imports": [
+        "ProteinFolding.Common.TM2Fanout",
+        "ProteinFolding.Common.TM2MappedTransfer",
+        "ProteinFolding.Common.TM2Renaming"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ListMap.lean",
+      "sha256": "cd792ed337f7087b90a1d49ca625c8e47cb1c387ace018bc3eff6c580828b052",
+      "imports": [
+        "ProteinFolding.Common.TM2ListMapBounds",
+        "ProteinFolding.Common.TM2Constants",
+        "ProteinFolding.Common.TM2ProductMap",
+        "ProteinFolding.Common.TM2WordMap"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ListMapBounds.lean",
+      "sha256": "5b05242e1451563bd9bb15f221a81b30f78414f9fc469dc2a4cc44aede600ab2",
+      "imports": [
+        "ProteinFolding.Common.TM2ListMapLoop",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ListMapCore.lean",
+      "sha256": "c53be198afead474aab9f628a49d9cf44c521a2a49aeece58f3df6b5c2d374ba",
+      "imports": [
+        "ProteinFolding.Common.TM2WalkCopy",
+        "ProteinFolding.Common.TM2Renaming",
+        "ProteinFolding.Common.TM2CompositionPoly"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ListMapLoop.lean",
+      "sha256": "307a048d484e7e560c817f5f74f6bf6b584ed7ebaa61c9d64b10193ccdd28fc7",
+      "imports": [
+        "ProteinFolding.Common.TM2ListMapTransfers"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ListMapRuns.lean",
+      "sha256": "0920ea05da8097fd7fc2d4459a24b0bc47792eda593a4485f5a5121a2c8f4aac",
+      "imports": [
+        "ProteinFolding.Common.TM2ListMapCore"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ListMapTransfers.lean",
+      "sha256": "3676c33943cd933edb9224fba525eeb31f23b0b2de84314126381ccc6eea0050",
+      "imports": [
+        "ProteinFolding.Common.TM2ListMapRuns"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2MappedTransfer.lean",
+      "sha256": "aaf4061b8e98dec8b904b26d8050607149d973266fa2e190f6f090547a3735a9",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2PairProjections.lean",
+      "sha256": "4ab3a77ec99612bb6dd8c08535a2c419ae12b4f389f43d8e5cbfbbb1d1b07d21",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer",
+        "ProteinFolding.Common.TM2CompositionPoly"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2PairSwap.lean",
+      "sha256": "ab6e865ee403f0f624b6de52e14e087266e3412ffa2202b54742b544448de645",
+      "imports": [
+        "ProteinFolding.Common.TM2Fanout"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2PolynomialTime.lean",
+      "sha256": "9afb94a73fcc074fd47eb81df844377e85fa5e224d899da912cf1f8bdf805da3",
+      "imports": [
+        "ProteinFolding.Common.TM2Bounds"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2ProductMap.lean",
+      "sha256": "ceae36f0ddb03b86486dfd48a63a4a49133541e3cf81cbc5cc2a6bb17ca8a2a5",
+      "imports": [
+        "ProteinFolding.Common.TM2FanoutLeft",
+        "ProteinFolding.Common.TM2PairSwap"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2Renaming.lean",
+      "sha256": "229d8a442660192c090526a271d5486fd314a87a68e78261aa277d94bcd31e20",
+      "imports": [
+        "ProteinFolding.Common.TM2Embedding"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2RenamingExtra.lean",
+      "sha256": "d50b23cee588cf2f924e8618749f3880697b4bf5d4cdebbeb76a993ac4124a37",
+      "imports": [
+        "ProteinFolding.Common.TM2Renaming"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2StateExtension.lean",
+      "sha256": "e2cbafaf79225d6f69ac22b558f420d59cbb2f138de79e81ace3d4bc9b49d574",
+      "imports": [
+        "ProteinFolding.Common.TM2Embedding"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2Transfer.lean",
+      "sha256": "698bcdd444f12daad4fe842772caac445ddf2e90f525f3fb75c4b8ae718463a1",
+      "imports": [
+        "ProteinFolding.Common.TM2Embedding"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2UnaryComparison.lean",
+      "sha256": "187fc6dc5882b210be8cb0944dbd84c651db0316e315212a7904538004281a4d",
+      "imports": [
+        "ProteinFolding.Common.TM2UnarySubtraction",
+        "ProteinFolding.Common.TM2WordFold",
+        "ProteinFolding.Common.TM2PairSwap",
+        "ProteinFolding.Common.TM2Boolean"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2UnaryRange.lean",
+      "sha256": "f1de0035c62c8a340a8b65a0cd1547282d129d9d60830aafbbc05f690965cc7b",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingRangeComputable",
+        "ProteinFolding.Common.TM2ListMap",
+        "ProteinFolding.Common.TM2EncodingWords"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2UnarySigned.lean",
+      "sha256": "b616699aba70741c9cc89b3692db251bbcf05082e3b0405f984ce50c40ed21fb",
+      "imports": [
+        "ProteinFolding.Common.TM2UnaryToBinary",
+        "ProteinFolding.Common.TM2EncodingWords",
+        "ProteinFolding.Common.TM2Constants",
+        "ProteinFolding.Common.TM2ProductMap"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2UnarySubtraction.lean",
+      "sha256": "6a46a75ff36d9d6a80b0b3dcae9ea822a195e839936af37715ff24b5df9822af",
+      "imports": [
+        "ProteinFolding.Common.TM2PairProjections"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2UnarySuccessor.lean",
+      "sha256": "783a3e99d698dbe87f173bcd47240f17dbcd64d46d86532808fd4857392d15bc",
+      "imports": [
+        "ProteinFolding.Common.Complexity"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2UnaryToBinary.lean",
+      "sha256": "1cdbaf6c754daa3d9d554d963123fe42a32f3cfcb4dfeef507e9380204bcff09",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer",
+        "Mathlib.Data.Num.Lemmas",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WalkCopy.lean",
+      "sha256": "12a0271cc57edcaadcb9ece06ce230afb6fe7555491eef187354e184b5c6afc0",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WalkCounters.lean",
+      "sha256": "1a15d854fc95c1294b47c20337a203e69d0230216f162d820af496b81ded8bdd",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer",
+        "Mathlib.Algebra.BigOperators.Fin"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WalkInspector.lean",
+      "sha256": "e23bcc5d43e4fd9f8450f038b8b1484531eecc1173fff6cd489757c4d3abfa7f",
+      "imports": [
+        "ProteinFolding.Common.TM2WalkCounters"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordDrop.lean",
+      "sha256": "2f37f9aa01d0e8623677cba0d94e2eb21326396cd14e661e034ae07b6db516fc",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer",
+        "ProteinFolding.Common.TM2PairSwap"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordEquality.lean",
+      "sha256": "96f1377ec2395e9f2ce2688cd914c7f84558d88c853dd71db687dab46d91a43c",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordFold.lean",
+      "sha256": "fea0d608e083a446424eb01eb02faf54eb17a1ed9f0fca87097b3b32521c592f",
+      "imports": [
+        "ProteinFolding.Common.TM2CompositionPoly"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordInit.lean",
+      "sha256": "8b2a21c02ada6790a9bf120d5466531970c3932aa8c1e834693bade7e63d9fb0",
+      "imports": [
+        "ProteinFolding.Common.TM2PairProjections",
+        "ProteinFolding.Common.TM2Constants"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordMap.lean",
+      "sha256": "52ff858db6b032f53ac3296d022883697ef7dea1679296f67d389d0db64b5bb0",
+      "imports": [
+        "ProteinFolding.Common.TM2PairProjections"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordRepeat.lean",
+      "sha256": "fefdd16d4c7d869c5533ecc415817507adb486fd6d74d644c371249e928e0fec",
+      "imports": [
+        "ProteinFolding.Common.TM2PairProjections",
+        "ProteinFolding.Common.TM2Constants",
+        "Mathlib.Tactic.Linarith",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordSegments.lean",
+      "sha256": "921a770eaf6fe051438397d996c44da5058a77d51ac5c4ae16faa9ec9689fad3",
+      "imports": [
+        "ProteinFolding.Common.TM2WordDrop"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordSegmentsSemantics.lean",
+      "sha256": "2602d02c4a78ddcc56bcbf6035f7236008544e69a928e396a85e7fef350df0d0",
+      "imports": [
+        "ProteinFolding.Common.TM2WordSegments",
+        "ProteinFolding.Common.CookLevin"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordSubstitution.lean",
+      "sha256": "83d33a4c17482e0b2081d2f7f23043b7a4c463685f296a46e97aa200dd2e4e64",
+      "imports": [
+        "ProteinFolding.Common.TM2PairProjections"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordTakeWhile.lean",
+      "sha256": "06b49a7bea80d7f4bb5848acc1e72ad2f2e498255d4930540c481cf9f8fd6696",
+      "imports": [
+        "ProteinFolding.Common.TM2Transfer"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Common/TM2WordTemplates.lean",
+      "sha256": "879c1945c191280e98374ee8c4b5d3fd6b704c160577808e36d4118c43fbc790",
+      "imports": [
+        "ProteinFolding.Common.TM2Constants",
+        "Mathlib.Tactic.Linarith",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/ComplexityExamples.lean",
+      "sha256": "afcbd3c4e054fdbd23a7e43f770355731987372970f5c82717fb3d7d30b319d9",
+      "imports": [
+        "ProteinFolding.Cubic.MainTheorem"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Encodings.lean",
+      "sha256": "2485592d8ee73d648f85bea18eb38c7f59ef1235b88a455bcf44cc8b1c474a45",
+      "imports": [
+        "ProteinFolding.Common.Encodings",
+        "ProteinFolding.Cubic.Statement"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Examples.lean",
+      "sha256": "85af7a7e0cec224dc7a74c75abdd374eb566b51fce2efc61a0630723fd1cb9a1",
+      "imports": [
+        "ProteinFolding.Cubic.Statement"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/MainTheorem.lean",
+      "sha256": "d47fc316926ca06fd5cacf15433d018da7045cd978420bf9e2439308afd9ed01",
+      "imports": [
+        "ProteinFolding.Common.Complexity",
+        "ProteinFolding.Cubic.Encodings"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/CertificatesBits.lean",
+      "sha256": "dc8d617ed005baea7339f5373dd3da0baae11e35821d2137b998e0110ac5c390",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.CertificatesDirections"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/CertificatesChecks.lean",
+      "sha256": "5ac70bcf189b586ab666e5cb66733c404e8ab5a501d9b04ec5f0453d3fd55d07",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.CertificatesPerfect"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/CertificatesDirections.lean",
+      "sha256": "ed1f3afc9721b426733a7d3acd3e0b636148639f598f48ee6bb819f95e6ce07b",
+      "imports": [
+        "ProteinFolding.Cubic.Encodings",
+        "ProteinFolding.Common.Complexity",
+        "Mathlib.Data.List.OfFn"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/CertificatesPerfect.lean",
+      "sha256": "6e6aba4706f50e4948f0343da315b5f1600b6e4c6919c18033e3c84c0825070e",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.CertificatesBits",
+        "ProteinFolding.Cubic.Proofs.GeometryBasics"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryArithmetic.lean",
+      "sha256": "06c9fc4d8977b98ed4743317ae421fb3fa39bdd363ed362819f2dd377b3812f6",
+      "imports": [
+        "Mathlib.Tactic.Ring",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryBasics.lean",
+      "sha256": "c6a23728185af9ad9dab3ec1f521aea1108df5536f72b1706ce4a6af22797145",
+      "imports": [
+        "ProteinFolding.Cubic.Statement",
+        "Mathlib.Data.Fintype.Pi",
+        "Mathlib.Algebra.BigOperators.Fin"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryBonds.lean",
+      "sha256": "c7bc50f3b82749b31d50df40c54bec915a186653f30be5cb40c4215d17939f82",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryLines",
+        "ProteinFolding.Cubic.Proofs.CertificatesDirections",
+        "Mathlib.Data.Finset.Sigma"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryBound.lean",
+      "sha256": "4a7e3289f4fb0a332ce4eba030f09a8fcbf362b3ea6aae03ee2ba5ec7aaba924",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryProjection",
+        "ProteinFolding.Cubic.Proofs.GeometryArithmetic",
+        "ProteinFolding.Cubic.Proofs.GeometryCubeEdges"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryCubeEdges.lean",
+      "sha256": "d0248c391ba14bcf188e98ca060a3e9910ff0d1bfd7d91717795369726debd05",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryLines"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryEqualityCardinality.lean",
+      "sha256": "be69286a63b2fb72929a3c641cd8ffa5e662c606fad30b8a2377bc3c7dfcea4c",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryProjection",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryEqualityGapless.lean",
+      "sha256": "1654b782a173a602e6461fc2a1e8c885d53ab1f8782b4c7d17501966e99eb861",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryEqualityIntervals",
+        "ProteinFolding.Cubic.Proofs.GeometryBound"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryEqualityIntervals.lean",
+      "sha256": "736b55894966dd2cbaefb7b6323f851f674f96de320b51a78f2c831d7b4f8c2c",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryProjection",
+        "Mathlib.Data.Int.Interval"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryLines.lean",
+      "sha256": "1d7eda61c127eabada2f61c8a9004ddc707a0af86ff3cacc2a30144a3fc5b2f2",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryBasics",
+        "Mathlib.Data.Finset.Max",
+        "Mathlib.Algebra.Order.BigOperators.Group.Finset"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryLoomisWhitney.lean",
+      "sha256": "e276d202875794cc682518b7888387fa4df51d5be1678a17259489fd898a1d4e",
+      "imports": [
+        "ProteinFolding.Cubic.Statement",
+        "Mathlib.Algebra.Order.BigOperators.Ring.Finset",
+        "Mathlib.Algebra.BigOperators.Ring.Finset"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryMain.lean",
+      "sha256": "80ce0132a54856e70a4601cec469ae9cb0f6a7195b68ea7b7d88304af3abe3ab",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryRigidity",
+        "ProteinFolding.Cubic.Proofs.GeometryBonds"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryProjection.lean",
+      "sha256": "736984ea3ea5265e47bbfb39dc54207f8d60751f1575c19083fccaf51ee5af8b",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryLines",
+        "ProteinFolding.Cubic.Proofs.GeometryLoomisWhitney"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryRigidity.lean",
+      "sha256": "9494741adb15684bbdab61df7bfa270e9f30736ec03150db3846e69a050aa796",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryEqualityGapless",
+        "ProteinFolding.Cubic.Proofs.GeometryEqualityCardinality"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/GeometryScore.lean",
+      "sha256": "b729ce9d5d9a9d2e6c7d4781bf24527e9d09e8167a3d30705e9feb6cdee5685a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryBound",
+        "ProteinFolding.Cubic.Proofs.GeometryBonds"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/Hardness.lean",
+      "sha256": "72bc5ede6fe6626e737fbfbd6b5bc16901a4f1908bd62e803846f708d5204552",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.Main"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/Main.lean",
+      "sha256": "6ce6dcc8939bf095726aef205ccabdfbc0709825d32ce710a15afec30e369763",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryMain",
+        "ProteinFolding.Cubic.Proofs.PackingReductionCorrect",
+        "ProteinFolding.Cubic.Proofs.SATPackingComputable",
+        "ProteinFolding.Cubic.Proofs.PerfectToHPComputable",
+        "ProteinFolding.Cubic.Proofs.NPMembership"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/MatchingPacking.lean",
+      "sha256": "d8666e86a81786b710606f7fb1edb2eb91832369c5709a0aef27673e3b4c7b56",
+      "imports": [
+        "ProteinFolding.Common.SAT.ThreeDimensionalMatching",
+        "ProteinFolding.Common.NumericPackingBins",
+        "ProteinFolding.Cubic.Proofs.PackingSources",
+        "Mathlib.Data.List.Count"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/MatchingPackingBounds.lean",
+      "sha256": "c94760fa8f838ac2c7b0f8b3b8ad416ab77c509bd0bc85b9caa0519955673c74",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.MatchingPackingReduction"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/MatchingPackingComputable.lean",
+      "sha256": "ce5fb82e94692e5232054d92be0807e70aab6d0b784b4f3462d09768be58f839",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.MatchingPackingGenerate"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/MatchingPackingGenerate.lean",
+      "sha256": "d62eab208d3752241b0df4e83d034bf03fa8952d702befe51dfbf8125a2152ed",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.MatchingPackingValues",
+        "ProteinFolding.Cubic.Proofs.MatchingPackingInputComputable",
+        "ProteinFolding.Cubic.Proofs.MatchingPackingSorted",
+        "ProteinFolding.Cubic.Proofs.PackingRangeComputable",
+        "ProteinFolding.Cubic.Proofs.PackingCountComputable",
+        "ProteinFolding.Common.TM2WordRepeat"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/MatchingPackingInputComputable.lean",
+      "sha256": "b71b19e60e3dea07424d44fd1ecdc60a69a7effe28db03e6d5faded35e845cae",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.MatchingPackingReduction",
+        "ProteinFolding.Common.TM2ListMap",
+        "ProteinFolding.Common.TM2UnaryComparison",
+        "ProteinFolding.Common.TM2Conditional"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/MatchingPackingReduction.lean",
+      "sha256": "9a2f00bff20487472fd78c0c268dffa4d2aac66e40a6f90cbc4ba91a79cbd8d1",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.MatchingPackingSound",
+        "ProteinFolding.Cubic.Proofs.PackingScaling"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/MatchingPackingSorted.lean",
+      "sha256": "decbec30e4760ada23af0d50a7ea15fde12139970ca53edb43abc75f548e7bcc",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.MatchingPackingBounds",
+        "Mathlib.Data.List.Nodup"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/MatchingPackingSound.lean",
+      "sha256": "35256e5f7b5eb27c8b149ebf359b6b0f1bd7d88ec7c38060def865812a05c9ca",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.MatchingPacking",
+        "ProteinFolding.Common.NumericPackingClassification"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/MatchingPackingValues.lean",
+      "sha256": "6c7d968812eb7b978ecac8b03a7ea20bf8d7e3ae97eb706cb5bce083367d4249",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingBalanceComputable",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectArithmetic",
+        "ProteinFolding.Common.NumericPacking",
+        "ProteinFolding.Common.SAT.ThreeDimensionalMatching"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/NPMembership.lean",
+      "sha256": "64b3f69c4d2ee590c0798818e716215a6f09d97647dd2775f70d9b39bfd035ad",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierGeometryComputable",
+        "ProteinFolding.Cubic.Proofs.VerifierHPSemantics",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfect"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingAnchorArithmetic.lean",
+      "sha256": "18a2f27086e45e75e65dc1342a7959f3807afd63686e5518eaa91308563464b8",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWords"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingAnchors.lean",
+      "sha256": "139c8b4b0a77f3e9ed3d69079fb6b44ca1a12246080aaa8f1581718d3f8dac3b",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryPaths",
+        "ProteinFolding.Cubic.Proofs.PackingGeometrySkeleton"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingAttachedDisjoint.lean",
+      "sha256": "76dc981d8cff95c9016c4421e9e35bf0bc867879005cc3bd662c4af3880b28e7",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingEdgeNormals",
+        "ProteinFolding.Cubic.Proofs.PackingFaceLift"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingAttachmentDisjoint.lean",
+      "sha256": "d382a32a7f85d729d4d5002f2fbba2f66aa7a9697cec0a52dc0047bce2128509",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFaceBulkDisjoint"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingBackEdge.lean",
+      "sha256": "2886a8899e0c86944d618ae5f9132f06902bc6f724853c51b959d7e7c385a4fd",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFrameFaces",
+        "ProteinFolding.Cubic.Proofs.PackingEdgeLift"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingBalance.lean",
+      "sha256": "0bd16a4f8e339d119a3dbbbb472f2e50dfd3a88a1b6c239a22050ffa45274535",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingScaling"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingBalanceComputable.lean",
+      "sha256": "31a8102d449d9c491f8680c62a8eac2122d81e4aabbf550a373d0f8901e2a919",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingBalance",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectUnary",
+        "ProteinFolding.Common.TM2UnarySubtraction",
+        "ProteinFolding.Common.TM2WordSubstitution",
+        "ProteinFolding.Common.TM2ProductMap",
+        "ProteinFolding.Common.ComplexityComposition"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingBlockAssembly.lean",
+      "sha256": "10b3913740a193968d3ad0dd36be5e070886506d26bababb815a3838ce462f2a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingAttachedDisjoint",
+        "ProteinFolding.Common.FoldConcatenation"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingBulkWord.lean",
+      "sha256": "4ef99e74d1fc7de2606c36c881023fc6382ce8ac8e8e06f4c3f1344e87da4ca8",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingSnakeCuboid",
+        "ProteinFolding.Cubic.Proofs.PackingRoutingRectangle",
+        "ProteinFolding.Common.FoldConcatenation",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingCanonicalBins.lean",
+      "sha256": "904aa020ee7aec240a60b286c3c44b88151198d4a02fcc4651b3ff0f9b6ee7b8",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryLargeFaces",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryAnchorIntervals"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingComponentChain.lean",
+      "sha256": "431c0f4db8b485af13842809e146664176d4011404a95ce831ec02c6d6e658ec",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingBlockAssembly",
+        "ProteinFolding.Cubic.Proofs.PackingBulkWord"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingCountCompleteness.lean",
+      "sha256": "948d093547cf2ef81c723a32fcef27cf54de783aa6fc5b45eae3729b6dec7a86",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.GeometryBasics",
+        "ProteinFolding.Cubic.Proofs.PackingWords"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingCountComputable.lean",
+      "sha256": "6ca8663f09a2bf2ad10d9f8772915f13d13c2aab32276a71df30c2b9005a3478",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingRangeComputable",
+        "ProteinFolding.Cubic.Proofs.PackingBalanceComputable",
+        "ProteinFolding.Common.TM2Conditional",
+        "ProteinFolding.Common.TM2WordMap",
+        "ProteinFolding.Square.TM2CrossMatches"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingEdgeLift.lean",
+      "sha256": "df0e81080c8dce38031bc8d43cdc660830552d5db4fa48fa59950ab2be3033cc",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryExterior",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryPaths"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingEdgeNormals.lean",
+      "sha256": "f87d95cd4e1c8fadd35e2e4c056e18f7f736f215cecf8ef2d2508f471714fe83",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingEdgeLift",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryOutward",
+        "ProteinFolding.Common.GreedyLabels"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFaceBulkDisjoint.lean",
+      "sha256": "0f667c75298bd36c58c2b1584263c216386cdecaa4b9086b89797abc64ff458a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingBackEdge",
+        "ProteinFolding.Cubic.Proofs.PackingBulkWord"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFaceLift.lean",
+      "sha256": "ca35e2d5211c3a5b4c0ffa4bf9cb24b902c9eeaacd66f24558d2bda134d3a4e3",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryPaths",
+        "ProteinFolding.Cubic.Proofs.PackingSnakeLayers"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFaceOccurrences.lean",
+      "sha256": "5cdc2953d13fc355f1dac2a31c640331d32e9277ee34e7a7dd7e9edb0321120b",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryBlockOccurrences",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryLargeFaces"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFrameAssemblyHelpers.lean",
+      "sha256": "1249441d8c08df6a4dee24ac2ffd1aaf9f2b2621c52a81b6300687f1a3b0a0fd",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFrameRoutingDisjoint",
+        "ProteinFolding.Cubic.Proofs.PackingStripAttachments",
+        "ProteinFolding.Cubic.Proofs.PackingItemChain",
+        "ProteinFolding.Cubic.Proofs.PackingCountCompleteness"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFrameCompleteness.lean",
+      "sha256": "0b8da46e214c89f058b37ad91129b33e9a328e93ed47635d4f571f1ba0cbc23a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingPrefixWallsAssembly",
+        "ProteinFolding.Cubic.Proofs.PackingWallsItemsDisjoint"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFrameFaceConfinement.lean",
+      "sha256": "91392b2f8ebb4688ca6f468f3e7bddc3d70f732c393734b7519b97cc29f666ad",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFrameLargeFaces"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFrameFaces.lean",
+      "sha256": "7654fe209ebee02c1648ec30aa9fe219b797a7520de49dc73b4cc68cfd21881e",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingTopFace"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFrameItems.lean",
+      "sha256": "a02f0c6841843800ab673520eb2b9467dd845c395237c2ccc87054c965173b29",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFrameFaceConfinement",
+        "ProteinFolding.Cubic.Proofs.PackingFromLabels",
+        "Mathlib.Data.List.Infix"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFrameLargeFaces.lean",
+      "sha256": "d468578d78d08b0c0d451612a8c53b528a014b4137334355326e6b818a9c3907",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFaceOccurrences",
+        "ProteinFolding.Cubic.Proofs.PackingAnchors"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFrameRoutingDisjoint.lean",
+      "sha256": "5447c9f6ccfdb485c5f166ef6449a3fc8accb031e395d4d2fba4563849c9e483",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingPrefixWallsDisjoint",
+        "ProteinFolding.Cubic.Proofs.PackingPrefixFold",
+        "ProteinFolding.Cubic.Proofs.PackingItemConnectors",
+        "ProteinFolding.Cubic.Proofs.PackingGapFold"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFrameSoundness.lean",
+      "sha256": "a4bd948daf311c8c7c3c23103c555a47efc9e3c4f4e370a83311d902c1f26df7",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFrameBarriers",
+        "ProteinFolding.Cubic.Proofs.PackingFrameItems",
+        "ProteinFolding.Cubic.Proofs.PackingCanonicalBins"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingFromLabels.lean",
+      "sha256": "7fc325679d85b013c0780990f53cd9efdedf613c5b42475179923ee5528319e7",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingSources",
+        "Mathlib.Data.List.FinRange"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGapFold.lean",
+      "sha256": "78f4624af9f1dff89b96ee2cbad30ce77b75c9baf90e812e0669b9113d643c82",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWallBridges",
+        "Mathlib.Tactic.FinCases"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryAnchorFamily.lean",
+      "sha256": "8ca71036d72bb276723986202bc617e3c12c8c0ccaa02227b34af2af28ab8b41",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryAnchorIntervals",
+        "ProteinFolding.Cubic.Proofs.PackingAnchorArithmetic"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryAnchorIntervals.lean",
+      "sha256": "b12f7acbbb2ba652f24cfb18602a2b010eb741c37bced76f83c88f02d4e51d68",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryIntervals",
+        "Mathlib.Tactic.Ring",
+        "Mathlib.Order.Interval.Finset.Nat"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryBins.lean",
+      "sha256": "706ec65d3793ba00964181d24dac04ca36464759a78c422c308f4cdf557f1bb1",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryWalls"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryBlockOccurrences.lean",
+      "sha256": "c5d6dbd9cd7bb2e8c18207c0de7a76f21a74233c6bb3789c0d97e1d2bd95df53",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFrameIndices",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryAnchorFamily",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryShortLinks"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryBlockRails.lean",
+      "sha256": "fd9b69026d13ff666ac04250a3726eb50987ad84b0358f95d04687d5a9813eda",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFrameBlocks"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryCompression.lean",
+      "sha256": "5cafef7e3930b6d5ecc1f993f7ef17423d6e50519f35d11a8843ee2adc529bad",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryLocal",
+        "ProteinFolding.Cubic.Proofs.VerifierRecords"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryEdges.lean",
+      "sha256": "dc0a56325491452a4f27fe7339f6a6ffae6a9dc10ec522f41ad1576b56a74734",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometrySkeleton",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryStraight"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryExterior.lean",
+      "sha256": "6d2801294e9131ff987f1f442cefb3c8d14048da35753187b09ea7774f19f141",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryCompression"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryFaces.lean",
+      "sha256": "ae0b1ec7fc5bbc02ab5c2bd4e10fb538d281e3a554349e76493f5e6e40ffe438",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryLocal"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryFrameAnchorFamily.lean",
+      "sha256": "0b7a3c09c7437434577914c85fc6be148fc3cbfa1c45c3c5b602406425c89163",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFrameAnchorVolume"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryFrameAnchorVolume.lean",
+      "sha256": "9115ab842da2b81dd1b3d1e4e1c09f83ab29f382dae5e887056b90fe875c8909",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryBlockRails"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryFrameBarriers.lean",
+      "sha256": "f7001b41d1ea7787428d9f61e59ef3c757cbf952b4ebc174aa9e3c549b4b849f",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFrameWallRows"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryFrameBlocks.lean",
+      "sha256": "3d699be2fd857b524ab786b318c569d0b6e91d37f78af4daf27e4a927368a07f",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryBlockOccurrences"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryFrameIndices.lean",
+      "sha256": "a66883a5e684d30ce23a776be6679f8d10ee5fbb3fc0614aafb71860ffe6000d",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryRails",
+        "ProteinFolding.Cubic.Proofs.PackingWords"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryFrameWallRows.lean",
+      "sha256": "ac98f5fb104d027e02378af328dab130918c38eb3ffef460d425ee7d83d55f20",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFrameWalls",
+        "ProteinFolding.Cubic.Proofs.PackingFrameFaceConfinement"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryFrameWalls.lean",
+      "sha256": "cb22fbbeb706355cb5d200ec2cc84ae7e973e4d048f5f657850c4303dcc89258",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFrameAnchorFamily",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryWordJoins",
+        "ProteinFolding.Cubic.Proofs.PackingFaceOccurrences"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryIntervals.lean",
+      "sha256": "62f8a3cbfd2f8f21a5dc8116647fbcb804161cc47ad0a17f71c05505e7665e83",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryRails",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryWalls"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryLargeFaces.lean",
+      "sha256": "1848d60c4fa7cf205ca89e3a2adb3b95318be85753cafa04e32054ae56d6f1f0",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryBins",
+        "ProteinFolding.Cubic.Proofs.GeometryBasics"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryLocal.lean",
+      "sha256": "c2f7cfb73a510c56dbd78edd426a25f3d50bada523939ad73f7180cc44fb453a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.CertificatesDirections",
+        "Mathlib.Tactic.FinCases"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryMatching.lean",
+      "sha256": "cee6bc6fe0d4a80bda0377e4183a79830a72e0354e7bc533b41723bc03b66e05",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryPrefix"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryOutward.lean",
+      "sha256": "93e09133adc43ac0bea5c26019f16505916de51e1b7d70b12aa8444f76d3b76c",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryExterior",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFaces"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryPaths.lean",
+      "sha256": "1a1556753617eed95f65c37324de5ddd0c4ed8898bf4a76cea5449ba1bee98fd",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryCompression",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFaces",
+        "ProteinFolding.Cubic.Proofs.PackingWords"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryPrefix.lean",
+      "sha256": "41dda6492ddabf9d36e2d2ff90eb1048c0371c553ab8012908ee2d1b858b4c21",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryEdges",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryPaths",
+        "ProteinFolding.Common.GapLabels",
+        "Mathlib.Algebra.Order.BigOperators.Group.Finset",
+        "Mathlib.Data.List.ChainOfFn"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryRails.lean",
+      "sha256": "9bae18a7ee40f5e9d67b3fde7424d4122a8c00f8502a3b244d1f2dba96a20836",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryMatching"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryShortLinks.lean",
+      "sha256": "f5f2455b7304bbd0775609dc1d3de6d77156de9b3ef233dccd0d6e4629b2c301",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryWalls"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometrySkeleton.lean",
+      "sha256": "b5397c59de7f40b167817167d2a38f41a274ad3375a79ee5dc27c866da412a51",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryLocal",
+        "ProteinFolding.Cubic.Proofs.GeometryBasics"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryStraight.lean",
+      "sha256": "377aeb4d13a3b535475f5d7efdda0904cf7a2c63bc89525b5ad4116509910c5e",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFaces"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryWalls.lean",
+      "sha256": "0274cf9c1fad5bba370d1e04073289ac49c06f182d4e2fa87c4e96d688d65f10",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryMatching"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryWallsCrossing.lean",
+      "sha256": "b78b0cd45853f3614626101bf11d7e0b65e8ae2ffd570149eb5cf8a9c6338dbf",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryWalls"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryWallsWord.lean",
+      "sha256": "7b6363c149117aeefc2b4e120b2b0ee7d03415ad660432699a155a72c910a24a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryWallsCrossing",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryPaths"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGeometryWordJoins.lean",
+      "sha256": "b5bfb109a502a7235bf55f17d82f7a1c2c99f484bad8afbd160e13b30c564ee3",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGeometryFrameIndices",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryWallsWord"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingGuardComputable.lean",
+      "sha256": "ae380d4433c8641b2ca7667affefd7f20eaf587a8efd4e4f3ab700a995579ef3",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWordSource",
+        "ProteinFolding.Cubic.Proofs.PackingBalanceComputable",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectEquality",
+        "ProteinFolding.Common.TM2WordFold",
+        "ProteinFolding.Common.TM2Boolean"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingInitialDisjoint.lean",
+      "sha256": "6965d060a16e72db38e1eb42711c747f3089f02b5eaaac524c1ead7d931f1e07",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingSkeletonAttachments"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingItemAllocation.lean",
+      "sha256": "92a5f18f8c422e552d9cd6b6518a50cbc0507d8874fde19abcf89f94fdc9ef23",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingItemStrips",
+        "ProteinFolding.Cubic.Proofs.PackingSources"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingItemChain.lean",
+      "sha256": "2cf2cf38fffcc535647d46eaef29b3b609fcd14d19fab7239096979c78b41be8",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingItemPorts",
+        "ProteinFolding.Cubic.Proofs.PackingItemConnectors",
+        "ProteinFolding.Cubic.Proofs.PackingComponentChain",
+        "Mathlib.Data.List.OfFn"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingItemConnectors.lean",
+      "sha256": "b960deeb72ff72f4d874ee38ebc73897cb626127614ccce81c697790c2989ccd",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingRoutingInitial",
+        "ProteinFolding.Cubic.Proofs.PackingItemAllocation",
+        "ProteinFolding.Common.FoldConcatenation"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingItemPorts.lean",
+      "sha256": "813a20d91053f99acb012e4a6de3f51cb8ff90a68e1611ba1312b46e44866ada",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingItemAllocation"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingItemStrips.lean",
+      "sha256": "e604b7d8e7ba6f3c343475882dc9baf72d1d89953b88b244f3b67374cd543be0",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingSnakeCuboid",
+        "ProteinFolding.Cubic.Proofs.PackingFaceLift",
+        "Mathlib.Data.Fin.Rev"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingItemWallSeparation.lean",
+      "sha256": "6c41bee5225000bd876bbdc0b4a6dcb85143d747a245f76174554f2c00948052",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingItemPorts",
+        "ProteinFolding.Cubic.Proofs.PackingWallUnitFold",
+        "ProteinFolding.Cubic.Proofs.PackingStripAttachments"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingPadding.lean",
+      "sha256": "2b3121d3368ae2d3b7dcfe5b55e868ad40b374960fa5c1974005e03a2a54707a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingSources"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingPrefixBridges.lean",
+      "sha256": "afe855579b716e659162049f3c6dfe5e68f3b1ff36b0464e3d0414162c9c1d36",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingRoutingRectangle",
+        "ProteinFolding.Cubic.Proofs.PackingBulkWord",
+        "ProteinFolding.Common.FoldConcatenation",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingPrefixComponents.lean",
+      "sha256": "82f7adbf46ffa8fec059795a56610c0bd5520531c299bdaebe8f237a3979e54c",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingComponentChain",
+        "ProteinFolding.Cubic.Proofs.PackingPrefixBridges",
+        "ProteinFolding.Cubic.Proofs.PackingBackEdge",
+        "ProteinFolding.Cubic.Proofs.PackingSkeletonPrefix"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingPrefixFold.lean",
+      "sha256": "74895b9719ab0e81a22de8d5f8ea4893942cabd480dc92d154c7ab9bf8d1200e",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingPrefixPairwise"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingPrefixInterfaces.lean",
+      "sha256": "8360f5c5f00fb3c938d4b0508461d764995f64cbd6b657f298467838600f391c",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingPrefixFold"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingPrefixPairwise.lean",
+      "sha256": "2e02f50397ca327dcdf370323d48c119d72cafb62b69938240fe624da9dedaa9",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingPrefixSeparation",
+        "ProteinFolding.Cubic.Proofs.PackingTopBridge"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingPrefixSeparation.lean",
+      "sha256": "5d3c044e2650a7b917c6a19c93749641d473cc60f8072841fae1e6c2aee240ac",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingPrefixComponents",
+        "ProteinFolding.Cubic.Proofs.PackingInitialDisjoint"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingPrefixWallsAssembly.lean",
+      "sha256": "e85464b7263247ef6df4e977c4a528630efdb5ab9260f3a390d5666e863f6bf9",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFrameRoutingDisjoint",
+        "ProteinFolding.Cubic.Proofs.PackingWallsFold",
+        "ProteinFolding.Cubic.Proofs.PackingWallGapDisjoint"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingPrefixWallsDisjoint.lean",
+      "sha256": "23bf45a6cbae37eb05e38e28eab14f2717e62e45d6004e43d7b07cdabd928d5a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingPrefixSeparation",
+        "ProteinFolding.Cubic.Proofs.PackingWallBridges",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryStraight"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingRangeComputable.lean",
+      "sha256": "8f15476a5ba4fa61419687831145f10496786e8ccfdf931d3d0a51733f9e43d7",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingSources",
+        "ProteinFolding.Common.TM2CompositionPoly",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingReductionCorrect.lean",
+      "sha256": "296225707a3d451fdc088b474ab2a3ef249d5554568c339ecee60dc433300a75",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFrameCompleteness",
+        "ProteinFolding.Cubic.Proofs.PackingReductionSoundness",
+        "ProteinFolding.Cubic.Proofs.PackingToPerfectComputable"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingReductionSoundness.lean",
+      "sha256": "232d00b564c93179b8caaabca4ef114004de068814ab1cc9a6d17ee5c26108ee",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFrameSoundness",
+        "ProteinFolding.Cubic.Proofs.PackingWordSource"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingRoutingInitial.lean",
+      "sha256": "67125f4402001980bf0f33878752d9d204d1b9909f7cca4e337f92a863d8fc44",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingRoutingRectangle"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingRoutingRectangle.lean",
+      "sha256": "cc98d82fe523caa721784a79269c7686e666389e9236d037afc8b6b0e2b2c2e7",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.CertificatesDirections",
+        "Mathlib.Data.Fin.Rev"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingScaling.lean",
+      "sha256": "1bf7b4a0ea4548b44c331b404dd71c4307e60a10bef30b8faa42e5c1fd36b5a1",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingSources",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingSkeletonAttachments.lean",
+      "sha256": "0e56d2a5ed2386328554b298f33c09a8908069ee5717a3522922aa6f3a23b421",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingAttachmentDisjoint",
+        "ProteinFolding.Cubic.Proofs.PackingSkeletonPrefix"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingSkeletonPrefix.lean",
+      "sha256": "94e70bf333c610e6ad1f716311aff7aee1aa3b288309cd3e0cbb174d9d1f628b",
+      "imports": [
+        "ProteinFolding.Common.FoldConcatenation",
+        "ProteinFolding.Cubic.Proofs.PackingGeometryLocal",
+        "ProteinFolding.Cubic.Proofs.PackingEdgeNormals"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingSnakeCuboid.lean",
+      "sha256": "a355f33592636f46ed390f2ae861c73d008779f5b6f1b7f69a7865823e65a0a6",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingSnakeLayers",
+        "ProteinFolding.Cubic.Proofs.GeometryBasics",
+        "Mathlib.Tactic.FinCases"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingSnakeLayers.lean",
+      "sha256": "687bed9c044f4df7b77c674d4d1af4a947ac035066e96a1b7d342af6eeb689f3",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingSnakeRectangle"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingSnakeRectangle.lean",
+      "sha256": "a5cf8fd57dcc29af2345c4a92717c9c3ea1c88d1ec637328605a28d71a52609d",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.CertificatesDirections",
+        "Mathlib.Logic.Equiv.Fin.Basic",
+        "Mathlib.Tactic.Linarith",
+        "Mathlib.Tactic.Ring"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingSources.lean",
+      "sha256": "0aa9bcfa62e55d4f9bdd00af49247d09f5e387964d5b1f22bc86f52450f2b4b9",
+      "imports": [
+        "ProteinFolding.Common.CookLevin",
+        "Mathlib.Algebra.BigOperators.Group.List.Basic",
+        "Mathlib.Data.List.Perm.Basic",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingStripAttachments.lean",
+      "sha256": "5f903f857e3573f2fe8f90d11308673f0133010251239d850e78cdda23946629",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingItemStrips",
+        "ProteinFolding.Cubic.Proofs.PackingPrefixWallsDisjoint",
+        "ProteinFolding.Cubic.Proofs.PackingPrefixInterfaces"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingTopBridge.lean",
+      "sha256": "8ff5702f73141e75c4c2b34a33770002f169e9ee2c60b9e673cb4a29f6ea68c9",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingInitialDisjoint"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingToPerfectComputable.lean",
+      "sha256": "b6110fa9746227a58f7aea93f4aff5f97b59716ca4d9e021db885794052190ee",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWordComputableSource",
+        "ProteinFolding.Cubic.Proofs.PackingGuardComputable",
+        "ProteinFolding.Cubic.MainTheorem",
+        "ProteinFolding.Common.TM2Conditional",
+        "ProteinFolding.Common.ComplexityComposition"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingTopFace.lean",
+      "sha256": "e7344ebbd2abbfbf28c8252a3028af8558950c8db473f9702de96352def57e8f",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingFaceLift",
+        "ProteinFolding.Common.FoldConcatenation"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWallBlocks.lean",
+      "sha256": "b630339f52ab7afbcfe3e62f9b8e2349dee482604e8729a2ae0c5ad541bfc83d",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingAttachedDisjoint",
+        "ProteinFolding.Cubic.Proofs.PackingRoutingRectangle",
+        "ProteinFolding.Common.FoldConcatenation",
+        "ProteinFolding.Cubic.Proofs.PackingBlockAssembly"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWallBridges.lean",
+      "sha256": "a7fe5a84863836aa26e8937d990516b257210163ea4c9bcb312a986c7e8dc064",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWallUnitFold"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWallGapBridgeDisjoint.lean",
+      "sha256": "6b181d99a8b7f74dedd3114ac5be9b596e190940e1a918802e2469cc49723698",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGapFold",
+        "ProteinFolding.Cubic.Proofs.PackingPrefixWallsDisjoint"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWallGapDisjoint.lean",
+      "sha256": "38a9a9379a9a244639a8d481f56c6074286109d6d1989927fb33afa5c1e94a98",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGapFold",
+        "ProteinFolding.Cubic.Proofs.PackingPrefixWallsDisjoint"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWallsFold.lean",
+      "sha256": "94c09d84adc3bac554aff5b6e4efd428e0af7469a05c0073b535446afbe77835",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingGapFold",
+        "ProteinFolding.Cubic.Proofs.PackingPrefixWallsDisjoint",
+        "ProteinFolding.Cubic.Proofs.PackingWallGapBridgeDisjoint",
+        "ProteinFolding.Cubic.Proofs.PackingWallGapDisjoint"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWallsItemsDisjoint.lean",
+      "sha256": "037d77f8ab2ea0b6742251e318cd0a6bbfd91c30ee8992117d14ec60c0480a1c",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWallsFold",
+        "ProteinFolding.Cubic.Proofs.PackingItemWallSeparation",
+        "ProteinFolding.Cubic.Proofs.PackingFrameAssemblyHelpers"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWallUnitFold.lean",
+      "sha256": "c03d4847164782970db3fa3504cfcba5c803b59cb9b70724f507ec6a1b226dbc",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWallBlocks"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWordComputable.lean",
+      "sha256": "166f43ad4da39e8eea23ac658cb559b840582d3c6e06001f026d9bff0d8b5cc4",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWordComputableHalf",
+        "ProteinFolding.Cubic.Proofs.PackingWordSource",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectArithmetic"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWordComputableHalf.lean",
+      "sha256": "7b70caf8e3cc63c92a8e9cbf962ab1125cd0d92b9d855f01ad466ad00e202450",
+      "imports": [
+        "ProteinFolding.Common.TM2WordRepeat"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWordComputableSource.lean",
+      "sha256": "efb206573f2a4adb2c8d9ca0c1746269f48403c83d59ec545da89bd1738ad804",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWordComputable",
+        "ProteinFolding.Cubic.Proofs.PackingBalanceComputable",
+        "ProteinFolding.Common.TM2WordInit",
+        "ProteinFolding.Common.TM2UnaryToBinary",
+        "ProteinFolding.Common.TM2WordTemplates"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWords.lean",
+      "sha256": "a0bd9fe8bc8431c47e90b94ceef04e1b74a6680a8870632da359e32f39565dbb",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectCount",
+        "Mathlib.Algebra.BigOperators.Group.List.Basic",
+        "Mathlib.Tactic.Ring",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PackingWordSource.lean",
+      "sha256": "4f0f6c4a404d2e5d1a9978726f359f29c51bd985180959022cd37cb5f12a4505",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PackingWords",
+        "ProteinFolding.Cubic.Proofs.PackingScaling",
+        "ProteinFolding.Cubic.Proofs.PackingPadding",
+        "ProteinFolding.Cubic.Proofs.ThresholdCertificateUnarySide"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PerfectToHP.lean",
+      "sha256": "a861c83ce047e2a6d2d721e41574c4abb73d0668576b61a00015b7ed0c5a6758",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.ThresholdCertificateUnarySide",
+        "ProteinFolding.Common.TM2BoundedSearch"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean",
+      "sha256": "9479a397e70d31fbeec9458f168c32a9dd587553445666abcec01341bee9618f",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.PerfectToHP",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectInputGuards",
+        "ProteinFolding.Common.TM2UnarySuccessor",
+        "ProteinFolding.Common.TM2UnarySigned",
+        "ProteinFolding.Common.TM2Conditional",
+        "ProteinFolding.Common.ComplexityComposition"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/SATPackingComputable.lean",
+      "sha256": "8776aa43c742caeb96b45f3674f57a63edef0638ae2ee300048dae51b35af716",
+      "imports": [
+        "ProteinFolding.Common.SAT.CNFMatchingReduction",
+        "ProteinFolding.Cubic.Proofs.MatchingPackingComputable"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/ThresholdCertificate.lean",
+      "sha256": "d0c3f2bfad1ef59b204c31ecde6bad6663da79384311213705b4520c866aff2a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.CertificatesPerfect",
+        "ProteinFolding.Cubic.Proofs.GeometryMain",
+        "ProteinFolding.Common.ComplexityLemmas"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/ThresholdCertificateParser.lean",
+      "sha256": "332fca662d399600dc37c20af011b7bc924348529e5c173f3b236e5ee91a6218",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.ThresholdCertificateUnarySide"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/ThresholdCertificateRecords.lean",
+      "sha256": "5c75cd9cd398388cb96550cbfebea7e297da72bfb662861d0d64a6ae534e78bd",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectInputGuards",
+        "ProteinFolding.Cubic.Proofs.VerifierRecordDecoder",
+        "ProteinFolding.Cubic.Proofs.GeometryScore"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/ThresholdCertificateUnarySide.lean",
+      "sha256": "36815ecee246c4b60f2d7f2d7ced3de4562d74ab3bc0153659cdcbb0863a6a51",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectUnary",
+        "ProteinFolding.Common.TM2Fanout"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierChecks.lean",
+      "sha256": "49b291908cb327568b712b8f2f1df48b37c6b37665ac384498ad772ac4b91891",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierHPSemantics",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfect"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierGeometry.lean",
+      "sha256": "aa4fa0ba8586e90b09fc74fd982666c76327ec81700f9aff8a4a216cf17d4c1a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierRow"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierGeometryComputable.lean",
+      "sha256": "f9527c8affe987613d60ae2da46d9f382e1d08e00523855cac2db7e6d807ca6d",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierGeometryOuter",
+        "ProteinFolding.Cubic.Proofs.VerifierGeometryEmit",
+        "ProteinFolding.Cubic.Proofs.VerifierHP"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierGeometryDrain.lean",
+      "sha256": "c69785c6be0fd5132ff69e7e2820ca8b5afddfd138936970d54db18ba49a0dd8",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierGeometryMachine"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierGeometryEmit.lean",
+      "sha256": "17bb272aa49a2ada250e7dc779d88e62d643f1a0f865829e11d2e2396acdb866",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierGeometryMachine"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierGeometryMachine.lean",
+      "sha256": "327e175d1f4d133e3fdd4e8f2ebda5c7150ae206de2d742a50d9654b4f865876",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierGeometry",
+        "ProteinFolding.Common.TM2WalkCopy"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierGeometryOuter.lean",
+      "sha256": "6488353eb97f162eb17882b74ae594d1db76cf0ae988f5e567be3f6759e826bf",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierGeometryRun",
+        "ProteinFolding.Cubic.Proofs.VerifierGeometryDrain",
+        "Mathlib.Tactic.Linarith"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierGeometryRun.lean",
+      "sha256": "f0896fad364a4f8e106286ddaf06953b3a98d622ec123b80a3693e691055d347",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierGeometryMachine"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierHP.lean",
+      "sha256": "79a64543b08cb4757a33eb0f4488b60f70ea4ecf006d2cdbe835b5f10f6affa4",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierHPFields",
+        "ProteinFolding.Cubic.Proofs.VerifierGeometry"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierHPFields.lean",
+      "sha256": "929483a76f80eb3a5bad1e0cf217ae10c04e02166bf63b6f2e8dae4a621eda4c",
+      "imports": [
+        "ProteinFolding.Cubic.Encodings",
+        "ProteinFolding.Cubic.Proofs.VerifierRecordDecoder",
+        "ProteinFolding.Common.TM2ProductMap",
+        "ProteinFolding.Common.TM2WordEquality",
+        "ProteinFolding.Common.TM2Boolean",
+        "ProteinFolding.Common.TM2ArithmeticSignedUnary"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierHPSemantics.lean",
+      "sha256": "836fc89e999463fa12e49c91f04f3c2cd6348dec6f2671acdd5fa27424084b03",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierHP",
+        "ProteinFolding.Cubic.Proofs.VerifierPairCount",
+        "ProteinFolding.Cubic.Proofs.VerifierValidity",
+        "ProteinFolding.Common.ComplexityBoolean"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPairCount.lean",
+      "sha256": "e63336ca6f90aee2bf1517b3fd303c4cfd594a993f7c26282479ca530a9eb3f7",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierGeometry"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPerfect.lean",
+      "sha256": "70312dcebd3977e7940040b75e79024b57c32fd59fadc9b1e29314de0a13b981",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectLabels",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectSemantics"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPerfectArithmetic.lean",
+      "sha256": "495749c0ddab6d6d1fd45017a47d56325bd1d30a0d6d5796a53ec31d2b3d4b0c",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.ThresholdCertificateUnarySide",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectPred",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectEquality",
+        "ProteinFolding.Common.TM2ProductMap",
+        "ProteinFolding.Common.TM2Constants"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPerfectCount.lean",
+      "sha256": "9872a042461d31e366ce6af7f4c67e11686ddabf3ad25308aeeb3461f9d2e6ca",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.ThresholdCertificate",
+        "ProteinFolding.Common.TM2PairProjections",
+        "Mathlib.Algebra.BigOperators.Fin"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPerfectEquality.lean",
+      "sha256": "17dbea353f3ed2bc628efaca43995976fe5f659959577cd58f2d65bf9ee67e2a",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectUnary",
+        "ProteinFolding.Common.TM2WordEquality"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPerfectInputGuards.lean",
+      "sha256": "9353bb87c2fdcebe62df7398df684979eece741bbc825269097d42fe76ae2913",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.ThresholdCertificateParser",
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectArithmetic",
+        "ProteinFolding.Common.TM2ArithmeticEquality",
+        "ProteinFolding.Common.TM2Boolean"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPerfectLabels.lean",
+      "sha256": "4d559586ad5be6243f16947906c8d27d5ec60ee38969b80b592b7cd8016d865c",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectInputGuards",
+        "ProteinFolding.Cubic.Proofs.VerifierHPFields"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPerfectPred.lean",
+      "sha256": "0fa3e96a8eede7b62c027b8efb38d0d3b04df8d6700f27158f4b0ace237c3914",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectUnary"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPerfectSemantics.lean",
+      "sha256": "cc9cf6ec3e5fda06c5005afe735cc2fd482a7aa361e02d2d4ed9b0dce9e3f4cd",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.ThresholdCertificateRecords",
+        "ProteinFolding.Cubic.Proofs.VerifierHPSemantics",
+        "ProteinFolding.Cubic.Proofs.VerifierValidity"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierPerfectUnary.lean",
+      "sha256": "36014882902a0a346a0db901491fce27af10f6414ae96df6bb7bda4adb9e7ffc",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierPerfectCount"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierRecordDecoder.lean",
+      "sha256": "aa527dd8550cbd9b90e1ba4ea75a173609d90a25ba19b46fc50b8647a125162f",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierRecords",
+        "ProteinFolding.Common.TM2Transfer"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierRecords.lean",
+      "sha256": "e21547713fe2b576cd7ed1ea7cbdf8eaf62f395f95e7c73ef15e234c33f97def",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.CertificatesBits",
+        "ProteinFolding.Common.TM2WalkInspector"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierRow.lean",
+      "sha256": "6993c4871e366ac9ca7b13bbdc843485a074e8771af566bb8c192fd574f13a81",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierRecords",
+        "ProteinFolding.Common.TM2StateExtension",
+        "ProteinFolding.Common.TM2Renaming"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Proofs/VerifierValidity.lean",
+      "sha256": "43cff9aef3b189917b2a48802764b7f299449d8902a30eaf40e1882958c5e3d7",
+      "imports": [
+        "ProteinFolding.Cubic.Proofs.VerifierGeometry"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Cubic/Statement.lean",
+      "sha256": "c3029f1b94faccd28a79f76fefe548511d038083aeed49959a5b796a2760677d",
+      "imports": [
+        "ProteinFolding.Common.Statement"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/Certificates.lean",
+      "sha256": "8f666fc214beb7a64aa52953ec451b624c779d268b6ac0906a9bdd91762b649b",
+      "imports": [
+        "ProteinFolding.Square.Normalization",
+        "ProteinFolding.Square.Counting",
+        "ProteinFolding.Square.Encodings",
+        "ProteinFolding.Common.Complexity",
+        "Mathlib.Data.List.OfFn"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/Counting.lean",
+      "sha256": "a415db8a607a946af99e62fa6d9f364d0d2ebd1bfe5eca54d54f5e8bbb8da3e6",
+      "imports": [
+        "ProteinFolding.Square.LossRepresentation"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/Encodings.lean",
+      "sha256": "71bca59719f77c4411b78bea3dfa0f85608615bf0f7aa7a0e6c9d0c04192831f",
+      "imports": [
+        "ProteinFolding.Common.Encodings",
+        "ProteinFolding.Square.Statement"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/EncodingUtilities.lean",
+      "sha256": "38107a3c7a2d4050c525411193c86ba2c468c6b8fc5725e97846d651377bd05e",
+      "imports": [
+        "ProteinFolding.Common.Encodings"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/Geometry.lean",
+      "sha256": "97c56a76d33010d515b3e19ba7887c5dc1ad184ddc5717a40dc55cb2d6b74ae6",
+      "imports": [
+        "ProteinFolding.Square.Statement"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/LossRepresentation.lean",
+      "sha256": "306717f4e11580b027c6d1605149e78930992323e0b9ecdeb846992ceeccad41",
+      "imports": [
+        "ProteinFolding.Square.Geometry"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/Normalization.lean",
+      "sha256": "155c7662fabab14d74be7d2867803e631c75515fa45bf50c47674839319c9355",
+      "imports": [
+        "ProteinFolding.Square.LossRepresentation"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/Statement.lean",
+      "sha256": "df81ab731d0a482cab5fedc3069fbd15e82afe51f21295b8fdd664a1cbe48f8c",
+      "imports": [
+        "ProteinFolding.Common.Contacts"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/TM2Collision.lean",
+      "sha256": "eba821c9e639c7a7b04270423226a2391b965c8c27c120571efa9ed847acc396",
+      "imports": [
+        "ProteinFolding.Square.TM2LengthVerifier",
+        "ProteinFolding.Square.EncodingUtilities"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/TM2CrossMatches.lean",
+      "sha256": "c809dc40201a8c6123456bc6f2c7e98a3bb45d019c408f04842228ec99410c10",
+      "imports": [
+        "ProteinFolding.Square.TM2Collision"
+      ]
+    },
+    {
+      "path": "ProteinFolding/Square/TM2LengthVerifier.lean",
+      "sha256": "f18cf32ea641748a43b9041f5da2a67dac1e01191ac2d1cdfdfb665f2604bda6",
+      "imports": [
+        "ProteinFolding.Square.Certificates"
+      ]
+    }
+  ]
+}
