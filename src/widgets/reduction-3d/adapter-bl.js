@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import * as C from './construction.js';
 
 const PRESETS = [
+  { name: 'K = 2, B = 2, U = {1, 1, 2} (odd, so doubled)', K: 2, B: 2, sizes: [1, 1, 2] },
   { name: 'K = 2, B = 4, U = {2, 4, 2}', K: 2, B: 4, sizes: [2, 4, 2] },
   { name: 'K = 2, B = 3, U = {1, 2, 2, 1} (odd, so doubled)', K: 2, B: 3, sizes: [1, 2, 2, 1] },
   { name: 'K = 2, B = 4, U = {1, 3, 2, 2} (odd, so doubled)', K: 2, B: 4, sizes: [1, 3, 2, 2] },

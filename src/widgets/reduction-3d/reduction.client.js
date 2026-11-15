@@ -329,8 +329,9 @@ export function mount(root) {
   }
 
   // ------------------------------------------------------------------ build
-  $('#rd-find').addEventListener('click', onFind);
-  function onFind() {
+  $('#rd-find').addEventListener('click', () => onFind());
+  // opts.atEnd: show the finished fold instead of the unfolded string (used when the page opens)
+  function onFind(opts = {}) {
     const { K, B, sizes } = readInstance();
     const chk = C.checkInstance(K, B, sizes);
     if (chk.errs.length) { setStatus(chk.errs[0], 'err'); return; }
@@ -365,11 +366,12 @@ export function mount(root) {
       BD.active = new Set(); renderBoard();
       const binsTxt = Array.from({ length: K }, (_, b) => `bin ${b + 1} = {${sizes.map((s, u) => (res.assign[u] === b ? 'u' + (u + 1) : null)).filter(Boolean).join(', ')}}`).join(', ');
       $('#rd-solveinfo').innerHTML = res.given ? `Folding your packing: ${binsTxt}.` : `The bins were not full, so backtracking packed them (${fmt(res.solverNodes)} search nodes): ${binsTxt}.`;
-      setStatus(res.val.ok ? 'Folded and checked. Press → for the first step.' : 'The fold failed a check (see below).', res.val.ok ? 'ok' : 'err');
+      const okMsg = opts.atEnd ? 'Folded and checked. This is the finished fold: press ← or drag the bar to go back through the steps.' : 'Folded and checked. Press → for the first step.';
+      setStatus(res.val.ok ? okMsg : 'The fold failed a check (see below).', res.val.ok ? 'ok' : 'err');
       renderChecks(res);
       setup(res);
       renderFormula(res.P, sizes);
-      goStep(0, true);
+      if (opts.atEnd) goStep(V.steps.length - 1, false); else goStep(0, true);
     }, 40);
   }
 
@@ -980,4 +982,6 @@ export function mount(root) {
   root.dataset.explain = '0';
   applyStage();
   loadPreset(0);
+  // the page opens on the first preset, already folded, so that the finished cube is there at once
+  onFind({ atEnd: true });
 }

@@ -28,7 +28,7 @@ Each card opens on the idea of its step and its claim in words, with the exact s
 
 The 3D view runs a shorter version of this construction. The cube, the frame and the bins on one edge stay, but the pieces on that edge are simpler. Each separator is a single H between two P's, and each item is a run of H's lying along the edge. Instead of the two walls, two runs of P's that are only just long enough to reach across a face pin the first and the last separator to the two ends of the edge, so every bin is forced to be exactly full. We call this edge the *shelf* and these runs of P's *tethers*.
 
-Choose an instance and drag its items into the bins, or let the solver pack them. Then press **Fold the string**: $S$ appears as a straight chain, and every press of <kbd>→</kbd> folds its next piece, until the H's fill an $n\times n\times n$ cube and the bottom front edge, the shelf, carries your packing. The [original proof](../original-proof/#folding-a-small-instance) has the same view for Berger and Leighton's string.
+The view opens on a small instance, two bins of size 2 and items 1, 1, 2, already folded: the H's fill an $n\times n\times n$ cube and the bottom front edge, the shelf, carries the packing. Press <kbd>←</kbd> or drag along the bar under the cube to go back through the steps. Or choose another instance and drag its items into the bins, or let the solver pack them, and press **Fold the string**: $S$ appears as a straight chain, and every press of <kbd>→</kbd> folds its next piece. The [original proof](../original-proof/#folding-a-small-instance) has the same view for Berger and Leighton's string.
 
 <div class="full"><Reduction3D construction="edge" /></div>
 
@@ -43,10 +43,10 @@ The big red beads are the H's and the small grey ones the P's. The H's of the co
 Before anything else the instance is normalised: $B$ and every size are multiplied by 6, and if the number of bins $m$ is even, one item of size $B$ is added with a bin of its own, so that $m$ becomes odd. Then $n = m(B+1)+3$ and, with $k$ items of sizes $a_1,\dots,a_k$,
 
 $$
-S = H^{N_0}\,PP\,D_{9n-10}\,P^{\lambda}\,D_{n-2}\,P^{n}\,H(P^{B+6}H)^{m}\,P^{n}\,D_{n-2}\,P^{\lambda}D_{a_1}\cdots P^{\lambda}D_{a_k}\,P,
+S = H^{N_0}\,PP\,H(PPH)^{9n-11}\,P^{\lambda}\,H(PPH)^{n-3}\,P^{n}\,H(P^{B+6}H)^{m}\,P^{n}\,H(PPH)^{n-3}\,P^{\lambda}H(PPH)^{a_1-1}\cdots P^{\lambda}H(PPH)^{a_k-1}\,P,
 $$
 
-where $D_r = H(PPH)^{r-1}$ is a *dense run* of $r$ H's, each between two P's, $N_0 = n^3-12n+16$ and $\lambda = 4n+2k$. Every H of a dense run, and every separator, has P's on both sides, so in a perfect fold it lies on an edge of the cube. There are exactly $12n-16$ of them, as many as the edges have nodes, and the core $H^{N_0}$ fills the rest.
+where each $H(PPH)^{r-1}$ is a *dense run* of $r$ H's, each between two P's, $N_0 = n^3-12n+16$ and $\lambda = 4n+2k$. Every H of a dense run, and every separator, has P's on both sides, so in a perfect fold it lies on an edge of the cube. There are exactly $12n-16$ of them, as many as the edges have nodes, and the core $H^{N_0}$ fills the rest.
 
 Even the smallest instances give a sizeable cube: two bins of size 2 become three bins of size 12, so $n = 42$, with 74,088 H's and about 76,000 letters. One bin of size 2 already gives $n = 16$, which is among the presets.
 

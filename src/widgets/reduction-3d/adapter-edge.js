@@ -22,7 +22,8 @@ const PRESETS = [
 
 const sub = (s) => `<sub>${s}</sub>`;
 const sup = (s) => `<sup>${s}</sup>`;
-const D = (r) => `D${sub(r)}`;
+// a dense run of r H's, H(PPH)^{r−1}, given the exponent r−1
+const D = (e) => `H(PPH)${sup(e)}`;
 
 function formulaParts(P, sizes, num, { fmt }) {
   const { n, N0, lambda, m, B, nz } = P;
@@ -30,17 +31,17 @@ function formulaParts(P, sizes, num, { fmt }) {
   const parts = [
     ['core', `H${sup(e('N₀', N0))}`],
     ['pp', 'PP'],
-    ['A', D(e('9n−10', 9 * n - 10))],
+    ['A', D(e('9n−11', 9 * n - 11))],
     ['link0', `P${sup(e('λ', lambda))}`],
-    ['F1', D(e('n−2', n - 2))],
+    ['F1', D(e('n−3', n - 3))],
     ['teth1', `P${sup(e('n', n))}`],
     ['seps', `H(P${sup(e('B+6', B + 6))}H)${sup(e('m', m))}`],
     ['teth2', `P${sup(e('n', n))}`],
-    ['F2', D(e('n−2', n - 2))],
+    ['F2', D(e('n−3', n - 3))],
   ];
-  if (num) parts.push(['items', nz.a.map((a, i) => `<span class="f" data-f="item-${i}">P${sup(fmt(lambda))}${D(a)}</span>`).join(' ') + ' P']);
-  else parts.push(['items', `P${sup('λ')}${D(`a${sub(1)}`)} ⋯ P${sup('λ')}${D(`a${sub('k')}`)} P`]);
-  parts.push(['def', `<br><small>D${sub('r')} = H(PPH)${sup('r−1')}` + (num ? '' : `, N₀ = n³−12n+16, λ = 4n+2k`) + '</small>']);
+  if (num) parts.push(['items', nz.a.map((a, i) => `<span class="f" data-f="item-${i}">P${sup(fmt(lambda))}${D(a - 1)}</span>`).join(' ') + ' P']);
+  else parts.push(['items', `P${sup('λ')}${D(`a${sub(1)}−1`)} ⋯ P${sup('λ')}${D(`a${sub('k')}−1`)} P`]);
+  if (!num) parts.push(['def', '<br><small>N₀ = n³−12n+16, λ = 4n+2k</small>']);
   return parts;
 }
 
@@ -64,8 +65,8 @@ function buildSteps(res, { fmt }) {
     view: { dir: [-1.0, 0.45, 1.05], dist: 3.3, tgt: [-0.75, 0.25, 0] },
     tag: '', title: 'The string S, still unfolded',
     body: `<p>The instance on the left asks whether the items ${itemsTxt} fill ${m0} bin${m0 > 1 ? 's' : ''} of size ${B0} exactly. The construction first multiplies B and every size by 6${nz.added ? `, and since m is even it adds one item of size B (in bold) and a bin for it, so that m becomes odd` : ''}: m = ${m}, B = ${B}, and the k = ${k} items have sizes ${scaled}. Then n = m(B+1)+3 = ${n}, and</p>
-      <p class="eq">S = H${sup('N₀')} PP ${D('9n−10')} P${sup('λ')} ${D('n−2')} P${sup('n')} H(P${sup('B+6')}H)${sup('m')} P${sup('n')} ${D('n−2')} P${sup('λ')}${D(`a${sub(1)}`)} ⋯ P${sup('λ')}${D(`a${sub('k')}`)} P</p>
-      <p>with the dense runs D${sub('r')} = H(PPH)${sup('r−1')}, N₀ = n³−12n+16 = ${fmt(N0)} and λ = 4n+2k = ${lambda}. S has ${fmt(len)} letters, exactly n³ = ${fmt(n ** 3)} of them H. A fold is perfect when its H's fill an ${n}×${n}×${n} cube (the wireframe), and S has a perfect fold exactly when the items can be packed. Press <b>→</b> to fold S one step at a time with the packing on the left; <b>←</b> goes back, and dragging along the bar below jumps to any letter.</p>` });
+      <p class="eq">S = H${sup('N₀')} PP ${D('9n−11')} P${sup('λ')} ${D('n−3')} P${sup('n')} H(P${sup('B+6')}H)${sup('m')} P${sup('n')} ${D('n−3')} P${sup('λ')}${D(`a${sub(1)}−1`)} ⋯ P${sup('λ')}${D(`a${sub('k')}−1`)} P</p>
+      <p>where each H(PPH)${sup('r−1')} is a dense run of r H's, N₀ = n³−12n+16 = ${fmt(N0)} and λ = 4n+2k = ${lambda}. S has ${fmt(len)} letters, exactly n³ = ${fmt(n ** 3)} of them H. A fold is perfect when its H's fill an ${n}×${n}×${n} cube (the wireframe), and S has a perfect fold exactly when the items can be packed. Press <b>→</b> to fold S one step at a time with the packing on the left; <b>←</b> goes back, and dragging along the bar below jumps to any letter.</p>` });
 
   add({ id: 'core', group: 1, ...span('core'), dir: [-1, 0, 0], cut: true, factors: ['core'], view: { dir: [1, 0.9, 1], dist: 2.6, tgt: [0, 0, 0] },
     tag: '', title: 'The core: H^{N₀}',
@@ -73,8 +74,8 @@ function buildSteps(res, { fmt }) {
       <p>The H's of the core have H's next to them in the string, so on their own they could lie anywhere in the cube. The rest of S is what pins everything down.</p>` });
 
   add({ id: 'A', group: 1, ...span('pp', 'A'), dir: [0, 1, 0], factors: ['pp', 'A'], view: { dir: [1.0, 0.8, 0.9], dist: 2.6, tgt: [0, 0, 0] },
-    tag: '', title: 'The run A = D_{9n−10} on nine edges',
-    body: `<p>In a dense run D${sub('r')} = H(PPH)${sup('r−1')} every H has P's on both sides in the string. Those two P's lie outside the cube, so in a perfect fold the H has two open sides: it lies on an edge or at a corner. Consecutive H's of the run are neighbours, joined by a staple of two P's outside the cube, and the staples alternate between the two open sides of the edge.</p>
+    tag: '', title: 'The run A = H(PPH)^{9n−11} on nine edges',
+    body: `<p>In a dense run H(PPH)${sup('r−1')}, of r H's, every H has P's on both sides in the string. Those two P's lie outside the cube, so in a perfect fold the H has two open sides: it lies on an edge or at a corner. Consecutive H's of the run are neighbours, joined by a staple of two P's outside the cube, and the staples alternate between the two open sides of the edge.</p>
       <p>PP leaves the cube at the top. A starts at (0, N, N−1) and runs through all eight corners, (0, N, 0), (0, 0, 0), (0, 0, N), (0, N, N), (N, N, N), (N, 0, N), (N, 0, 0), (N, N, 0), to (N, N, N−1): 9n−10 = ${fmt(9 * n - 10)} H's on nine of the twelve edges. The three edges left free share no corner: the top front edge E₁, the bottom back edge E₂, and the bottom front edge E*, the <b>shelf</b> that will carry the instance.</p>` });
 
   add({ id: 'link0', group: 1, ...span('link0'), dir: [1, 0, 0], factors: ['link0'], tint: [0], view: { dir: [1.3, -0.35, 0.7], dist: 2.8, tgt: [0.1, -0.2, 0] },
@@ -83,7 +84,7 @@ function buildSteps(res, { fmt }) {
       <p>λ is more than any such route needs. Our write-up uses up the surplus with a loop in front of the cube; here it is folded into a flat meander under the cube, which leaves the shelf in view.</p>` });
 
   add({ id: 'F1', group: 1, ...span('F1'), dir: [0, 1, 0], factors: ['F1'], view: { dir: [0.4, 0.7, 1.2], dist: 2.4, tgt: [0, 0.2, 0] },
-    tag: '', title: 'F₁ = D_{n−2} on the top front edge',
+    tag: '', title: 'F₁ = H(PPH)^{n−3} on the top front edge',
     body: `<p>The run F₁ fills the inside of E₁, from (N−1, N, 0) to (1, N, 0), with its staples alternating between above the edge and in front of it.</p>` });
 
   add({ id: 'teth1', group: 2, ...span('teth1'), dir: [0, 0, -1], factors: ['teth1'], view: { dir: [0.35, 0.2, 1.2], dist: 2.4, tgt: [0, 0, 0] },
@@ -101,7 +102,7 @@ function buildSteps(res, { fmt }) {
     body: `<p>The second end tether, again only just long enough, runs from σ${sub('m+1')} at (N−1, 0, 0) straight back under the bottom face to the bottom back edge. It pins σ${sub('m+1')} to the other end of the shelf.</p>` });
 
   add({ id: 'F2', group: 2, ...span('F2'), dir: [0, -1, 0.4], factors: ['F2'], view: { dir: [0.7, -0.6, -1.1], dist: 2.5, tgt: [0, -0.2, 0] },
-    tag: '', title: 'F₂ = D_{n−2} on the bottom back edge',
+    tag: '', title: 'F₂ = H(PPH)^{n−3} on the bottom back edge',
     body: `<p>The run F₂ fills the inside of E₂, from (N−1, 0, N) to (1, 0, N). Now every node of the cube is filled except the bins on the shelf, mB = ${fmt(m * B)} nodes, and the rest of S is the k = ${k} items, each a dense run after a linker, with mB lone H's in all.</p>` });
 
   const load = new Array(m).fill(0);
@@ -113,7 +114,7 @@ function buildSteps(res, { fmt }) {
     const name = added ? 'the added item' : `item u${u + 1}`;
     const into = added
       ? `<p>m was even, so the construction added an item of size B = ${B}. It fills bin ${j + 1}, the bin added with it, on its own.</p>`
-      : `<p>Then D${sub(a)} lays item u${u + 1} (size ${sizes[u]}, times 6: ${a}) into bin ${j + 1}, the bin of u${u + 1} in the packing on the left. ${left ? `Bin ${j + 1} has ${left} free node${left === 1 ? '' : 's'} left.` : `Bin ${j + 1} is now full.`}</p>`;
+      : `<p>Then the dense run ${D(a - 1)} lays item u${u + 1} (size ${sizes[u]}, times 6: ${a}) into bin ${j + 1}, the bin of u${u + 1} in the packing on the left. ${left ? `Bin ${j + 1} has ${left} free node${left === 1 ? '' : 's'} left.` : `Bin ${j + 1} is now full.`}</p>`;
     add({ id: 'item', group: 3, s: sg.start, e: sg.end, dir: tailDown, factors: ['items', sg.fkey], tint: [sg.string], items: added ? [] : [u], view: shelfView,
       tag: '', title: added ? `The added item (size ${a}) into bin ${j + 1}` : `Item u${u + 1} (size ${a}) into bin ${j + 1}`,
       body: `<p>The linker P${sup('λ')} before ${name} (highlighted) starts just below the end of the previous run, goes straight down to its own level y = ${sg.level}, runs there under the cube and comes back up below the first node of the item.</p>${into}` +
