@@ -5,14 +5,16 @@
  * and the short version of the one-edge construction, with the instance on one edge (adapter-edge.js, edge-construction.js).
  *
  * mount(root) takes the markup of Reduction3D.astro (ids prefixed rd-, one widget per page) and
- * builds everything inside it: the packing board (drag and drop), the formula of the string with
+ * builds everything inside it: the packing board (the bin-packing game's board: drag, or click and
+ * then a bin, or keys 1–K and 0), the formula of the string with
  * the current factor marked, the checks of the fold, and the three.js stage with the steps and the
  * string bar. An adapter supplies what belongs to one construction: presets, formula, steps and
  * their texts, labels on the cube, and the pieces of the string bar.
  *
  * Keys (while the widget fills most of the screen or has focus): → completes the running step or
  * folds the next one, ← goes back one step, + and − zoom.
- * Rendering pauses while the widget is off screen.
+ * Rendering pauses while the widget is off screen. The strings and folds are built in a worker
+ * (build.worker.js), on the main thread if the worker cannot start.
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -37,27 +39,58 @@ export function mount(root) {
   // CAT: 0 P, 1 edges, 2 back, 3 back-left edge, 4 left, 5 bottom, 6 right, 7 top, 8 interior,
   //      9 wall, 10 special, 11 filler, 12 dummy, 13 item
   // Palettes. 'hp' (the default): H's in reds (edges a light red; faces, core and paddings paler;
-  // walls dark), P's grey and translucent, items in bright colours; one version per stage.
-  // 'normal': one colour per step of the construction.
+  // walls dark), P's grey and translucent; one version per stage. 'normal': one colour per step of
+  // the construction. The items have the colours of the packing board in every palette (itemHex).
   const PALETTES = {
     normal: {
       cat: ['#a3a9b3', '#f2b33d', '#3f7ed6', '#f2b33d', '#4a90e2', '#386fc4', '#5a9cf0', '#4485dc', '#2d5aa0',
         '#b8463a', '#ff8c1a', '#4f8f86', '#9c8a6a', '#ffffff'],
-      items: ['#ffd23f', '#4cc9ff', '#3ee07a', '#ff5dc8', '#c77dff', '#ff9f43', '#9ef01a', '#00e5c0', '#ff6b6b', '#a0c4ff'],
       pOpacity: 1, bondOpacity: 0.55,
     },
     hp_night: {
       cat: ['#aab0b8', '#ff8a7a', '#f6c3bc', '#ff8a7a', '#f6c3bc', '#f6c3bc', '#f6c3bc', '#f6c3bc', '#efaaa2',
         '#9e1c1c', '#ff8a7a', '#fbdcd7', '#e39a91', '#ffffff'],
-      items: ['#39ff14', '#00f0ff', '#ff00ff', '#ffff00', '#bc13fe', '#00ff9f', '#4d4dff', '#ccff00', '#7df9ff', '#ff9f00'],
       pOpacity: 0.62, bondOpacity: 0.6,
     },
     hp_day: {
       cat: ['#5f6670', '#f0705e', '#f2b0a7', '#f0705e', '#f2b0a7', '#f2b0a7', '#f2b0a7', '#f2b0a7', '#ea9b91',
         '#9e1c1c', '#f0705e', '#f6c8c1', '#d6837a', '#ffffff'],
-      items: ['#2bd60f', '#00b4e0', '#e000e0', '#f2c200', '#a312f0', '#00c98a', '#3d3dff', '#90c000', '#1fb2d4', '#ff8a00'],
       pOpacity: 0.72, bondOpacity: 0.7,
     },
+  };
+  // The item colours are the site's (--item-1 … --item-4, as on the packing board and in the
+  // game), read from the page and read again when the theme changes. The board tells items 5–8
+  // and 9–12 apart from 1–4 by stripes and dots; here they are lighter and darker.
+  let ITEM_BASE = [];
+  function cssHex(expr) {
+    const p = document.createElement('span');
+    p.style.cssText = `position:absolute;visibility:hidden;color:${expr}`;
+    root.appendChild(p);
+    const c = getComputedStyle(p).color;
+    p.remove();
+    let v = null, m = c.match(/rgba?\(([^)]*)\)/);
+    if (m) v = m[1].split(/[\s,/]+/).filter(Boolean).slice(0, 3).map((x) => +x / 255);
+    else if ((m = c.match(/color\(srgb\s+([^)]*)\)/))) v = m[1].split(/[\s/]+/).filter(Boolean).slice(0, 3).map(Number);
+    if (!v || v.some((x) => !Number.isFinite(x))) return '#808080';
+    return '#' + v.map((x) => Math.round(clamp(x, 0, 1) * 255).toString(16).padStart(2, '0')).join('');
+  }
+  function readItemColours() {
+    ITEM_BASE = [1, 2, 3, 4].map((k) => cssHex(`var(--item-${k})`));
+    for (const k in ITEM_HEX) delete ITEM_HEX[k];
+  }
+  const ITEM_HEX = {};
+  const mixHex = (h, to, t) => { const c = new THREE.Color(h); c.lerp(new THREE.Color(to), t); return '#' + c.getHexString(); };
+  const itemHex = (u) => {
+    const key = u + stage;
+    if (ITEM_HEX[key]) return ITEM_HEX[key];
+    let h = ITEM_BASE[u % 4] || '#808080';
+    const tier = Math.floor(u / 4) % 3;
+    if (tier === 1) h = mixHex(h, '#ffffff', 0.35); else if (tier === 2) h = mixHex(h, '#000000', 0.3);
+    // a stage that is not the site's theme gets the colours a little lighter (night) or darker (day)
+    const dark = document.documentElement.dataset.theme === 'dark';
+    if (stage === 'night' && !dark) h = mixHex(h, '#ffffff', 0.25);
+    else if (stage === 'day' && dark) h = mixHex(h, '#000000', 0.25);
+    return (ITEM_HEX[key] = h);
   };
   // The stage: day (light, like the page) or night (dark). It follows the site's theme until the
   // reader picks one with the sun / moon button.
@@ -67,7 +100,7 @@ export function mount(root) {
       strip: 0x1c1c21, plugStrip: 0x8a7650, stripOp: 0.45, map: '#e9e5dc', mapEmpty: '#d6d1c6', mapLine: 'rgba(28,28,33,0.8)', mapPlug: 'rgba(122,101,56,0.9)',
     },
     night: {
-      clear: 0x0e1116, line: 0x8a919c, wire: 0x4a5466, wireOp: 0.55, label: 'rgba(14,17,22,0.78)', ink: '#ffffff', plugInk: '#dccb9f',
+      clear: 0x0e0f11, line: 0x8a919c, wire: 0x4a5466, wireOp: 0.55, label: 'rgba(14,17,22,0.78)', ink: '#ffffff', plugInk: '#dccb9f',
       strip: 0xffffff, plugStrip: 0xcdbb94, stripOp: 0.85, map: '#14171d', mapEmpty: '#262b34', mapLine: 'rgba(255,255,255,0.9)', mapPlug: 'rgba(205,187,148,0.9)',
     },
   };
@@ -80,9 +113,18 @@ export function mount(root) {
   const RGB_CACHE = {};
   const rgbOf = (h) => RGB_CACHE[h] || (RGB_CACHE[h] = hexRGB(h));
   const catHex = (c) => pal().cat[c];
-  const itemHex = (u) => { const a = pal().items; return a[u % a.length]; };
   const catRGB = (c) => rgbOf(catHex(c));
   const itemRGB = (u) => rgbOf(itemHex(u));
+
+  // ------------------------------------------------------------------ state
+  let RES = null;      // build result
+  let V = null;        // scene data for the current build
+  // where we are: cur.pos residues are folded; cur.k is the step that contains that position;
+  // cur.anim, while a step is being folded, runs from anim.from to anim.to residues
+  const cur = { k: 0, pos: 0, anim: null };
+  let speed = 1;
+  let camTween = null;
+  let fmtNumeric = false;
 
   // ------------------------------------------------------------------ three.js base
   const glWrap = $('#rd-gl');
@@ -136,7 +178,13 @@ export function mount(root) {
     camera.updateProjectionMatrix();
     // scale camera distances so the cube fits the free area between hud and dock
     const free = Math.max(80, Math.min(h - dh - hh, w * 0.95)) / h;
-    fitScale = clamp(0.62 / free, 0.85, 2.4);
+    const fit = clamp(0.62 / free, 0.85, 2.4);
+    // when the free area changes (a narrower window, the dock growing), move the camera with it
+    if (V && Math.abs(fit - fitScale) > 0.01 && !camTween) {
+      const d = camera.position.clone().sub(controls.target).multiplyScalar(fit / fitScale);
+      camera.position.copy(controls.target).add(d);
+    }
+    fitScale = fit;
   }
   let fitScale = 1;
   new ResizeObserver(resize).observe(glWrap);
@@ -148,16 +196,6 @@ export function mount(root) {
   const cutPlanes = [new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0), new THREE.Plane(new THREE.Vector3(0, -1, 0), 0),
     new THREE.Plane(new THREE.Vector3(0, 0, -1), 0)];
 
-  // ------------------------------------------------------------------ state
-  let RES = null;      // build result
-  let V = null;        // scene data for the current build
-  // where we are: cur.pos residues are folded; cur.k is the step that contains that position;
-  // cur.anim, while a step is being folded, runs from anim.from to anim.to residues
-  const cur = { k: 0, pos: 0, anim: null };
-  let speed = 1;
-  let camTween = null;
-  let fmtNumeric = false;
-
   // ------------------------------------------------------------------ helpers
   const smooth = (x) => x * x * (3 - 2 * x);
   const easeIO = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
@@ -168,6 +206,11 @@ export function mount(root) {
     arr[o + 4] = 0; arr[o + 5] = 1; arr[o + 6] = 0; arr[o + 7] = 0;
     arr[o + 8] = 0; arr[o + 9] = 0; arr[o + 10] = 1; arr[o + 11] = 0;
     arr[o + 12] = x; arr[o + 13] = y; arr[o + 14] = z; arr[o + 15] = 1;
+  }
+  function setTS(arr, k, x, y, z, sc) {
+    setT(arr, k, x, y, z);
+    const o = 16 * k;
+    arr[o] = sc; arr[o + 5] = sc; arr[o + 10] = sc;
   }
 
   // ------------------------------------------------------------------ left panel: instance
@@ -202,105 +245,191 @@ export function mount(root) {
     renderFormula(chk.P, sizes);
   }
 
-  // ------------------------------------------------------------------ drag-and-drop packing board
+  // ------------------------------------------------------------------ packing board
+  // The bin-packing game's board (its bp- classes and styles, ../bin-pack/styles.css): the loose
+  // items above, one horizontal bin per row. An item moves by dragging it, or by clicking it and
+  // then a bin (or the items, to take it out); with an item focused, keys 1–K put it into a bin and
+  // 0 takes it out. BD.active marks the items of the step on the stage.
   const BD = { sig: '', K: 0, B: 0, sizes: [], bins: [], active: new Set() };
   const bdLoad = (b) => BD.bins[b].reduce((a, u) => a + BD.sizes[u], 0);
   const bdBinOf = (u) => BD.bins.findIndex((l) => l.includes(u));
   const bdComplete = () => BD.sizes.length > 0 && BD.bins.flat().length === BD.sizes.length && BD.bins.every((_, b) => bdLoad(b) === BD.B);
+  const bdFits = (u, b) => bdBinOf(u) !== b && BD.B - bdLoad(b) >= BD.sizes[u];
+  const board = $('#rd-board');
+  let sel = null; // the item picked up (by a click, a key or a drag)
+  let drag = null; // { u, x0, y0, on, el, dx, dy, over }
+  let kbd = false; // the last item was picked up with the keyboard: show the bin keys
+  let arrived = null; // the item just put into a bin: only it plays the game's arrival animation
+  const itemCss = (u) => `--c:var(--item-${(u % 4) + 1});--n:${BD.sizes[u]}`;
+  const itemPat = (u) => Math.floor(u / 4) % 3;
+  const packedTxt = () => BD.bins.map((l, b) => `bin ${b + 1} = {${l.map((x) => 'u' + (x + 1)).join(', ')}}`).join(', ');
+  const info = (html) => { $('#rd-solveinfo').innerHTML = html; };
+
   function resetBoardIfNew(K, B, sizes) {
     const ok = Number.isInteger(K) && K >= 1 && K <= 6 && Number.isInteger(B) && B >= 1 && B <= 64 && sizes.length <= 24 && sizes.every((x) => x > 0 && x <= B);
     const sig = ok ? `${K}|${B}|${sizes.join(',')}` : 'bad';
     if (sig === BD.sig) return;
     BD.sig = sig; BD.K = ok ? K : 0; BD.B = B; BD.sizes = ok ? sizes.slice() : []; BD.bins = Array.from({ length: BD.K }, () => []);
-    BD.active = new Set();
-    $('#rd-solveinfo').innerHTML = ok ? `Drag the items into the ${K} bins of size B = ${B} until every bin is exactly full, or press <b>Fold the string</b> and the solver packs them.` : '';
+    BD.active = new Set(); sel = null; BD.noSol = false;
+    info(ok ? `Drag the items into the ${K} bin${K > 1 ? 's' : ''} of size ${B}, or click an item and then a bin, until every bin is full. Or press <b>Fold the string</b> and the solver packs them.` : '');
   }
+
   function renderBoard() {
-    if (!BD.K) { $('#rd-tPool').innerHTML = '<span class="tempty">—</span>'; $('#rd-tBins').innerHTML = ''; $('#rd-packHint').textContent = ''; return; }
-    const U = Math.max(9, Math.min(22, Math.floor(168 / BD.B)));
+    const hint = $('#rd-packHint');
+    if (!BD.K) { board.innerHTML = '<span class="bp-empty">Enter an instance above.</span>'; hint.innerHTML = ''; return; }
+    board.style.setProperty('--bp-B', String(BD.B));
+    // the width of one unit, as in the game's styles: min(3.5rem, (board width − 12px) / B)
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    const unit = Math.min(3.5 * rem, (board.clientWidth - 12) / BD.B);
+    const moving = drag && drag.on ? drag.u : sel;
     const inBin = new Set(BD.bins.flat());
-    const blk = (u) => `<div class="tblk${BD.active.has(u) ? ' active' : ''}" data-u="${u}" style="--c:${itemHex(u)};height:${Math.max(8, BD.sizes[u] * U - 3)}px"><span>u${u + 1}</span><b>${BD.sizes[u]}</b></div>`;
-    $('#rd-tPool').innerHTML = BD.sizes.map((_, u) => (inBin.has(u) ? '' : blk(u))).join('') || '<span class="tempty">all items packed</span>';
-    $('#rd-tBins').innerHTML = BD.bins.map((list, b) => {
-      const ld = bdLoad(b);
-      return `<div class="tcol"><div class="tbin" data-b="${b}" style="--u:${U}px;height:${BD.B * U + 5}px">${list.map(blk).join('')}</div>` +
-        `<div class="tcap${ld === BD.B ? ' full' : ''}">bin ${b + 1} · ${ld}/${BD.B}</div></div>`;
+    const allActive = BD.active.size >= BD.sizes.length; // a step that reads every item marks none
+    const item = (u) => {
+      const b = bdBinOf(u);
+      const cls = `bp-item bp-pat-${itemPat(u)}${sel === u && !(drag && drag.on) ? ' is-selected' : ''}${drag && drag.on && drag.u === u ? ' is-lifted' : ''}${BD.active.has(u) && !allActive ? ' rd-active' : ''}${u === arrived ? ' rd-new' : ''}`;
+      const name = BD.sizes[u] * unit >= 4 * rem ? `<span class="rd-uname">u${u + 1}</span>` : '';
+      const where = b < 0 ? 'not in a bin' : `in bin ${b + 1}`;
+      return `<button type="button" class="${cls}" data-u="${u}" style="${itemCss(u)}" aria-pressed="${sel === u}" aria-label="Item u${u + 1}, size ${BD.sizes[u]}, ${where}" title="u${u + 1}, size ${BD.sizes[u]}"><span class="bp-size">${name}${BD.sizes[u]}</span></button>`;
+    };
+    const trayTarget = moving !== null && bdBinOf(moving) >= 0;
+    const tray = `<div class="bp-tray${trayTarget ? ' is-target' : ''}${drag && drag.over === 'tray' && trayTarget ? ' is-over' : ''}" data-tray="">` +
+      `<div class="bp-row-head"><span class="bp-label">Items</span></div><div class="bp-items">` +
+      BD.sizes.map((s, u) => (inBin.has(u) ? `<span class="bp-slot" style="--n:${s}" aria-hidden="true" title="u${u + 1} is in bin ${bdBinOf(u) + 1}">${s}</span>` : item(u))).join('') +
+      (inBin.size === BD.sizes.length ? '<span class="visually-hidden">Every item is in a bin.</span>' : '') + '</div></div>';
+    const bins = BD.bins.map((list, b) => {
+      const load = bdLoad(b), full = load === BD.B;
+      const ghost = moving !== null && bdFits(moving, b);
+      const blocked = moving !== null && bdBinOf(moving) !== b && !ghost;
+      const over = drag && drag.on && drag.over === b;
+      const cls = `bp-bin${full ? ' is-full' : ''}${ghost ? ' is-target' : ''}${blocked ? ' is-blocked' : ''}${over ? (ghost ? ' is-over' : ' is-refuse') : ''}`;
+      return `<div class="${cls}" data-b="${b}" role="group" aria-label="Bin ${b + 1}: ${load} of ${BD.B}${full ? ', full' : ''}">` +
+        `<div class="bp-row-head"><span class="bp-label">Bin ${b + 1}${sel !== null && kbd ? ` <kbd class="bp-key">${b + 1}</kbd>` : ''}</span>` +
+        `<span class="bp-load">${full ? '<span class="bp-check" aria-hidden="true"></span>full' : `${load} of ${BD.B}`}</span></div>` +
+        `<div class="bp-track">${list.map(item).join('')}${ghost ? `<span class="bp-ghost bp-pat-${itemPat(moving)}" style="${itemCss(moving)}" aria-hidden="true"></span>` : ''}</div></div>`;
     }).join('');
-    $('#rd-packHint').textContent = bdComplete() ? '✓ packed' : '';
-    $('#rd-packHint').style.color = 'var(--diff-1-ink)';
+    const focused = board.contains(document.activeElement) && document.activeElement.dataset.u;
+    board.innerHTML = tray + `<div class="bp-bins">${bins}</div>`;
+    arrived = null;
+    if (focused !== undefined && focused !== false) { const el = board.querySelector(`.bp-item[data-u="${focused}"]`); if (el) el.focus({ preventScroll: true }); }
+    hint.className = 'rd-packhint' + (BD.noSol ? ' bad' : '');
+    hint.innerHTML = BD.noSol ? 'no packing exists' : bdComplete() ? '<span class="bp-check" aria-hidden="true"></span>packed' : '';
   }
+  new ResizeObserver(() => { if (BD.K) renderBoard(); }).observe(board);
+  // mark the items of the step on the stage (without drawing the board again)
+  function markActive(items) {
+    BD.active = new Set(items || []);
+    const all = BD.active.size >= BD.sizes.length;
+    board.querySelectorAll('.bp-item').forEach((el) => el.classList.toggle('rd-active', !all && BD.active.has(+el.dataset.u)));
+  }
+
   function boardChanged() {
     renderBoard();
-    if (RES && RES.solvable && RES.K === BD.K) {
-      const same = BD.sizes.every((_, u) => bdBinOf(u) === RES.assign[u]);
-      if (!same) setStatus(bdComplete() ? 'Packing changed: press Fold the string to fold this packing.' : 'Packing changed. Finish it, or press Fold the string and the solver fills the bins.', 'err');
-    } else if (bdComplete()) setStatus(`Packed. Press Fold the string to fold ${A.strPlain} with this packing.`, 'ok');
+    const same = RES && RES.solvable && RES.K === BD.K && RES.B === BD.B && RES.sizes.join() === BD.sizes.join()
+      && BD.sizes.every((_, u) => bdBinOf(u) === RES.assign[u]);
+    if (same && V) setStatus('This is the packing folded on the stage.', 'ok');
+    else if (bdComplete()) setStatus(`Packed. Press Fold the string to fold ${A.strPlain} with this packing.`, 'ok');
+    else setStatus('Fill every bin, or press Fold the string and the solver packs them.');
   }
-  let drag = null;
-  document.addEventListener('pointerdown', (e) => {
-    const el = e.target.closest && e.target.closest('#rd-tetris .tblk');
-    if (!el) return;
-    e.preventDefault();
-    const r = el.getBoundingClientRect();
-    const ghost = el.cloneNode(true);
-    ghost.classList.add('ghost'); ghost.classList.remove('active');
-    ghost.style.left = r.left + 'px'; ghost.style.top = r.top + 'px'; ghost.style.height = r.height + 'px';
-    document.body.appendChild(ghost);
-    el.classList.add('dragging');
-    drag = { u: +el.dataset.u, ghost, el, dx: e.clientX - r.left, dy: e.clientY - r.top };
+  // move item u into bin b, or out of its bin (b = −1); a bin without room refuses it
+  function moveItem(u, b) {
+    const from = bdBinOf(u);
+    sel = null;
+    if (b === from) { renderBoard(); return; }
+    if (b >= 0 && BD.B - bdLoad(b) < BD.sizes[u]) {
+      const free = BD.B - bdLoad(b);
+      renderBoard();
+      info(`<span class="err">u${u + 1} (size ${BD.sizes[u]}) does not fit: bin ${b + 1} has ${free} free.</span>`);
+      const el = board.querySelector(`.bp-bin[data-b="${b}"]`);
+      if (el) { el.classList.add('is-refuse'); setTimeout(() => el.classList.remove('is-refuse'), 350); }
+      return;
+    }
+    if (from >= 0) BD.bins[from].splice(BD.bins[from].indexOf(u), 1);
+    if (b >= 0) { BD.bins[b].push(u); arrived = u; }
+    info(bdComplete() ? `Packed by hand: ${packedTxt()}.` : `${BD.bins.flat().length} of ${BD.sizes.length} items packed.`);
+    boardChanged();
+  }
+  function pick(u, viaKey) {
+    sel = sel === u ? null : u;
+    kbd = !!viaKey;
+    renderBoard();
+  }
+
+  // pointer: a press that moves more than a few pixels drags the item, a press that does not is a click
+  board.addEventListener('pointerdown', (e) => {
+    const el = e.target.closest('.bp-item');
+    if (!el || e.button > 0) return;
+    drag = { u: +el.dataset.u, x0: e.clientX, y0: e.clientY, on: false, el: null, over: null };
   });
   function dropTarget(x, y) {
-    for (const b of root.querySelectorAll('#rd-tBins .tbin')) {
-      const r = b.getBoundingClientRect();
-      if (x >= r.left - 8 && x <= r.right + 8 && y >= r.top - 40 && y <= r.bottom + 8) return { bin: +b.dataset.b };
-    }
-    const p = $('#rd-tPool').getBoundingClientRect();
-    if (x >= p.left && x <= p.right && y >= p.top && y <= p.bottom) return { pool: true };
+    const hit = document.elementFromPoint(x, y);
+    const bin = hit && hit.closest && hit.closest('#rd-board .bp-bin');
+    if (bin) return +bin.dataset.b;
+    if (hit && hit.closest && hit.closest('#rd-board .bp-tray')) return 'tray';
     return null;
   }
-  document.addEventListener('pointermove', (e) => {
+  window.addEventListener('pointermove', (e) => {
     if (!drag) return;
-    drag.ghost.style.left = (e.clientX - drag.dx) + 'px';
-    drag.ghost.style.top = (e.clientY - drag.dy) + 'px';
-    const t = dropTarget(e.clientX, e.clientY);
-    root.querySelectorAll('#rd-tBins .tbin').forEach((b) => b.classList.toggle('over', !!t && t.bin === +b.dataset.b));
-    $('#rd-tPool').classList.toggle('over', !!t && !!t.pool);
+    if (!drag.on) {
+      if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 5) return;
+      const src = board.querySelector(`.bp-item[data-u="${drag.u}"]`);
+      if (!src) { drag = null; return; }
+      const r = src.getBoundingClientRect();
+      const ghost = src.cloneNode(true);
+      ghost.className = `bp-drag bp-pat-${itemPat(drag.u)}`;
+      ghost.removeAttribute('data-u');
+      ghost.style.cssText = `${itemCss(drag.u)};width:${r.width}px;height:${r.height}px;left:${r.left}px;top:${r.top}px;display:inline-flex;align-items:center;justify-content:center`;
+      document.body.appendChild(ghost);
+      Object.assign(drag, { on: true, el: ghost, dx: drag.x0 - r.left, dy: drag.y0 - r.top });
+      sel = null; kbd = false;
+      root.classList.add('is-dragging');
+      renderBoard();
+    }
+    drag.el.style.left = (e.clientX - drag.dx) + 'px';
+    drag.el.style.top = (e.clientY - drag.dy) + 'px';
+    const over = dropTarget(e.clientX, e.clientY);
+    if (over !== drag.over) { drag.over = over; renderBoard(); }
   });
-  document.addEventListener('pointerup', (e) => {
+  function endItemDrag(e, cancel) {
     if (!drag) return;
-    const { u } = drag;
-    const t = dropTarget(e.clientX, e.clientY);
-    drag.ghost.remove(); drag.el.classList.remove('dragging');
+    const d = drag;
     drag = null;
-    $('#rd-tPool').classList.remove('over');
-    const from = bdBinOf(u);
-    if (t && t.bin !== undefined && t.bin !== from) {
-      const free = BD.B - bdLoad(t.bin);
-      if (free < BD.sizes[u]) {
-        renderBoard();
-        $('#rd-solveinfo').innerHTML = `<span style="color:var(--diff-3-ink)">u${u + 1} (size ${BD.sizes[u]}) does not fit: bin ${t.bin + 1} has only ${free} free.</span>`;
-        const bel = root.querySelector(`#rd-tBins .tbin[data-b="${t.bin}"]`);
-        if (bel) { bel.classList.add('bad'); setTimeout(() => bel.classList.remove('bad'), 350); }
-        return;
-      }
-      if (from >= 0) BD.bins[from].splice(BD.bins[from].indexOf(u), 1);
-      BD.bins[t.bin].push(u);
-    } else if (t && t.pool && from >= 0) {
-      BD.bins[from].splice(BD.bins[from].indexOf(u), 1);
-    } else { renderBoard(); return; }
-    $('#rd-solveinfo').innerHTML = bdComplete()
-      ? `Packed by hand: ${BD.bins.map((l, b) => `bin ${b + 1} = {${l.map((x) => 'u' + (x + 1)).join(', ')}}`).join(', ')}.`
-      : `${BD.bins.flat().length} of ${BD.sizes.length} items packed.`;
-    boardChanged();
+    if (!d.on) return; // a click: the click handler takes it
+    d.el.remove();
+    root.classList.remove('is-dragging');
+    const t = cancel ? null : dropTarget(e.clientX, e.clientY);
+    suppressClick = true; setTimeout(() => { suppressClick = false; }, 0);
+    if (t === 'tray') moveItem(d.u, -1);
+    else if (t !== null) moveItem(d.u, t);
+    else renderBoard();
+  }
+  let suppressClick = false;
+  window.addEventListener('pointerup', (e) => endItemDrag(e, false));
+  window.addEventListener('pointercancel', (e) => endItemDrag(e, true));
+  board.addEventListener('click', (e) => {
+    if (suppressClick) return;
+    const el = e.target.closest('.bp-item');
+    if (el) { pick(+el.dataset.u, e.detail === 0); return; }
+    if (sel === null) return;
+    const bin = e.target.closest('.bp-bin');
+    if (bin) moveItem(sel, +bin.dataset.b);
+    else if (e.target.closest('.bp-tray') && bdBinOf(sel) >= 0) moveItem(sel, -1);
   });
-  $('#rd-tReset').addEventListener('click', () => { BD.bins = BD.bins.map(() => []); $('#rd-solveinfo').textContent = 'Bins emptied.'; boardChanged(); });
+  board.addEventListener('keydown', (e) => {
+    const el = e.target.closest('.bp-item');
+    if (!el || e.metaKey || e.ctrlKey || e.altKey) return;
+    const u = +el.dataset.u;
+    if (/^[1-9]$/.test(e.key) && +e.key <= BD.K) { moveItem(u, +e.key - 1); e.preventDefault(); }
+    else if (e.key === '0' || e.key === 'Backspace' || e.key === 'Delete') { if (bdBinOf(u) >= 0) moveItem(u, -1); e.preventDefault(); }
+    else if (e.key === 'Escape' && sel !== null) { sel = null; renderBoard(); e.preventDefault(); }
+  });
+  $('#rd-tReset').addEventListener('click', () => { BD.bins = BD.bins.map(() => []); sel = null; info('Bins emptied.'); boardChanged(); });
   $('#rd-tSolve').addEventListener('click', () => {
     if (!BD.K) return;
     const sol = C.solveBinPacking(BD.sizes, BD.K, BD.B);
-    if (!sol.assign) { $('#rd-solveinfo').innerHTML = `Exhaustive search (${fmt(sol.nodes)} nodes): <b>no packing exists</b>.`; return; }
-    BD.bins = BD.bins.map(() => []);
+    if (!sol.assign) { BD.noSol = true; renderBoard(); info(`Exhaustive search (${fmt(sol.nodes)} nodes): <b>no packing exists</b>.`); return; }
+    BD.bins = BD.bins.map(() => []); sel = null;
     sol.assign.forEach((b, u) => BD.bins[b].push(u));
-    $('#rd-solveinfo').innerHTML = `Backtracking found a packing (${fmt(sol.nodes)} search nodes).`;
+    info(`Backtracking found a packing (${fmt(sol.nodes)} search nodes).`);
     boardChanged();
   });
 
@@ -318,61 +447,105 @@ export function mount(root) {
   });
   function markFormula() {
     if (!V) return;
-    const st = V.steps[cur.k];
-    const on = new Set(st.factors || []);
+    const st = V.steps && V.steps[cur.k];
+    if (!st) return;
+    // the factors of the step being folded are marked, the ones folded before it greyed; at the
+    // start (nothing folded) and at the end (all of it) the formula is left plain
+    const on = new Set(st.id === 'start' ? [] : st.factors || []);
+    const mid = st.s > 0 && st.s < V.N;
     root.querySelectorAll('#rd-formula .f').forEach((el) => {
       const k = el.dataset.f;
       const r = V.factorRange[k];
       el.classList.toggle('on', on.has(k));
-      el.classList.toggle('done', !on.has(k) && r && r[1] <= st.s && st.s > 0);
+      el.classList.toggle('done', mid && !on.has(k) && !!r && r[1] <= st.s);
     });
   }
 
   // ------------------------------------------------------------------ build
   $('#rd-find').addEventListener('click', () => onFind());
+  // The string and its fold are built in a worker (build.worker.js), so that the page does not
+  // freeze on the big presets; if the worker cannot start, they are built here.
+  let worker = null, workerOk = typeof Worker !== 'undefined', buildId = 0;
+  const pending = new Map();
+  function buildHere(K, B, sizes, given) {
+    return new Promise((ok, fail) => setTimeout(() => { try { ok(C.build(K, B, sizes, given)); } catch (err) { fail(err); } }, 30));
+  }
+  function buildOff(K, B, sizes, given) {
+    if (workerOk && !worker) {
+      try {
+        worker = new Worker(new URL('./build.worker.js', import.meta.url), { type: 'module' });
+        worker.onmessage = (e) => { const p = pending.get(e.data.id); if (!p) return; pending.delete(e.data.id); if (e.data.error) p.fail(new Error(e.data.error)); else p.ok(e.data.res); };
+        worker.onerror = (e) => {
+          // the worker did not load: build on the main thread from now on
+          e.preventDefault(); workerOk = false; worker.terminate(); worker = null;
+          for (const [, p] of pending) buildHere(...p.args).then(p.ok, p.fail);
+          pending.clear();
+        };
+      } catch (err) { workerOk = false; worker = null; }
+    }
+    if (!worker) return buildHere(K, B, sizes, given);
+    const id = ++buildId;
+    return new Promise((ok, fail) => {
+      pending.set(id, { ok, fail, args: [K, B, sizes, given] });
+      worker.postMessage({ id, construction: root.dataset.construction === 'edge' ? 'edge' : 'bl', K, B, sizes, given });
+    });
+  }
   // opts.atEnd: show the finished fold instead of the unfolded string (used when the page opens)
+  let findSeq = 0;
   function onFind(opts = {}) {
     const { K, B, sizes } = readInstance();
     const chk = C.checkInstance(K, B, sizes);
     if (chk.errs.length) { setStatus(chk.errs[0], 'err'); return; }
     const note = A.sizeCheck(chk.P, X);
     if (note.block) { setStatus(note.msg, 'err'); return; }
-    $('#rd-find').disabled = true;
+    const btn = $('#rd-find');
+    btn.disabled = true; btn.textContent = 'Building…';
     const given = bdComplete() ? BD.sizes.map((_, u) => bdBinOf(u)) : null;
     setStatus((given ? `Building ${A.strPlain} and folding it with your packing` : `Solving the bin packing, building ${A.strPlain} and its fold`) + (chk.P.n >= 60 ? `… (n = ${chk.P.n}, a few seconds)` : '…'));
-    setTimeout(() => {
-      let res;
-      try { res = C.build(K, B, sizes, given); } catch (err) { console.error(err); setStatus('Construction failed: ' + err.message, 'err'); $('#rd-find').disabled = false; return; }
-      res.sizes = sizes; res.K = K; res.B = B;
-      $('#rd-find').disabled = false;
-      if (res.error) { setStatus(res.error, 'err'); return; }
-      RES = res;
-      if (!res.solvable) {
-        teardown();
-        BD.active = new Set(); renderBoard();
-        $('#rd-packHint').textContent = '(no solution)'; $('#rd-packHint').style.color = 'var(--diff-3-ink)';
-        $('#rd-solveinfo').innerHTML = `Exhaustive search (${fmt(res.solverNodes)} nodes): <b>no packing exists</b>.`;
-        const nf = A.noFold(res, X);
-        setStatus(nf.status, 'err');
-        $('#rd-placeholder').hidden = false;
-        $('#rd-placeholder').innerHTML = nf.html;
-        $('#rd-hud').hidden = true; $('#rd-dock').hidden = true; $('#rd-zoom').hidden = true;
-        $('#rd-checks').innerHTML = '<div class="check"><small>No fold to verify.</small></div>';
-        renderFormula(res.P, sizes);
-        return;
-      }
-      // show the packing that is being folded on the board
-      if (!res.given) { BD.bins = Array.from({ length: K }, () => []); res.assign.forEach((b, u) => BD.bins[b].push(u)); }
-      BD.active = new Set(); renderBoard();
-      const binsTxt = Array.from({ length: K }, (_, b) => `bin ${b + 1} = {${sizes.map((s, u) => (res.assign[u] === b ? 'u' + (u + 1) : null)).filter(Boolean).join(', ')}}`).join(', ');
-      $('#rd-solveinfo').innerHTML = res.given ? `Folding your packing: ${binsTxt}.` : `The bins were not full, so backtracking packed them (${fmt(res.solverNodes)} search nodes): ${binsTxt}.`;
-      const okMsg = opts.atEnd ? 'Folded and checked. This is the finished fold: press ← or drag the bar to go back through the steps.' : 'Folded and checked. Press → for the first step.';
-      setStatus(res.val.ok ? okMsg : 'The fold failed a check (see below).', res.val.ok ? 'ok' : 'err');
-      renderChecks(res);
-      setup(res);
+    const seq = ++findSeq;
+    const done = () => { btn.disabled = false; btn.textContent = 'Fold the string'; };
+    buildOff(K, B, sizes, given).then((res) => {
+      if (seq !== findSeq) return;
+      done();
+      showBuild(res, K, B, sizes, opts);
+    }, (err) => {
+      if (seq !== findSeq) return;
+      console.error(err);
+      done();
+      setStatus('Construction failed: ' + err.message, 'err');
+    });
+  }
+  function showBuild(res, K, B, sizes, opts) {
+    res.sizes = sizes; res.K = K; res.B = B;
+    if (res.error) { setStatus(res.error, 'err'); return; }
+    RES = res;
+    if (!res.solvable) {
+      teardown();
+      BD.active = new Set(); BD.noSol = true; renderBoard();
+      info(`Exhaustive search (${fmt(res.solverNodes)} nodes): <b>no packing exists</b>.`);
+      const nf = A.noFold(res, X);
+      setStatus(nf.status, 'err');
+      $('#rd-placeholder').hidden = false;
+      $('#rd-placeholder').innerHTML = nf.html;
+      $('#rd-hud').hidden = true; $('#rd-dock').hidden = true; $('#rd-zoom').hidden = true;
+      $('#rd-checks').innerHTML = '<div class="check"><small>No fold to verify.</small></div>';
+      $('#rd-checkSum').textContent = ''; $('#rd-checkSum').className = '';
       renderFormula(res.P, sizes);
-      if (opts.atEnd) goStep(V.steps.length - 1, false); else goStep(0, true);
-    }, 40);
+      return;
+    }
+    // show the packing that is being folded on the board
+    if (!res.given) { BD.bins = Array.from({ length: K }, () => []); res.assign.forEach((b, u) => BD.bins[b].push(u)); }
+    BD.active = new Set(); sel = null; renderBoard();
+    const binsTxt = Array.from({ length: K }, (_, b) => `bin ${b + 1} = {${sizes.map((s, u) => (res.assign[u] === b ? 'u' + (u + 1) : null)).filter(Boolean).join(', ')}}`).join(', ');
+    info(res.given ? `Folding your packing: ${binsTxt}.` : `The solver packed the bins (${fmt(res.solverNodes)} search nodes): ${binsTxt}.`);
+    const okMsg = opts.atEnd ? 'Folded and checked. This is the finished fold: press ← or drag the bar to go back through the steps.' : 'Folded and checked. Press → for the first step.';
+    setStatus(res.val.ok ? okMsg : 'The fold failed a check (see below).', res.val.ok ? 'ok' : 'err');
+    renderChecks(res);
+    setup(res);
+    renderFormula(res.P, sizes);
+    const k0 = opts.atEnd ? V.steps.length - 1 : 0;
+    V.hintK = k0;
+    if (opts.atEnd) goStep(k0, false); else goStep(0, true);
   }
 
   function renderChecks(res) {
@@ -398,16 +571,21 @@ export function mount(root) {
     V = null;
   }
 
-  const TAIL_VIS = 260, DYN_CAP = 4300, DIST_SCALE = 1.3;
+  const DYN_CAP = 4300, DIST_SCALE = 1.3;
 
   function setup(res) {
     teardown();
+    // a new build starts at its first step (the old step number may not exist in it)
+    cur.k = 0; cur.pos = 0; cur.anim = null;
     const { P, fold } = res;
     const n = P.n, cc = (n - 1) / 2, N = fold.N;
     const { TY, CAT, SG, segs } = fold;
     const FP = new Float32Array(3 * N);
     for (let i = 0; i < N; i++) { FP[3 * i] = fold.X[i] - cc; FP[3 * i + 1] = fold.Y[i] - cc; FP[3 * i + 2] = -(fold.Z[i] - cc); }
     const intSeg = segs.find((s) => s.key === A.interiorKey); // these H's go into their own mesh (lighter beads)
+    // the big cubes draw hundreds of thousands of beads: fewer pixels keep them smooth
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, n > 50 ? 1.5 : 2));
+    resize();
 
     // base colours
     const col = new Float32Array(3 * N);
@@ -470,36 +648,61 @@ export function mount(root) {
     const bondMat = bondMaterial();
     const bonds = new LineSegments2(bondGeo, bondMat); bonds.frustumCulled = false;
 
-    // dynamic (in flight + visible tail)
+    // dynamic: the beads in flight and the straight chain still to fold, which fades into the stage
     const dynH = mk(geoH, new THREE.MeshLambertMaterial({ color: 0xffffff }), DYN_CAP);
     const dynP = mk(geoP, new THREE.MeshLambertMaterial({ color: 0xffffff }), DYN_CAP);
     for (const d of [dynH, dynP]) { d.instanceMatrix.setUsage(THREE.DynamicDrawUsage); d.instanceColor.setUsage(THREE.DynamicDrawUsage); }
     const dynBondGeo = new LineSegmentsGeometry();
     dynBondGeo.setPositions(new Float32Array((DYN_CAP + 4) * 6));
+    dynBondGeo.setColors(new Float32Array((DYN_CAP + 4) * 6));
     dynBondGeo.attributes.instanceStart.data.setUsage(THREE.DynamicDrawUsage);
+    dynBondGeo.attributes.instanceColorStart.data.setUsage(THREE.DynamicDrawUsage);
     dynBondGeo.instanceCount = 0;
-    const dynBonds = new LineSegments2(dynBondGeo, bondMaterial()); dynBonds.frustumCulled = false;
-    const tailGeo = new THREE.BufferGeometry();
-    tailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3).setUsage(THREE.DynamicDrawUsage));
-    const tail = new THREE.Line(tailGeo, new THREE.LineBasicMaterial({ color: 0x8a919c, transparent: true, opacity: 0.45 }));
-    tail.frustumCulled = false;
+    const dynBondMat = bondMaterial(); dynBondMat.vertexColors = true;
+    const dynBonds = new LineSegments2(dynBondGeo, dynBondMat); dynBonds.frustumCulled = false;
 
-    // target cube wireframe
+    // Once the interior is folded, the beads deep inside it cannot be seen. On a big cube an opaque
+    // box stands in for them, and only the two outer layers of the interior stay beads (the shell).
+    let shell = null, coreBox = null, shellIdx = null;
+    if (n > 24) {
+      const lo = 2 - cc - 1e-6, hi = n - 3 - cc + 1e-6;
+      const deep = (i) => { for (let d = 0; d < 3; d++) { const v = FP[3 * i + d]; if (v < lo || v > hi) return false; } return true; };
+      let nd = 0, ns = 0;
+      for (let i = intSeg.start; i < intSeg.end; i++) if (TY[i]) { if (deep(i)) nd++; else ns++; }
+      if (nd === (n - 4) ** 3) {
+        shell = mk(geoI, matH, ns); shellIdx = new Int32Array(ns);
+        const mm = shell.instanceMatrix.array;
+        let k = 0;
+        for (let i = intSeg.start; i < intSeg.end; i++) if (TY[i] && !deep(i)) { setT(mm, k, FP[3 * i], FP[3 * i + 1], FP[3 * i + 2]); shellIdx[k++] = i; }
+        shell.count = ns; shell.visible = false;
+        coreBox = new THREE.Mesh(new THREE.BoxGeometry(n - 4.06, n - 4.06, n - 4.06), new THREE.MeshLambertMaterial({ color: 0xffffff }));
+        coreBox.visible = false;
+      }
+    }
+
+    // target cube wireframe, filled with a faint tint until the first step has been folded
     const wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(n, n, n)),
       new THREE.LineBasicMaterial({ color: 0x4a5466, transparent: true, opacity: 0.55 }));
+    const ghost = new THREE.Mesh(new THREE.BoxGeometry(n, n, n),
+      new THREE.MeshBasicMaterial({ color: 0x4a5466, transparent: true, opacity: 0.1, depthWrite: false, side: THREE.BackSide }));
+    wire.add(ghost);
 
     // labels on the cube (strips, bins), drawn by buildOverlay() for the current stage
     const binGroup = new THREE.Group();
 
-    const objects = [meshS, meshI, meshP, bonds, dynH, dynP, dynBonds, tail, wire, binGroup];
+    const objects = [meshS, meshI, meshP, bonds, dynH, dynP, dynBonds, wire, binGroup];
+    if (shell) objects.push(shell, coreBox);
     objects.forEach((o) => scene.add(o));
-    const clipMats = [matH, matP, bondMat, dynH.material, dynP.material, dynBonds.material, tail.material];
+    const clipMats = [matH, matP, bondMat, dynH.material, dynP.material, dynBonds.material];
 
     V = {
       P, n, cc, N, FP, TY, CAT, SG, segs, fold, col, connOf, stringRGB, pIdx,
-      cntS, cntI, cntP, meshS, meshI, meshP, bondGeo, bonds, dynH, dynP, dynBondGeo, dynBonds, tail, wire, binGroup,
+      cntS, cntI, cntP, meshS, meshI, meshP, bondGeo, bonds, dynH, dynP, dynBondGeo, dynBonds, wire, binGroup,
       objects, clipMats, contactPrefix: res.val.contactPrefix, target: res.val.target,
       lastStats: '', tint: null, matP, bondMat, intStart: intSeg.start, intEnd: intSeg.end,
+      shell, shellIdx, coreBox, cutState: null, ghost,
+      // the unfolded chain fades into the stage from fadeA to fadeB beads past the fold
+      fadeA: 0.08 * n + 3, fadeB: 0.3 * n + 6,
     };
     V.steps = A.buildSteps(res, X);
     // per-step timing
@@ -606,7 +809,10 @@ export function mount(root) {
       $('#rd-stepRes').textContent = `folds residues ${fmt(st.s + 1)}–${fmt(st.e)} of ${fmt(V.N)}  ·  ${fmt(h)} H, ${fmt(st.e - st.s - h)} P`;
     } else $('#rd-stepRes').textContent = st.id === 'start' ? `${fmt(V.N)} residues, nothing placed yet` : 'view of the finished fold';
     markFormula();
-    BD.active = new Set(st.items || []); renderBoard();
+    markActive(st.items);
+    $('#rd-hint').hidden = cur.k !== 0;
+    // the status first says how to move through the steps; once the reader does, it says less
+    if (V.hintK !== undefined && cur.k !== V.hintK) { V.hintK = undefined; if (RES.val.ok) setStatus('Folded and checked.', 'ok'); }
   }
 
   // jump to step k (its start, then fold it if animate; else straight to its end)
@@ -681,14 +887,22 @@ export function mount(root) {
       else { cS[3 * ia] = c[0]; cS[3 * ia + 1] = c[1]; cS[3 * ia + 2] = c[2]; ia++; }
     }
     meshS.instanceColor.needsUpdate = true; meshI.instanceColor.needsUpdate = true;
+    if (V.shell) {
+      const cc = V.shell.instanceColor.array, si = V.shellIdx;
+      for (let k = 0; k < si.length; k++) { const i = si[k]; cc[3 * k] = col[3 * i]; cc[3 * k + 1] = col[3 * i + 1]; cc[3 * k + 2] = col[3 * i + 2]; }
+      V.shell.instanceColor.needsUpdate = true;
+      V.coreBox.material.color.setRGB(...col.subarray(3 * V.shellIdx[0], 3 * V.shellIdx[0] + 3));
+    }
     V.stringRGB = V.fold.strings.map(stringColour);
     V.tint = null;
     if (V.steps) applyTint(V.steps[Math.min(cur.k, V.steps.length - 1)]);
     const sc = pal(), st = ST();
     for (const m of [V.matP, V.dynP.material]) { m.transparent = sc.pOpacity < 1; m.opacity = sc.pOpacity; m.depthWrite = sc.pOpacity >= 1; m.needsUpdate = true; }
-    for (const m of [V.bondMat, V.dynBonds.material]) { m.opacity = sc.bondOpacity; m.color.setHex(st.line); }
-    V.tail.material.opacity = Math.min(0.5, sc.bondOpacity + 0.1); V.tail.material.color.setHex(st.line);
+    for (const m of [V.bondMat, V.dynBonds.material]) m.opacity = sc.bondOpacity;
+    V.bondMat.color.setHex(st.line);
+    V.lineRGB = rgbOf(st.line); V.clearRGB = rgbOf(st.clear);
     V.wire.material.color.setHex(st.wire); V.wire.material.opacity = st.wireOp;
+    V.ghost.material.color.setHex(st.wire);
     buildOverlay();
     if (barPieces.length) drawBar(true);
   }
@@ -706,13 +920,12 @@ export function mount(root) {
     b.textContent = night ? '☀' : '☾';
     b.title = night ? 'Day view' : 'Night view'; b.setAttribute('aria-label', b.title);
     paintAll();
-    renderBoard();
     renderLegend();
   }
   $('#rd-stageBtn').addEventListener('click', () => { stage = stage === 'day' ? 'night' : 'day'; stageChosen = true; applyStage(); });
   document.documentElement.addEventListener('themechange', (e) => {
-    if (stageChosen) return;
-    stage = e.detail === 'dark' ? 'night' : 'day';
+    readItemColours();
+    if (!stageChosen) stage = e.detail === 'dark' ? 'night' : 'day';
     applyStage();
   });
   // explanation, step numbers and counters stay hidden until the reader asks for them
@@ -725,7 +938,6 @@ export function mount(root) {
   $('#rd-tgHP').addEventListener('change', () => {
     scheme = $('#rd-tgHP').checked ? 'hp' : 'normal';
     paintAll();
-    renderBoard();
     renderLegend();
   });
 
@@ -735,10 +947,13 @@ export function mount(root) {
     const showP = $('#rd-tgP').checked;
     V.meshP.visible = showP; V.dynP.visible = showP;
     const showB = $('#rd-tgBond').checked;
-    V.bonds.visible = showB; V.dynBonds.visible = showB; V.tail.visible = true;
+    V.bonds.visible = showB; V.dynBonds.visible = showB;
     V.binGroup.visible = $('#rd-tgLab').checked && cur.k >= V.overlayFrom;
     const cut = $('#rd-tgCut').checked;
-    for (const m of V.clipMats) { m.clippingPlanes = cut ? cutPlanes : null; m.clipIntersection = true; m.needsUpdate = true; }
+    if (V.cutState !== cut) {
+      V.cutState = cut;
+      for (const m of V.clipMats) { m.clippingPlanes = cut ? cutPlanes : null; m.clipIntersection = true; m.needsUpdate = true; }
+    }
   }
   for (const id of ['#rd-tgP', '#rd-tgBond', '#rd-tgLab', '#rd-tgCut']) $(id).addEventListener('change', applyVisibility);
   $('#rd-tgCam').addEventListener('change', () => { if ($('#rd-tgCam').checked && V) flyTo(V.steps[cur.k].view, 1.2); });
@@ -834,6 +1049,16 @@ export function mount(root) {
     const len = e - s;
     V.placed = placed;
     V.meshS.count = V.cntS[placed]; V.meshI.count = V.cntI[placed]; V.meshP.count = V.cntP[placed];
+    {
+      // the faint fill of the target cube fades out over the first folded step
+      const e1 = V.steps[1] ? Math.max(1, V.steps[1].e) : 1;
+      const a = 1 - clamp(placed / e1, 0, 1);
+      V.ghost.visible = a > 0.01; V.ghost.material.opacity = 0.12 * a;
+    }
+    if (V.shell) {
+      const boxed = placed >= V.intEnd && !V.cutState;
+      V.meshI.visible = !boxed; V.shell.visible = boxed; V.coreBox.visible = boxed;
+    }
     V.bondGeo.instanceCount = Math.max(0, placed - 1);
 
     // tail anchor and direction
@@ -847,43 +1072,50 @@ export function mount(root) {
     if (len > 0) { bx1 = FP[3 * (e - 1)]; by1 = FP[3 * (e - 1) + 1]; bz1 = FP[3 * (e - 1) + 2]; }
     vA.set(bx0 + (bx1 - bx0) * ta + vD.x, by0 + (by1 - by0) * ta + vD.y, bz0 + (bz1 - bz0) * ta + vD.z);
     const g = Math.min(f, e);
-    const hi = Math.min(N, Math.ceil(Math.max(f, s)) + TAIL_VIS, placed + DYN_CAP - 2);
+    const fA = V.fadeA, fB = V.fadeB, cl = V.clearRGB, ln = V.lineRGB;
+    const hi = Math.min(N, Math.ceil(Math.max(f, e) + fB) + 1, placed + DYN_CAP - 2);
 
     const mH = V.dynH.instanceMatrix.array, mP = V.dynP.instanceMatrix.array;
     const cH = V.dynH.instanceColor.array, cP = V.dynP.instanceColor.array;
     const bondBuf = V.dynBondGeo.attributes.instanceStart.data, bp = bondBuf.array;
+    const bondCol = V.dynBondGeo.attributes.instanceColorStart.data, bc = bondCol.array;
     let nh = 0, np = 0, nb = 0;
-    let px = 0, py = 0, pz = 0, havePrev = false;
+    let px = 0, py = 0, pz = 0, pa = 0, havePrev = false;
     if (placed > 0) { px = FP[3 * (placed - 1)]; py = FP[3 * (placed - 1) + 1]; pz = FP[3 * (placed - 1) + 2]; havePrev = true; }
     for (let j = placed; j < hi; j++) {
-      let x, y, z;
+      let x, y, z, a = 0; // a: how far the bead has faded into the stage (0 not at all, 1 gone)
       if (j < e && j < f) {
         const p = smooth(Math.min(1, (f - j) / W));
         x = vA.x + (FP[3 * j] - vA.x) * p; y = vA.y + (FP[3 * j + 1] - vA.y) * p; z = vA.z + (FP[3 * j + 2] - vA.z) * p;
       } else {
         const o = j - g;
+        a = smooth(clamp((o - fA) / (fB - fA), 0, 1));
+        if (a >= 0.999) break;
         x = vA.x + vD.x * o; y = vA.y + vD.y * o; z = vA.z + vD.z * o;
       }
-      if (TY[j]) { setT(mH, nh, x, y, z); cH[3 * nh] = col[3 * j]; cH[3 * nh + 1] = col[3 * j + 1]; cH[3 * nh + 2] = col[3 * j + 2]; nh++; }
-      else { setT(mP, np, x, y, z); cP[3 * np] = col[3 * j]; cP[3 * np + 1] = col[3 * j + 1]; cP[3 * np + 2] = col[3 * j + 2]; np++; }
-      if (havePrev) { const o = 6 * nb; bp[o] = px; bp[o + 1] = py; bp[o + 2] = pz; bp[o + 3] = x; bp[o + 4] = y; bp[o + 5] = z; nb++; }
-      px = x; py = y; pz = z; havePrev = true;
+      const sc = 1 - 0.55 * a;
+      if (TY[j]) {
+        setTS(mH, nh, x, y, z, sc);
+        for (let c = 0; c < 3; c++) cH[3 * nh + c] = col[3 * j + c] + (cl[c] - col[3 * j + c]) * a;
+        nh++;
+      } else {
+        setTS(mP, np, x, y, z, sc);
+        for (let c = 0; c < 3; c++) cP[3 * np + c] = col[3 * j + c] + (cl[c] - col[3 * j + c]) * a;
+        np++;
+      }
+      if (havePrev) {
+        const o = 6 * nb; bp[o] = px; bp[o + 1] = py; bp[o + 2] = pz; bp[o + 3] = x; bp[o + 4] = y; bp[o + 5] = z;
+        for (let c = 0; c < 3; c++) { bc[o + c] = ln[c] + (cl[c] - ln[c]) * pa; bc[o + 3 + c] = ln[c] + (cl[c] - ln[c]) * a; }
+        nb++;
+      }
+      px = x; py = y; pz = z; pa = a; havePrev = true;
     }
     V.dynH.count = nh; V.dynP.count = np;
     const upload = (attr, count) => { attr.clearUpdateRanges(); attr.addUpdateRange(0, Math.max(1, count)); attr.needsUpdate = true; };
     upload(V.dynH.instanceMatrix, nh * 16); upload(V.dynP.instanceMatrix, np * 16);
     upload(V.dynH.instanceColor, nh * 3); upload(V.dynP.instanceColor, np * 3);
-    bondBuf.clearUpdateRanges(); bondBuf.addUpdateRange(0, Math.max(1, nb * 6)); bondBuf.needsUpdate = true;
+    for (const buf of [bondBuf, bondCol]) { buf.clearUpdateRanges(); buf.addUpdateRange(0, Math.max(1, nb * 6)); buf.needsUpdate = true; }
     V.dynBondGeo.instanceCount = nb;
-    // the rest of the unfolded chain, as a line
-    const tp = V.tail.geometry.attributes.position.array;
-    if (hi < N) {
-      const o1 = hi - 1 - g, o2 = Math.min(N - 1 - g, 60 * V.n);
-      tp[0] = vA.x + vD.x * o1; tp[1] = vA.y + vD.y * o1; tp[2] = vA.z + vD.z * o1;
-      tp[3] = vA.x + vD.x * o2; tp[4] = vA.y + vD.y * o2; tp[5] = vA.z + vD.z * o2;
-    } else { for (let i = 0; i < 6; i++) tp[i] = 0; }
-    V.tail.geometry.attributes.position.needsUpdate = true;
-    V.tail.visible = hi < N;
   }
 
   // ------------------------------------------------------------------ the string bar
@@ -980,6 +1212,7 @@ export function mount(root) {
 
   // ------------------------------------------------------------------ init
   root.dataset.explain = '0';
+  readItemColours();
   applyStage();
   loadPreset(0);
   // the page opens on the first preset, already folded, so that the finished cube is there at once

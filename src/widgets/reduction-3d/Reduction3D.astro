@@ -8,14 +8,17 @@
  *   <div class="full"><Reduction3D construction="edge" /></div>
  *     the short version of the one-edge construction: S folded, the packing on one edge
  *
- * Left: the instance (folded away), the packing board, the formula of S_B, the checks.
+ * Left, one panel: the instance (folded away), the packing board, the formula of S_B, the checks.
+ * The board has the bin-packing game's look: it uses the game's bp- classes and styles
+ * (../bin-pack/styles.css) and its controls (drag, or click an item and then a bin; keys 1–K, 0).
  * Right: the three.js stage (day or night) with a dock: the step, ◀ ▶, and the whole string as a
  * bar with an arrow at the current letter, which can be dragged. "Explain" opens the rest.
  * Logic: reduction.client.js (UI, rendering), with adapter-bl.js / adapter-edge.js for what belongs
  * to one construction, and construction.js / edge-construction.js (the strings and the folds; they
- * also run in Node).
+ * also run in Node, and in the browser in a worker, build.worker.js).
  * Styles: styles.css (ids and classes prefixed rd-). One widget per page (the ids are fixed).
  */
+import '../bin-pack/styles.css';
 import './styles.css';
 import { withBase } from '../../lib/url';
 
@@ -29,47 +32,40 @@ const str = edge ? 'S' : 'S_B';
 ---
 
 <div class="rd-root ui" data-construction={construction} data-cards={cards} data-stage="day" data-explain="0">
-  <aside class="rd-left" aria-label="Instance, packing and construction">
-    <section class="rd-card">
-      <details class="rd-fold rd-inst">
-        <summary><span>Instance</span> <span id="rd-instSum" class="rd-sum"></span></summary>
-        <div class="rd-foldbody">
-          <label class="rd-fld"><span>Preset</span><select id="rd-preset"></select></label>
-          <div class="rd-row2">
-            <label class="rd-fld"><span>{edge ? 'm (bins)' : 'K (bins)'}</span><input id="rd-inK" type="number" min="1" max={edge ? 5 : 3} step="1" /></label>
-            <label class="rd-fld"><span>B (bin size)</span><input id="rd-inB" type="number" min="1" step="1" /></label>
-          </div>
-          <label class="rd-fld"><span>{edge ? 'Item sizes, adding up to m·B' : 'Item sizes, adding up to B·K'}</span><input id="rd-inS" type="text" spellcheck="false" /></label>
+  <aside class="rd-left" aria-label="Instance, packing and string">
+    <details class="rd-sec rd-fold rd-inst">
+      <summary><span class="rd-h">Instance</span> <span id="rd-instSum" class="rd-sum"></span></summary>
+      <div class="rd-foldbody">
+        <label class="rd-fld"><span>Preset</span><select id="rd-preset"></select></label>
+        <div class="rd-row2">
+          <label class="rd-fld"><span>{edge ? 'm (bins)' : 'K (bins)'}</span><input id="rd-inK" type="number" min="1" max={edge ? 5 : 3} step="1" /></label>
+          <label class="rd-fld"><span>B (bin size)</span><input id="rd-inB" type="number" min="1" step="1" /></label>
         </div>
-      </details>
-    </section>
-
-    <section class="rd-card">
-      <h3>Pack the bins <span id="rd-packHint"></span></h3>
-      <div id="rd-tetris">
-        <div id="rd-tPool"></div>
-        <div id="rd-tBins"></div>
+        <label class="rd-fld"><span>{edge ? 'Item sizes, adding up to m·B' : 'Item sizes, adding up to B·K'}</span><input id="rd-inS" type="text" spellcheck="false" /></label>
       </div>
+    </details>
+
+    <section class="rd-sec rd-pack" aria-labelledby="rd-packTitle">
+      <h3 class="rd-head"><span class="rd-h" id="rd-packTitle">Pack the bins</span> <span id="rd-packHint" class="rd-packhint"></span></h3>
+      <div id="rd-board" class="rd-board"></div>
       <div class="rd-btnrow">
-        <button class="rd-btn2" id="rd-tReset" type="button">Empty the bins</button>
-        <button class="rd-btn2" id="rd-tSolve" type="button">Solve it for me</button>
+        <button class="btn" id="rd-tReset" type="button">Empty the bins</button>
+        <button class="btn" id="rd-tSolve" type="button">Solve it for me</button>
       </div>
-      <div id="rd-solveinfo" class="rd-solveinfo"></div>
-      <button id="rd-find" class="rd-primary" type="button">Fold the string</button>
-      <div id="rd-status" class="rd-status" role="status"></div>
+      <p id="rd-solveinfo" class="rd-note"></p>
+      <button id="rd-find" class="btn primary rd-primary" type="button">Fold the string</button>
+      <p id="rd-status" class="rd-status" role="status"></p>
     </section>
 
-    <section class="rd-card">
-      <h3><span>{edge ? <Fragment>The string <i>S</i></Fragment> : <Fragment>The string S<sub>B</sub> (Fig. 3)</Fragment>}</span> <button class="rd-tog" id="rd-fmtTog" type="button">show numbers</button></h3>
+    <section class="rd-sec rd-str" aria-labelledby="rd-strTitle">
+      <h3 class="rd-head"><span class="rd-h" id="rd-strTitle">{edge ? <Fragment>The string <i>S</i></Fragment> : <Fragment>The string <i>S</i><sub>B</sub> (Fig. 3)</Fragment>}</span> <button class="rd-tog" id="rd-fmtTog" type="button">show numbers</button></h3>
       <div id="rd-formula"></div>
     </section>
 
-    <section class="rd-card">
-      <details class="rd-fold rd-checks">
-        <summary><span>Checks of the fold</span> <span id="rd-checkSum"></span></summary>
-        <div id="rd-checks"><div class="check"><small>Fold the string to build and check the fold.</small></div></div>
-      </details>
-    </section>
+    <details class="rd-sec rd-fold rd-checks">
+      <summary><span class="rd-h">Checks of the fold</span> <span id="rd-checkSum"></span></summary>
+      <div id="rd-checks"><div class="check"><small>Fold the string to build and check the fold.</small></div></div>
+    </details>
   </aside>
 
   <div class="rd-stage" role="group" aria-label="3D view of the fold">
@@ -110,6 +106,7 @@ const str = edge ? 'S' : 'S_B';
           <div id="rd-stepTitle"></div>
           <button id="rd-explain" class="rd-explain" type="button" aria-expanded="false">Explain</button>
         </div>
+        <div id="rd-hint" hidden>Press <kbd>→</kbd> or <b>▶</b> to fold the next piece.</div>
         <div id="rd-stepRes"></div>
         <div id="rd-stepBody"></div>
       </div>

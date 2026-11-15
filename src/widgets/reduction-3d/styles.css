@@ -2,25 +2,27 @@
  * Reduction3D. The left panel follows the site's tokens (light and dark). The 3D stage has two
  * looks of its own, day (light, like the page; the default) and night (dark), set by
  * data-stage on .rd-root; the HUD and the dock on top of it take their colours from the --rd-*
- * variables below. data-explain="0" (the default) hides the explanation, the step numbers and
- * the counters. Everything is scoped under .rd-root; ids and classes are prefixed rd-.
+ * variables below. They copy the site's light and dark tokens (tokens.css), since a reader can
+ * choose the night stage on the light page and the other way round. data-explain="0" (the
+ * default) hides the explanation, the step numbers and the counters. Everything is scoped under
+ * .rd-root; ids and classes are prefixed rd-.
  */
 .rd-root {
-  /* day stage */
-  --rd-stage: #f2f0eb;
-  --rd-dock: rgba(255, 255, 255, 0.9);
-  --rd-dock-line: #e2ded5;
-  --rd-ink: #1c1c21;
+  /* day stage: the light tokens */
+  --rd-stage: #f2f0eb; /* --bg-sunk */
+  --rd-dock: rgba(255, 255, 255, 0.92);
+  --rd-dock-line: #e2ded5; /* --rule */
+  --rd-ink: #1c1c21; /* --fg */
   --rd-ink2: #33333b;
-  --rd-muted: #66666f;
-  --rd-hi: #1f4f8f;
+  --rd-muted: #55555f; /* --fg-muted */
+  --rd-hi: #1f4f8f; /* --accent */
   --rd-on-hi: #ffffff;
   --rd-tag: #1f4f8f;
-  --rd-btn: #f2f0eb;
-  --rd-btn-line: #c9c3b7;
-  --rd-btn-hover: #e2ded5;
+  --rd-btn: #ffffff;
+  --rd-btn-line: #c9c3b7; /* --rule-strong */
+  --rd-btn-hover: #f2f0eb;
   --rd-pill-line: #c9c3b7;
-  --rd-pill-done-bg: #e7eef7;
+  --rd-pill-done-bg: #e7eef7; /* --accent-weak */
   --rd-pill-done-fg: #1f4f8f;
   --rd-note-line: #c9c3b7;
   --rd-map: #e9e5dc;
@@ -38,60 +40,70 @@
   line-height: var(--lh-ui);
   color: var(--fg);
 }
+/* night stage: the dark tokens */
 .rd-root[data-stage='night'] {
-  --rd-stage: #0e1116;
-  --rd-dock: rgba(16, 19, 25, 0.88);
-  --rd-dock-line: rgba(255, 255, 255, 0.09);
-  --rd-ink: #e8eaee;
-  --rd-ink2: #d5d9e0;
-  --rd-muted: #9aa3b1;
-  --rd-hi: #6ea8ff;
-  --rd-on-hi: #0e1116;
-  --rd-tag: #9fc2ff;
-  --rd-btn: rgba(255, 255, 255, 0.07);
-  --rd-btn-line: rgba(255, 255, 255, 0.12);
-  --rd-btn-hover: rgba(255, 255, 255, 0.14);
-  --rd-pill-line: rgba(255, 255, 255, 0.14);
-  --rd-pill-done-bg: rgba(110, 168, 255, 0.16);
-  --rd-pill-done-fg: #cfe0ff;
-  --rd-note-line: #3b4658;
-  --rd-map: #1a1e25;
+  --rd-stage: #0e0f11; /* --bg-sunk */
+  --rd-dock: rgba(27, 28, 32, 0.9); /* --bg-elev */
+  --rd-dock-line: #2c2d33; /* --rule */
+  --rd-ink: #e7e5e0; /* --fg */
+  --rd-ink2: #d3d1cc;
+  --rd-muted: #a6a5ad; /* --fg-muted */
+  --rd-hi: #85aee6; /* --accent */
+  --rd-on-hi: #0e0f11;
+  --rd-tag: #85aee6;
+  --rd-btn: #1b1c20;
+  --rd-btn-line: #3d3e45; /* --rule-strong */
+  --rd-btn-hover: #26272c;
+  --rd-pill-line: #3d3e45;
+  --rd-pill-done-bg: #1c2838; /* --accent-weak */
+  --rd-pill-done-fg: #a9c7f0;
+  --rd-note-line: #3d3e45;
+  --rd-map: #1a1b1f;
 }
 .rd-root [hidden] {
   display: none !important;
 }
 
-/* ---------- left panel ---------- */
+/* ---------- left panel: one surface, sections divided by rules ---------- */
 .rd-left {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   overflow-y: auto;
-  padding: var(--s-2);
-  background: var(--bg-sunk);
+  background: var(--bg-elev);
   border-right: 1px solid var(--rule);
 }
-.rd-card {
-  background: var(--bg-elev);
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-md);
-  padding: var(--s-2) var(--s-3);
-  margin-bottom: var(--s-2);
+.rd-sec {
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--rule);
 }
-.rd-card:last-child {
-  margin-bottom: 0;
+/* the checks close the column at its foot */
+.rd-sec.rd-checks {
+  margin-top: auto;
+  border-top: 1px solid var(--rule);
+  border-bottom: 0;
 }
-.rd-card h3 {
+.rd-str {
+  border-bottom: 0;
+}
+.rd-root :where(p) {
+  margin: 0;
+}
+.rd-head {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: var(--s-2);
-  margin: 0 0 var(--s-2);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
+  margin: 0 0 var(--s-3);
+  font: inherit;
 }
-.rd-card h3 sub {
-  text-transform: none;
+.rd-h {
+  font-size: var(--fs-sm);
+  font-weight: 650;
+  color: var(--fg);
+}
+.rd-h sub {
+  font-size: 0.7em;
 }
 .rd-fld {
   display: block;
@@ -124,54 +136,44 @@
   font: inherit;
   cursor: pointer;
 }
-.rd-primary {
+.rd-btnrow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+}
+.rd-left .btn {
+  justify-content: center;
+  min-height: 2.25rem;
+  font-size: var(--fs-xs);
+}
+.rd-left .btn.rd-primary {
   width: 100%;
-  margin-top: var(--s-2);
-  padding: 0.45rem;
-  border: 0;
-  border-radius: var(--radius-md);
-  background: var(--accent);
-  color: var(--on-accent);
+  min-height: 2.5rem;
+  margin-top: var(--s-3);
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
-.rd-primary:hover {
-  background: var(--accent-hover);
-}
-.rd-primary:disabled {
+.rd-left .btn.rd-primary:disabled {
   opacity: 0.6;
   cursor: wait;
 }
-.rd-btnrow {
-  display: flex;
-  gap: var(--s-2);
-  margin-top: var(--s-2);
-}
-.rd-btn2 {
-  flex: 1;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid var(--rule-strong);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
-  color: var(--fg);
-  font-size: var(--fs-xs);
-}
-.rd-btn2:hover {
-  background: var(--bg-sunk);
-}
 .rd-status,
-.rd-solveinfo {
+.rd-note {
   margin-top: var(--s-2);
   font-size: var(--fs-xs);
   color: var(--fg-muted);
+  text-wrap: pretty;
 }
 .rd-status:empty,
-.rd-solveinfo:empty {
+.rd-note:empty {
   display: none;
 }
 .rd-status.ok {
   color: var(--diff-1-ink);
 }
-.rd-status.err {
+.rd-status.err,
+.rd-note .err {
   color: var(--diff-3-ink);
 }
 .rd-tog {
@@ -180,68 +182,69 @@
   background: none;
   color: var(--accent);
   font-size: var(--fs-xs);
-  text-transform: none;
-  letter-spacing: 0;
+}
+.rd-tog:hover {
+  text-decoration: underline;
 }
 
-/* packing board: items drop into the bins and stack from the bottom */
-#rd-tetris {
+/* ---------- packing board: the bin-packing game's look (bp- classes, ../bin-pack/styles.css) ---------- */
+.rd-board {
+  container-type: inline-size;
   display: grid;
-  grid-template-columns: 1fr auto;
   gap: var(--s-3);
-  align-items: end;
 }
-#rd-tPool {
-  min-height: 5rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-end;
-  align-items: flex-end;
-  gap: 5px;
-  padding: var(--s-2);
-  border: 1.5px dashed var(--rule-strong);
-  border-radius: var(--radius-md);
-  background: var(--bg);
+.rd-board .bp-tray,
+.rd-board .bp-bins {
+  --bp-h: 2.25rem;
 }
-#rd-tPool.over {
-  border-color: var(--accent);
-  background: var(--accent-weak);
+.rd-board .bp-bins {
+  gap: var(--s-2);
 }
-.rd-root .tempty {
-  margin: auto;
-  align-self: center;
+.rd-board .bp-row-head {
+  min-height: 1.5rem;
+}
+.rd-board .bp-items {
+  gap: var(--s-1);
+}
+/* the item's name (u1, u2, …) in the size chip, when the item is wide enough */
+.rd-board .bp-size {
+  grid-auto-flow: column;
+}
+.rd-uname {
+  margin-right: 0.35em;
+  font-weight: 500;
+  color: var(--fg-muted);
+}
+/* the board is drawn again after every move: only the item that just arrived plays the game's
+   arrival animation */
+.rd-board .bp-track .bp-item {
+  animation: none;
+}
+.rd-board .bp-track .bp-item.rd-new {
+  animation: bp-in 200ms cubic-bezier(0.2, 0.8, 0.3, 1.15);
+}
+/* the item that the step on the stage folds */
+.rd-board .bp-item.rd-active {
+  box-shadow:
+    0 0 0 2px var(--bg-elev),
+    0 0 0 3.5px var(--fg);
+}
+.rd-board .bp-empty {
   font-size: var(--fs-xs);
   color: var(--fg-subtle);
 }
-#rd-tBins {
-  display: flex;
-  gap: var(--s-2);
-}
-.rd-root .tcol {
-  display: flex;
-  flex-direction: column;
+.rd-packhint {
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 0.35em;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--st-proved);
 }
-.rd-root .tbin {
-  width: 60px;
-  padding: 2px;
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 3px;
-  border: 2px solid var(--rule-strong);
-  border-top: 2px dashed var(--rule);
-  border-radius: 0 0 var(--radius-md) var(--radius-md);
-  background-color: var(--bg);
-  background-image: repeating-linear-gradient(to top, transparent 0, transparent calc(var(--u) - 1px), var(--rule) calc(var(--u) - 1px), var(--rule) var(--u));
-  background-position: 0 -2px;
+.rd-packhint.bad {
+  color: var(--diff-3-ink);
 }
-.rd-root .tbin.over {
-  border-color: var(--accent);
-  background-color: var(--accent-weak);
-}
-.rd-root .tbin.bad {
-  border-color: var(--invalid);
+.rd-board .bp-bin.is-refuse .bp-track {
   animation: rd-shake 0.3s;
 }
 @keyframes rd-shake {
@@ -252,88 +255,33 @@
     transform: translateX(4px);
   }
 }
-.rd-root .tcap {
-  font-size: var(--fs-xs);
-  color: var(--fg-muted);
-  font-variant-numeric: tabular-nums;
-}
-.rd-root .tcap.full {
-  color: var(--diff-1-ink);
-  font-weight: 600;
-}
-.rd-root .tblk,
-.tblk.ghost {
-  flex: none;
-  width: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  border-radius: 5px;
-  background: var(--c);
-  color: #15161a;
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  font-weight: 650;
-  cursor: grab;
-  user-select: none;
-  touch-action: none;
-  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.rd-root .tblk b {
-  font-weight: 800;
-}
-.rd-root .tblk.dragging {
-  opacity: 0.25;
-}
-.rd-root .tblk.active {
-  position: relative;
-  z-index: 1;
-  transform: scale(1.04);
-  box-shadow: 0 0 0 3px var(--fg), 0 4px 12px rgba(0, 0, 0, 0.18);
-}
-.tblk.ghost {
-  position: fixed;
-  z-index: 1000;
-  pointer-events: none;
-  cursor: grabbing;
-  transform: rotate(-2deg);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
-}
 
-/* parameters, formula, front face, checks */
-.rd-params {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--fs-xs);
-  font-variant-numeric: tabular-nums;
-}
-.rd-params td {
-  padding: 2px 0;
-  border-bottom: 1px dashed var(--rule);
-}
-.rd-params td:first-child {
-  color: var(--fg-muted);
-}
-.rd-params td:last-child {
-  text-align: right;
-  font-weight: 600;
-}
+/* formula, checks */
 #rd-formula {
   font-family: var(--font-serif);
-  font-size: 0.86rem;
-  line-height: 1.85;
-  word-break: break-word;
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--fg);
 }
+/* one factor never breaks across lines */
 #rd-formula .f {
-  padding: 1px 2px;
-  border-radius: 4px;
-  transition: background 0.25s, color 0.25s;
+  display: inline-block;
+  margin-right: 0.3em;
+  padding: 0 3px;
+  border-radius: var(--radius-sm);
+  line-height: 1.5;
+  white-space: nowrap;
+  transition:
+    background-color 0.25s,
+    color 0.25s;
+}
+#rd-formula .f .f {
+  margin-right: 0.15em;
+  padding: 0;
 }
 #rd-formula .f.on {
-  background: color-mix(in srgb, var(--bond) 30%, transparent);
-  box-shadow: 0 0 0 1px var(--bond);
+  background: var(--accent-weak);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 #rd-formula .f.done {
   color: var(--fg-subtle);
@@ -341,6 +289,17 @@
 #rd-formula sup,
 #rd-formula sub {
   font-size: 0.68em;
+}
+#rd-formula small {
+  display: block;
+  margin-top: var(--s-1);
+  font-size: 0.82em;
+  color: var(--fg-muted);
+}
+#rd-formula .f:has(small) {
+  display: block;
+  margin: 0;
+  padding: 0;
 }
 .rd-root .check {
   display: flex;
@@ -364,25 +323,21 @@
 }
 .rd-fold summary {
   display: flex;
-  justify-content: space-between;
+  align-items: baseline;
   gap: var(--s-2);
   cursor: pointer;
   list-style: none;
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
 }
 .rd-fold summary::-webkit-details-marker {
   display: none;
 }
 .rd-fold summary::after {
   content: '▾';
-  margin-left: var(--s-1);
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
 }
 .rd-fold[open] summary {
-  margin-bottom: var(--s-2);
+  margin-bottom: var(--s-3);
 }
 .rd-fold[open] summary::after {
   content: '▴';
@@ -390,13 +345,12 @@
 #rd-checkSum,
 .rd-sum {
   margin-left: auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-transform: none;
-  letter-spacing: 0;
-  font-weight: 500;
-  color: var(--fg);
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
 }
 #rd-checkSum.ok {
   color: var(--diff-1-ink);
@@ -807,18 +761,41 @@
   outline-offset: 2px;
 }
 
+/* at step 0 only: how to start folding */
+#rd-hint {
+  margin: -2px 0 6px;
+  font-size: 0.75rem;
+  color: var(--rd-muted);
+}
+#rd-hint kbd {
+  font-size: 0.7rem;
+}
+#rd-hint b {
+  font-weight: 600;
+  color: var(--rd-ink);
+}
+
 @media (max-width: 60rem) {
   .rd-root {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 75vh;
+    grid-template-rows: auto min(75vh, 44rem);
     height: auto;
   }
   .rd-left {
-    max-height: 26rem;
+    overflow: visible;
     border-right: 0;
     border-bottom: 1px solid var(--rule);
+  }
+  .rd-sec.rd-checks {
+    margin-top: 0;
   }
   #rd-controls .kbd {
     display: none;
   }
+}
+
+/* while an item of the packing board is dragged */
+.rd-root.is-dragging,
+.rd-root.is-dragging * {
+  cursor: grabbing !important;
 }
