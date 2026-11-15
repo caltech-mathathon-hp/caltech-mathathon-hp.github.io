@@ -1,0 +1,10 @@
+import ProteinFolding.Tetrahedral.FarFieldCanonicalRouting
+import ProteinFolding.Tetrahedral.FarFieldMixedRouting
+
+#print axioms ProteinFolding.Tetrahedral.FarField.paired_cap_routes_ordered
+#print axioms ProteinFolding.Tetrahedral.FarField.columnsWireData
+#print axioms ProteinFolding.Tetrahedral.FarField.columnsCapEntryData
+#print axioms ProteinFolding.Tetrahedral.FarField.canonical_cap_routes_avoiding
+#print axioms ProteinFolding.Tetrahedral.FarField.canonical_cap_routes_outside_oct
+#print axioms ProteinFolding.Tetrahedral.FarField.mixedCapEntryData
+#print axioms ProteinFolding.Tetrahedral.FarField.mixed_cap_routes_avoiding

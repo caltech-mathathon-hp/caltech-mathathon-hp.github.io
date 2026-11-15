@@ -1,0 +1,11 @@
+import ProteinFolding.Tetrahedral.ReductionTM2CanonicalBackward
+
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_bulk_acyclic
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_hydrophobicCount_eq
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_phpIndices_card
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_cappedBulkPieces_words
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_cappedBulkPieces_pairwise
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_cappedBulkPieces_hSupport
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_bulkColumns_data
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.reduction_sound
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.reduction_accepts_of_prescribed_support_subset

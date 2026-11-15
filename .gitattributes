@@ -1,3 +1,4 @@
 # Preserve the exact bytes of the exported certificate snapshot, including the
 # six frozen definitions. checks/source-manifest.json records their SHA256s.
 lean/cubic/** -text whitespace=cr-at-eol,-blank-at-eof
+lean/tetrahedral/** -text whitespace=cr-at-eol,-blank-at-eof

@@ -1,0 +1,13 @@
+import ProteinFolding.Tetrahedral.ReductionTM2BulkCappedFamily
+
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.surfaceColumn
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeFirst_ne_last
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.cappedRuntimePieceWithColumns
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.cappedRuntimePieceWithColumns_colours
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.cappedRuntimePieceWithColumns_mem_solid_one
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.cappedRuntimePiecesWithColumns_pairwise
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.cappedRuntimePiece_ne_positive_column
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.cappedRuntimePiecesWithColumns_hSupport
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.cappedRuntimePieces_pairwise
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.cappedRuntimePieces_words
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.cappedRuntimePieces_hSupport

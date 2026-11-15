@@ -1,0 +1,9 @@
+import ProteinFolding.Tetrahedral.ReductionSoundnessPacking
+
+/-! Kernel dependency audits for the normalized-fold soundness chain. -/
+
+#print axioms ProteinFolding.Tetrahedral.ConstructionParameters.reductionWord_shared_frame
+#print axioms ProteinFolding.Tetrahedral.ConstructionParameters.actual_track_even_pair
+#print axioms ProteinFolding.Tetrahedral.ConstructionParameters.actual_separator_blocks
+#print axioms ProteinFolding.Tetrahedral.ConstructionParameters.reductionWord_packing_of_normalized_fold
+#print axioms ProteinFolding.Tetrahedral.ConstructionParameters.reductionWord_threshold_packing

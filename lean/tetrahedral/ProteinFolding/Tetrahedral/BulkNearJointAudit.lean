@@ -1,0 +1,13 @@
+import ProteinFolding.Tetrahedral.BulkNearJointReference
+
+#print axioms ProteinFolding.Tetrahedral.bulkNearJointFrame_cases_0
+#print axioms ProteinFolding.Tetrahedral.bulkNearJointFrame_cases_1
+#print axioms ProteinFolding.Tetrahedral.bulkNearJointFrame_cases_2
+#print axioms ProteinFolding.Tetrahedral.bulkNearJointFrame_cases_3
+#print axioms ProteinFolding.Tetrahedral.bulkNearJointRowCheck_sound
+#print axioms ProteinFolding.Tetrahedral.bulkNearJointRow_cases
+#print axioms ProteinFolding.Tetrahedral.bulkNearJoint_position_reference_0
+#print axioms ProteinFolding.Tetrahedral.bulkNearJoint_position_reference_1
+#print axioms ProteinFolding.Tetrahedral.bulkNearJoint_position_reference_2
+#print axioms ProteinFolding.Tetrahedral.bulkNearJoint_position_reference_3
+#print axioms ProteinFolding.Tetrahedral.bulkNearJoint_reference

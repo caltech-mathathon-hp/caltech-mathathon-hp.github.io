@@ -1,0 +1,6 @@
+import ProteinFolding.Tetrahedral.ReductionTM2BulkEndpointFacts
+
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeFirst_degree
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeLast_degree
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeColumn_data
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeColumns_data

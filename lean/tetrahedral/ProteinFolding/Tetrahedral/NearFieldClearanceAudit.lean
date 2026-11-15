@@ -1,0 +1,8 @@
+import ProteinFolding.Tetrahedral.NearFieldTetherBulkClearance
+import ProteinFolding.Tetrahedral.NearFieldBorrowedBulkClearance
+
+#print axioms ProteinFolding.Tetrahedral.NearField.bulk_secondRow_degree
+#print axioms ProteinFolding.Tetrahedral.NearField.bulk_aSecondRow_degree
+#print axioms ProteinFolding.Tetrahedral.NearField.tetherFolds_disjoint
+#print axioms ProteinFolding.Tetrahedral.NearField.bulkEndColumn_disjoint_tetherSites
+#print axioms ProteinFolding.Tetrahedral.NearField.frameBorrowPoint_ne_bulkEndColumn

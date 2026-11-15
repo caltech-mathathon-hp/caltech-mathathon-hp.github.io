@@ -1,0 +1,32 @@
+{
+  "verification": "PASS",
+  "target": "ProteinFolding.Tetrahedral.HPStringFoldNPComplete",
+  "theorem": "ProteinFolding.Tetrahedral.tetrahedral_hp_npComplete",
+  "full_theorem_proved": true,
+  "verified_at_utc": "2026-11-15T15:34:52.6208829Z",
+  "closure_scope": "ProteinFolding.Tetrahedral",
+  "closure_root": "FinalAudit",
+  "closure_modules": 884,
+  "hash_receipts": 681,
+  "legacy_modules_with_recorded_source_hash": 203,
+  "stale_source_edges": 0,
+  "frozen_source_hashes": {
+    "MainTheorem": "680F6D3FDC028A758D087D447B75DAFABFAE57CA7FD874DBB132D0F56F2B617B",
+    "Statement": "D1238634CDCC8477B1C1E81B27939205C28E46CF5388EC5B05C4CD5AAFC2AFD6",
+    "FinalAudit": "86852032B7E6C0F40E272FD34847DE9C0A85723ACAC67A22544FB69042638B12",
+    "Encodings": "B09380F2F385CF54BAE4E4AEC6B02AE569F109E0F621FDF126D7B92888187F21"
+  },
+  "source_snapshot": "final-source-snapshot.json",
+  "final_audit_log": "final-axioms-v2.log",
+  "audited_final_declarations": [
+    "ProteinFolding.Tetrahedral.tetrahedral_hp_npComplete",
+    "ProteinFolding.Tetrahedral.ReductionTM2.Canonical.reduction_correct",
+    "ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_bulk_acyclic",
+    "ProteinFolding.Tetrahedral.bulkFiniteGraph_acyclic"
+  ],
+  "axioms": [
+    "Classical.choice",
+    "propext",
+    "Quot.sound"
+  ]
+}

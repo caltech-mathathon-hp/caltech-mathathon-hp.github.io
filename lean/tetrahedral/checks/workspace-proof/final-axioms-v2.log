@@ -1,0 +1,12 @@
+Tetrahedral proof verification (existing Lean 4.24.0 and dependencies).
+Checking ProteinFolding.Tetrahedral.FinalAudit
+ProteinFolding.Tetrahedral.tetrahedral_hp_npComplete : HPStringFoldNPComplete
+'ProteinFolding.Tetrahedral.tetrahedral_hp_npComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ProteinFolding.Tetrahedral.ReductionTM2.Canonical.reduction_correct' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_bulk_acyclic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'ProteinFolding.Tetrahedral.bulkFiniteGraph_acyclic' depends on axioms: [propext, Classical.choice, Quot.sound]
+PASS: 1 modules checked; all requested sources verified.

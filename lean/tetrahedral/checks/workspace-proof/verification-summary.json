@@ -1,0 +1,3751 @@
+{
+  "date": "2026-11-15",
+  "lean": "4.24.0",
+  "modules_checked": 921,
+  "examples_checked": 153,
+  "public_declarations_audited": 6867,
+  "modules_with_compile_receipts": 706,
+  "modules_using_legacy_timestamp_check": 215,
+  "axioms": [
+    "Classical.choice",
+    "propext",
+    "Quot.sound"
+  ],
+  "full_theorem_proved": true,
+  "final_verification": {
+    "verification": "PASS",
+    "target": "ProteinFolding.Tetrahedral.HPStringFoldNPComplete",
+    "theorem": "ProteinFolding.Tetrahedral.tetrahedral_hp_npComplete",
+    "full_theorem_proved": true,
+    "verified_at_utc": "2026-11-15T15:51:52.4609057Z",
+    "closure_scope": "ProteinFolding.Tetrahedral",
+    "closure_root": "FinalAudit",
+    "closure_modules": 884,
+    "hash_receipts": 681,
+    "legacy_modules_with_recorded_source_hash": 203,
+    "stale_source_edges": 0,
+    "frozen_source_hashes": {
+      "Statement": "D1238634CDCC8477B1C1E81B27939205C28E46CF5388EC5B05C4CD5AAFC2AFD6",
+      "Encodings": "B09380F2F385CF54BAE4E4AEC6B02AE569F109E0F621FDF126D7B92888187F21",
+      "MainTheorem": "680F6D3FDC028A758D087D447B75DAFABFAE57CA7FD874DBB132D0F56F2B617B",
+      "FinalAudit": "86852032B7E6C0F40E272FD34847DE9C0A85723ACAC67A22544FB69042638B12"
+    },
+    "source_snapshot": "final-source-snapshot.json",
+    "final_audit_log": "final-axioms-v2.log",
+    "audited_final_declarations": [
+      "ProteinFolding.Tetrahedral.tetrahedral_hp_npComplete",
+      "ProteinFolding.Tetrahedral.ReductionTM2.Canonical.reduction_correct",
+      "ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_bulk_acyclic",
+      "ProteinFolding.Tetrahedral.bulkFiniteGraph_acyclic"
+    ],
+    "axioms": [
+      "Classical.choice",
+      "propext",
+      "Quot.sound"
+    ]
+  },
+  "independent_final_report": "final-verification.json",
+  "independent_final_report_sha256": "AC679A1A865B36D1D0CAD955D9F9A31DB12E9ED3F66F2F6DF4CA68E32B0AE4C7",
+  "foundation_build": "verification.log (last full module build; see log for its module list)",
+  "integration_audit": "integration-axioms-final-v1.log (imports all selected compiled modules)",
+  "additional_modules": "Individually compiled; sources no newer than successful .olean artifacts.",
+  "completed_major_targets": [
+    "Sharp contact bound with equality classification",
+    "Unconditional NP membership",
+    "Unconditional unary exact-capacity packing hardness",
+    "Unconditional canonical bulk acyclicity and path cover",
+    "Actual source-only reduction soundness",
+    "Concrete source-only reduction equivalence and unchanged tetrahedral HP NP-completeness theorem"
+  ],
+  "verified_geometric_facts": {
+    "unconditional_bulk_acyclicity_and_cover": true,
+    "actual_source_only_reduction_soundness": true
+  },
+  "remaining_core_tasks": [],
+  "sources": [
+    {
+      "file": "Statement.lean",
+      "sha256": "D1238634CDCC8477B1C1E81B27939205C28E46CF5388EC5B05C4CD5AAFC2AFD6"
+    },
+    {
+      "file": "Geometry.lean",
+      "sha256": "9812AA708AD1AD8B6BDA261D4ACB0C9BD05C041AB0C194E6536F38D7713631CD"
+    },
+    {
+      "file": "LocalStructure.lean",
+      "sha256": "046C87A50B261420689C883D7DF1BA1F6A9B1B2EB5590A843627E3068F941924"
+    },
+    {
+      "file": "Layers.lean",
+      "sha256": "66E70187098D47739F66458345F504852077F2D396E3036EBCCA09ECAC986FD6"
+    },
+    {
+      "file": "FiniteSets.lean",
+      "sha256": "F3B380005380C8AC1701358A44AE4D92C2DE9B9E71FAF0E8D49E4F3A1F4CF0F5"
+    },
+    {
+      "file": "FoldCounting.lean",
+      "sha256": "012BBEDEA1C52F229A12F46A004185DB821CAB549AABB598578E3A796D4A5F11"
+    },
+    {
+      "file": "GapGeometry.lean",
+      "sha256": "1366C95A245187AD07A36C22E6BBF635FC772E31460B028A74410B8E78716CFF"
+    },
+    {
+      "file": "GapRuns.lean",
+      "sha256": "B507A57380DD22D9D32873BA39DB274EECF2907C2214099170AD628F6CBE7AC8"
+    },
+    {
+      "file": "GapBoundary.lean",
+      "sha256": "B444DAE5CCA870025402A86F900C44D293F517E2A30FC10AA475631EE06FD1AE"
+    },
+    {
+      "file": "LayerBounds.lean",
+      "sha256": "F00AC8C5C8F1D997E938CD8DDF5DFEB1614F749D3D4D9D7D828FF8482BFEFC51"
+    },
+    {
+      "file": "RootSum.lean",
+      "sha256": "3712BF7CD7FEEC75B98E832646F12DDF99B541CEAA481BE7F41A574FE60CD7C2"
+    },
+    {
+      "file": "OneSided.lean",
+      "sha256": "51A91C9A7ED6F58CB87643A6CFB96ECCC352A1268DC9C55719ED997072743CC3"
+    },
+    {
+      "file": "LargePart.lean",
+      "sha256": "A9250804F049E92818B10E7BBCEE27F386A32E17880861BEE71E5BBED9D55DEF"
+    },
+    {
+      "file": "BackwardBase.lean",
+      "sha256": "A84D1810266F92837D85DE56DB3A17155E912A0F4A323D0F95D78443EC5282DD"
+    },
+    {
+      "file": "BackwardInitial.lean",
+      "sha256": "AE9F1E14107445039B7A2C2B1D3AD15A0446633AF508446D18AE13A3BCF31E23"
+    },
+    {
+      "file": "BackwardInduction.lean",
+      "sha256": "EAA38FE9009F4C1851B235490BD1DA47758F2F946606B5889D1772E3C7396830"
+    },
+    {
+      "file": "CanonicalComposition.lean",
+      "sha256": "AA3349EAAC595AA009A1137D462CFFE23250AAA642E54AD3469EB3BEE8BC3E3F"
+    },
+    {
+      "file": "CompositionEquality.lean",
+      "sha256": "A9612525F545E1300060D382A6ED41E071D7EE599B3AADD7D7D729A8120EF6E4"
+    },
+    {
+      "file": "LargePartEquality.lean",
+      "sha256": "C286C0D0B8A069F5523BC706EBE08E3234893C92D11CED440BBA05BB0701B50D"
+    },
+    {
+      "file": "Optimization.lean",
+      "sha256": "765D3053F0E4417D2091A52DCF853089D3521AAABD83AE2DED25F908A7CB99BB"
+    },
+    {
+      "file": "LastParts.lean",
+      "sha256": "C15DBB92B6047B0A2A91198188319442C7D942C96B5830537C31EF901B47D491"
+    },
+    {
+      "file": "ProfileComposition.lean",
+      "sha256": "F7549DE48AF36266984E0C14501C244351CD1CB07BF902CEDEDAA2E165D4C852"
+    },
+    {
+      "file": "RootConvexity.lean",
+      "sha256": "698712DD2F844DF034F0CECD0760B67EA32CC595F5AF44CF8B61EA217CB72B25"
+    },
+    {
+      "file": "CompositionBoundSplit.lean",
+      "sha256": "2989F01B2AC4ED58A313428A3202AAD1BCB4EE61EF3FBA49C3C0FA6821ED1BDD"
+    },
+    {
+      "file": "CompositionBoundCases.lean",
+      "sha256": "E8EC534AF70B0D5D4111DB5645A65CA5E970205FE5FD4B78A2AAF8AC2B7AB384"
+    },
+    {
+      "file": "CompositionBound.lean",
+      "sha256": "C7625377CBD30428AF38AA5A740A90469DD0104EA91D123F42965C502B75D09A"
+    },
+    {
+      "file": "RawProfile.lean",
+      "sha256": "C48D55714FF5F94FA43A87DB83AB31E438BCDA8771FA1A3C98629103BCB55623"
+    },
+    {
+      "file": "RawProfileWitness.lean",
+      "sha256": "2B2F413737C893F08A6DE5FEC907BFD2D852D361DA6F6D171BD140A6BD19DB87"
+    },
+    {
+      "file": "SiteProfile.lean",
+      "sha256": "99E8AACB2C694276064958AC94F8549E166255E5B8CB68642B451DE437CA2A0B"
+    },
+    {
+      "file": "SiteProfileEquality.lean",
+      "sha256": "AB9445002DE477322CBBD19D2A140C4D95C7D3AA543C05C5AC4922212B13A6B4"
+    },
+    {
+      "file": "LayerRigidity.lean",
+      "sha256": "D03A28A3CA8B0B0DEC0DD02F2FC0D77EB513433413C9FED49EB36DE570A3ABFB"
+    },
+    {
+      "file": "LayerRigidityErosion.lean",
+      "sha256": "CDE1D71DCA3DDAD241D2F53BD63C3BC1E6F9C41DE5D9D6B30605F48A2150F858"
+    },
+    {
+      "file": "IntegerIsoperimetry.lean",
+      "sha256": "3F5678EAA2D55BC557830778A5D38997782D10C5B546AAB1DEE4ADC9C7CC642E"
+    },
+    {
+      "file": "Octahedron.lean",
+      "sha256": "6A767539B2C1C55E3B93F20382DF2E73942639C5F62AE95BE9B6854A414FE27E"
+    },
+    {
+      "file": "OctahedralBoundary.lean",
+      "sha256": "B3D7B2E5998515F5C8F81B766AD282398D8903F536D4385920FAC5F729CC66CB"
+    },
+    {
+      "file": "OctahedralLayers.lean",
+      "sha256": "D9B421B8BE3F47ECE51F39443FADDBD3BDA259A7B983E4137E08AF90DD1260F3"
+    },
+    {
+      "file": "OctahedralReflection.lean",
+      "sha256": "38A41C9FD7B90ADAAFF53BCD977A1113F14490EDECFDB71E9737AFB0235E80D0"
+    },
+    {
+      "file": "OctahedralCount.lean",
+      "sha256": "90CAA2200440194B4B5AFFE2797C70001AA87C7DE6B2CFAFF011861689F240C3"
+    },
+    {
+      "file": "OctahedralEdges.lean",
+      "sha256": "F90AEDB1220CDBB771352DB34434A352DF33962C4933C2F37CD629B5900C5D5F"
+    },
+    {
+      "file": "SharpBound.lean",
+      "sha256": "2B0F224ACC3F6FD69D2B643B487247498322A67094CD59A05576B100E67CF314"
+    },
+    {
+      "file": "ConstructionParameters.lean",
+      "sha256": "94AD9910AF4CC2FE8299ED7E1C01E442EC5C16BC56C0FFEC41785865E3DA12AA"
+    },
+    {
+      "file": "Encodings.lean",
+      "sha256": "B09380F2F385CF54BAE4E4AEC6B02AE569F109E0F621FDF126D7B92888187F21"
+    },
+    {
+      "file": "MainTheorem.lean",
+      "sha256": "680F6D3FDC028A758D087D447B75DAFABFAE57CA7FD874DBB132D0F56F2B617B"
+    },
+    {
+      "file": "Normalization.lean",
+      "sha256": "CF0C1854496DA276D9F5B99C72050D5B0B9554AB1DBC5A5C9D0900BBE2DC0E54"
+    },
+    {
+      "file": "Certificates.lean",
+      "sha256": "974BEB85F68D53688F98895ED28E1709856D2E944D2009D13DF77FD53D2A364D"
+    },
+    {
+      "file": "CertificatesTM2Inspector.lean",
+      "sha256": "754DD1EBDFDEBBC64EB91E608174B745BDBBB77455D9831CE72C1B7F5FF8C02C"
+    },
+    {
+      "file": "CertificatesTM2Directions.lean",
+      "sha256": "6A230087483B739890005A05EF362177CB26A22FD262095BA7A22875090274F4"
+    },
+    {
+      "file": "CertificatesTM2Geometry.lean",
+      "sha256": "7E28776A1A3987F99550F94D98ED3D51BDBA2ED9282909DF8CAA5A86EE96B42F"
+    },
+    {
+      "file": "CertificatesTM2Expansion.lean",
+      "sha256": "B5C0EFE8F607EF23506C181FF19A0A94DC37AB0CC15D1CFCAFF5106CF82861B2"
+    },
+    {
+      "file": "CertificatesTM2Bridge.lean",
+      "sha256": "3CB151AAB5F404BF357624A4D4F1001501E8FA75865808FAFE6C10366A1E0BF2"
+    },
+    {
+      "file": "CertificatesTM2Updates.lean",
+      "sha256": "56BCCA985591909C5AC6A42455C7ED2BE22CA0688D988C932D4B5D2713B08995"
+    },
+    {
+      "file": "CertificatesTM2Row.lean",
+      "sha256": "BC24BE6606E63F74D408DF15DC5F700BE234D95E786ECF6287360D5892313A79"
+    },
+    {
+      "file": "CertificatesTM2Pairs.lean",
+      "sha256": "5D97722F9999716DE0DD30D65D01E1E933B181D3CE41DEBCBFB04A852F9E905D"
+    },
+    {
+      "file": "CertificatesTM2PairMachine.lean",
+      "sha256": "2F30020134A6C226239D952EC7BEB124882AECDA6DF28A90E1C9C197F558ABC4"
+    },
+    {
+      "file": "Examples.lean",
+      "sha256": "34B442B7B7E23B28A15135D477056D790571E372600708415EF7DF205A9FF393"
+    },
+    {
+      "file": "OctahedralChecks.lean",
+      "sha256": "A6ED2B16165B862AA00DBC6A0F62E5555A26AA959AEF9F586B0C391C911F61B7"
+    },
+    {
+      "file": "NormalizationChecks.lean",
+      "sha256": "FD4023149514FA149CFC2E42901425B872FB603D6B5049AD1ED3B6EE7B9D00B2"
+    },
+    {
+      "file": "CertificatesTM2PairRun.lean",
+      "sha256": "1198BBF45F935186F765E310E5FB527EE963C0F5C1A95A4744378B9097043C07"
+    },
+    {
+      "file": "CertificatesTM2PairDrain.lean",
+      "sha256": "DFBC7F957EE81749C00DBDEE8E5D9FB6660A5485030795C7FF7FF3F9CFBC7AA5"
+    },
+    {
+      "file": "CertificatesTM2PairOuter.lean",
+      "sha256": "B449E0177DEFEFFEE80AB3A3D709C03C5A2D8AC8ED3B2B3A0DCB1D50331D5EBE"
+    },
+    {
+      "file": "CertificatesTM2PairEmit.lean",
+      "sha256": "8FD54164D0B1F122FD0F81D574103A48C5C5C88711A711FA88646D695A2F08D8"
+    },
+    {
+      "file": "CertificatesTM2PairComputable.lean",
+      "sha256": "AAD36E527E9430C55A6183A868E0DF0E425C25BC7BE8F0135265425E47BC47BD"
+    },
+    {
+      "file": "CertificatesTM2Records.lean",
+      "sha256": "EA1F71BF5816CCE487B2AA017052BEC1214445C6F2640826F22310E614395038"
+    },
+    {
+      "file": "CertificatesTM2Zip.lean",
+      "sha256": "D2726923CB04619C668A94D4166F237D6914790794C23CD0DE7E4D6885294390"
+    },
+    {
+      "file": "CertificatesTM2ZipSemantics.lean",
+      "sha256": "333416DEF4846A53E155F74B640992860AC22A897642AB0847F4C43E1D96CA67"
+    },
+    {
+      "file": "CertificatesTM2Verifier.lean",
+      "sha256": "F0AA960A5BB9C8DAEBB9E841108DEED620C9AD325EA2DA86E15AB06E2D911E06"
+    },
+    {
+      "file": "CertificatesTM2Checks.lean",
+      "sha256": "3A31789528DC45FED5AB20AC22AEDBB814E1B94F7538B89C5D47F133C45B1955"
+    },
+    {
+      "file": "CertificatesTM2Semantics.lean",
+      "sha256": "A4BE1960559153EF5A971E38E03F7A211080278550CE11E918D61446483E7A02"
+    },
+    {
+      "file": "CertificatesTM2ScoreSemantics.lean",
+      "sha256": "B31FF2F4DAE697C629BF2AA67FD7A59C29BCD8038FBE826689729CC6CB10A65E"
+    },
+    {
+      "file": "CertificatesTM2Correctness.lean",
+      "sha256": "887DB5F13A1BC64EFA112732029B215392FDFD86B3BD233724ED05D7C17CDB78"
+    },
+    {
+      "file": "FarFieldAvenues.lean",
+      "sha256": "E7DF91B8A82466AF8814777B1F14DA46621696180091263E97B80B4A2099115C"
+    },
+    {
+      "file": "FarFieldPaddingArithmetic.lean",
+      "sha256": "DE181BBC3AB073C12A7B37C83E8D1CCF3A31BABB74B64B52A03D8644C7812057"
+    },
+    {
+      "file": "SiteProfileCentral.lean",
+      "sha256": "B893533172999A17649449C0411CBF55319FE044F2271354DB774EA5F4983FFA"
+    },
+    {
+      "file": "SiteProfileTelescoping.lean",
+      "sha256": "173C881627325496AF36A568BE77132B9037F10E44F3E978845CD9248624D4B6"
+    },
+    {
+      "file": "SiteRigidityContainment.lean",
+      "sha256": "CC61D4E1DFC847E4E7F8F4B79F0289B5910619E8B2470ED95E88D7E97E416AAF"
+    },
+    {
+      "file": "LayerRigidityRectangleHelpers.lean",
+      "sha256": "D69DF64C2B63861F1F6AD7775C85994D3F1A7AE079B34E57A6C2D5FD143C58D4"
+    },
+    {
+      "file": "LayerRigidityRectangleGrid.lean",
+      "sha256": "B403578DB5635CA14EACA0DA0DB5E1A1E121724509191439AFB7C4218891165D"
+    },
+    {
+      "file": "LayerRigidityRectangle.lean",
+      "sha256": "EF443C2CF5D5CAFC44D18A6262665768BE86694D7351ECF17FEABC1A07B3B86E"
+    },
+    {
+      "file": "LayerRigidityRectangleTransport.lean",
+      "sha256": "DBE077237A14C05AF54C6EAEE40273C14ED4BF506B19ABC20785D8437CD8DF2A"
+    },
+    {
+      "file": "LayerRigidityRectangleNormalization.lean",
+      "sha256": "C1A131164DFD161AB3240E9D87A1FD002C4625175392A6F1A00E65735D9FD0AD"
+    },
+    {
+      "file": "SiteRigidity.lean",
+      "sha256": "C9584CB187BD6CF9F1E31E81C3ED92BC9D32D596A4124840D219C73C123E7707"
+    },
+    {
+      "file": "SiteRigidityInvariance.lean",
+      "sha256": "A9D16E2191124BDA5420556502DB05F350CF50DE088890175382E1C2920DDD86"
+    },
+    {
+      "file": "OctahedralVertices.lean",
+      "sha256": "8CD8BF368B326315A8BBDAAD806FDCC223A554AD71E2CD0750C840C4913B79A5"
+    },
+    {
+      "file": "FoldRigidity.lean",
+      "sha256": "3B96A4A046F12FAD6BB3CBC2E997C9F380A00D5EFD10736D9F713CD49BB4DCAD"
+    },
+    {
+      "file": "OctahedralEdgeFacts.lean",
+      "sha256": "7F860981DFC6D12AD456E3EA4FFA2A55737B8F6DA18D29C1ED3D7CA90AD5C9C2"
+    },
+    {
+      "file": "OctahedralGeodesic.lean",
+      "sha256": "DF51AB7C0D2BB4F9FACD5D2F99B33FD6FFD6C3FCBCA316290392330BC4B784E6"
+    },
+    {
+      "file": "OctahedralZigzags.lean",
+      "sha256": "3AF8E0C4A1C86D90220E8A7FFF80C66835959501979EA0608F04FEBC3CE03B1D"
+    },
+    {
+      "file": "OctahedralEdgeParametrization.lean",
+      "sha256": "6F0A4769C68F44418E0BD3AF7DBCD2F3612CDA5498AC5BA07A2779E8FA974E78"
+    },
+    {
+      "file": "OctahedralSurfaceChecks.lean",
+      "sha256": "5DCB271819BFD5731D7DFE110100677AE4CA4C6A9F94C36D0FA31E08540757FC"
+    },
+    {
+      "file": "PackingSource.lean",
+      "sha256": "8D418357FB77E3D56604F8D9FECC78EF8FCD1EB698DCDE13037D8FD7E135A34E"
+    },
+    {
+      "file": "PathMatching.lean",
+      "sha256": "750F1C7B0336CBD71586758163ED5CC5F49C36D04598C58C300FC8ED05416412"
+    },
+    {
+      "file": "WordPieces.lean",
+      "sha256": "D1F0AD93997FE81096292B635E2D13C8504F9DC2A7B02A4750E438ABD83164FE"
+    },
+    {
+      "file": "SeparatorArithmetic.lean",
+      "sha256": "9BA7800D7CAB3E47236C1AEE1DBFD82A822A9F26EB5DA683F2547F36B3F4CF9A"
+    },
+    {
+      "file": "TetherDistance.lean",
+      "sha256": "BB11B6829A1FED1DD9778976AA2CA5080741DC74EC3AC0CA8DCC077F7D90BF63"
+    },
+    {
+      "file": "SoundnessDimers.lean",
+      "sha256": "E2EF938463276B3200E36C881CA5D072B7DEF6608997C05F6D799CD74055CA7B"
+    },
+    {
+      "file": "FoldAssembly.lean",
+      "sha256": "70B04078BD18E2FE160BE6CF28B9AF81B43E867C8DA05E420B976EC2104F79E9"
+    },
+    {
+      "file": "RoutingBounds.lean",
+      "sha256": "E4866C8133821D317D7D61715150298A19CB1F370ABC5586E7BEB6FCCE916258"
+    },
+    {
+      "file": "FarFieldPaddingPath.lean",
+      "sha256": "3D0CA2CF11F974E6323CB8240875B161E9BA3BE1CD2E9CB4A5DFACE709A731BF"
+    },
+    {
+      "file": "FarFieldCoordinates.lean",
+      "sha256": "D91CF63A32E221C2631BE2EA3093EC737B929B880C07DBF813C58DF6F16B03F2"
+    },
+    {
+      "file": "FarFieldPadding.lean",
+      "sha256": "0437438D7E3048CD98309662734D232ECC25C02FE91D9C799DDC7EBF708479EB"
+    },
+    {
+      "file": "FarFieldAvoidance.lean",
+      "sha256": "C3DA97065DAAA46F3B35E4324B088651B0BA801FFF412341F709D4B507FAEA2B"
+    },
+    {
+      "file": "FarFieldPrescribedLength.lean",
+      "sha256": "B324219A66AA8E75D42225C1353AF6D07B0CEC19078B977A3363BCDDF4734A05"
+    },
+    {
+      "file": "BulkFoliation.lean",
+      "sha256": "32FBED9D3BD7AC4AD885137A3024D3FD216CFD43E638C149853921FFD3446056"
+    },
+    {
+      "file": "BulkRungs.lean",
+      "sha256": "C4C434EC57D98A7F320A3164FECCE7887BECD5A905A2D9F100CA81DD0248602A"
+    },
+    {
+      "file": "BulkLines.lean",
+      "sha256": "C4F36D4DDD8509A4434FF99827B58562088D69D481E5C3D672E9CD9C0C609903"
+    },
+    {
+      "file": "OctahedralP3LinksHelpers.lean",
+      "sha256": "CDD3B6133F330B49DC4A781E30CE14D2765959AC9524CE2279B718AED203B0B1"
+    },
+    {
+      "file": "OctahedralP3Links.lean",
+      "sha256": "3F20DDFB4EC42759609C72E9045422FCF872396B2D4BD82A95ADBDF86F18F58D"
+    },
+    {
+      "file": "OctahedralLinkCounts.lean",
+      "sha256": "1B79266D66A99646778BD6E556610B45074B616D5EB032E76084F7A1AEF39D7E"
+    },
+    {
+      "file": "OctahedralExteriorLinks.lean",
+      "sha256": "869F19B6C6475D5DBC7FC7666116A17B868FB66F7858285BB5CE788B49C249A0"
+    },
+    {
+      "file": "OctahedralLinkAdvance.lean",
+      "sha256": "34106CF263990E7B613EEF1C622CE0311B27CEF8218F61C1550911C33FE9A9DA"
+    },
+    {
+      "file": "FrameWord.lean",
+      "sha256": "E09CA138645A89277C839BCD64B2AC9AFB41240785B598F3091265B290FBDDCA"
+    },
+    {
+      "file": "FrameWordPHP.lean",
+      "sha256": "FDEE0A68D2B9BDE592B3F8D711C1C0064C6A556AE9A436526DAC91ABE085DAE8"
+    },
+    {
+      "file": "FrameWordCounts.lean",
+      "sha256": "67BE162ACAE4E0B8429C0DC2B91B3F196FFCAC08F85630DA7E93935D22EC6F7A"
+    },
+    {
+      "file": "FrameWordSlots.lean",
+      "sha256": "E7547391BD8811E5D744F8CA2503EA81E06B2FF73D971CF0FF1933F4832DDF19"
+    },
+    {
+      "file": "ReductionWord.lean",
+      "sha256": "3038D8B236FD1D136E8F055DF93729CA02FD51FC0890A583464EAE3DDDBF740C"
+    },
+    {
+      "file": "ReductionWordCounts.lean",
+      "sha256": "FBA7C4D1E4B1875818B7A56E831E4152D665B1B75CC7665A9EF1ED35A02252E4"
+    },
+    {
+      "file": "ReductionWordLinkers.lean",
+      "sha256": "C4B9FEB59F2D7C01BB9752DDC43D21A65602DE21FBA5EDB18663440DA6697884"
+    },
+    {
+      "file": "OctahedralLinkChecks.lean",
+      "sha256": "B3A9A134A7EB8E2209F50620DAEADC79807256AD9A0FE81319218CDD427CDC80"
+    },
+    {
+      "file": "OctahedralTriangleSteps.lean",
+      "sha256": "8330C01E98506A4D1C27C7F6E3BE396DA25AD0F71904CD620D6D057C73CC0AB0"
+    },
+    {
+      "file": "OctahedralTriangleSides.lean",
+      "sha256": "5E7362F27B36BE2391E4CC24C5119F19EDA541957374C9AE76727DAA92727451"
+    },
+    {
+      "file": "OctahedralTriangleChecks.lean",
+      "sha256": "8635DB58C707AD023DADE6AB1597E3A28B0D6A18A48ED7F6BC9635445E04CC9E"
+    },
+    {
+      "file": "BulkLineCoordinates.lean",
+      "sha256": "AFE98E9189CBC7B24DAF33D331F336F60C0179931C29AC7B94F679CEF022A340"
+    },
+    {
+      "file": "BulkBendUniqueness.lean",
+      "sha256": "BE20A37D9AF8034B7623B6B1E454531D09EF14D26C20294E4CD976AC2C7116EA"
+    },
+    {
+      "file": "BulkSolidIntersection.lean",
+      "sha256": "57AA066DCF9223E4BBB5E13E4993BE52C05F23524DCECE4BBB537994BA3B830A"
+    },
+    {
+      "file": "FarFieldQuadrants.lean",
+      "sha256": "A53E03063345A0422EE1579F1BDA2769CF54F6A2B70E346F5A8BA9BFDE0F302E"
+    },
+    {
+      "file": "FarFieldAvenueClassification.lean",
+      "sha256": "9EF9A5095DF30010853AE0F5649545D529F89DC5D65DD8888982EAAEB906B546"
+    },
+    {
+      "file": "FarFieldLevelCurves.lean",
+      "sha256": "31B7A53F5B97366F8FD77141C9F429C0AC613CAD91450013625AF6BDF846E204"
+    },
+    {
+      "file": "Skins.lean",
+      "sha256": "A86A3D1B45877418BF6F8D5092C70C48E955F1D847E15A0DAEFFA215DD70982F"
+    },
+    {
+      "file": "FaceCoordinates.lean",
+      "sha256": "7A94EE52185C974DB049494B1497BF4454A30C6299C3BEF7B9CFDAD2BC70D7BC"
+    },
+    {
+      "file": "ReductionSoundnessPrelude.lean",
+      "sha256": "04AE85D401F6333D11AE62BC5CFC6661A08DFC0CA3CAC2519E3152DD706AFE05"
+    },
+    {
+      "file": "VertexDirections.lean",
+      "sha256": "DBB580C7FD942C2ACE7F39BA5262B580853EA2087F52120B6233E7D93B428C61"
+    },
+    {
+      "file": "RoutingSeparation.lean",
+      "sha256": "DD3CDBCBEFB889EC2B23E657AA6D84780D568F27DD9E6194F0670547EB9F9D4D"
+    },
+    {
+      "file": "BulkPatches.lean",
+      "sha256": "202730B298D72D67E1599EC9A46532E99A982F1AF52DE37DA0253CBA00CAB580"
+    },
+    {
+      "file": "BulkMerges.lean",
+      "sha256": "4EA3EC5EC5363308C366A4EAB763286A15A37B170DCCA9D0AA7C8DD5749F4F5A"
+    },
+    {
+      "file": "BulkCoverConstruction.lean",
+      "sha256": "899496722445E0303B5BBA39685EF0164EE4DF03F32054AAA8BAC4396A4B6749"
+    },
+    {
+      "file": "BulkLocality.lean",
+      "sha256": "56D8F6F379397C3C3EB0456DC62CF444C27870FF1F370A8633C938FDBADC5207"
+    },
+    {
+      "file": "BulkMergedDegree.lean",
+      "sha256": "E0135E13B2D52326F530BCB53A751BA6A3A2DF8D36EC6446A8F51FFA336143A1"
+    },
+    {
+      "file": "BulkVertexLocality.lean",
+      "sha256": "3B190308EA84F4AB91F0A4815D5CC93F2237B660A6008E17E91356ABD2F6172F"
+    },
+    {
+      "file": "BulkVertexSigns.lean",
+      "sha256": "8272E9977DB32B5E06582A08D354B259DF010BC1054C581D19076A0AC5385677"
+    },
+    {
+      "file": "BulkVertexTransfer.lean",
+      "sha256": "E99A2F0AD599142DFFA4E6BC0A66621F66A17319DCCDC65C23FD589D2C313401"
+    },
+    {
+      "file": "BulkVertexPatches.lean",
+      "sha256": "26AB0AADC8FF112D5E2022A758FF4402E42A214E6FB008E75FAD4C9A9D5316BA"
+    },
+    {
+      "file": "BulkFastLocal.lean",
+      "sha256": "9293BC1301BEE656C2241EC1C174D6E98C9D8782BCCE69E8F96ADE0949888C91"
+    },
+    {
+      "file": "BulkPatchSupport.lean",
+      "sha256": "B29F8CD136BC01E0C1F0138D107B96EDCF67171CB520316E3D420387B400DD4D"
+    },
+    {
+      "file": "BulkBoundaryEnds.lean",
+      "sha256": "1469043F24C8183B994BF3324933E2A2CCE6EF3582195010C35CCB16FEBF9AF2"
+    },
+    {
+      "file": "OctahedralEdgeUnion.lean",
+      "sha256": "AEB30B031C71B961C651F2CC11134B9D29289E84ECFBBB2FAF21E9D2DC414C2A"
+    },
+    {
+      "file": "BulkEdgeLayerCount.lean",
+      "sha256": "19311A4D0A0D5EA5DAED5F60262B515C7394E389782A179F2D4EEE25DA931CB7"
+    },
+    {
+      "file": "BulkEdgeCount.lean",
+      "sha256": "09E8140BB5E0344BAED868779A2A8A4A60BCE30A161CF234E4BCF7ED93B79FB9"
+    },
+    {
+      "file": "BulkEdgeChecks.lean",
+      "sha256": "BB6AA9617301BD06D636C1D49F05AA1D855A8CB6FE5BE0290B31440F16E88828"
+    },
+    {
+      "file": "BulkSurfaceDegree.lean",
+      "sha256": "66E227F116B37C16682844532CEC54733D85F244EFD3C34F19E9FD808EA604A8"
+    },
+    {
+      "file": "ColumnsSigns.lean",
+      "sha256": "BB84608662D1F6EFDEFD4FFB761B9CE21411D9C0F96840DE2B6BF2BD36925C38"
+    },
+    {
+      "file": "ColumnsArmFacts.lean",
+      "sha256": "30511AB4AAC449D7E5ED3B332A2B1F3EDFDE6F77E287C836ADC9E0720A562026"
+    },
+    {
+      "file": "Columns.lean",
+      "sha256": "E454859339F30D604FF7D8253EAFC4C80E453A1B9603BCAC5D22F3368EBAFE5A"
+    },
+    {
+      "file": "ColumnsDisjoint.lean",
+      "sha256": "39792AB23BCF622DEC145E2BA9863130DEB4BEC37D31D559FE4B342BD7DE3922"
+    },
+    {
+      "file": "ColumnsValues.lean",
+      "sha256": "12B32A6B51F47781D50AA478BB7F37553C6E6BF5C95E1D01442965D1064EA837"
+    },
+    {
+      "file": "ColumnsSkins.lean",
+      "sha256": "D0DE024117856AF5065FC362CBFC38BB36F73B29ECF754F5BAAE6612E5D7D196"
+    },
+    {
+      "file": "FaceRowsGeometry.lean",
+      "sha256": "5BD17BF09321A38ABD6F412117D92E947E4F9823196486D799AC532A673914FE"
+    },
+    {
+      "file": "FaceRowsColumns.lean",
+      "sha256": "D9F1B510CBA25F48D55816596B2F61A4F77646874837B6C3BF033D7C13590DC7"
+    },
+    {
+      "file": "FaceCoordinateSurjectivity.lean",
+      "sha256": "41D940340D5E442EDC256568B8F567C5D9517D655B27B39163ABB482FFC6E38C"
+    },
+    {
+      "file": "FaceRowsColumnOwners.lean",
+      "sha256": "5CF693992E25D6971840D2C5774942B36C16856D9A875D69515200746287649F"
+    },
+    {
+      "file": "FaceRowsMargins.lean",
+      "sha256": "02894126D351A50EEBE1A77FE2C0F7C57CE4FFCD2EE13387CD5AB9B1AC17FC7A"
+    },
+    {
+      "file": "FaceRowsPaths.lean",
+      "sha256": "DA441359C6E05F81CB253E32AA45D35EABF28DA577EF0B484C1930C9ABAB6765"
+    },
+    {
+      "file": "FaceRowsSegments.lean",
+      "sha256": "AA534F439CEA241B4B65F5FA8BA92C10CC3217CC1DEC644053FB15F13EFC17AD"
+    },
+    {
+      "file": "FaceRowsAvoidance.lean",
+      "sha256": "8D3B7E2A71080B52D47FFB1D0ED3BF622961214CC9E23795E6F43C0BFA4EBAC7"
+    },
+    {
+      "file": "ColumnsRowsChecks.lean",
+      "sha256": "DEE8B70A9E07B7C16B63C72DAC7771C6FE9D204B258A0D8269BAAD985B8FF3DF"
+    },
+    {
+      "file": "FarFieldLevelClassification.lean",
+      "sha256": "87DC3525612FC6D740509A2DC1393548800260C8125034BA2D671CC226B600FD"
+    },
+    {
+      "file": "FarFieldPathTools.lean",
+      "sha256": "35E77C0A482D3F5632AF398E06E272F28CB4F16C85D2967FAFA904B32C50FC7E"
+    },
+    {
+      "file": "FarFieldLevelWalk.lean",
+      "sha256": "FD5DD8C5B35B107D423D67CF718983847AF57F6D0A8733EE06F1FAE5EE4F942A"
+    },
+    {
+      "file": "FarFieldApproachBounds.lean",
+      "sha256": "FC572F972DCCF798D4BC27913137E7BACB5B57641E129AA804B69CAB23FA8EB8"
+    },
+    {
+      "file": "FarFieldApproaches.lean",
+      "sha256": "1C723429751DB7AE8698CB11DF7769C3E0A6352E1FD0E6BC2E94E5154935E30D"
+    },
+    {
+      "file": "FarFieldArbitraryAvenues.lean",
+      "sha256": "F9E7F2E87FFBFF2B633E2BB41648EC570D868C0C4B9D1ECB2D062BFC0262D395"
+    },
+    {
+      "file": "FarFieldRungs.lean",
+      "sha256": "D9523618AFCE1940B526DE5396DF2D4B21A3D66A0D8831A340DB7B86873D8A70"
+    },
+    {
+      "file": "FarFieldThroughAvenue.lean",
+      "sha256": "3660882D17B5A035C2E958E3E2A337E25E77D5D48D5665010B9BAC0940FB1E92"
+    },
+    {
+      "file": "FarFieldWireAvenues.lean",
+      "sha256": "27525D84E378A50634B5014B5DC3282D6223425D14B1C95691417E3D4CC73793"
+    },
+    {
+      "file": "FarFieldArms.lean",
+      "sha256": "3174DEA8AD468C5CDED277B3A1AEE161B0135AE7EF0FEEE57AC9BEA5865A09C7"
+    },
+    {
+      "file": "FarFieldApproachSeparation.lean",
+      "sha256": "8A5E145DA9A59663AA97B132C35C3F29EDDC558882E05A18A27D64ADADCAFB00"
+    },
+    {
+      "file": "FarFieldArmStrips.lean",
+      "sha256": "CFA7B3F7CE8175AF356874FF96966F0056E4654933D78C32B67AC66151D871C0"
+    },
+    {
+      "file": "FarFieldArmIdentity.lean",
+      "sha256": "504096B4FA54E10D3009721770B7C47E1DBEA6BEE9ADB4BE9C2E7162E411949B"
+    },
+    {
+      "file": "FarFieldChecks.lean",
+      "sha256": "769EA621C19E5E7A2F835D98A7B3D03C69B386D537ACC3543E56C4E8464CF607"
+    },
+    {
+      "file": "FarFieldWireOrdering.lean",
+      "sha256": "9EB47D9B289551D15FA8B2409F96F588208EE4D3565EAEBF3AA5030963B680A3"
+    },
+    {
+      "file": "FarFieldWireColumns.lean",
+      "sha256": "03B72B351F5EE718A8764F6AEED8F726EC4EB7B7584F827BFD033B18D096DBC5"
+    },
+    {
+      "file": "FarFieldStageA.lean",
+      "sha256": "1969A4D975234448A546B6CE6229069B405CF502B89BF3B69FEA8CBBABC9E6A8"
+    },
+    {
+      "file": "FarFieldRadials.lean",
+      "sha256": "CD72BEA304D4953C57881F61EB2BF51DEF6C294AFEDA21531D0955842F623F33"
+    },
+    {
+      "file": "FarFieldGluing.lean",
+      "sha256": "C1CD16C868A196D134E7F494ED091F05833378F729E3FD03E58223F7603519D5"
+    },
+    {
+      "file": "FarFieldSlabEntries.lean",
+      "sha256": "D17DC3484670159EEA25E012DD0FE19A247DD128B976DD5544312C4F6B031621"
+    },
+    {
+      "file": "FarFieldWires.lean",
+      "sha256": "7B690D99C0EFB611E154649C25EDB75FCBEF3287B04ABF7474E052247A6B07CD"
+    },
+    {
+      "file": "FarFieldStageB.lean",
+      "sha256": "9A7C64A6357523A7965D69B2154D77ADE733A03EAB3095E0AF57A84B18F163B2"
+    },
+    {
+      "file": "FarFieldColumnAvenuePaths.lean",
+      "sha256": "8A174240E6F8E182E1E2581BA94EEC18D5ADFEDB77BFB4E685CDADEAEFA93B6C"
+    },
+    {
+      "file": "FarFieldWirePrefixes.lean",
+      "sha256": "8205B1FFE709927EDE8826BD898657C2FEDB47A43225DF0758800A82CAA211C2"
+    },
+    {
+      "file": "FinitePathCover.lean",
+      "sha256": "FF3F889C9EF2978663F3B645604EA308DCCB181B05942BE1B897964367BB543B"
+    },
+    {
+      "file": "FinitePathCoverEnds.lean",
+      "sha256": "C7C16B9422634261A704D738079065F75C5D821E4552CB81311BD2EE53646185"
+    },
+    {
+      "file": "FinitePathComponents.lean",
+      "sha256": "966F15CB8642143A6CF0D036155A6ACEDF01EC34C6E8EF5428F150FEECAB03D5"
+    },
+    {
+      "file": "FinitePathMinimum.lean",
+      "sha256": "C73B178914088F278B6DD626CCB09109738F38E1812F76045EE994D4938414CD"
+    },
+    {
+      "file": "FrameForcingChain.lean",
+      "sha256": "CB54946E8DD7806BF327761C5B5CAD070F76A943AF040EA045CF961D694783D9"
+    },
+    {
+      "file": "FrameForcingGaps.lean",
+      "sha256": "DD1ABA5172896E818D1CD629D6A87C88A880257AEEF71A5CA7253109D5BF0965"
+    },
+    {
+      "file": "FrameForcingOccurrences.lean",
+      "sha256": "DD25B8B1242EEB1B5B94E1EEE9BB36FE0253DEA80118FBE74CB7772D65AC8B91"
+    },
+    {
+      "file": "FrameForcingVertices.lean",
+      "sha256": "75C8B35022A1C7EEB870470AED1BE3E77C6B03A89763C2B4135D0F918D2A817D"
+    },
+    {
+      "file": "FrameForcingCapped.lean",
+      "sha256": "590812CD3360BC1772D9E1B49DEC06401D7EB800EC5ACE3A92AAA216AA276FD6"
+    },
+    {
+      "file": "FrameForcingActual.lean",
+      "sha256": "CE949FCBB320C39E40870BBA0F54EC0F7C5B90A16FCFA2703D364C560FB2C85B"
+    },
+    {
+      "file": "FrameForcingCaps.lean",
+      "sha256": "ED8B279A8F488E6060C8F8663B095CFE06EF644DA5BEEF259A09253CA33D130F"
+    },
+    {
+      "file": "FrameForcingDimerWords.lean",
+      "sha256": "DC784AD68727C0293027BD450A6E1211AE06EFF820F9A62BC8E8533F16825967"
+    },
+    {
+      "file": "FrameForcingDimerCounts.lean",
+      "sha256": "F1F43405A9E830610D6E190855A78E2CF2882BE02EA61FE391E599557185C110"
+    },
+    {
+      "file": "FrameForcingMatching.lean",
+      "sha256": "419F3DC533D134B1FE4AB359AB8DD0EB702D8BABD2847CD0C85B63CB0A827B86"
+    },
+    {
+      "file": "FrameForcingDimerPairs.lean",
+      "sha256": "806A77BA99EB88948A91B08DA0B235AABFC89DA74495B53AB26296F404DA0FC9"
+    },
+    {
+      "file": "FrameForcingDimerAvoid.lean",
+      "sha256": "3226D163D1F5D05EE49866F4AF651A7265174D83C3F753A2AA4EB942E1EC828C"
+    },
+    {
+      "file": "FrameForcingMiddle.lean",
+      "sha256": "1C25D4F11CFDB00B8F25D8A771E8941D4C87A79068298D7DA73A2AE90D76DB7B"
+    },
+    {
+      "file": "FrameForcingIncidence.lean",
+      "sha256": "F4DDB82710832C752599251D4722447E83EF1F929C2CEB5B6508926D84EB4178"
+    },
+    {
+      "file": "FrameForcingDistinct.lean",
+      "sha256": "9D3EAD06B026C2CF20FEB8359561F0B66CE8FFFEE78477D63EFE60B845FE7550"
+    },
+    {
+      "file": "OctahedralTrackGeometry.lean",
+      "sha256": "A38EE3F0BBFD5492471BAE2D346729B2330C8C5CF1589F0AD2A48476164708F8"
+    },
+    {
+      "file": "NearFieldFrameData.lean",
+      "sha256": "BC9E588D4D36C4151BF61DB4D0B3CDFC15004623DA61ECDD50CE40B23E914360"
+    },
+    {
+      "file": "PathGluing.lean",
+      "sha256": "680DB239673F001B1C6BDEC06B612D221A5AB14294CA923EE6DCEAEC13260E84"
+    },
+    {
+      "file": "NearFieldRowCorners.lean",
+      "sha256": "FB3C4B4DF4FE6D2BD842975766BE9FCFCC6C55539F4EFB7C3F86BE164A32AFBB"
+    },
+    {
+      "file": "OctahedralTrackChecks.lean",
+      "sha256": "8D62559E5D58CD0B7F3ABA9D872478C9C91B99A6FF921F94D8FAFC1258F0A4FC"
+    },
+    {
+      "file": "PathCoverExtraction.lean",
+      "sha256": "9EEC9AF46E589C02CE9183B5CC86FCBA64A3C2C72C675A7918847B9CD88E3068"
+    },
+    {
+      "file": "PathCoverMass.lean",
+      "sha256": "CF9FA2C764313F14C935CE99A97796946DB762A59CA65FEFA2E7F8B7DFE02E77"
+    },
+    {
+      "file": "ReductionSize.lean",
+      "sha256": "FE91D4B5ACF16E69FC8DD2BF9C63F4C221846750A22F32D87DEDCDF671E0F000"
+    },
+    {
+      "file": "ReductionSizePolynomial.lean",
+      "sha256": "B0AB93EEB504FDFBFCD4D9589942F5A412E62C72B6312590A90CE347A199E2A4"
+    },
+    {
+      "file": "ReductionInputSize.lean",
+      "sha256": "C11C847E7303422F23E077E1D3B8A54E0A0D50B9134E09ACC6ECC8D58311FDFE"
+    },
+    {
+      "file": "TetherRouteParameters.lean",
+      "sha256": "DC491639A5B4FAC93CC62B17E34AD9CCFCAF98B687587260898436A6F2398BBC"
+    },
+    {
+      "file": "BulkPatchReferenceDegree.lean",
+      "sha256": "276AC0B1FE7130A95E84C3FB4AFA5C71F235418534FDBFFE383B6E37D8F34935"
+    },
+    {
+      "file": "BulkDegree.lean",
+      "sha256": "A0CAACBA876EF44FD9B31C8E89B193A5EC2A2C98AFFD8AD7CA479B9A995EE951"
+    },
+    {
+      "file": "BulkEdgeLocality.lean",
+      "sha256": "051048E35A4AD2DF5BD06A46775D533BF2D39E90DA417EE74295E07F11D50BB4"
+    },
+    {
+      "file": "BulkEdgePredicates.lean",
+      "sha256": "9F6712A0A76D31EA508E9AEDF65B444A6A3D38CCFB21D0BF6DC69F3C1EBD28E0"
+    },
+    {
+      "file": "BulkEdgeSigns.lean",
+      "sha256": "1A02113A9C1907D4064BD0B94EF3BB440726C8B7BA1CED22BDE5BBA8E50E29B4"
+    },
+    {
+      "file": "BulkEdgeCoordinates.lean",
+      "sha256": "AC9E9509F98CEE635CB38E1EDEC88F3B44A97D471CB70277672BEBA5A19E424E"
+    },
+    {
+      "file": "BulkEdgeRungTransfer.lean",
+      "sha256": "5CCBEAC2EAAD2042D262ECE1FA62542DDA3B7AD5F0053D3E27B2FEECC30E4E93"
+    },
+    {
+      "file": "BulkEdgeNeighbourTransfer.lean",
+      "sha256": "9C42CE2222468017E0D97E7ADBC9C24FD441B86AB560A3EC17CDACB9880DBB1F"
+    },
+    {
+      "file": "BulkEdgePatchFree.lean",
+      "sha256": "15EDA7336B4D803CF39B2D47A766C9EA4757CCF70B70ECC1BBA1DC4D66BC8ED7"
+    },
+    {
+      "file": "BulkEdgeMergeTransfer.lean",
+      "sha256": "C50B40F0E8C57E2D2F626B768439614F073E76357C58F699829976C429B34365"
+    },
+    {
+      "file": "BulkFarEdgeReference.lean",
+      "sha256": "B6B16D16751D420569EF7A8B653DAC6B55377BBF9DFBAAD360D754469C30AB52"
+    },
+    {
+      "file": "BulkFarDamagedDegree.lean",
+      "sha256": "16D2BDDC1C0077AB97826C7DE55E17CF5FC82EA94F3FA0F8498A6AD683107514"
+    },
+    {
+      "file": "BulkNearEdgeGeometry.lean",
+      "sha256": "DCEAEF314958FECDBE133479BAA0E1D3B1C4F4FD4F2530B9371A88FB30DCE283"
+    },
+    {
+      "file": "BulkPatchReferenceMinimum.lean",
+      "sha256": "D294B26833BAF481C07A5338EAEB65179A55299CC1084CA69D9EB3D8CC6982A3"
+    },
+    {
+      "file": "BulkPatchMinimum.lean",
+      "sha256": "20F46A5911518E7A715696F7F8E01DF1F7273D9C8274E10D6F3034B1B97F0836"
+    },
+    {
+      "file": "FarFieldRoutingPlan.lean",
+      "sha256": "519CADDD3E60030192761AD0F9AC7BA290F5C9867708123DDCC8D81304D95604"
+    },
+    {
+      "file": "FarFieldWireApproaches.lean",
+      "sha256": "1A204E181589C96FEEC75C10EFE2349E8530B4001AFCC684BFF2799CFD8DCB78"
+    },
+    {
+      "file": "FarFieldWirePaths.lean",
+      "sha256": "5BB6C51E5F8D77EB3D4965E8EAA23B900FF95D9703CAE2F58DBC72546E21C76C"
+    },
+    {
+      "file": "FarFieldMiddlePaths.lean",
+      "sha256": "02202D16D9C703AD6D69D0A60E4A97586C4EFE9D5F57627E2F6B7208DEE299F4"
+    },
+    {
+      "file": "FarFieldMiddleSupport.lean",
+      "sha256": "415F246C6F1079A0BB64EB5701C36999A94EA6C67AD12B1C3E043FF7CFB541BB"
+    },
+    {
+      "file": "FarFieldParity.lean",
+      "sha256": "990959B10932FC38C20C4FE50CBFC42C994A7FEC2EE05EBECC5FC0603B1E5A98"
+    },
+    {
+      "file": "FarFieldPairPaths.lean",
+      "sha256": "610D772E3DA5537A7351A72049927CC39C74B8DD70D6A3F314BBA940A0A685C3"
+    },
+    {
+      "file": "FarFieldPairSeparation.lean",
+      "sha256": "81DCAE9920749F6762E79A1BD07520D62F05A9038ED01DBEF8358DE8C611367D"
+    },
+    {
+      "file": "FarFieldExactLengths.lean",
+      "sha256": "C381E019B24E66B01CF8489158EB6D85B32D8B563B6C09B00EC1B5F4E080A40E"
+    },
+    {
+      "file": "FarFieldCapEntries.lean",
+      "sha256": "4C3BE9983F503CFB7C8B5BA5915B3E2C21E7D4D888A5A0F907BE5F15E19DFBC4"
+    },
+    {
+      "file": "FarFieldCapPairPaths.lean",
+      "sha256": "6EF0AD7D91A786883D043F2F6537FE8C38DBACAAADEE2D1D0EFD05E3D4DC3061"
+    },
+    {
+      "file": "FarFieldCapPairSeparation.lean",
+      "sha256": "D6CD7F11BF610B51BA8FDAC38681E4C187FAF6DDB34477A307370D02582DE3B4"
+    },
+    {
+      "file": "FarFieldCapExactLengths.lean",
+      "sha256": "2E02FB4B3CB8AB33A2D7169AEC57260CB6DF5969347F9607F84F90B0658094AE"
+    },
+    {
+      "file": "FarFieldRouteBounds.lean",
+      "sha256": "2B1486797D59EDA219A2CEC71911AA828AA82EA7C034E9B5C73985094F389053"
+    },
+    {
+      "file": "FarFieldCapRouteBounds.lean",
+      "sha256": "1597A5C22A596D8D4F414AD3BC567E596215E63C3C5F2131C78EEF2A77631A14"
+    },
+    {
+      "file": "FarFieldFamilies.lean",
+      "sha256": "E1DB13FDBB52D0CFCBB1E5489AD41E4593467A51F0DF265AC0B23BD4F11BDAE0"
+    },
+    {
+      "file": "FarFieldCapFamilies.lean",
+      "sha256": "1B244D6A268E92179DC26BA94770905A965877119E252588537375B97A5F5555"
+    },
+    {
+      "file": "FarFieldObstacleAvoidance.lean",
+      "sha256": "5C3CC61E724B979A428D0E9D48F46127D98F67E675823BD9761692E85555B9B7"
+    },
+    {
+      "file": "FiniteCycleCriterion.lean",
+      "sha256": "F4A648046F55FD87972FBA1064D5A9A0B77FB0C4675E1230ECC19092BDE517FB"
+    },
+    {
+      "file": "FrameForcingSupport.lean",
+      "sha256": "B1EA4FA661DDA93F8D7BCF6D90F573453E7348B7F2E7BE12C949CA873430E099"
+    },
+    {
+      "file": "FrameForcingFrameVertices.lean",
+      "sha256": "6CFB0F59A35B59C4B65E6966176EFEAC139FEDE7241FFB7A6A6624CCCEF26AD1"
+    },
+    {
+      "file": "FrameForcingMatchingGraph.lean",
+      "sha256": "9D14FBCF7985BCA7327EC5B25183F572C388E155FA811AAB1FDCE875FFFC935D"
+    },
+    {
+      "file": "FrameForcingAmbient.lean",
+      "sha256": "394B280084334469387D5F2A66C97517FA3C53CFEB93832A69305D2AD8FA21BE"
+    },
+    {
+      "file": "FrameForcingSlotIndices.lean",
+      "sha256": "C7638402B3E2985AF50B4BB9F0BABDD8510AFC948257A2B01FAC28D6FB2FA15B"
+    },
+    {
+      "file": "FrameForcingExitIndices.lean",
+      "sha256": "0DDEBB14FDD3DADAFF1373D4634A6084447C40AC9E385B457FB81305B84FB76B"
+    },
+    {
+      "file": "FrameForcingSlotGeometry.lean",
+      "sha256": "CEA43DD42597BF758D3808E1E0143D38ECF7021066564A1BA59F314C616ECE66"
+    },
+    {
+      "file": "FrameForcingSlotBlocks.lean",
+      "sha256": "45C6715F97B3656B97EB5AACFE482A161A06D5E1ECEC570433ED89E87BA2E819"
+    },
+    {
+      "file": "FrameForcingGapFamily.lean",
+      "sha256": "FC83FFB4D4BA34391A3D4C9FB95FA4836B35A9F6DF3CEB031C7D797B62D66B96"
+    },
+    {
+      "file": "FrameForcingSlots.lean",
+      "sha256": "39E337DEC9891270169CEB83F4D402CC3B415185DEA1D0C870784BB92DF3C589"
+    },
+    {
+      "file": "FrameForcingTriangleIsolation.lean",
+      "sha256": "45CDA524ED1B13E023FD7FFD95C068A3C198265B7293B425254764B6435FE338"
+    },
+    {
+      "file": "FrameForcingTriangleBlocks.lean",
+      "sha256": "DC6D9A4AD384F4BDD74D5081D830578A3AB28AFA6DCBF34F5E8FE52561DB1A9D"
+    },
+    {
+      "file": "FrameForcingSlotGuards.lean",
+      "sha256": "4227F6A7C128384AD3ECF2F18B58C3BF4BC8BC2814B2FA73F021FFC953AE71DA"
+    },
+    {
+      "file": "NearFieldBorrowedColumns.lean",
+      "sha256": "675425A1C439709FE6C81A68C7BF42DBDC2E1762C2F836FC71D35C9CF4ECA544"
+    },
+    {
+      "file": "NearFieldBorrowedSkins.lean",
+      "sha256": "6BB30510092B0E6C825E31A0C7A3071D68DD3B890941CD45A39EF569AB44144B"
+    },
+    {
+      "file": "NearFieldColumnPieces.lean",
+      "sha256": "8BDEF0D4B4BC5180C625A0F4E867FC2F879EBC8FD7D4562536CA8F0E937E8B51"
+    },
+    {
+      "file": "NearFieldRowCornerEnds.lean",
+      "sha256": "404889F7428D2DB9850AC68FD0D8A8B8864B44BB9572156B1E814FB7046C5030"
+    },
+    {
+      "file": "NearFieldTetherRows.lean",
+      "sha256": "2010CA05C0E1D0CB114D7747B1D5A155F8856557709AD8CCF649378CCF656FDF"
+    },
+    {
+      "file": "NearFieldEntryAvoidance.lean",
+      "sha256": "FE8B071A33A7F2BF07F5CD6F2BCFDC0BC9B20E52F36A76B205A5A5FC205D9AF2"
+    },
+    {
+      "file": "NearFieldEntryTethers.lean",
+      "sha256": "CB899B76AC93D714DE3D1BBF10D722A5DEEB04417DF632CE9DEFFFCF4A0ADC8F"
+    },
+    {
+      "file": "NearFieldExitRowAvoidance.lean",
+      "sha256": "0F923F95BCEB72B957DC6F9C83469597A1FCEACCC2E0FB48B84FAF8CDD911F71"
+    },
+    {
+      "file": "NearFieldExitTethers.lean",
+      "sha256": "ECE234070D22D55402BD392C2E40CD06354861D3539CFDD7B90A501A5DE294F3"
+    },
+    {
+      "file": "NearFieldTetherSupport.lean",
+      "sha256": "61D46A4BFA551F07EFE3F329421483D091B6E09E0C29F822E638CC1622935B6E"
+    },
+    {
+      "file": "NearFieldEntryTetherBounds.lean",
+      "sha256": "5C194D7D2A2AC08155CA8BA6AB648945E51FC620F27E3CDAD90EA557E37530A6"
+    },
+    {
+      "file": "NearFieldFrameBounds.lean",
+      "sha256": "9FAEE30A02B98CAFEDEC6FCE8DA95A70A7A25B68DB2C4BC8F85B333D68C6C424"
+    },
+    {
+      "file": "NearFieldFrameCaps.lean",
+      "sha256": "0B7BCBD761B5F5FA0018653F03CA2F282C8257FC3C2E92F5A574F27E344DEB91"
+    },
+    {
+      "file": "NearFieldFramePaths.lean",
+      "sha256": "80C72BD93FE391603A814E9BDD813183400DE5AD0E43D61B72A9B1749F470480"
+    },
+    {
+      "file": "NearFieldFrameSeparation.lean",
+      "sha256": "C572514F6D75AADCAC95BE6B037FE9683F793A849DE398095ADE56B6CC5C438D"
+    },
+    {
+      "file": "NearFieldFrameCapSeparation.lean",
+      "sha256": "4E3821BF16BDD901BFCD906BD082B0A215B3594BD2F01E27F591754671A0E83A"
+    },
+    {
+      "file": "NearFieldFrameEndpoints.lean",
+      "sha256": "61B98F16F70A1635A81A1E3E463DC3BCDF258E23FB76F910A8995533EE7097B5"
+    },
+    {
+      "file": "NearFieldFrameVertexCaps.lean",
+      "sha256": "7861C92B5D81CACF4538117F95654E14749A9B66429849D4A6C2B9AB6957A8B9"
+    },
+    {
+      "file": "BulkEdgeReversal.lean",
+      "sha256": "A17441E8571D119C7F6D1FB88182CB33DB4F148678FF56FB228F9BD839706C9B"
+    },
+    {
+      "file": "BulkDamagedParametrization.lean",
+      "sha256": "131EEE9D87EA61CE309F924DF443BECB8FCC8901F9C50BD0DB502BF62A168740"
+    },
+    {
+      "file": "BulkLineX.lean",
+      "sha256": "66709FBD330A26E5BC1DB9F71BED23F8D59060EF5AAC4F39BA865DCEDE15CE99"
+    },
+    {
+      "file": "FarFieldColumnBridge.lean",
+      "sha256": "F3AD4F2E14579B7297B8AE2AAF625C61C3F4CEEF075891EA98F4F99555A69FAF"
+    },
+    {
+      "file": "FarFieldColumnWireData.lean",
+      "sha256": "54973BDCAD10159C39CD52380EC181A82D9DA06C7BB1F946C9F699C881021645"
+    },
+    {
+      "file": "FarFieldOrderedRoutes.lean",
+      "sha256": "49A152AFD4BE50D62405D5A32A22B8F38AFD466AA8D65707B8D726159C64911A"
+    },
+    {
+      "file": "FrameForcingDimerChains.lean",
+      "sha256": "7616B7D2669C5AED0AA978ACE884D6806E6C5C7C6EC51B885B8D90B28A7F21B3"
+    },
+    {
+      "file": "FrameForcingChainWords.lean",
+      "sha256": "461B712E63A3A8ACB579D846287CEDFE3D0DB28C3121FF3115894967A02AB716"
+    },
+    {
+      "file": "FrameForcingActualChains.lean",
+      "sha256": "E31E10A25B09166B45F557931BE49A0A55F396C8B0F491E81FE02F2B95994BAD"
+    },
+    {
+      "file": "FrameForcingChainExhaustion.lean",
+      "sha256": "FD3A5789E585C13C9A8732BFF6B23FD2B35B61C56B8384C57E8C1542570A671F"
+    },
+    {
+      "file": "NearFieldEntryOrdering.lean",
+      "sha256": "D5657011D15913C10B2FDE9995D5A81727EE3DD0E664C5DF353B21FBC11AE3B2"
+    },
+    {
+      "file": "NearFieldColumnSeparation.lean",
+      "sha256": "1F0332329F15A7773A3E4BA5E7343C432753885A4DBEF8B44DFF6B1D29195AE4"
+    },
+    {
+      "file": "NearFieldEntryFamily.lean",
+      "sha256": "5F5CFB05C9B80F20FCBE25CF5C86D599086CF297E2965DF8CD01D4D67A33D4D7"
+    },
+    {
+      "file": "NearFieldExitTetherBounds.lean",
+      "sha256": "55133963F4CB6BDC15150EBBEA8D4E12D3C615C483BA83A5C34C60E429EEC43D"
+    },
+    {
+      "file": "NearFieldExitFamily.lean",
+      "sha256": "F5581484C32A26754ECB402D8C2DE7953B807B5F70924DEC37C07EEE5673B8EC"
+    },
+    {
+      "file": "NearFieldCrossTethers.lean",
+      "sha256": "EE4972C1FE2E6040D528E4538581D3E8D427664B01F5C1E9252DDC64C5AECA11"
+    },
+    {
+      "file": "NearFieldFrameCapBounds.lean",
+      "sha256": "ED07A912DAC89C8C36FAC2A88B6BF83C53D1FB92DCC8D6FA62041D288999B39A"
+    },
+    {
+      "file": "NearFieldFrameCapColumns.lean",
+      "sha256": "5371584817747326D36BA1D19D5CCA2ABE537596D9C642B8F3BF50053BDA874F"
+    },
+    {
+      "file": "NearFieldFrameFaceCaps.lean",
+      "sha256": "43AAC1D615B062BAA3EF629F4CE04B7D58EA755DFE62312244D29D1F09A8F161"
+    },
+    {
+      "file": "NearFieldFrameFaceColumns.lean",
+      "sha256": "4E601E60D2C98398D5AE423DC220C1F99625EAEDFCA28C98BA0814FA37662B0E"
+    },
+    {
+      "file": "NearFieldTetherFamily.lean",
+      "sha256": "389251CC8363DE7021BD61FBFBE8A4D792D8CB0EB3B88D9C8C69F16B657D0EE8"
+    },
+    {
+      "file": "BulkFoliationParity.lean",
+      "sha256": "04FA7071A27505E02324DA0A34AB5944141E5AB364F0C043857266FDC98F599A"
+    },
+    {
+      "file": "BulkNearEdgeReference0.lean",
+      "sha256": "859F8169FF04963F30AC2EABBF3920F89DD26FD72CE9B1EF8A76F73616FAADA4"
+    },
+    {
+      "file": "ClosedComponentCertificate.lean",
+      "sha256": "E3102DC4D79F246E58B2E4E0B40D77AF2A6C4D559C6CA035AFA9E6A6D0BA46E5"
+    },
+    {
+      "file": "BulkSegmentCertificates.lean",
+      "sha256": "EB6C7BE0EA62A500ED983A8B9BA1B529CECB7585F0054AC945FBEA3DC8D8350A"
+    },
+    {
+      "file": "BulkSegments.lean",
+      "sha256": "DB96621F2015608ECFEA85C38F8EA4782F7AC821BC1FB8A7F73DFB63274A86FC"
+    },
+    {
+      "file": "BulkSegmentVertexTransfer.lean",
+      "sha256": "F38BE690852A19F138CB6A5A2F3E2A095660CFB29ED568E061111175891A156E"
+    },
+    {
+      "file": "BulkSegmentWitnessValues.lean",
+      "sha256": "D7E43A39ADAAC5B4FF43F9588FAA242985FEF518A8D9F407454E09081DD4D4C6"
+    },
+    {
+      "file": "FarFieldCanonicalCaps.lean",
+      "sha256": "C7F9E96EE4BDE53301B8C1BFFC796DD7FD31772A9A5B907769EE6A7B7F1E92AA"
+    },
+    {
+      "file": "FarFieldCanonicalRouting.lean",
+      "sha256": "7AAA6C43F4E4971DFD9A30CEC8A941556CD4B4DFA11B06AE3B16AE6F3069A039"
+    },
+    {
+      "file": "FrameForcingConfiguration.lean",
+      "sha256": "43338B0F2C3AFC67FBFBF78DCF6B5C469EDFAC6A278DF78E03CCAFF6386197F2"
+    },
+    {
+      "file": "FrameForcingAnchorCapacity.lean",
+      "sha256": "348C48B3217CD2EB0FCC47EEAE9B45493FC5B8CE1E7DBDDB1D141F7F081FE909"
+    },
+    {
+      "file": "ReductionDimerProvenanceCatalogue.lean",
+      "sha256": "22AD4746E289BE59510109473569FBE5697F9FAF6D3EEB6D3FFA2B098C41486F"
+    },
+    {
+      "file": "FrameForcingEntryExhaustion.lean",
+      "sha256": "1EB7225CC9674B0B744C3DA9B8587B5F738CC6E163715D247A2366E861F4DA17"
+    },
+    {
+      "file": "FrameForcingCatalogueGeometry.lean",
+      "sha256": "948091976E00650BD22CAF37690AFB585F24065F146280D4B0FE4C688B663EB3"
+    },
+    {
+      "file": "FrameForcingSlotDisjoint.lean",
+      "sha256": "DEB858DD29A205FB9AAF3BC04F908EE25877320D64462BA387D90A3916E69A89"
+    },
+    {
+      "file": "FrameForcingCatalogueSlots.lean",
+      "sha256": "83A003E1BA91DF05C04FB6989AFF188A0473CB42897313C6D18B687B9B49AB5A"
+    },
+    {
+      "file": "FrameForcingExitExhaustion.lean",
+      "sha256": "9E36B9AF99C5CC42494663CB0EE0F64F1EF2A6DD62B4F2025B580A52FB5353D7"
+    },
+    {
+      "file": "FrameForcingCataloguePoints.lean",
+      "sha256": "0DB19971621504D2B3334E0FCA3962F95E94DBA48BE2CFEFAD8C13E4FA22719D"
+    },
+    {
+      "file": "FrameForcingPairMatching.lean",
+      "sha256": "AEC95CACE9BB6124069FB12D45A9282AD282E2241D1D71815C689E8F07BEE35F"
+    },
+    {
+      "file": "FrameForcingEdgeMatching.lean",
+      "sha256": "B1AF495BA275FF124207E3ED2827869035C45FDB8CF7D771A42B79E4ED177A0D"
+    },
+    {
+      "file": "FrameForcingOppositeDistance.lean",
+      "sha256": "D046D89C784270E0B3FE90CF5B0308AB905D620948E0EF026199098BCAB3C8A8"
+    },
+    {
+      "file": "FrameForcingSeparatorBridge.lean",
+      "sha256": "7E639E5901E21F73251D7A9F1C080339BFAA4C3E22D1C6FF473EB22050FAC72A"
+    },
+    {
+      "file": "FrameForcingFromCatalogue.lean",
+      "sha256": "CF9609BDAA8FFEEFE645F936EE87A552DA5E2A974DD3206F1F3ED84E24E8CE8F"
+    },
+    {
+      "file": "FrameForcingMatchingPairs.lean",
+      "sha256": "A5F00921AA1012072439AF92B11074BDE4AB354C3F75C620D7B23C4D2B4ACD38"
+    },
+    {
+      "file": "NearFieldBulkARowCoordinates.lean",
+      "sha256": "054EB3F4E592013EA1B5862CCF8ADC7712BD9170434018A9126C8603D59E68AA"
+    },
+    {
+      "file": "NearFieldBulkARowGeometry.lean",
+      "sha256": "F6E883CD5AAAF8BEC95959A753F78DF442D997715C6C26ADC0E524105E6173C0"
+    },
+    {
+      "file": "NearFieldBulkARowReferences.lean",
+      "sha256": "7CF62CB5CEF174B19BC9D01571A6C09B91BA19BD8953B947BC61A300C453FE3B"
+    },
+    {
+      "file": "NearFieldBulkARow.lean",
+      "sha256": "E0852995D2045FC243FCCCBA0554F0BB7DBB82672FE390D7A29032EC8B7CC0CB"
+    },
+    {
+      "file": "NearFieldBulkSecondRowGeometry.lean",
+      "sha256": "F8B2F7DC891AF0C34C1555E0039DB97A7C06A26720B2F2B06A158EBD0ED31D37"
+    },
+    {
+      "file": "NearFieldBulkSecondRowReferences.lean",
+      "sha256": "0C23C6364CD823DBF5EBF04A59E364F9047628A3604CCFE69F7AAF278DC5F37F"
+    },
+    {
+      "file": "NearFieldBulkSecondRow.lean",
+      "sha256": "121FB9E1D9478D1BF3BBCB030CF280F9FF8F9438ECC51636E7F5E02F688F72CA"
+    },
+    {
+      "file": "NearFieldFrameColumnData.lean",
+      "sha256": "BF37381D21540FF7A7416BB39958BA4F4E891DBDC0016F647B9FF978BB0ECE81"
+    },
+    {
+      "file": "NearFieldFrameColumnCertificate.lean",
+      "sha256": "A281E0FE7B524110E49DFF81885FAC3208D163B00CAB3A836BA4CB60ADFEC306"
+    },
+    {
+      "file": "NearFieldFrameBulkColumns.lean",
+      "sha256": "0044A8526C9AAFEE7507C8278BD2CF3ACF34C81B9A559EBBB2734950151324E3"
+    },
+    {
+      "file": "NearFieldFrameTethers.lean",
+      "sha256": "10115C285B4E0AA716E4D04C56D84D8020D2B8E5C64187145EAD30212BC81C8E"
+    },
+    {
+      "file": "NearFieldFrameTetherHalfspaces.lean",
+      "sha256": "5A38556DEAA90660E22CAA47065352CD47CE2E683631B6BACAB9577B5F25EBF0"
+    },
+    {
+      "file": "NearFieldFrameFolds.lean",
+      "sha256": "75A91A0CDC76D8EA203DFEDA271BC759F30F437EBE23D102A76B752DA4E8E89A"
+    },
+    {
+      "file": "NearFieldFrameTetherCaps.lean",
+      "sha256": "C051E43BBA9376CFF691F6A63DA4BEDFD7D38B3A54ED86104D6096767A12DA66"
+    },
+    {
+      "file": "NearFieldFrameChecks.lean",
+      "sha256": "4BE99E8703712868FA0D970A5F6B8EDDEE6A8887B30DAF0C9C79AE38B3F2B194"
+    },
+    {
+      "file": "NearFieldPPPPaths.lean",
+      "sha256": "A7781E2A2600A088BAF862267D6F9E350A69CD001CF95C907D85DEDAB2D8BCA4"
+    },
+    {
+      "file": "NearFieldTetherOwners.lean",
+      "sha256": "2C9E3C959D4577D1482A180474898EDB54F32B2EB144410379733CD52B85F6D4"
+    },
+    {
+      "file": "NearFieldTethersBulkColumns.lean",
+      "sha256": "F4BF061621FA73388BB200DAFF02A57CF68AF21BAFBFA706BAAA2345040B6D81"
+    },
+    {
+      "file": "NearFieldTetherSites.lean",
+      "sha256": "D181D3CC04F495783BE27A56EF51BC131E4E7011FE6C39B167FA2BC491FB17CC"
+    },
+    {
+      "file": "ReductionDimerProvenanceAssembly.lean",
+      "sha256": "8E5FAC83B99824D8AD091BE1C7A130C62EA2358D6008CACE8D44CCB8EB7654F3"
+    },
+    {
+      "file": "ReductionDimerProvenanceConcrete.lean",
+      "sha256": "122FF64017C02D1E367112CB6C9846038124CD43B038F661156A2E1D5AF251D2"
+    },
+    {
+      "file": "ReductionDimerProvenanceWeights.lean",
+      "sha256": "9D3CFA12C708B9E8B8C1C740AA92AF7E8BBC2CDD5B2162C5DF5D60BFFF941CC6"
+    },
+    {
+      "file": "ReductionDimerProvenanceCounts.lean",
+      "sha256": "BA0D5468BC3AAADB95EF588341FB79A3B88653CC033FF4427F41DF364D422E5C"
+    },
+    {
+      "file": "ReductionDimerProvenanceInclusions.lean",
+      "sha256": "42F9CE8200783D4A77C453063611ACB6404FCD4A72470F7B858C9ED0598F19C2"
+    },
+    {
+      "file": "ReductionDimerProvenanceSeparator.lean",
+      "sha256": "5F8DDA51A5912E6BB40C760F928F313B67D1179DED3792A61AD82CA8E9BE7C9C"
+    },
+    {
+      "file": "BulkBendSigns.lean",
+      "sha256": "32A02E54F015850002567D4B99EB65ABE18860BD3AA3772BB6E1EF67B36AF229"
+    },
+    {
+      "file": "BulkBendX.lean",
+      "sha256": "7B667E8D496147F4F0D9C934D3B01592A5AF96076FACA35D6C534F76073A0178"
+    },
+    {
+      "file": "BulkCoverPathCertificates.lean",
+      "sha256": "1A1286015B9DC8BABB88AC3E15D9CF4171AD52ECCC869747CAF7C0D5B8CE96FE"
+    },
+    {
+      "file": "BulkJointPlanes.lean",
+      "sha256": "067E1236C778040EFB63746B2E98DD2528B48ABCFBF81A8D7BB0674DCCCCAF35"
+    },
+    {
+      "file": "BulkSegmentLocalBounds.lean",
+      "sha256": "0A4C141A46637B86A068D70DD89D2728868A4922AABDB7511EF87B9421E87225"
+    },
+    {
+      "file": "BulkJointSlabs.lean",
+      "sha256": "5C73E86A9A7551A176C9B4023A9513B0EDCF456CF16D5789BAFC32F703E569EA"
+    },
+    {
+      "file": "BulkFarJointGeometry.lean",
+      "sha256": "1B1EAEED300E9C0B33EF4F8F5A3A814C3DD41995152DA3102726699469C6464D"
+    },
+    {
+      "file": "BulkFarSegmentClassification.lean",
+      "sha256": "9D905048FE749A25F9BF1A5778DE1BFA688ED5AFBCB2203F5EFC855AAC13F26A"
+    },
+    {
+      "file": "BulkNearEdgeReference1.lean",
+      "sha256": "0930B87B73DAF7BCDF690DAC01FD3B692CA85D55F090CA90FA884EEF80F7F945"
+    },
+    {
+      "file": "BulkNearEdgeReference2.lean",
+      "sha256": "9C288636CB3769DDC810CC74710AC11F7FD93DEFE827CD89F448CF1703852AAE"
+    },
+    {
+      "file": "BulkNearEdgeReference3.lean",
+      "sha256": "03E84B41140D4204FCCDD65B8319388E3E59F860E51DA2654020E1BD501CE6EC"
+    },
+    {
+      "file": "BulkNearEdgeReference4.lean",
+      "sha256": "FBECE0D2966B0A9A2F92FE4C4B95E3801707EC5D84A1B61830F5FACC8B504D45"
+    },
+    {
+      "file": "BulkNearEdgeReference5.lean",
+      "sha256": "1DAC72E0BBB15ACD111BA49EFF297C4EA8EECEB4003EE160599F69478F3E0A2E"
+    },
+    {
+      "file": "BulkNearEdgeReference6.lean",
+      "sha256": "F2AE6D03EE3F2C31F468B77A5A2C1209BB7E5A9FBFF259118314198AB58F0694"
+    },
+    {
+      "file": "BulkNearEdgeReference7.lean",
+      "sha256": "DE37FE386E149DD771673C214E6A288F10FAD046DCD03DD52846B85764B55AD2"
+    },
+    {
+      "file": "BulkNearEdgeReference8.lean",
+      "sha256": "0C4F64B80548AAD174ACA9FD7101DA2577C700F60BB4862041EE7FA4D7250594"
+    },
+    {
+      "file": "BulkNearEdgeReference9.lean",
+      "sha256": "FA68D9989130263FD143F14F09A66645D2E5641C59BA515D57772D318C9165ED"
+    },
+    {
+      "file": "BulkNearEdgeReferenceSplit.lean",
+      "sha256": "55C66CA57E34FBE9904CD4F124B804036F1BE648EF7C1516E4498B4D7CE5494C"
+    },
+    {
+      "file": "BulkNearDamagedDegreeSplit.lean",
+      "sha256": "ADF7232A405280ECCBD658EE5ED8D9A8279A8E4BF9AC8445D0A73927FC141432"
+    },
+    {
+      "file": "BulkGoodDegreeSplit.lean",
+      "sha256": "3AB7C71FD2E7BD844BB8B71E06732E7A8A414CE72AB162730827C47BFADDB254"
+    },
+    {
+      "file": "BulkGraphReachability.lean",
+      "sha256": "C8B76DE3BD3F1F1F0FC00AEB4DF10E57BE68A6DF954372186D3B493442BE2A36"
+    },
+    {
+      "file": "BulkRuleDirections.lean",
+      "sha256": "B8F6D6777B479690A3F16729B0CD612A2EFCFFE3058C0B316B46AB58375975B4"
+    },
+    {
+      "file": "BulkJointBendChanges.lean",
+      "sha256": "E997422605080D446688503D4E60279D61C763512A7D0FD2A1B34FA8AEDE52DC"
+    },
+    {
+      "file": "BulkLineInjectivity.lean",
+      "sha256": "9309AC362240475B199BB95C7B0D44B5FD9699D8747B23A0A93214092F1464EE"
+    },
+    {
+      "file": "BulkNearAscendingData.lean",
+      "sha256": "1F3C7F3ECB280A0F7819E3221DEF77047D6148380A93AF1C1025FC142F41F543"
+    },
+    {
+      "file": "BulkSegmentValueTransfer.lean",
+      "sha256": "67D74294F1965F6F543B2893C4B78EC6FF673336AC42D32A47024B5083AC0C21"
+    },
+    {
+      "file": "BulkNearAscending.lean",
+      "sha256": "64A470D0BD8AF39228B353A629CEAC1E97464042C4915BF36D43858D058593E0"
+    },
+    {
+      "file": "BulkSegmentQuickCertificates.lean",
+      "sha256": "D98E8534811189DA4AB557DDC192CD7A84277A87437067AFD5C3391ECFFE61BF"
+    },
+    {
+      "file": "BulkNearSegmentsData.lean",
+      "sha256": "DAF39EC521F254DAB9944D3F76ED2A90C9DE2444EA69DDB959EE422BCB3F7C86"
+    },
+    {
+      "file": "BulkNearCoreData.lean",
+      "sha256": "787DF1A47E527B028CA79102AA737BB3419D43458E151E9387EDCFCE6E9093B0"
+    },
+    {
+      "file": "BulkNearEscapeData.lean",
+      "sha256": "C82D1514B00F053800A31AAAC04D893BAAD2BDAA9FF9A5C562EC1AD13B525367"
+    },
+    {
+      "file": "BulkNearEscapeEndpoints.lean",
+      "sha256": "2E6708F16DEE6377CA206F0C34430253F30ADB7A46A0745031C6E4E0087AAB49"
+    },
+    {
+      "file": "BulkNearExceptionalEscape.lean",
+      "sha256": "F48F618678A13C22E48CA879BFFB33E52D2A6C5BA50845AA2E652E6A88DA8D49"
+    },
+    {
+      "file": "BulkNearSegmentsCheck0.lean",
+      "sha256": "E13B5475731A10E82DAD688A7D95A62B4074BFD0A4EA293AA0DC8564BD8C1C32"
+    },
+    {
+      "file": "BulkPotentialComparisons.lean",
+      "sha256": "B9CD676DDEE66745E58A10DBFE01B1041C6D33CA4F85301690EA17F834A900B3"
+    },
+    {
+      "file": "BulkRungPathBounds.lean",
+      "sha256": "1A8E7DCBECE14074924048F4205B9EE7E13EDE7E79BF2D4B8903DFF7E219383B"
+    },
+    {
+      "file": "BulkSegmentCoordinateTransfer.lean",
+      "sha256": "69D7EDCDE32FE8FD539EB93C5D63728A995A8A3698A5AEB90538656AAF1B3956"
+    },
+    {
+      "file": "BulkSegmentEdgeTransfer.lean",
+      "sha256": "0850645DFB20EE7933EED04B90B0CE0000FDC4224776D85B7BD364DF80EBFEE6"
+    },
+    {
+      "file": "BulkSegmentEnds.lean",
+      "sha256": "FE6C00561BADE874F02A8C458A8330090C26995F1DBC4441AC480DBCB565748D"
+    },
+    {
+      "file": "BulkSegmentExtrema.lean",
+      "sha256": "65498FB25C6CA6D6B638302AB76E4A03E6327039B749D438B233FCE501878AD4"
+    },
+    {
+      "file": "BulkSegmentOrderFacts.lean",
+      "sha256": "D340A981104443DCE956E63BAEAE954978B68FFCCD497B50C94C5754BD84EC56"
+    },
+    {
+      "file": "BulkShortSegments.lean",
+      "sha256": "575074C7C805641050ACC1178F780DC4E4F6817396761C6B8A4BD08E8991E655"
+    },
+    {
+      "file": "FarFieldMixedCaps.lean",
+      "sha256": "ED095B3AAC1654EACE5BAADC0C39A5BCA11A7C33C41917C5EDBFEE75399F6A81"
+    },
+    {
+      "file": "FarFieldMixedRouting.lean",
+      "sha256": "DBF43B88E022EBD9C1FECA922439DA269C2216E923656B55E7B9F4E9138E03A9"
+    },
+    {
+      "file": "FarFieldRoutingChecks.lean",
+      "sha256": "A73371160E55541FEEDD817C4D0484B54CF5558724173A3FB9CBFEB27D943BF0"
+    },
+    {
+      "file": "FrameForcing.lean",
+      "sha256": "426B2135DE02CA57360F04F2CFD41252FDD4A78F1F5FA79E5A33FB150E5BE772"
+    },
+    {
+      "file": "FrameForcingTrackHeights.lean",
+      "sha256": "E6272970CE8E1B1F9F2649F6C664B8CF0261BBC7121E91322E643F152B8B9EC2"
+    },
+    {
+      "file": "FrameForcingTrackPath.lean",
+      "sha256": "47ADBA14B8254DD70EF0F85CC7B01E2DCBF70D3608A8570D4EDC34A0101367EF"
+    },
+    {
+      "file": "FrameForcingMiddleCorner.lean",
+      "sha256": "F3726F8213C6996C75FB59A9EDE5F740B36E56F3E1E802B3C4A257AC5CA081B4"
+    },
+    {
+      "file": "FrameForcingTrackSupport.lean",
+      "sha256": "6E3DBC718CAB6208F11205C93F987877F24791417A4CB665EE23976AB01B04E3"
+    },
+    {
+      "file": "FrameForcingTrackIsolation.lean",
+      "sha256": "142CB3B24177D7E749491E502DB43E7D9C63D2C387D8247DD39EF03FA07E62A5"
+    },
+    {
+      "file": "FrameForcingCornerSupport.lean",
+      "sha256": "E37350C3A11A69ADE266CAE30341A6B11BF5545FBE05B66084848349892E37F8"
+    },
+    {
+      "file": "FrameForcingTrackFrameSupport.lean",
+      "sha256": "6B199CAD663C137F7DC281CF47390013FDD01C20269650F104D2C3423550252C"
+    },
+    {
+      "file": "FrameForcingTerminalWord.lean",
+      "sha256": "94F80FCD878A91FCEC49E6F79FE4EDBFB598E2AD02BF35BC73C3FD129F37E52D"
+    },
+    {
+      "file": "FrameForcingTerminalFactor.lean",
+      "sha256": "2114019786AB32965E92135B75901DF76D8B5D492E453B4757CFF8E7AA20320F"
+    },
+    {
+      "file": "FrameForcingTerminal.lean",
+      "sha256": "968BF126D107EF40167BD7E8230FFEA09B22484ACC07FC8BCABADF3AF31A7405"
+    },
+    {
+      "file": "FrameForcingMatchingSingleton.lean",
+      "sha256": "74F91A07E190A61FD40E9A161C1AA487AE7D80BE5077847D98FE2D03E973AC47"
+    },
+    {
+      "file": "FrameForcingPerfectMatching.lean",
+      "sha256": "EE5727A1561C6258A1D188B93A991BB593C6C83E3A4900C16E20572A13FD43C4"
+    },
+    {
+      "file": "FrameForcingTrackMatching.lean",
+      "sha256": "06337F0BE4C1F090C0C08C4536261BC1BA2F8354FA305F55B0826A0C03EBCC1D"
+    },
+    {
+      "file": "FrameForcingActualTrack.lean",
+      "sha256": "7C37E1C7F47D925F88D3F24FFB366FAAF7206E28E3A209BDEEFE776EEEAE145B"
+    },
+    {
+      "file": "FrameForcingHeightBounds.lean",
+      "sha256": "66340525E7BDE34C670CCFACFC0AEF3D3C0E16B6804D217476E0973E2F4999D8"
+    },
+    {
+      "file": "FrameForcingSeparatorWindow.lean",
+      "sha256": "A1ADAE0C013D31677E237074341CDF1CD8CDD80171656E2D3C5D9FCC2D7B9419"
+    },
+    {
+      "file": "FrameForcingTrackRegion.lean",
+      "sha256": "F71A1D432F9802025C18BD95916DABA3BBA2C6B290E16DF74609EA1C8DEE9E69"
+    },
+    {
+      "file": "FrameForcingTrackBands.lean",
+      "sha256": "8AE5DD86DBB209FBC928B888CB5F4DCFEB8658CDE98005866D0C529C8FE5B647"
+    },
+    {
+      "file": "FrameForcingBinArithmetic.lean",
+      "sha256": "A222201ED3F5AB2AD2B90671FC1FE3CB240B3E2FFB762DDE27ADBD63809786F2"
+    },
+    {
+      "file": "FrameForcingSeparatorCentre.lean",
+      "sha256": "32A290E2E3A6A24C173FE022233F5E774C673959EF88082E336FF9AAAAEC0AAC"
+    },
+    {
+      "file": "FrameForcingLocalDimer.lean",
+      "sha256": "A2BEDBB0B552D1305D37527C9DEDEC4B707E0ECAE473C3D1AB81BE7289908A86"
+    },
+    {
+      "file": "FrameForcingSeparatorAnchors.lean",
+      "sha256": "1914A7E84990F1CAFB7D28481CAB68CF5837706F1B4606CDE7817FF6BBE75BBA"
+    },
+    {
+      "file": "FrameForcingTrackPairIndex.lean",
+      "sha256": "76B4D3A5B3B6E207C775ED822F7D89AEA001E9949F10B68C39B7D4692815394E"
+    },
+    {
+      "file": "FrameForcingTrackPairHeights.lean",
+      "sha256": "8BA609875ABAB5D1BC07AF483440D4B8A434716798041C24A3FDB7CD2492FECA"
+    },
+    {
+      "file": "NearFieldBulkColumnSeparation.lean",
+      "sha256": "552C1EEAE9E4AF6C663B71337C85B398219F698630C1238A5DCAAB16E6E09250"
+    },
+    {
+      "file": "NearFieldBorrowedBulkClearance.lean",
+      "sha256": "EDC3953CD068E7D00DB74247D96D70810769574EC4D56BF898476059F9D69BF1"
+    },
+    {
+      "file": "NearFieldBorrowedOwnersInterior.lean",
+      "sha256": "F583DED6E42978A3C3CBC63A27D1CE82FCC1B12BFCE7E162C4A707A234BB04BF"
+    },
+    {
+      "file": "NearFieldPPPEdges.lean",
+      "sha256": "3669FDEF38F31F518E3426DC8552ED063C56AB0836F088F2A1321B0C352309A1"
+    },
+    {
+      "file": "NearFieldPPPColumns.lean",
+      "sha256": "EC6E1CAEBE439DD9DA03D2442507C07C21EE77217D9088D40BDB44AA6DE94FCF"
+    },
+    {
+      "file": "NearFieldPPPColumnIntersections.lean",
+      "sha256": "E1330C16CAE0BDAD9D66C23ACEAACA5626D6BF15FF23A5B5D790E5C3C08BCE2F"
+    },
+    {
+      "file": "NearFieldPPPEdgeColumns.lean",
+      "sha256": "C821375A7D8535594BEAE4E7C8CCECD5A49A6AC81D3BF07DD540EDE36D553F57"
+    },
+    {
+      "file": "NearFieldBulkXRows.lean",
+      "sha256": "C61FDE7C33DE18796FCAC7D919CA2C3895303E998EF75ADC74A550A2E93682B9"
+    },
+    {
+      "file": "NearFieldBulkXRowClassification.lean",
+      "sha256": "37D6123FF6E01A7CF358ABDEA2DC0A689837628CAA2EF03B4E7D16300248DA4D"
+    },
+    {
+      "file": "NearFieldBulkXRowReference0.lean",
+      "sha256": "800668272A5CA5301F193C2CF11BE8F218C6767FC9681CA3408164F12AC6BA78"
+    },
+    {
+      "file": "NearFieldBulkXRowReference1.lean",
+      "sha256": "3E7133E25DF33EC48D6D38AC393DC12D34EBCCB8E71E28ABFB83AC9811389B72"
+    },
+    {
+      "file": "NearFieldBulkXRowReference2.lean",
+      "sha256": "79F98389C87E56252165E3E19A14249BEF48D7559CC64E80D2EDB0B183759055"
+    },
+    {
+      "file": "NearFieldBulkXRowReference3.lean",
+      "sha256": "2324EF77C99357DE6BC7D6C003CA0CB4DF8C6CA6FC735A78B058A111A9798C51"
+    },
+    {
+      "file": "NearFieldBulkXRowReferences.lean",
+      "sha256": "BC2393CCC856823EB14AFC2F29955A37DDE2BBA9C5A349F46E04893116894E3B"
+    },
+    {
+      "file": "NearFieldBulkXRowIndex.lean",
+      "sha256": "A10108CCEFA5F9FF3F9AFECB1B45772285D2FA83101D8BD098BE7FA8A2F172F7"
+    },
+    {
+      "file": "NearFieldBulkXRowTransfers.lean",
+      "sha256": "C9D95119E5105437033D8CFC94D89E7436A0294B69A0ED7B4C572B25A25924D5"
+    },
+    {
+      "file": "NearFieldBulkXRowFastTransfer.lean",
+      "sha256": "86888CDC07D9EEADBB58B842D324450DD43DC83E19D2FEBDFCA27F5D05C38208"
+    },
+    {
+      "file": "NearFieldBulkXRowDegree.lean",
+      "sha256": "1EBC4F7C7E090680203330E991EEA01159E625305089EB694D64FCA208A04AB5"
+    },
+    {
+      "file": "NearFieldBulkXRowOwners.lean",
+      "sha256": "6F60CAB0644CEF8BAB7C971D6F98F3E9D58FBCFEF20B6A56BB093E2F41743316"
+    },
+    {
+      "file": "NearFieldCapFold.lean",
+      "sha256": "6451F0761E05CA94BD8BBDB0A4F206558D5505C19A2EDD8A18CEA99697674CF2"
+    },
+    {
+      "file": "NearFieldCapFoldSites.lean",
+      "sha256": "A1BC0564E7CD23FC977542A8FE300A0FF60E9D7ED745CB39EEE46C1CB8E47A29"
+    },
+    {
+      "file": "NearFieldDimerChainArithmetic.lean",
+      "sha256": "28E525115CEA6820115FBC0DA9101ADC43A9400D0D1AD6C4323B10F84AE39BB4"
+    },
+    {
+      "file": "NearFieldDimerChainCurve.lean",
+      "sha256": "743D959422D199FB1017E9AD70E35F628F80838D0483C898291ED0370F4E2B61"
+    },
+    {
+      "file": "NearFieldPPPPairwiseFacts.lean",
+      "sha256": "6FC4F0BE2A860D10D29F70BB43ECDC7C68505A92F9F1484A54D81D0070829238"
+    },
+    {
+      "file": "NearFieldPPPPairwise.lean",
+      "sha256": "C2529AEBBB1FBDC5FE5622FE6D1A7D2539146631C4858591C75A8DE9C6F8BE05"
+    },
+    {
+      "file": "NearFieldPPPPairwiseEdges.lean",
+      "sha256": "536346A5A31F0BAD36C90D19FF934CE2B3CEDC9E75AA113F5FF556FAAD9C8ED0"
+    },
+    {
+      "file": "NearFieldDimerChainGeometry.lean",
+      "sha256": "27D698ABE9BA9F8249206DEE66A9022D4726DD732CCD106180111705101FF509"
+    },
+    {
+      "file": "NearFieldDimerChainWords.lean",
+      "sha256": "56FBBC45FEB37C82939353DE7E32EE978F7DAF59618B10B7104671BCE91BA168"
+    },
+    {
+      "file": "NearFieldDimerChainFold.lean",
+      "sha256": "3AC5B9B5260BA3B237041E13CE05C30D04EE8B20E730CAB9ABCFDB9FBD88ABBE"
+    },
+    {
+      "file": "NearFieldDimerChainCaps.lean",
+      "sha256": "536539FCCFE847B85AA6EB96CF7BB28542DF5C9006044CB3237AC9588850143C"
+    },
+    {
+      "file": "NearFieldDimerChainLocations.lean",
+      "sha256": "88923555007FE2727EFC3772559FC243E48A5680F3E586B8C360F4BA44976784"
+    },
+    {
+      "file": "NearFieldDimerChainDisjoint.lean",
+      "sha256": "DB5FD20571A9B541CB0213DF8AA84A6771A0CF6CE4774F9677131C2F2C7C4617"
+    },
+    {
+      "file": "NearFieldCappedDimerDisjoint.lean",
+      "sha256": "019F80CEF46B3814D3E96C5CBF546F18B862D0BC2A0788DF57B7F21440AFB317"
+    },
+    {
+      "file": "NearFieldTetherBulkClearance.lean",
+      "sha256": "3D9ACCC61268B9F558289406440CBF12050CC544CAB4E4AFAC8DF44B713C908D"
+    },
+    {
+      "file": "NearFieldClearanceAudit.lean",
+      "sha256": "97D0E426C5488C70C61839211FAED167DE71C24F92EE7652B44AB7B3A36288E3"
+    },
+    {
+      "file": "NearFieldPPPBulkClearance.lean",
+      "sha256": "D6FD2B0D25DDF07FBD9D3C6FFC2BC2B7E6FEB3378B9204A8F694BFAA84ACA129"
+    },
+    {
+      "file": "NearFieldDimerBulkClearance.lean",
+      "sha256": "11E43199E97EB73636112B1D2E0A1684FC281E2420BE993EC8F8BB651C24ED9F"
+    },
+    {
+      "file": "NearFieldPPPFrameData.lean",
+      "sha256": "26A213EAFD1C545DD2FA8B36E2339BB7422D98B848D0B38CB82A256E58C3A787"
+    },
+    {
+      "file": "NearFieldPPPFrameCertificate.lean",
+      "sha256": "A7C6E69FFECA3588FEF1CB5869C2A916CC2C525C1C708C91200EF1C9210D806E"
+    },
+    {
+      "file": "NearFieldPPPFramePorts.lean",
+      "sha256": "864D7732C5A405BB7EB4DBCB9409715A8A31769022125C7EC19F2A56C46181F1"
+    },
+    {
+      "file": "NearFieldPPPFrameLong.lean",
+      "sha256": "0F940C30F0950553304777400FE8182FAE8F79CA2285D41B9B4122D2CE340193"
+    },
+    {
+      "file": "NearFieldPPPFrameShortData.lean",
+      "sha256": "D64A430CA549F310BC417F5FFB53A240F584517D0BF52A3220865A9AF0CECD9E"
+    },
+    {
+      "file": "NearFieldPPPFrameSeparation.lean",
+      "sha256": "59E6B7712A1C630806DE2C30A373F4F4323FC6772C33974F79ABE2F098E02D1D"
+    },
+    {
+      "file": "NearFieldDimerChainFrame.lean",
+      "sha256": "EA854D557F9CEA0B82F02A613F031F17F59F107358131EEE3928A97C7193547E"
+    },
+    {
+      "file": "NearFieldPPPColumnPairs.lean",
+      "sha256": "347C81A7CA9714A29A56A0CDE3F62631E60A6A2D0B8538C4A25BD89CA0A78376"
+    },
+    {
+      "file": "NearFieldPPPBorrowedFrameColumns.lean",
+      "sha256": "4785E4E2FFBD169B99ADE4D9A22E23638CF764470296B133A06D4D81629B3455"
+    },
+    {
+      "file": "NearFieldPPPColumnMargins.lean",
+      "sha256": "56CC60E17C01930EE04E390D941D140CAF9B9F5FCE462B2C1E3262A41B6B3B01"
+    },
+    {
+      "file": "NearFieldPPPCanonicalColumns.lean",
+      "sha256": "92B9BC39C33D68941BDB94CC1B2B32C19B6F989A1DAFE7B83B68BEFD5BC218C7"
+    },
+    {
+      "file": "NearFieldPPPSeparation.lean",
+      "sha256": "39946DA3D050F5190D87B0245C6D44A4D188580AB04EEC53FDB00191381EEED8"
+    },
+    {
+      "file": "NearFieldPPPTrack.lean",
+      "sha256": "8977F2FC6325440165FB4FA93326A04253E75C146BC34F204810B3A9FB887CD5"
+    },
+    {
+      "file": "NearFieldPPPTrackStart.lean",
+      "sha256": "C191DD8BA90CAB6CA8665B027299D6698E5434C10ACB4117FD5530BB4FE7F2D0"
+    },
+    {
+      "file": "NearFieldPPPTrackColumns.lean",
+      "sha256": "A7C3FA5F9756D4CF8636503482965D55CC8A17C8D304E4983B2D5B6E639482CA"
+    },
+    {
+      "file": "NearFieldPPPChecks.lean",
+      "sha256": "29C62141F06F5D86D16F438BE86FEF4E73DE1E34A02882CDC24902651856EA15"
+    },
+    {
+      "file": "NearFieldPPPTetherColumns.lean",
+      "sha256": "890298640BD01E5BD2C5D2DAC0CCA3A9CA4EA889F18AAA1E3B483923A0DE370C"
+    },
+    {
+      "file": "ReductionDimerProvenanceChecks.lean",
+      "sha256": "73AC001320FED8ABC4708DA01047F579C4D4688777B8A439788B75BB15EB111A"
+    },
+    {
+      "file": "ReductionTM2Basics.lean",
+      "sha256": "95917E2FC8378681B462762A5CFB7C56B0385B9658019BE02A2BC607F12FA953"
+    },
+    {
+      "file": "ReductionTM2Arithmetic.lean",
+      "sha256": "3002A006363E2260C7E82EBB70BF5C870F666A41345C37A1543179EE72890290"
+    },
+    {
+      "file": "ReductionTM2Parameters.lean",
+      "sha256": "3DEF8BEB3E9F2C151FEBD80229DC9AF4B0C48959ECBFE828DC9DFDDB1A479D17"
+    },
+    {
+      "file": "ReductionTM2Words.lean",
+      "sha256": "CC2F60C2097CA2ABC3E5CD0282432EEEB7B8FA62929D68784105FB7AABBB4850"
+    },
+    {
+      "file": "ReductionTM2Lists.lean",
+      "sha256": "20E92C6BCF145CDF281B1A95261D4CD49036466CE29795C1816EECB1D0767C1D"
+    },
+    {
+      "file": "ReductionTM2Units.lean",
+      "sha256": "599531FA9F0ABE6BFC829907418BE09D3FB44C4F273133078D6B65F617474C7A"
+    },
+    {
+      "file": "ReductionTM2Assembly.lean",
+      "sha256": "2A7AE7658D4556E43993096E9FFA2DFED5A922441844591B8109457391958726"
+    },
+    {
+      "file": "ReductionTM2Division.lean",
+      "sha256": "9CDAB15FF299D7EF2394119C290254329260D81EAD510E766AC9285065C20653"
+    },
+    {
+      "file": "ReductionTM2Grid.lean",
+      "sha256": "D63C222F30DC042C42FB86363998B97952BBC2147E94D201A949186DE941FB8C"
+    },
+    {
+      "file": "ReductionTM2Zip.lean",
+      "sha256": "81CE043D5C06042AB090BABC9F1CB58CDC5A4419A20409AE7C9F02EAC3E87D81"
+    },
+    {
+      "file": "ReductionTM2ZipRuns.lean",
+      "sha256": "86FBCE52E12BCAA3CAD700F3DEFF5E794EA81589C672FBE580905CE9A6853E2A"
+    },
+    {
+      "file": "ReductionTM2ZipComputable.lean",
+      "sha256": "0BA6266B6FD6BAE35AC841326352C2BAA23849B8F7954B84410079235AA39617"
+    },
+    {
+      "file": "ReductionTM2Prepared.lean",
+      "sha256": "E3828E2E0462104BC25DE906E6821857D4464A990AA2CD0D1201A5B0C12C5B84"
+    },
+    {
+      "file": "ReductionTM2Third.lean",
+      "sha256": "923057FE77178DD9388DB0098A72345E2CFA6D4672788587F4A3A1E675881CBB"
+    },
+    {
+      "file": "ReductionTM2Threshold.lean",
+      "sha256": "500B57535EA273872F0AC2E54A39A5597F69A58B50920CFE47CB835A1F6E2DF4"
+    },
+    {
+      "file": "ReductionTM2Instance.lean",
+      "sha256": "95788E3978D9F5B77C317681DF0B80BCAD6434420194E8BB908732C48CA4D0D1"
+    },
+    {
+      "file": "ReductionTM2Guard.lean",
+      "sha256": "FD6D9D18674C7355892E0997670B8585DEEE6EFB2F77AECB4BC3E6B9E5C07F48"
+    },
+    {
+      "file": "ReductionTM2IterateMachine.lean",
+      "sha256": "201F31CA99308665DC9266390B4B0FAB9775DEEE1148028E4C23272EDD9055EA"
+    },
+    {
+      "file": "ReductionTM2IterateStacks.lean",
+      "sha256": "675D80E79ED58F59260174D6E7C6EC794B13CE40375DFF902589ED7293442122"
+    },
+    {
+      "file": "ReductionTM2IterateInput.lean",
+      "sha256": "6765777E424FD272C02BCBD81DCB69BFEE57788E5DFE27A585B24925DB8C7D0D"
+    },
+    {
+      "file": "ReductionTM2IterateTransfer.lean",
+      "sha256": "50C124DB06552B0C32F691A92FA363B7DCB7FDE589351BA3DA1114927112536A"
+    },
+    {
+      "file": "ReductionTM2IterateCollect.lean",
+      "sha256": "F537640D48228EAEB75403DBEDDC8C12750FE92283657C8B5322C459C7130912"
+    },
+    {
+      "file": "ReductionTM2IterateRound.lean",
+      "sha256": "83EE0E9302EC1CAFAC08901A6E437A28FC3BF647C62001BC7191BFEA840DB79B"
+    },
+    {
+      "file": "ReductionTM2IterateLoop.lean",
+      "sha256": "161A0E6C72B2DF6F4C659BFF1E2564CE7A8F04A552BE5682C5AFDCC534ED31DE"
+    },
+    {
+      "file": "ReductionTM2Iterate.lean",
+      "sha256": "3AF7CF2B9339F1B5499CCEA14F79256EB689A096D4B3C96B291F9D49E037D0D1"
+    },
+    {
+      "file": "ReductionTM2SignedArithmetic.lean",
+      "sha256": "44578A645DF91A447FC12D4AEEEF398CE47E87D51A19846271A4D139D8879512"
+    },
+    {
+      "file": "ReductionTM2WalkModel.lean",
+      "sha256": "3427682EB500031128DA0DE3FF4DAA7A244EAD357A8D6FF5EE779CFB12F5D539"
+    },
+    {
+      "file": "ReductionTM2Walk.lean",
+      "sha256": "51A0E19ED6F4BE7AA6BA8126475D293A432246A5B40CDC2613810F4AEB16604B"
+    },
+    {
+      "file": "ReductionTM2WalkPath.lean",
+      "sha256": "086A6600274108B4F8281F428935F8CDBA8628301BE1A5630F6273AB78EC5AE3"
+    },
+    {
+      "file": "BulkXJointInvariantReference.lean",
+      "sha256": "5F0F40D8226D89B4D6FABC0A13F8A6CA42A1D470188F9712B71D902EADFFA38B"
+    },
+    {
+      "file": "BulkXJointInvariantTransfer.lean",
+      "sha256": "908DFBDDEA180A5A829F7283DCD5ADE15FEE34B1FCE07F5A293B9A0B386C44E7"
+    },
+    {
+      "file": "BulkXJointInvariants.lean",
+      "sha256": "BC7E894FE3BF7E46DCFED15A87BCA04C6E3893F1A2634C404609317E370BB19B"
+    },
+    {
+      "file": "BulkInwardNeighbour.lean",
+      "sha256": "E48DD6C5A0452B01C95C75B9C3BDE1419BA5069CC394CE28E59133E4062B3C8F"
+    },
+    {
+      "file": "BulkEscapeTypes.lean",
+      "sha256": "E649DD52832DE5B2926A1E2C4076944C5567D2ED1022FF3159B5F27745EA2E50"
+    },
+    {
+      "file": "BulkXPositiveEscape.lean",
+      "sha256": "59A2F4B91F994766D0428029D14E1BC5A28CF1324F9C05818BF7DCBFDF9DEF0C"
+    },
+    {
+      "file": "BulkLongXRow.lean",
+      "sha256": "755EC0513EAFDE85E8CF8D5FD9A31385A610E2E130E1280611084DB4F544DA68"
+    },
+    {
+      "file": "BulkXNegativeComparison.lean",
+      "sha256": "67B76207D77C04203F4E25DCC185976890CE9114C0A4FE34EA1064B5709E6821"
+    },
+    {
+      "file": "BulkNegativeJointGeometry.lean",
+      "sha256": "37737A0BEA473879A96C7CF50F4C88B0358A3E5DBB4033014B255FAEF37A4466"
+    },
+    {
+      "file": "BulkXInwardReference.lean",
+      "sha256": "C2D1406D4ECCDAFD471C077E6FD2B35892BE9C91C4E6C5629FF551E1B3EC00BE"
+    },
+    {
+      "file": "BulkXInwardUniform.lean",
+      "sha256": "D0540DEECDA00DC4BD2E40E884B9A053E5FB88A852A7F284270B66AB2EEDE074"
+    },
+    {
+      "file": "BulkXInwardNearReference.lean",
+      "sha256": "8629B0CDC94E096855DDD4909E02C00C621E01CA189ED5E40483A7927FF3E2FF"
+    },
+    {
+      "file": "BulkVertexAbsAlpha.lean",
+      "sha256": "979D5C40DD8A762222A8A95C16E365CFA9F134521F51DC12CB91E0D93805C99E"
+    },
+    {
+      "file": "BulkFarXAlpha.lean",
+      "sha256": "47D6E70A6DEFB73BC1632997B0ACBC0B7007F9808740366F60B781518687BD05"
+    },
+    {
+      "file": "BulkXInwardNearUniform.lean",
+      "sha256": "9A3E40ACDF028A2732FBB25E09A69E56186AC09CDA5A0F918A3D07603EC5D226"
+    },
+    {
+      "file": "BulkLongXBendPairs.lean",
+      "sha256": "59EF18B4139BCA56F7A356C7059EAE5A1E9C2336F88693BE806333E727446F90"
+    },
+    {
+      "file": "BulkLongXInwardPath.lean",
+      "sha256": "0FF56EDC6D49D435E2EBC731996A1B2ADD9397E67EA85A6C80036F9FBF708302"
+    },
+    {
+      "file": "BulkNegativeComponent.lean",
+      "sha256": "6470CBCD2EB35BC50C56AFAA0CAFD89FE7EE84C78468CCB1F21C68D5CAA77671"
+    },
+    {
+      "file": "BulkXNegativeEscape.lean",
+      "sha256": "95AB4E9CDE5B365923A3D185567610D79A3ABF0BF635A966AE6C362BF02FD7C0"
+    },
+    {
+      "file": "IntegerUnitPath.lean",
+      "sha256": "243A47304E0D4678F957BC9232FE52684E2D1E230149CB8603C34E43A0920C3D"
+    },
+    {
+      "file": "BulkLongXEndpointSigns.lean",
+      "sha256": "3A159C775FFDE065ABCB42DF11BD85C149AB3D82C4CD747A35EADE5D202E39DC"
+    },
+    {
+      "file": "BulkEscapeComposition.lean",
+      "sha256": "92D5B3F1F3F7220337DCC51DE31289ADF17D274F951094BB52CEEF36F99FA821"
+    },
+    {
+      "file": "BulkFarXNearCase.lean",
+      "sha256": "7A5AD83CEEE5C84A53B1F68AE4758400887B6367E25FC20A8723ACF20A328AEB"
+    },
+    {
+      "file": "BulkFarZData.lean",
+      "sha256": "80CCCB40A995108064057C47AC595D66A22D988AC9E587713920B99C6164D14A"
+    },
+    {
+      "file": "BulkSegmentEdgeValues.lean",
+      "sha256": "0B8B544DE95A90798409AD3DB67BED82C9AA6A901647C280CA94DE2B421F3463"
+    },
+    {
+      "file": "BulkFarZValues.lean",
+      "sha256": "AC1A366FE09B6AA904D6AEDF69FC675F87429251A81A74944D4293A17FA9BE20"
+    },
+    {
+      "file": "BulkFarZAscent.lean",
+      "sha256": "C048E3C358F158E9127D551BDE1B48F3CED9F643F64842FCABD0C978C16B1A2E"
+    },
+    {
+      "file": "BulkFarZRecognition.lean",
+      "sha256": "58BD4976BBB6334E7BA3D496AC10B5D2A951773170944666FDED57C9B0BE19C5"
+    },
+    {
+      "file": "BulkFarZEscape.lean",
+      "sha256": "EE46458DCACEA7512908F9D3370C34EE6F3E902A8D27C3DDFC8C1DF00A25D7E3"
+    },
+    {
+      "file": "BulkFarZNearData.lean",
+      "sha256": "C03C5584DF95AAF81A0EA4600EBC9C993D072805F064C59B469A95F985809336"
+    },
+    {
+      "file": "BulkFarZNearValues.lean",
+      "sha256": "DB0D4AEF0091687926534D1ADC49B97FE0C86A2A8C2674E9BC5F213F17481B33"
+    },
+    {
+      "file": "BulkFarZNearRecognition.lean",
+      "sha256": "394C511B7B9C0380A18B9F966455F1C9904B8986B421F3523E8CF2F3C36F08F7"
+    },
+    {
+      "file": "BulkSegmentOrderTransfer.lean",
+      "sha256": "D101FC64AC1491A2C24238E907414AD242CE879F54BC60FD98FB6C2AF1A12C59"
+    },
+    {
+      "file": "BulkFarZNearUniform.lean",
+      "sha256": "FBC4B646396A91AF5D8445162518EAB047D904080EBE325706BC2D487844D556"
+    },
+    {
+      "file": "BulkFarZNearEscape.lean",
+      "sha256": "004CFFEFAC8356BBD8E78A061E12E036A532CA9B9778CB8A28000DFAA6486141"
+    },
+    {
+      "file": "BulkFarZUniform.lean",
+      "sha256": "AF478AB36563FA47151BCFFE18D4DFDB5114C2B2A96461B781491A46FBB89F6C"
+    },
+    {
+      "file": "BulkLongXAxes.lean",
+      "sha256": "CD8B5020142B04834404C9A94BED08A47F8301307BBCFBD5FFD414C4F99DFEAB"
+    },
+    {
+      "file": "BulkNearReferenceSpec.lean",
+      "sha256": "31B316DBC761366BDE722727FB0487CDB3212856120DFAFA0D79E024D050C4E9"
+    },
+    {
+      "file": "BulkNearBoxCheck0.lean",
+      "sha256": "DB35A9E9AA0FF6B400B0D6945ECAA2236D65E0EEA98094AD5A8C9731DDC78577"
+    },
+    {
+      "file": "BulkNearBoxCheck1.lean",
+      "sha256": "E77374257A0B3047A6145BA495975C16DBA5FBD746C1988F16DE938F256D809A"
+    },
+    {
+      "file": "BulkNearBoxCheck2.lean",
+      "sha256": "315954C0FA61993C9F54F8D9A21A0F40A2CC96F65F72E9D9873AB454E29DD742"
+    },
+    {
+      "file": "BulkNearCandidateCheck0.lean",
+      "sha256": "C641F5D6103ED6DF475F37C23AE495B36EFBA84D7BE709B71051C80DB66AFF02"
+    },
+    {
+      "file": "BulkNearCandidatePositions.lean",
+      "sha256": "DFEAC2B5CD7F74DADF0EAF2FA195118D951483BCE8AB0122363893461A878C76"
+    },
+    {
+      "file": "BulkNearCandidatePositionSpec.lean",
+      "sha256": "42B638E4F37E445FC9897D008E1033A13FE6CEA3640081CCCCA093998F88DF4A"
+    },
+    {
+      "file": "BulkNearCandidateCheck1.lean",
+      "sha256": "A37806899F79422D5BE2C8ACE9C593CBE5EF7FA46CD9F372E651E0F56694AEFE"
+    },
+    {
+      "file": "BulkNearCandidateCheck2.lean",
+      "sha256": "7EE6F0174569175640F43188F1AA5F5AE94ECDCDF4FF7E58AED6F23AF259C04F"
+    },
+    {
+      "file": "BulkNearCoreCertificates.lean",
+      "sha256": "6E12DC1C1806F32916B95AAED36D75C5F7F7B12E4DE5D5E2192B50B1C372B3C5"
+    },
+    {
+      "file": "BulkNearPatchReference.lean",
+      "sha256": "A86E0DEB64177C28188DA367DAB06AB28318E3EA035B6EDDADEFA742F1E7EEE3"
+    },
+    {
+      "file": "FrameForcingChainTwoGeometry.lean",
+      "sha256": "9801B6141FBB706CFF8F1BB0CB8D1147E6BB9C6070AE1D1852DA0AEC2B962870"
+    },
+    {
+      "file": "FrameForcingSeparatorLocation.lean",
+      "sha256": "60126463774A4967E32807A9D7760B8568856EE61F5CEF5831528C0BF2A083A5"
+    },
+    {
+      "file": "FrameForcingSeparatorActualPoints.lean",
+      "sha256": "FB37C019A55B1EC74079CB421CA19A822F64B8565265DFE080A65CA441FFCAFD"
+    },
+    {
+      "file": "FrameForcingTrackPairSets.lean",
+      "sha256": "6960210C228A74BD0330B201CED96C2CEE39B6DD838FF9B7CE9AC86655222DED"
+    },
+    {
+      "file": "FrameForcingActualSeparator.lean",
+      "sha256": "006D19A76BF7B4CBEB9BF47610B5162DC690C2363B5EB4454C6D6E7AA43DC304"
+    },
+    {
+      "file": "FrameForcingBandChains.lean",
+      "sha256": "F4049806B0DEC8959D7B9A214B369AC4C591CDFF9919D716C416B567E792C5A8"
+    },
+    {
+      "file": "FrameForcingBinChains.lean",
+      "sha256": "E7F6BBFA3D636FF8312DBB1DEAA3320ECD872497E3E75EC7D5AC597662D63640"
+    },
+    {
+      "file": "FrameForcingSeparatorExhaustion.lean",
+      "sha256": "E32E383E6FBFBB15DC5597C69887725DCCBCD3D0D25F05017D8EA7E91622D398"
+    },
+    {
+      "file": "FrameForcingSeparatorBlocks.lean",
+      "sha256": "8BE7A2A12DA1B5202A36F164C406A6157514A8DC732C03BDC935CD25F2DB1634"
+    },
+    {
+      "file": "FrameForcingActualSeparatorBlocks.lean",
+      "sha256": "B94856BCB8A368F5605128AE014DEF839D035D8D0157DC0910BC00F1E1EF8BEE"
+    },
+    {
+      "file": "FrameForcingBinChainHeights.lean",
+      "sha256": "CE3810B47ABB912A2FDA2FBE597207F7A3D9820DE69A30792C225119CFBB41BA"
+    },
+    {
+      "file": "FrameForcingBinLoad.lean",
+      "sha256": "3CFD8605035555230DF2AE5F6DD1C6D53F129AF42D2E7715236D2B4EA798582F"
+    },
+    {
+      "file": "FrameForcingBinRegions.lean",
+      "sha256": "1C6D0F5E0158E53C6062F90AECA948C646B0E0A33A9DAA6C84E1DBF097EFD2CE"
+    },
+    {
+      "file": "FrameForcingExhaustedBinChains.lean",
+      "sha256": "F6A5952B32E66EAC819B0E3E01A490B5B76410939497DB2BFFEE722968BAB97E"
+    },
+    {
+      "file": "FrameForcingEligibleBinChains.lean",
+      "sha256": "BD6274391B201FA5EA914EE4B636C9333C590CE9144885FD98A22BDB4084BF82"
+    },
+    {
+      "file": "FrameForcingItemMultiset.lean",
+      "sha256": "09B2BA1DD5B1042480D2E9FD8A8301CDE16299B5CD804E1ECCE17B1354524A0E"
+    },
+    {
+      "file": "FrameForcingItemIndices.lean",
+      "sha256": "469493B8B050EBD405F364670ADD3FD57C636DD1859D64A87C799B4AA02BBB16"
+    },
+    {
+      "file": "FrameForcingItemChainSize.lean",
+      "sha256": "F5E54023934BC03A2934864F513B5D764874AB536614AB32E533A66522AAA173"
+    },
+    {
+      "file": "PackingFromDisjointBins.lean",
+      "sha256": "F8F6F9641ED7A20F03FF93B23372090AD7F8C5B2CB31688DAF08C7E6E2CEE38D"
+    },
+    {
+      "file": "PackingFromFiniteBins.lean",
+      "sha256": "9145F76002BD6069FC8667C170A20230B8F6484442E70DFA72DA37AC9745D3A8"
+    },
+    {
+      "file": "FrameForcingPackingExtraction.lean",
+      "sha256": "B3E3F48629BDF181CA076386E718161A4977CC12CE8105448D10A9FADEE8CF42"
+    },
+    {
+      "file": "FrameForcingSeparatorTags.lean",
+      "sha256": "012CC0994EA719C65440B1A83950C9A6EEFF88F867505386387DD6609C152693"
+    },
+    {
+      "file": "NearFieldWordFoldAppend.lean",
+      "sha256": "1BDD2E448E766921CB7FAAA619F287026F5B1D1F27526472E8DF21B304DAFC46"
+    },
+    {
+      "file": "NearFieldWordPieceAssembly.lean",
+      "sha256": "055CBC460DD083B4DDAB6247023BFD49013E2401E7C6E927520A36F15A9C2F2F"
+    },
+    {
+      "file": "NearFieldAssemblySupport.lean",
+      "sha256": "0870D17611275D067E1CF000B66E405EA3AEDEFBFFA8C15A68851919D66DA5EB"
+    },
+    {
+      "file": "NearFieldDimerBounds.lean",
+      "sha256": "EA9AFB5E5EDC488259742A0EA5181547E77EE1DD9C30CA84C52EA81887492213"
+    },
+    {
+      "file": "NearFieldDimerChainConcatenation.lean",
+      "sha256": "C5BB93317A5FB7C2E696DE6972A94F277A1480F45B647E3147E0E8797DD8785E"
+    },
+    {
+      "file": "NearFieldPPPTethers.lean",
+      "sha256": "4973BC60DBFE57D481BD8F1922E9DF8794C162F7906C430D9221D30E84D5CC71"
+    },
+    {
+      "file": "NearFieldDimerTethers.lean",
+      "sha256": "A1383211ECBCB6661E7BABC1DF77C0A1BAD84D164F25F74600C234DA426AB9C4"
+    },
+    {
+      "file": "NearFieldHRunFolds.lean",
+      "sha256": "14B81F659ADC802F941D151E843E2756C58A14104B187C583CA224687AF964AD"
+    },
+    {
+      "file": "NearFieldHRunReverse.lean",
+      "sha256": "7AE7A69D2D80BB6D32122E22F9B3D72E63B7078606323E1B5F3D57C8A6B6E6C0"
+    },
+    {
+      "file": "NearFieldFrameHRunData.lean",
+      "sha256": "6F905D8CC72DE3CBE8BBB2943889D2DDAC4EEB54841EA337C4AE19A8F7ADCB28"
+    },
+    {
+      "file": "NearFieldFrameHRunSeparation.lean",
+      "sha256": "A6C713D16C35336D1B408C25E746EC04169438E2A5A7968C72A528D536717CED"
+    },
+    {
+      "file": "NearFieldFrameLinkFamily.lean",
+      "sha256": "47CF3ED7E597B2EC365F5AE286322A8A6CBCB37ACA3DF0FE62EA771D7C993A65"
+    },
+    {
+      "file": "NearFieldFramePieces.lean",
+      "sha256": "A794B21FEC90E692BBDB51E5BDDDB9986640FBBDC64B7FBBA1CE1485F6EFB283"
+    },
+    {
+      "file": "NearFieldInnerEdgeSeparation.lean",
+      "sha256": "4D945BA1C42361CBC6CB1C1D38B5067DC78170759AEBF537EA88D0BF258EE635"
+    },
+    {
+      "file": "NearFieldLinkerPieces.lean",
+      "sha256": "DB2D9BBF9C13E2516775FF069E43982B226357B2CB9A2DD575CE27FE7B34C6AC"
+    },
+    {
+      "file": "NearFieldLinkerAssembly.lean",
+      "sha256": "9A1507DB6C66D6FCD5CF83F716DB88CAA59F5ED027818957F84170785D12E75A"
+    },
+    {
+      "file": "NearFieldPPPFreeColumns.lean",
+      "sha256": "055FBD17A28B97D62E08ED09BE644AEE2606D364FE6884ED428E016549A77878"
+    },
+    {
+      "file": "NearFieldRingB3Column.lean",
+      "sha256": "AE4215573E293012EAD094D85053F6A0675807EB5ACFC5594B71A72B081CBA1F"
+    },
+    {
+      "file": "NearFieldRingB3ColumnChecks.lean",
+      "sha256": "2DB6855EBC2F21FD269C1979752912A66BFBBD4703CA22641A98CC94C0276E58"
+    },
+    {
+      "file": "NearFieldRingPieces.lean",
+      "sha256": "D5073EF2B9512BC1DD6BA810D03CC135EE18611A340E2A32054B4046127AB524"
+    },
+    {
+      "file": "NearFieldRingSideSeparation.lean",
+      "sha256": "51E7B095A8FA2A8E2C307B97D19EA343A1D7C5524953B2D95EF3FCF110DF1939"
+    },
+    {
+      "file": "NearFieldRingPPPSeparation.lean",
+      "sha256": "F6A1B0D336B93E835BB71945C88CF4E4281416B3E48A178FDC3EB12C2FF78828"
+    },
+    {
+      "file": "NearFieldRingTerminals.lean",
+      "sha256": "70C4753FC5D2CB3E1EF4E149980557AEF0F4C844FEB367477DB50F5FD1FC5AE8"
+    },
+    {
+      "file": "NearFieldRingWords.lean",
+      "sha256": "1210CCA906D51D890DE70CE59DA554817210944D80FF7B560462E908239F56DA"
+    },
+    {
+      "file": "NearFieldSeparatorChains.lean",
+      "sha256": "9C2B268218FBE906F08C3067277DA4A4CD895DB4C03D986F83C2AF055E858B81"
+    },
+    {
+      "file": "NearFieldSeparatorChainSeparation.lean",
+      "sha256": "2F88D1920BD07B57F2A1107531CBCA85553BD7335BE8CA318E37FC99DCCE3BF1"
+    },
+    {
+      "file": "NearFieldSeparatorTetherClearance.lean",
+      "sha256": "4BBD6C4D95B37ACC990690346F8472A2A0933A28857B0B4BE69AF7C0082B7922"
+    },
+    {
+      "file": "NearFieldTetherWordFolds.lean",
+      "sha256": "A0A94D298C36C7F626AFEA387EEF1E7F59FB57D24C877002675658CCB5793A9D"
+    },
+    {
+      "file": "NearFieldSeparatorWordClearance.lean",
+      "sha256": "9ED4889D4C0A7578F4FB15A9066775346BEEC4444BF0AF67BF0A6FEEED8151F8"
+    },
+    {
+      "file": "NearFieldSeparatorFold.lean",
+      "sha256": "330186215739865C6E1E07F29F223951B2CF3042DA361DA833AEF575D9878253"
+    },
+    {
+      "file": "NearFieldSeparatorEndpoints.lean",
+      "sha256": "41B2EF8C848C6EA3A0FB0994A18F1D6EB7EC2B7372AB4D59E3BD85D16028DABB"
+    },
+    {
+      "file": "NearFieldSeparatorSupport.lean",
+      "sha256": "AF6458A6E416AC8B9E7AE7DCBBAFE31A54D4D219C943DCAB1130E5B19C32F284"
+    },
+    {
+      "file": "NearFieldSeparatorCaps.lean",
+      "sha256": "19E6D9FA79C2C4567159E82B7AFFE4E843A0BE6CA8527A52137E0F872957C541"
+    },
+    {
+      "file": "NearFieldSeparatorFamilyChains.lean",
+      "sha256": "CE4D7C808D5430E5DE84F608AACDAFC84E065A9304B369044950E7BAC64AD5C8"
+    },
+    {
+      "file": "NearFieldWordTransport.lean",
+      "sha256": "719CF1F409E0C24C7900049403ABDA1D7A45BAFFF9D950465F6C4AB7160A89EC"
+    },
+    {
+      "file": "ReductionSoundnessPacking.lean",
+      "sha256": "24B1EDEBF310CCEEA3D16DA188DE16664A9840A810F090FEAB20E3C9ED95F1DE"
+    },
+    {
+      "file": "ReductionSoundnessChecks.lean",
+      "sha256": "221C10E0522B4BB5DB2A17439BA10C1365AB92E60A5C64CEC95A6E7ED833FC1E"
+    },
+    {
+      "file": "ReductionTM2ArithmeticBoolean.lean",
+      "sha256": "50D41DC980779BC39F05AF59933C0071041FC1055103211F1972AEC1DD6CB53E"
+    },
+    {
+      "file": "ReductionTM2ArithmeticFinite.lean",
+      "sha256": "8DB3DAE933D23E4E40A87FA32A0F518DD0AD41369D4FF33BCBC04FFDAEA986A9"
+    },
+    {
+      "file": "ReductionTM2SignedResidues.lean",
+      "sha256": "F623D9FB8AFE823C55962CFA3E2B3AE9D42B653B31F4A19D6850DD6BE4007205"
+    },
+    {
+      "file": "ReductionTM2BulkArithmetic.lean",
+      "sha256": "F2E9F03AB1767161857FFD527388651AC214A0B2E5639E2925E5340DD8C086A9"
+    },
+    {
+      "file": "ReductionTM2BulkLocal.lean",
+      "sha256": "771CE6BB08EF0C668637479FD197CA70AD0838FD2A1315E1CCA21FA9535FDD7A"
+    },
+    {
+      "file": "ReductionTM2BulkPredicate.lean",
+      "sha256": "CEE1429049553D4FEA08E23CC79FF2605B4643D3A93256793C5313BC39F6F731"
+    },
+    {
+      "file": "ReductionTM2ListFlatMap.lean",
+      "sha256": "EC0B68226A89AF8ABCB7BF41F12AC7D07E488408C10962132CB3A95C2AD7BEFE"
+    },
+    {
+      "file": "ReductionTM2BulkScan.lean",
+      "sha256": "B700F23CCBEECB59EE9457989121360FCE2B29EF0076B5C2BEC66906D94F3EFF"
+    },
+    {
+      "file": "ReductionTM2BulkOutput.lean",
+      "sha256": "9D98718C095F067A609F6C92FBA2EBB9EE3F9D97DD89AE56C1B642BECF3F18C0"
+    },
+    {
+      "file": "ReductionTM2ColourFlags.lean",
+      "sha256": "C18D17CD30E989D17C07CB35E768F5A37753DF5F301C3E03351E999BBBBEC5C0"
+    },
+    {
+      "file": "ReductionTM2Pipeline.lean",
+      "sha256": "8A145A020614F775C96CD8AF623DB4570570AE53C9BA9E3035740C37EB7F6CDF"
+    },
+    {
+      "file": "ReductionTM2PrefixColours.lean",
+      "sha256": "0E2A2E341A8CEBD471DE2F407B5293C65A1F8D70021FE3137C37960B89119EE5"
+    },
+    {
+      "file": "ReductionTM2PipelineFacts.lean",
+      "sha256": "F1FD18AADC8BD8DE6A5FAC41AFCDCB93A5B6260D621673144CED633A061D7BCB"
+    },
+    {
+      "file": "ReductionTM2Canonical.lean",
+      "sha256": "5CFC7D9BF1894BE583327CF4CDF2859DE08981272798AF675EF78F9303342FA7"
+    },
+    {
+      "file": "ReductionTM2Audit.lean",
+      "sha256": "324C7A3F3B411DFD01C7FCA430A292A2B2081BA9F46F015BE953E74D734A79A8"
+    },
+    {
+      "file": "ReductionTM2BulkSemantics.lean",
+      "sha256": "A50C064F1DAB0F383C5DAEA98D90918B1EE257F9C567019DDFD969D30282E7C2"
+    },
+    {
+      "file": "ReductionTM2BulkLocalSemantics.lean",
+      "sha256": "77D937C722595584B66DC7E8C75D96AB1CE885ABF61BAB2C2D765FB74B533D6E"
+    },
+    {
+      "file": "ReductionTM2BulkPatchSemantics.lean",
+      "sha256": "7E725639CCD9D3082B83D1BAF0FF9137D571CA8D79420A4F5C4E6262811CE147"
+    },
+    {
+      "file": "ReductionTM2BulkCoverSemantics.lean",
+      "sha256": "293ED3E3C9603FAF96B2CEAD89E8B7980E309DC0021A9157F441D3623BE56F15"
+    },
+    {
+      "file": "ReductionTM2BulkPredicateCorrect.lean",
+      "sha256": "2863A8CAF24F30FA74D96735D0F5791293EDBFD0EAEEE335791AAC4512B3FE88"
+    },
+    {
+      "file": "ReductionTM2BulkIndexModel.lean",
+      "sha256": "47B8BDFFA6E0FD396F135A61337411F1CC789882B703A57DD85552848A845306"
+    },
+    {
+      "file": "ReductionTM2FoldNeighbours.lean",
+      "sha256": "574D2F6645F39FE1789E6CF2CE5373ED3498B27EF21E104FA7588521A69CCE82"
+    },
+    {
+      "file": "ReductionTM2WalkBounds.lean",
+      "sha256": "39539FDF43D0F2ED350BBA92B7CD30165813803D0FA63ADC84B6D2B08A889FAA"
+    },
+    {
+      "file": "ReductionTM2IndexPath.lean",
+      "sha256": "CC920298AD29008156FBB6F77F8999928454DF8D92690B0060E954FA590E99EC"
+    },
+    {
+      "file": "ReductionTM2BulkScanPath.lean",
+      "sha256": "915F2FF397534376F618DDC73363F3ADA148B5BAC59A77D30070550C01573884"
+    },
+    {
+      "file": "ReductionTM2ComponentEnds.lean",
+      "sha256": "7E5602FF09BE60052B8CC166A63D90204A83FFB75D3B386A459406DCEF5FDD44"
+    },
+    {
+      "file": "ReductionTM2BulkComponentPath.lean",
+      "sha256": "6016A8A2EC6A58A0755F65E0087127D51DF1403D23F7A975D287D5BC46D1C8B2"
+    },
+    {
+      "file": "ReductionTM2BulkEndpointCorrect.lean",
+      "sha256": "C48837810951EF22209A7F747B1D1A116CD40EEA966CAB78652A6BE4E1F6EED4"
+    },
+    {
+      "file": "ReductionTM2PathOrientation.lean",
+      "sha256": "52E05AB1A1B0D384F67519F0E065AF273C49B7CFDA315C00830AC4FFDCAED519"
+    },
+    {
+      "file": "ReductionTM2BulkOrientedPath.lean",
+      "sha256": "45D6968D72BC92BCE2B5026883DCCAAB061DB653DD92B097903DD9239B8890CA"
+    },
+    {
+      "file": "ReductionTM2PathLeaves.lean",
+      "sha256": "3341A658A2960D5C4DEC1FE0A12642DA090B3632E499500E4D36B4FA7D3B2FFB"
+    },
+    {
+      "file": "ReductionTM2BulkScanComponents.lean",
+      "sha256": "85A3F15A08D304443112C1858EB15E72E91152D2318098F579657180B1FFE70F"
+    },
+    {
+      "file": "ReductionTM2BulkAnnotated.lean",
+      "sha256": "8E015E65BB3DF0AFD23F0B5AD51DDDD709FA98F8E42041DD0261C2DE6FBDF5EB"
+    },
+    {
+      "file": "ReductionTM2BulkColour.lean",
+      "sha256": "00F62FC97C70C7990F73F8EF7A70F1090C54449C773D247254FCC72614CB3020"
+    },
+    {
+      "file": "ReductionTM2BulkRecordComponents.lean",
+      "sha256": "619F4E04CB10BF0F9D75063DDB2F08ECEC599F52E84CCC6DD9A8569770E585AE"
+    },
+    {
+      "file": "ReductionTM2BulkRealization.lean",
+      "sha256": "DA4E652E06F1DCAC7174CF4E1972832013079842EAA3DB3B0A5359E0CCD18DE8"
+    },
+    {
+      "file": "ReductionTM2BulkRealizationEnds.lean",
+      "sha256": "D4487FA6BA6BFCC143652D3544E6E5864B38AA0E275C1C25F28C0B8F55BB9633"
+    },
+    {
+      "file": "ReductionTM2BulkRuntimeFamily.lean",
+      "sha256": "DDD70A821C9CB402FBE4A82A7525D54E353191DC74BA92C2343DC67B57DD4A44"
+    },
+    {
+      "file": "ReductionTM2BulkRuntimePieces.lean",
+      "sha256": "D564E9A0725B9128D0308F59995C74680E5E5CAAC8B9E348E38C61D33CB12A83"
+    },
+    {
+      "file": "ReductionTM2BulkScanMass.lean",
+      "sha256": "89264CC7E91E235E7C46122554A501A885FA09595541456DB0EC342F2B0884FD"
+    },
+    {
+      "file": "ReductionTM2ColourFlagFacts.lean",
+      "sha256": "51249FA2485FAE3D0ED3B6B4D6879D795886777947497AEA06895F563F5988E6"
+    },
+    {
+      "file": "ReductionTM2CanonicalColours.lean",
+      "sha256": "5F27E63C69873BB170F5B3488401B31769441D3CD7747FFFD1A5EA10082ACEF2"
+    },
+    {
+      "file": "ReductionTM2CanonicalCounts.lean",
+      "sha256": "9B86017EE59209CBD35463DD7F62CF36057C9CE39AA77EEBA40EA781BD966ABF"
+    },
+    {
+      "file": "ReductionTM2CanonicalSoundness.lean",
+      "sha256": "F50B56B60E75E56AD8FCD9788A1870F656D07A91DDDC7A9C8F9F4034999E3C84"
+    },
+    {
+      "file": "ReductionTM2CanonicalSoundnessAudit.lean",
+      "sha256": "5AB0964B3ECFFAAF53D9F319B82CA4CE5AC78848A34C671276CD40AE690EF117"
+    },
+    {
+      "file": "ReductionTM2LinkerParity.lean",
+      "sha256": "3A07CA1CE19278F897F71CAFCF90A335986C36764A6EEF569502ECF628ACE09A"
+    },
+    {
+      "file": "ReductionTM2RuntimeFinalAudit.lean",
+      "sha256": "9F34AD6D16853B016634DFFD863D88D798327BE90AC9D0FEC24D50DDA901271E"
+    },
+    {
+      "file": "BulkEscapeFarCases.lean",
+      "sha256": "17449FFF91FF09750EC557BB765FD07033EA5F0E3761A49AA4CC8E2EE35BAD53"
+    },
+    {
+      "file": "BulkNearBoxCheck3.lean",
+      "sha256": "29931BE2863E9ACD54BEB81998FA175A4400CB37C6280F15A89795C92E4DFC7B"
+    },
+    {
+      "file": "BulkNearBoxCheck4.lean",
+      "sha256": "921056C6D233F77C42B3088C9970A46D53A7F9E39AA8CA308F08035DB4DAB732"
+    },
+    {
+      "file": "BulkNearBoxCheck5.lean",
+      "sha256": "F488C37442726B08BB1EB4A265B703B4A64040F9EE2F72893AA3714420A658C5"
+    },
+    {
+      "file": "BulkNearCandidateCheck3.lean",
+      "sha256": "92B01AE4CFCEF8E1387B484290551789AFE31B838D935F635BA2B12119F06C82"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsData.lean",
+      "sha256": "E610F1335C1DAE8D07BF591249A24D9D1F43A63D0DACE4BC63B5CAFED81A7E02"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsSpec.lean",
+      "sha256": "5891064130C890BB8861142304831D8BBC7B17B24DD429EC270D229DE8254ED2"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch0.lean",
+      "sha256": "37507FE5C39FDE2251E2F287D2CFDA5D398DE1BD1554A641424F94D366388E9E"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch1.lean",
+      "sha256": "59FC8706834EB16CA863AD32316611D39E2EDF8BA3A754C2D842FFE72BFF4E2F"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch10.lean",
+      "sha256": "A0EC13A369B329B6D5CE3BE575B20F38434C673E93772959F466E724B979A803"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch11.lean",
+      "sha256": "49B5D0EAE8B6225D13E0DAFCF4649678A22FC4EEBC0DFAB2C7DB4EE1E29C9DAC"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch12.lean",
+      "sha256": "CEBCEDD08BDDA787765AC374F57A0937EB91C52762368C2B9361110BA88254AF"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch13.lean",
+      "sha256": "D8AE29C5A47C42FBB9921A23366AAB788CF2867F92F32DA323227A7892EC6437"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch14.lean",
+      "sha256": "59C3AAF02BA82B681B792B36E07EE5B6E4B1139416BFDB38A32002EE244D5A67"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch2.lean",
+      "sha256": "6D82208A343EACBB0A2E24B278A7D3F9F026F036F759442373C89806E3CF3431"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch3.lean",
+      "sha256": "19A669BD02C34257639C10E506E9BF50E7E326945BCB616B1E9A10E4D3768B08"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch4.lean",
+      "sha256": "63D021C1BEF3325CA6F0E800CB3FE4D6FFF5934D87BE38F08D2DBE3B0ABC101E"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch5.lean",
+      "sha256": "F2487049193A6CAEFB2A9BB849B589AF8B7366C1A963933CE7F060AFA9C8B853"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch6.lean",
+      "sha256": "53435C2003D0B04B4B5561C8B47E5843EA507B289C09A3FC71ABC791C161F6DC"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch7.lean",
+      "sha256": "D4E6477695B82E040643FFDDCA53D5A3C68426DCDEA886275304CDFCD2E80728"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch8.lean",
+      "sha256": "67353A1C1DA2B5DBFF6D8AC0B8B65EDC635AC89DA3C826806018AF80945FC453"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsBatch9.lean",
+      "sha256": "E970C4D4031F1F1D9765ACDC61B2ECA025046C4F9900F788DC9FBF0CF0632B64"
+    },
+    {
+      "file": "BulkNearVertexValues.lean",
+      "sha256": "F63DD63FFA97200B63FCC336932F81850E077D10F0CE6057A09071EF83E3162C"
+    },
+    {
+      "file": "BulkNearVertexEliminators.lean",
+      "sha256": "B54513FA3AD671C87984F4C00C51FB12F40A7555A84364FC78A0EE699AC5A7FB"
+    },
+    {
+      "file": "BulkNearCoordinateStatisticsReference.lean",
+      "sha256": "C2994634FC0A83D6A335B1F17B81F7AF52EA0E5D02E40A906B4FDB697F718DD2"
+    },
+    {
+      "file": "BulkNearCoreCheck0.lean",
+      "sha256": "03F4BFB20A47936F6890EB21BAE9883E6E1A231A098F990BE6C374BBEBD0FB17"
+    },
+    {
+      "file": "BulkNearCoreFastSpec.lean",
+      "sha256": "5894901D22199B90206A3B509079F332E930C9A6C8BB847C1B0BFF43FFAEE332"
+    },
+    {
+      "file": "BulkNearCoreFastBatch1_0.lean",
+      "sha256": "33601BFDE819D5BEB73A050B060607E663B1AE14B572FBC24A1258EC20A322E3"
+    },
+    {
+      "file": "BulkNearCoreFastBatch1_1.lean",
+      "sha256": "42ECF26554F96CE601E095E16486A83DA5259D1CF39244A98EB2B1F89BD734BF"
+    },
+    {
+      "file": "BulkNearCoreFastBatch1_2.lean",
+      "sha256": "F3D5362C762357D9AD061D077E925BF827317BF76E967B560F8796EDEF437424"
+    },
+    {
+      "file": "BulkNearCoreFastBatch1_3.lean",
+      "sha256": "2D74870CB4B05637A6E8ECCEDD278936ED2031037816B6B42D66101E92AC1CCB"
+    },
+    {
+      "file": "BulkNearCoreCheck1.lean",
+      "sha256": "308ECAAB3E7926FCD5C746C27316364AFBC78293862F2FB9123ADC9F04D89654"
+    },
+    {
+      "file": "BulkNearCoreFastBatch2_0.lean",
+      "sha256": "0A2C75F6D2148C9CF7801094C5A9F42CEBF17501A246E2435435CA6139F9E9C9"
+    },
+    {
+      "file": "BulkNearCoreFastBatch2_1.lean",
+      "sha256": "C5F74B134E17F7E13FA1E2A646A55BE5E69D25D19A90303678FA3DBA13AB2504"
+    },
+    {
+      "file": "BulkNearCoreFastBatch2_2.lean",
+      "sha256": "CDB2D26D42062C6F4D0F1CF47B2B142A84E1554D28D76CC77D77FAB336D66DA6"
+    },
+    {
+      "file": "BulkNearCoreCheck2.lean",
+      "sha256": "820ABE318FF2A2EFF72EDE4A1CBCCABAE0DB61EDCA995997C52FB852AF23E4CC"
+    },
+    {
+      "file": "BulkNearCoreFastBatch3_0.lean",
+      "sha256": "932DA43D039BB4B10A91BED8596F250E25AF4E7CF1CF873807AEBFA2E5F9303A"
+    },
+    {
+      "file": "BulkNearCoreFastBatch3_1.lean",
+      "sha256": "27F8895CD62C98DDC6A6C0866C100E06AE0E568FC96CBF0581F66CFDB7660630"
+    },
+    {
+      "file": "BulkNearCoreFastBatch3_2.lean",
+      "sha256": "F078CAFB4CD1DC12B3C072C42A7F1235ED8390AAFF667D07EEE9AEC612D4B805"
+    },
+    {
+      "file": "BulkNearCoreCheck3.lean",
+      "sha256": "F9E2B1D0A82D995942A24F4B84F91D5B1B3B7208D6CB807A2BF391EC98D47916"
+    },
+    {
+      "file": "BulkNearCoreFastBatch4_0.lean",
+      "sha256": "DB2CB09D6351C8856E84EC0D892DE0038029DB5279C3ED46226782D804601ACA"
+    },
+    {
+      "file": "BulkNearCoreFastBatch4_1.lean",
+      "sha256": "4804379D1F8EF13DA5734FC37EE55619C88494B8095E517BDFD9F9CA4E7A63C6"
+    },
+    {
+      "file": "BulkNearCoreFastBatch4_2.lean",
+      "sha256": "AF5F460D910F50FE20224267E0DB5D5AA3E97F7DAF8BC0E9E691EF313A4D2584"
+    },
+    {
+      "file": "BulkNearCoreFastBatch4_3.lean",
+      "sha256": "2B5AA703C797E8412A6C4D2E47AFA67BB5FCFE76F3371B205F336D58EE56BD06"
+    },
+    {
+      "file": "BulkNearCoreCheck4.lean",
+      "sha256": "DAFD3A6AB47C3EE3C5E5D21ADD10DE1D8D857E39A46F556896092DE625AE5739"
+    },
+    {
+      "file": "BulkNearCoreFastBatch5_0.lean",
+      "sha256": "EAB4BDC2D63E783341F5E2D747EF7B9106C6F0FA886DD834A564143B4078429D"
+    },
+    {
+      "file": "BulkNearCoreCheck5.lean",
+      "sha256": "94D4BE5AA8CCF4AC844AFFD03F1EC8A2DD68260AC3B880067553DC1C4088CF16"
+    },
+    {
+      "file": "BulkNearJointData.lean",
+      "sha256": "249BCD21D89B258F65AA7DB375D3E8A083643CCC4B831B43B482EEB7694E9FE9"
+    },
+    {
+      "file": "BulkNearJointFrames.lean",
+      "sha256": "02C3BC7875DB148A7794BFE611880F7D2E195BB9A30A518B8E9474F6BF881230"
+    },
+    {
+      "file": "BulkNearJointFrameCases0.lean",
+      "sha256": "81DF5AD952176D3A7ACE6BB350B871892DC0022F3F52DDE95A0BEFDFD0B47CCD"
+    },
+    {
+      "file": "BulkNearJointFrameCases1.lean",
+      "sha256": "1BDF8B530B53E99D1307DC76F4B475E1D0987D8D5F8664C451029800C22AC692"
+    },
+    {
+      "file": "BulkNearJointFrameCases2.lean",
+      "sha256": "DAD573164953F9AECFD5BC54A287C1C2E87320F0F901415FB927E0C9B168B50C"
+    },
+    {
+      "file": "BulkNearJointFrameCases3.lean",
+      "sha256": "5880D0B50B41C63B4C600AFC78321705FA8A810342D6C79B92BA6670743DE9FC"
+    },
+    {
+      "file": "BulkNearJointPositions.lean",
+      "sha256": "8861325E577D4346B383C9D7A835DEAC021DBE358F61FA2F1CE62648E8E3F427"
+    },
+    {
+      "file": "BulkNearJointPositionSpec.lean",
+      "sha256": "B751616DDF27E5A0486A68C0779B6D8C68A97E1AD782857DD49898E95B4B1E9D"
+    },
+    {
+      "file": "BulkNearJointFrameSpec.lean",
+      "sha256": "531ADA4E3C3C8D29836BCB0B5D2BD5F627E6A69FD43AA31E67F62AAF3428704F"
+    },
+    {
+      "file": "BulkNearJointRowCases.lean",
+      "sha256": "9079926649C25860C8F73B106EC4A767AB6A3C23E6380FB43A7AD2E3EF45DCF2"
+    },
+    {
+      "file": "BulkNearSegmentsCandidateReference.lean",
+      "sha256": "AE59718428552AEE0D4F620865217ECBB5ED1A3DF1F2E8F3E4073D028E6A054F"
+    },
+    {
+      "file": "BulkNearSupportCheckSpec.lean",
+      "sha256": "36C3694CE0644752EB3DF1D462D947C5BDF55F7BF142A210665AFAB182152222"
+    },
+    {
+      "file": "BulkNearSupportBatch1_0.lean",
+      "sha256": "BAC8CB8A4E18060202D950FEE0108BC91F8FDF57EFF4250806F52AAE3EB55A9B"
+    },
+    {
+      "file": "BulkNearSupportBatch1_1.lean",
+      "sha256": "1EA98810FD6F67E87A5159264AFE75490A21FCE3D10952DBC60575A09A66D71E"
+    },
+    {
+      "file": "BulkNearSupportBatch1_2.lean",
+      "sha256": "A8C6B46D6BD8CABA8E3567C949A79538C53C8C077F6EA0393A05B66E473B9E97"
+    },
+    {
+      "file": "BulkNearSupportBatch1_3.lean",
+      "sha256": "DDF7CE3894B5607BD0D9398ED1E5AD15D382139AA5FB9BC1722BDC6162C357B4"
+    },
+    {
+      "file": "BulkNearSegmentsCheck1.lean",
+      "sha256": "E3DD2C2AD19C1491471BD4FC20F4595603308874207F11A790B70B072E81586B"
+    },
+    {
+      "file": "BulkNearSupportBatch2_0.lean",
+      "sha256": "703A8AC649FFEF5FFE566BB5B2FDABF2809B8331F998F3C718F75A36A6EEADAB"
+    },
+    {
+      "file": "BulkNearSupportBatch2_1.lean",
+      "sha256": "B4C432DFAB485BCCD8D887DD2D6DCC2D6C4C34F6FBBD42604E7FBBE8AB25173A"
+    },
+    {
+      "file": "BulkNearSupportBatch2_2.lean",
+      "sha256": "BD761B4A1B47DBEF9B8272CF768FD106832E3CDDDFDEAE0DD13CE65253CCCA5B"
+    },
+    {
+      "file": "BulkNearSegmentsCheck2.lean",
+      "sha256": "614EAB85E7C7FDEF5036944D6B060478802C81FF1D3EF29E4A60B29C3EA4009A"
+    },
+    {
+      "file": "BulkNearSupportBatch3_0.lean",
+      "sha256": "51FB594C0FE25884F02DEF0028BC32E2A314682DD602B512F453CC622666C016"
+    },
+    {
+      "file": "BulkNearSupportBatch3_1.lean",
+      "sha256": "8D9BC71C10B0D050801BADD708D077EB465639C9FE0C426890DC6F271475F8C9"
+    },
+    {
+      "file": "BulkNearSupportBatch3_2.lean",
+      "sha256": "AEA85C1635348F5EFD6BF05F3062BAEA49C4BAA1C226D05E7123A6C4FD956FFD"
+    },
+    {
+      "file": "BulkNearSegmentsCheck3.lean",
+      "sha256": "91472F9621BA6070B65C2E5AB56128998587317FD188F9BBBFE3891F01EA8D18"
+    },
+    {
+      "file": "BulkNearSupportBatch4_0.lean",
+      "sha256": "8479B512FAF0837D24A9BAD52317DE8E455ADD52265C71D8CDD7C1C1284D4166"
+    },
+    {
+      "file": "BulkNearSupportBatch4_1.lean",
+      "sha256": "0CA5B477A105CEF1730F11F17E7DEFFCFA9366822A311604C6FABA671F47BA48"
+    },
+    {
+      "file": "BulkNearSupportBatch4_2.lean",
+      "sha256": "009731EA69D2831B4B77C8551C12EF826D634F39240E46EB4FCD0490F93C78F4"
+    },
+    {
+      "file": "BulkNearSupportBatch4_3.lean",
+      "sha256": "51CE5959BC53B26A0C28DCD53DE1F18A388125064A94959E5C4D310CF568D057"
+    },
+    {
+      "file": "BulkNearSegmentsCheck4.lean",
+      "sha256": "64F723F3166116FCF172230F3284F42665F83E80E2EF0825626F9E37B8859E04"
+    },
+    {
+      "file": "BulkNearSupportBatch5_0.lean",
+      "sha256": "C8E482A7A2C1843E84F21824138DC0D81C590FAAF708CCA9BC79F5C38B39CFAB"
+    },
+    {
+      "file": "BulkNearSegmentsCheck5.lean",
+      "sha256": "53E6FAFC427131B01DFC44A3B37B11AE0AB90DA291AE2FF6AF84EA9EC6D06C4C"
+    },
+    {
+      "file": "NearFieldFramePieceOrder.lean",
+      "sha256": "8E9118E3D9EAC6AC471A9218CB643C4482648768BD3DEE84EE59F33F1EB1FEF8"
+    },
+    {
+      "file": "NearFieldFrameSlotSeams.lean",
+      "sha256": "F7E8769A4E85F628FFCC16DC23637BD8CB4EE4B143342B22DC7772C4421A1500"
+    },
+    {
+      "file": "NearFieldFrameListSeams.lean",
+      "sha256": "12D417CB2F8234C873BCC42852B166B025CDC10B96ECE4208227B875F8739553"
+    },
+    {
+      "file": "NearFieldFrameFixedSeams.lean",
+      "sha256": "6080FDB723D6CC223BAD54C600248F3246564481F9FDE389777D4D9815DC8EF2"
+    },
+    {
+      "file": "NearFieldFramePieceWords.lean",
+      "sha256": "8AD8CF5A5E87F5CA59010441C91D8CB849D21837BF5A5208C29E2C9B9139CDE7"
+    },
+    {
+      "file": "NearFieldPositionedProperties.lean",
+      "sha256": "A4FC39E1E27A28974E8AFE7266473D94D96DBEC8CD38930D2545F36E6DCF2C27"
+    },
+    {
+      "file": "NearFieldFrameCoreFold.lean",
+      "sha256": "5DE0129B02B11D43EEBB65AEA8B11B8BB48AA31429045830A0C3DAB9E1D43E40"
+    },
+    {
+      "file": "NearFieldFrameCoreEndpoints.lean",
+      "sha256": "094C96E8D706EE4ACBC5C3F03F8C96C59A6BC5E3962F35EFAB57783205F7E239"
+    },
+    {
+      "file": "NearFieldFrameRawLocality.lean",
+      "sha256": "29E8A577F4E1497ED0E060FADA27981F37661FBC013880FD049748ED9439F1F7"
+    },
+    {
+      "file": "NearFieldFrameCoreSupport.lean",
+      "sha256": "0132747BA5A47E22E6AAEBEB00810B7D7867078D3DB6EADBDCB5ECFBAC5C68AB"
+    },
+    {
+      "file": "NearFieldDimerHsiteIndices.lean",
+      "sha256": "67CA81EF786CAACEFC0EBC14ACE15B7FC742AA34BB03229D8508B6ABDE04E207"
+    },
+    {
+      "file": "NearFieldIntervalPieces.lean",
+      "sha256": "659C346EE81D3EA8A6C3A467EEEDE388B33B4978A1F965BDED046F98DF5F4533"
+    },
+    {
+      "file": "NearFieldFrameTrackCoreSeparation.lean",
+      "sha256": "43BE4067C3F4970F6C7713AB3B2F625997780AFFADE9FD784F96DF466608543B"
+    },
+    {
+      "file": "NearFieldActualFrameFold.lean",
+      "sha256": "4CEDEE45721F3732B8645864BB0557374F84C3818F35135BF609E123B170B9AE"
+    },
+    {
+      "file": "NearFieldCanonicalEndpointColours.lean",
+      "sha256": "D4919872CB34DA0BE6F3669570FCFECF74B04E419D4ECEEEF398233412CE7B57"
+    },
+    {
+      "file": "NearFieldRingCornerSeparation.lean",
+      "sha256": "0F229BDE1ED3A3A810201B61FAA8C56855FA21DB836A039FFA0E8EAACC2FCF90"
+    },
+    {
+      "file": "NearFieldRingFold.lean",
+      "sha256": "CF900E0923E3C53E8F279DAF408109CC2A87D5C798F5B176CC9C53586FC07561"
+    },
+    {
+      "file": "NearFieldRingLocations.lean",
+      "sha256": "143CDC8D70614E83F5090F2E01BF78491B22EE6F9DC5BD1EE4C18175ABEB68D3"
+    },
+    {
+      "file": "NearFieldRingColumns.lean",
+      "sha256": "1EEB6726559B83DF7ED1D73CC31F91EA004529A101DAF5D456376357222F6608"
+    },
+    {
+      "file": "NearFieldRingCaps.lean",
+      "sha256": "6DEF6A52EE1D353EA0BFC1F02B8975BE1DBFC7A919D347B1F2088770A2537586"
+    },
+    {
+      "file": "NearFieldRingBulkClearance.lean",
+      "sha256": "8D17B493CF059DD63DA169BDC51ED3E61914854EDB8A7FF8E558337ACBCD0952"
+    },
+    {
+      "file": "NearFieldRingWordPiece.lean",
+      "sha256": "E62229557D1DCED4D0D68B2A107A0B3CDFA1A029657557D6D1FCBB213EC01E09"
+    },
+    {
+      "file": "NearFieldRingFaceGeometry.lean",
+      "sha256": "2EE3546FFD04729F5D9351E1D097DDDDD6ED6F47B04BA5995551112EF8FD3902"
+    },
+    {
+      "file": "NearFieldRingBorrowedColumns.lean",
+      "sha256": "1B49B0B9E74091D82FF05FAB6CE184ED212229D1407B65430AB1F7533776E22D"
+    },
+    {
+      "file": "NearFieldCanonicalRingVertices.lean",
+      "sha256": "ACD35D9DBE77BA5E992962E9160C7E82C1380C00416288BEF1F4E18E241EE7C8"
+    },
+    {
+      "file": "NearFieldSeparatorCapSupport.lean",
+      "sha256": "B2997940E6E9BCE6DE697B5000F5455374BD081426EA6D684F1546945FCF26F6"
+    },
+    {
+      "file": "NearFieldLeftFillerFold.lean",
+      "sha256": "D9544B6D6DF9DC9C57DCB3C629F54503F46A57EB4281E731497F99A4D282B31F"
+    },
+    {
+      "file": "NearFieldLeftFillerCaps.lean",
+      "sha256": "1D779ED275F2CBF90F02CCD575C3F6788D5F43AFBF46EAA0349978E16130CF8E"
+    },
+    {
+      "file": "NearFieldTerminalColumn.lean",
+      "sha256": "8623FDF5DA37336E97DB4B609367352B2BE5B19AF07667B23DC886284F8FAB23"
+    },
+    {
+      "file": "NearFieldUnitPieces.lean",
+      "sha256": "1E32C703F3CEAC1ABB3A262CE6E02B4537D65FC07D5B473FC74FA80CCEA56273"
+    },
+    {
+      "file": "NearFieldUnitSupport.lean",
+      "sha256": "81C5B743E941E146B196AB0EC6DD45C653E2BD89898413E5CC99750926CDA56B"
+    },
+    {
+      "file": "NearFieldCanonicalSingletons.lean",
+      "sha256": "ABA8B853D0E3D8CA38988580A4B356BA1826F5EF87D52F5D8924595F96D80A9D"
+    },
+    {
+      "file": "NearFieldRingSeparation.lean",
+      "sha256": "DE11A5C371BC6CC5AFF16977DB518EAD1FFA58D87A7E3D43232DE8BABB664A0E"
+    },
+    {
+      "file": "NearFieldRingForeignColumns.lean",
+      "sha256": "FAF1CF15CD95FB99483737C90F6628C47C1AEB173304EBB38B7CB787457E058F"
+    },
+    {
+      "file": "NearFieldCappedRingSeparation.lean",
+      "sha256": "BA2BA375A4DDA13F5C09DE906AC04FFE6ABB961FED036D56DE5AD526E8852332"
+    },
+    {
+      "file": "NearFieldFramePortFormulas.lean",
+      "sha256": "316128DFD4585248A9742526450283BF7F79F8D575BE4DBC0C2A8ECB1DACD50B"
+    },
+    {
+      "file": "NearFieldFramePortMetadata.lean",
+      "sha256": "84E062FC56D693B26130B1007292CC58F2D3ED79F20DEB98145C2CA00948D17C"
+    },
+    {
+      "file": "NearFieldLeftFillerBounds.lean",
+      "sha256": "752C0E0836BF4844189FE86C6BF581D7FCD829086C1CA7659908A14AB91F1056"
+    },
+    {
+      "file": "NearFieldNonbulkEndpointColours.lean",
+      "sha256": "363D79912AEA598C5AE6708BCD9DB596E5F07DD21C236235AFDCE6231E9CA319"
+    },
+    {
+      "file": "NearFieldReorderPieces.lean",
+      "sha256": "8B3CE23FA4C803BE4B9C742099A62EFF31041766C8E64DD155C2F3CB7C78AFEB"
+    },
+    {
+      "file": "NearFieldRingFrameColumns.lean",
+      "sha256": "9187D5430F8722B5DF1B9CAC960424CED8E7284B5949551C22868C1C390D8E89"
+    },
+    {
+      "file": "NearFieldRingFrameSeparation.lean",
+      "sha256": "9C10768EC41EB40370B11724D2121B9FF16B06402A94E8B1EFF5CC58A02487C4"
+    },
+    {
+      "file": "NearFieldSeparatorCenterFrameOwners.lean",
+      "sha256": "91375303D990802228838D70460E2366B2B9CC0467638DDEB7E1C28359E2B4A3"
+    },
+    {
+      "file": "NearFieldSeparatorEntryFrameOwners.lean",
+      "sha256": "E3ABB0DAAB7D9C9E4C7C7E01EFAE07054072E9B3B0E858A8AA48A06CFE10807B"
+    },
+    {
+      "file": "NearFieldSeparatorExitFrameOwners.lean",
+      "sha256": "D0AD19B680CE182F1A44BF9122AE720F5932E64CBDFA9A49753C5F03F444F86A"
+    },
+    {
+      "file": "NearFieldSeparatorFrameOwners.lean",
+      "sha256": "8E4B30CFEC9278DA450CB6FE3736F122E8506320D0D0C739118C31FB8E6BF9B0"
+    },
+    {
+      "file": "NearFieldSeparatorFrameClearance.lean",
+      "sha256": "FA0CC0B3ACB342203DA7AF5B9A773D9FD8249AAE6240C66E04C0AD422CEC76CE"
+    },
+    {
+      "file": "NearFieldTrackAColumns.lean",
+      "sha256": "F3DF54C4A05AE72639DD3B7C2788A8A5D48ED0E7A4BD2CB8F9645D9B6BF5552F"
+    },
+    {
+      "file": "NearFieldWeaveWords.lean",
+      "sha256": "73C1F8EE8965E7DEB837EA8C6EA230E44A5C2171294A17210F7D625A2E87D5D0"
+    },
+    {
+      "file": "ReductionNPComposition.lean",
+      "sha256": "CEA507252C122D25C052AE5E98DE772D3092605B10EBC99A217DE915C02AE3E3"
+    },
+    {
+      "file": "ReductionTM2BulkCappedPieces.lean",
+      "sha256": "6B5094E9A76B45FB9372E2872652CCD4CF700A297E5CA528A6DD4A6535B19A18"
+    },
+    {
+      "file": "ReductionTM2BulkCappedFamily.lean",
+      "sha256": "098554FFE418597EF617F875D37B4F78385A7828EB24D886560DC2EAFDCE5961"
+    },
+    {
+      "file": "ReductionTM2BulkCappedAudit.lean",
+      "sha256": "4A1595D1332855C427BAE96B8F0D38C346C3B9344F7CE554AAA7E7BA0C3BFE40"
+    },
+    {
+      "file": "ReductionTM2BulkEndpointFacts.lean",
+      "sha256": "3F705C9C5C89710A81A4128F27E1081C630995C41D196A5743EFEC5DADB266DF"
+    },
+    {
+      "file": "ReductionTM2BulkEndpointFactsAudit.lean",
+      "sha256": "130193D68FCAA0C71999FFED454BE1756275AFA76C29868D5DC096330485D6DE"
+    },
+    {
+      "file": "BulkNearSegmentsReference.lean",
+      "sha256": "52EFCAC9B3B98A97598C958B3D155E9FC1816C6443BAEBFAB282F4557929EA54"
+    },
+    {
+      "file": "BulkNearSegmentsUniform.lean",
+      "sha256": "F073EC7C25F73CE837AD8852890B2997747BAD17425796903618F4D29B33E098"
+    },
+    {
+      "file": "BulkNearCoreEscape.lean",
+      "sha256": "E0D5141BCF8D856C02A568B3F92294B9C29A57A95D8F908EF5DDDD961B48B8B2"
+    },
+    {
+      "file": "BulkNearCoreCoverage.lean",
+      "sha256": "3F26071AC1520DDE5C9DFD7CF13416A3EC6FA85F11ABA95F4C6EDDD927352DA7"
+    },
+    {
+      "file": "BulkNearJointFrame0123.lean",
+      "sha256": "2F9E788E5C981E6B617F149EED3D6EFE98D931D107FE44D776AA5EE0023BC52C"
+    },
+    {
+      "file": "BulkNearJointFrame0132.lean",
+      "sha256": "1BE3E97673A79E23A47D4450D6E998A4B18742C2B44A88F0CE5617B43F6BC120"
+    },
+    {
+      "file": "BulkNearJointFrame0213.lean",
+      "sha256": "5D8AA8E68094580FB897CFC22A0B1FCDC5C85E37A26C0AAFC6E24571E514E03E"
+    },
+    {
+      "file": "BulkNearJointFrame0231.lean",
+      "sha256": "1378E9396A4A92BBCD7A9D9857F1CDF75FC209D69FB2F10425A3BC448652B81A"
+    },
+    {
+      "file": "BulkNearJointFrame0312.lean",
+      "sha256": "C88699979B1FD13EAAF5B09DCD88017310A5CA27254CCBD1426733208C8DFC6A"
+    },
+    {
+      "file": "BulkNearJointFrame0321.lean",
+      "sha256": "27B5C8845FFA0972B84C1E5EE3079C6A6BFA991FCF91B95F5BE113B064DBFFD6"
+    },
+    {
+      "file": "BulkNearJointCheck0.lean",
+      "sha256": "479D20D233CC91FA1E16236C6D429FDD8BA9C7F6ADCB8A56F1B7312DF6146DAB"
+    },
+    {
+      "file": "BulkNearJointFrame1023.lean",
+      "sha256": "39E969DB62CC41FAA33641BA4BDE9547ACFC615682369EDAD07C80B9F8E476EC"
+    },
+    {
+      "file": "BulkNearJointFrame1032.lean",
+      "sha256": "FE75ACB3C484C8332CBFFC8B6197AD78DFF136376DFE114C863FDA7FF5D23431"
+    },
+    {
+      "file": "BulkNearJointFrame1203.lean",
+      "sha256": "391FBACC46E3DB2A518F22AE33EF416526C27753890924782662C0BDBF7D1D13"
+    },
+    {
+      "file": "BulkNearJointFrame1230.lean",
+      "sha256": "9D45A9805FF8E4050C214FD01444073D221F17798B7885827DA936D417BE3DF0"
+    },
+    {
+      "file": "BulkNearJointFrame1302.lean",
+      "sha256": "4AC8938086953A341D0E59157156B5FE07A4C5E4464FE33320C2D0F14673C590"
+    },
+    {
+      "file": "BulkNearJointFrame1320.lean",
+      "sha256": "9C17083A761934CF6B71B3F69EEF0EEEEB94D26CEC38E7A68658757A83E6C402"
+    },
+    {
+      "file": "BulkNearJointCheck1.lean",
+      "sha256": "78DAFFF4D98428A44A9C19A9023E8BB3A32080DAE01E946DF4760F2546CA49FB"
+    },
+    {
+      "file": "BulkNearJointFrame2013.lean",
+      "sha256": "6FD4484A5537FF993E1114CB0AAE86C0183CD87D7E2A940735776BFD358F4763"
+    },
+    {
+      "file": "BulkNearJointFrame2031.lean",
+      "sha256": "25FCB3E1663C7DAA950C467CB3F73DC0F210B43CB955BACB70B1CDCC2EE74FF4"
+    },
+    {
+      "file": "BulkNearJointFrame2103.lean",
+      "sha256": "87D7482CBFFFD18BCD3ABDF1898427CB2801E809F3F6244B9F93A684E72ACE93"
+    },
+    {
+      "file": "BulkNearJointFrame2130.lean",
+      "sha256": "9A07D66A45CCF2DB4DDB5E3D14992944F5D4A43ED340F9E3627EF6B8D30E2A6D"
+    },
+    {
+      "file": "BulkNearJointFrame2301.lean",
+      "sha256": "8544C267E194DAB1856D438F025CCA4474562525972800EF5258AEEA429AD1E3"
+    },
+    {
+      "file": "BulkNearJointFrame2310.lean",
+      "sha256": "C7F2C61EE8674498DA046ECD9523916D8B12A3A458BF5DEA12C0E52EC791AE03"
+    },
+    {
+      "file": "BulkNearJointCheck2.lean",
+      "sha256": "05E5678CD981B8C24F86B688E0EEB27B465FF7BE5DF6DF7479195DC5327D3927"
+    },
+    {
+      "file": "BulkNearJointFrame3012.lean",
+      "sha256": "63F3494F5C8A1A6D12394A743B9919F2F98F479182979045B93B62FF9192947B"
+    },
+    {
+      "file": "BulkNearJointFrame3021.lean",
+      "sha256": "AECF52F217145D84D7E677977621557083761D7693207B0AE1140465F5CABE9E"
+    },
+    {
+      "file": "BulkNearJointFrame3102.lean",
+      "sha256": "63DCAC24B530DAB1FE5BE35896BBED0C3F6560D7FA311D19BCF2DEE16371D74C"
+    },
+    {
+      "file": "BulkNearJointFrame3120.lean",
+      "sha256": "14191E3A8A09539A1DCFC35AE1DF7FB14A991C87FA0C811F5464EFC9B151A0C1"
+    },
+    {
+      "file": "BulkNearJointFrame3201.lean",
+      "sha256": "56301EE423452FCB5539BEC7AB56C90946B9DFCCB488173CB8B1E78DEBB2BAF3"
+    },
+    {
+      "file": "BulkNearJointFrame3210.lean",
+      "sha256": "0BADFDBF2CF4A387FADA359CA4AA6D60DC4607A47F49CFAB47E3DAAA2C0597DD"
+    },
+    {
+      "file": "BulkNearJointCheck3.lean",
+      "sha256": "02196EF66516F1C30F38D27E226B07C07849A4BE5D10CF52399D6B8C02B39B9C"
+    },
+    {
+      "file": "BulkNearJointReference.lean",
+      "sha256": "48409BB3327390BB5F338F4F06D3F094F922C834D363512CA4EC4A0B751492F4"
+    },
+    {
+      "file": "BulkNearJointCoverage.lean",
+      "sha256": "BBB8AC142B19F878E4B245D7DFAA9964D53CFEF5EB6347CD95F1627620C8AAF6"
+    },
+    {
+      "file": "BulkEscapeCases.lean",
+      "sha256": "8320DF0510A2FFBCF4EB0EBD7788FF616BD69CAE850F5F4750065D2136F41CC3"
+    },
+    {
+      "file": "BulkAcyclicity.lean",
+      "sha256": "9BA123AA40F2A3E6AAAA8102AE318B981EAEA4762C3A326A438ACA41E9787043"
+    },
+    {
+      "file": "BulkCanonicalCover.lean",
+      "sha256": "2112DA19F3B2AD13BF84E20FB80E6A1C53B70E0229107E0DF284ACEA5A982503"
+    },
+    {
+      "file": "BulkNearJointAudit.lean",
+      "sha256": "7F69B3FB0E585612810715E8048D90D01F2E70C21FE7A4D61F38A7995E6BAE76"
+    },
+    {
+      "file": "NearFieldAssemblySeparation.lean",
+      "sha256": "FAC819F6243642674806041B9B2C4650E5F3FD975C59E0B2519A295E1FAB41C2"
+    },
+    {
+      "file": "NearFieldItemIntervals.lean",
+      "sha256": "A8F87D90C6BC170A32A9E2E527E3A3F0D672257E0994363730C843DA3C749631"
+    },
+    {
+      "file": "NearFieldPackedItemPlan.lean",
+      "sha256": "DD23EAE6FDC73F3D742EBAC8B0A3267D0287E4DC9E1A5ADF2BCFE3698CD7799F"
+    },
+    {
+      "file": "NearFieldEntryCapFamily.lean",
+      "sha256": "20451D01C67F4E622DF06819AD61A64F579DA01DD989C8FADE2F00E76E0984CB"
+    },
+    {
+      "file": "NearFieldCanonicalTrackPieces.lean",
+      "sha256": "E665D308D0EF55C5CD9F83A3B292DDDB73BF9063A3A7F036A96FAFDB144DAEEE"
+    },
+    {
+      "file": "NearFieldRightFinalColumn.lean",
+      "sha256": "C469FC9273E3926C2B8983BF632416CE1526167C2E9B6E42B0D1CA1AB3A84428"
+    },
+    {
+      "file": "NearFieldCanonicalRightPiece.lean",
+      "sha256": "FC906153E39EE1D7667EC2AA02BF5EF16F4B1E47C720CF2918F2BCC0AA65F426"
+    },
+    {
+      "file": "NearFieldCanonicalRings.lean",
+      "sha256": "5DF9357CFC028430F5507A27ED9D2C80F5CE84378B8B845FD201C2B6EBC06054"
+    },
+    {
+      "file": "NearFieldCanonicalRingFrameSeparation.lean",
+      "sha256": "31965B1B6A38A2DA69E2FE1E4E466E5F179CE7EF66EC307E6AD7C0DDE468F391"
+    },
+    {
+      "file": "NearFieldCanonicalSingletonReservedSeparation.lean",
+      "sha256": "304D98E240B1777C8DF4721D55769553A61868797CE1A317F41BFABE7B601F9D"
+    },
+    {
+      "file": "NearFieldCanonicalSingletonLeftSeparation.lean",
+      "sha256": "4BBF01E55F50FE07E020E9E5B3C9147D14C959F1665B4C617E637CD3CBE47BBB"
+    },
+    {
+      "file": "NearFieldFrameTrackSeparation.lean",
+      "sha256": "6528F3C9096B46728B230FB37175E8075FD720D52BDAD30B205D6B325FC69D98"
+    },
+    {
+      "file": "NearFieldItemFamily.lean",
+      "sha256": "EBF9B38E4B40C72FC69C0130D3101139A9310087DD98D6C585AD5677C222E5D0"
+    },
+    {
+      "file": "NearFieldRightFinalTethers.lean",
+      "sha256": "55A7A983A327A9B858CA1121EF6F6F343E9F7FBD03643BC57E4A824E180FC1B9"
+    },
+    {
+      "file": "ReductionTM2CanonicalActual.lean",
+      "sha256": "FE646A1FC5374EBD4337CED2416A3A69FAA7C0A04980FC0784B9D79F0D859EDD"
+    },
+    {
+      "file": "ReductionTM2CanonicalBackward.lean",
+      "sha256": "F6BB6AC843B4F847E4C21C393FBCCCDD96A63A74DBD5DFDA27219235F316C3BF"
+    },
+    {
+      "file": "ReductionTM2CanonicalActualAudit.lean",
+      "sha256": "7BD5F34646838AEDB4D07DB73D576627CA011C1A60C72757641A39F440D2B440"
+    },
+    {
+      "file": "NearFieldExitCapFamily.lean",
+      "sha256": "475BFE79480854E7AE9D72542EF8C78A016226DC398B0E69B4AF411ECCB78E40"
+    },
+    {
+      "file": "NearFieldCanonicalSeparatorPieces.lean",
+      "sha256": "9280B98AF9394560E8821C49394832A189DF8C40CB2A9AE20D122AA1CD0A6331"
+    },
+    {
+      "file": "NearFieldPackedItemFamily.lean",
+      "sha256": "8338160675076FEC68C81F6DB1F3C75FABFD83759AA0AF349FAB8A68A2DCDE3A"
+    },
+    {
+      "file": "NearFieldCanonicalBasePieces.lean",
+      "sha256": "5BA8CA6DF95D58D53B6C510F3D3AFD5EC744D751912E3D31C178985454D8C0EF"
+    },
+    {
+      "file": "NearFieldUnitCapFamily.lean",
+      "sha256": "82C525D87C96121743F4DBB5CEEF23C2DC31DB8A6F17BA6527A0B3DE62623509"
+    },
+    {
+      "file": "NearFieldCappedUnitData.lean",
+      "sha256": "9AA21633A9E0049E1D51F56A77E471585FB4A23D54B6ECB8AD0A48986DD27666"
+    },
+    {
+      "file": "NearFieldCanonicalCappedUnits.lean",
+      "sha256": "24875BA4632D4B315BC54C12270C06182091E869E0ADB4F4EFA9CEAA9A415313"
+    },
+    {
+      "file": "NearFieldCanonicalUnits.lean",
+      "sha256": "A3396D0F4868594B5CCE77BCD7421044E0A0D423230F2AD38E88810E2C80FD06"
+    },
+    {
+      "file": "NearFieldSeparatorFamily.lean",
+      "sha256": "330020ECACF374CE1B2F480A83F446A3626C0CF67E64CFE2B523ACFF4978D8EE"
+    },
+    {
+      "file": "NearFieldCappedSeparatorFamily.lean",
+      "sha256": "2E3AD47C1FBF6197077473C260966629B9C56AD21E475ED5699667F6335A07F9"
+    },
+    {
+      "file": "NearFieldCanonicalUnitPairwise.lean",
+      "sha256": "5A066219BA4F85BED6B562B19BE6A2F146AEC6299E5D8C938CFEF3528E297F35"
+    },
+    {
+      "file": "NearFieldCanonicalRemainingCross.lean",
+      "sha256": "A5393DA58C676454D77632C98854B03BF423BDCB0DF31D4638286933BDDE898F"
+    },
+    {
+      "file": "NearFieldCanonicalSingletonColumns.lean",
+      "sha256": "D98B6943C966F0681B9D2364FE01F813391BAE91B8F57FC66C37CCC62C3C2075"
+    },
+    {
+      "file": "NearFieldCanonicalSingletonFamily.lean",
+      "sha256": "794A74BEA2F853A4898434E43262B383A5479B2B19945E5C3FE84264263D3AF4"
+    },
+    {
+      "file": "NearFieldFrameColumnFamily.lean",
+      "sha256": "398BC5018EC3D8050E556493394C25347414F82632B62958B2E8CEB850AFC894"
+    },
+    {
+      "file": "NearFieldCanonicalSingletonFrameSeparation.lean",
+      "sha256": "23E3645E4CC6135EA595E95DA33F4557A44E85FB07670C31A17008770EC06385"
+    },
+    {
+      "file": "NearFieldCanonicalSingletonSeparatorSeparation.lean",
+      "sha256": "AEC2AD4BE23E5D731FFEAF0C04B95763F1893E7CE0493C6A01DFA8B13C170BB5"
+    },
+    {
+      "file": "NearFieldCanonicalRingTrackSeparation.lean",
+      "sha256": "09D620033D9E6137A9D7FAC88994DE25CD6AF3280CF7D8F8898BF68684B7E645"
+    },
+    {
+      "file": "NearFieldCanonicalRingSeparatorSeparation.lean",
+      "sha256": "CF5A250A9387554C3C8BFC94CF20069C446F3D4E17C05AC330BCF3C9E746E422"
+    },
+    {
+      "file": "NearFieldCanonicalTerminalSeparation.lean",
+      "sha256": "9AA327BE21E19C81733871555E7FB0D39DA2D26FCFBB2A17DA2BE9C723A0884C"
+    },
+    {
+      "file": "NearFieldCanonicalBulkSeparation.lean",
+      "sha256": "D02DAD38DAD44DB6B79D25C770B775672CB6AFA2CD3BEF55E77ECDE16018AD54"
+    },
+    {
+      "file": "NearFieldRepointSupport.lean",
+      "sha256": "1B6854F2C5BBF22EA1071A14972132FFF786D9C8B32A35C0F54C836BD7618960"
+    },
+    {
+      "file": "NearFieldLeftFillerSupport.lean",
+      "sha256": "5469BE8F8A00D672C0FB4932598AB4132A458D00C497A2392A02D98732934DEB"
+    },
+    {
+      "file": "NearFieldLeftFillerFrameOwners.lean",
+      "sha256": "3AFD91C996828AF64BDA1C53A0458CCA25A58150C7232374AEBF7EE868B28612"
+    },
+    {
+      "file": "NearFieldLeftFillerFrameClearance.lean",
+      "sha256": "F90D2E8792700894ABF1CA5F3D0AAAFE47055C9E300904D3427E4B9239DD242F"
+    },
+    {
+      "file": "NearFieldFrameHRunHoles.lean",
+      "sha256": "DD7D0F177863DB731D3C3F6AD20A1F64720296C3BEC2D46A9BB71FCA2FDC3E21"
+    },
+    {
+      "file": "NearFieldFrameLeftHSupport.lean",
+      "sha256": "E3BFDF92990067C9E62122AA298E3A11A4AB805E304C430CA85801B4E50682D1"
+    },
+    {
+      "file": "NearFieldDimerResidues.lean",
+      "sha256": "AF62DF068BE456659A61D3737A8DB641C4527FE45B59C7F961A7AAD7F1D9DE88"
+    },
+    {
+      "file": "NearFieldCanonicalLeftFrameSeparation.lean",
+      "sha256": "B4CF1EF350738FD5E1394614422A8B5C32EA06E5A03CBA6F90813609B15CE373"
+    },
+    {
+      "file": "NearFieldRightFillerFrameOwners.lean",
+      "sha256": "030E6EFB695889E8897708CC8E345EBB751D95260A97C1AE57462495A868B2C4"
+    },
+    {
+      "file": "NearFieldRightFillerFrameClearance.lean",
+      "sha256": "FB58DBC232C785D95E01CC090466EBF1A806C8587C976BEF67CC536DF798C71E"
+    },
+    {
+      "file": "NearFieldCanonicalFamilyCross.lean",
+      "sha256": "34A8A4537B4E0D0986C37D0DE70B375FF046CD44B75D28223C3319D25426406A"
+    },
+    {
+      "file": "NearFieldSeparatorObstacleOwners.lean",
+      "sha256": "6023B3336DE1DECB802622AE208E7C831F56A7D51ABD52CB066375DE7B71B2E8"
+    },
+    {
+      "file": "NearFieldFrameSeparatorHSupport.lean",
+      "sha256": "84C98D1B403D5A8A1D76C708FEE64D0D833B71CECFA3417E2D5A8E831B0B736C"
+    },
+    {
+      "file": "NearFieldCanonicalSeparatorFrameSeparation.lean",
+      "sha256": "094B640ED1BEAF3BB777B5E52EDD234B2C9B485894332661404E0AC8DAD3AB43"
+    },
+    {
+      "file": "NearFieldSeparatorIntervalSeparation.lean",
+      "sha256": "C4540A25C910DCB5EBB78CD92D55A676BACF91AC4A09B9CAE23E7E33E042170A"
+    },
+    {
+      "file": "NearFieldTrackFillerSeparation.lean",
+      "sha256": "3E12FD454778BEA70E64754016E8CD7E4FE93794B17C47C2E8C14965F323888A"
+    },
+    {
+      "file": "NearFieldCanonicalSeparatorTrackSeparation.lean",
+      "sha256": "84E1A6A3F823983D71B79AFCA8A933A291617267B1C588FABE34593F15BD070C"
+    },
+    {
+      "file": "NearFieldCanonicalRemainingCrossProof.lean",
+      "sha256": "684DE50851891646B02D45452F1CF006B6515042FDA1C2BACAA03DF9D67B04A3"
+    },
+    {
+      "file": "NearFieldCanonicalPairwise.lean",
+      "sha256": "E54E2FCA3C4EA616527DEDCA340FAC0965EA385E368B82D475099F79604B8A37"
+    },
+    {
+      "file": "NearFieldUnitSeparatorSupport.lean",
+      "sha256": "6B61317960B5618A937CC7C32281B34B48D476AC54F78438B63823A8A464C7AC"
+    },
+    {
+      "file": "NearFieldCanonicalUnitSupport.lean",
+      "sha256": "707D898A663890648FD45B00930D4D3EF536D95020A52BD387989A13D45ED84F"
+    },
+    {
+      "file": "NearFieldSelectedEntryOwners.lean",
+      "sha256": "9836C8668510DCCFF439DDEAF30818EF269997AAC455F07188B0B3BF01B7F33F"
+    },
+    {
+      "file": "NearFieldSelectedCapData.lean",
+      "sha256": "B7A3DFDF143EC0BCF8FB4C214DB59CE3DF7BAC75C7A66C1CEDFDCD9A8D18C636"
+    },
+    {
+      "file": "NearFieldOrdinaryInnerColumns.lean",
+      "sha256": "936C472E29A9FD7DF2217A32632BEC43E6AEF57063A2E4E5A3CFB137D0D309A3"
+    },
+    {
+      "file": "NearFieldCanonicalSelectedCapData.lean",
+      "sha256": "26BEB29656038EB6B0C9CB31756F6CDACC094FAF07047E7629A587E8431961FF"
+    },
+    {
+      "file": "NearFieldCappedUnitRouting.lean",
+      "sha256": "1E3C95527E9C8A62726F004B38770471737C38ABED8DBA610D8A137D717A4CE3"
+    },
+    {
+      "file": "NearFieldCanonicalCatalogueSeeds.lean",
+      "sha256": "F0891EB4BA5D24E18A103C2AC02D5A4FAD5B77BA18F9C7DA68B98FD02CA0CC91"
+    },
+    {
+      "file": "NearFieldCanonicalRoutingUnits.lean",
+      "sha256": "3AD1F6D355B6CA5DE1E63FCCA4F6716E0039BAD66C35BCC3CF6AD1AC14B407DD"
+    },
+    {
+      "file": "NearFieldCappedUnitColours.lean",
+      "sha256": "96200A44BDDA967E3DC65FBEC1D9656850431A20D31171B710708A9CCC68A618"
+    },
+    {
+      "file": "NearFieldCanonicalUnitColours.lean",
+      "sha256": "281D43E45EDC7F0D3486AAA294ABB793722FBBB87D0BD449C1B8220DD2DFAE0D"
+    },
+    {
+      "file": "NearFieldCanonicalRoutingParity.lean",
+      "sha256": "1DE43D9A18E3119813B2B945D455837B3218EE6170C51D05F492D381C2426492"
+    },
+    {
+      "file": "NearFieldCanonicalRingTetherColumns.lean",
+      "sha256": "3B44187CB136A4C39DFDB6C5001ED49C22DAE3F316416D4A20F60671F0E102D7"
+    },
+    {
+      "file": "NearFieldCanonicalRingBulkColumns.lean",
+      "sha256": "C5DB577ABD26F9FC7CB63583504EC88894166A247B25C85ED0895B65AC71A6F6"
+    },
+    {
+      "file": "NearFieldCanonicalSingletonUnitColumns.lean",
+      "sha256": "A1FEB33CCE48E5BA4EB33EB83648520FD127EE65277098EB6E2B9ECE9ACE7283"
+    },
+    {
+      "file": "NearFieldCanonicalFrameEndpointColumns.lean",
+      "sha256": "17212D35656962CBC225F06DC9AB0F4A4EB907C52C478E24A80C526D9A5DCEA6"
+    },
+    {
+      "file": "NearFieldOrdinaryUnitColumns.lean",
+      "sha256": "29C670FDC36D6CCEF377EBB6BA838104AE8D252B0D91470BCE989FD6AE72FE37"
+    },
+    {
+      "file": "NearFieldCanonicalOrdinaryColumns.lean",
+      "sha256": "1B428311D310FE196DAE5F076593C9FDD2A07A2991B0A160A582AB2A1840A83A"
+    },
+    {
+      "file": "NearFieldCanonicalRightFinalColumns.lean",
+      "sha256": "3BF979B599E21387128DFD6FEA142C2297BEF6F50F866BB1FC94DEFA12072B0E"
+    },
+    {
+      "file": "NearFieldTerminalTetherColumns.lean",
+      "sha256": "51DE8577DE2E3DCEED67AEA4546ED1E58C8B5FF7F9DFE7141569FA74272E9FAB"
+    },
+    {
+      "file": "NearFieldCanonicalTerminalColumns.lean",
+      "sha256": "16B9D76FDBD17CB4CD57628EF90F38C5BE5D3E8799614359FED22F348152FF3E"
+    },
+    {
+      "file": "NearFieldSelectedEntryUnitColumns.lean",
+      "sha256": "D74F586337F0AD5497D2BE874C785A33E07856D21D66C714B4CC75071CBC465E"
+    },
+    {
+      "file": "NearFieldCanonicalSelectedEntryColumns.lean",
+      "sha256": "B709BF7F9659579C4ED8B361554220FFED872815BAB0B9723383F719DDEF6848"
+    },
+    {
+      "file": "NearFieldCanonicalColumnClearance.lean",
+      "sha256": "CEBFE8C7EEEE025BA7E84625AE612E61C40BA160157A0653D72A1F04B9C000B8"
+    },
+    {
+      "file": "NearFieldCanonicalSelectedWireClearance.lean",
+      "sha256": "6C620A2DBDC89C4C505C4A55EF5EB4E060580740A63A0C221F49FFC9F5C05744"
+    },
+    {
+      "file": "NearFieldMixedAssembly.lean",
+      "sha256": "E8DD82A3451EED5A0526654AF73E6DB1B05B19C85C53FC3EF8D09FD84F0DD532"
+    },
+    {
+      "file": "NearFieldCanonicalMixedFamily.lean",
+      "sha256": "60CC7249D059A664678CF32E66A6287EAB2845415A1DC6F83D46DDC4EF7B94E5"
+    },
+    {
+      "file": "NearFieldCanonicalCompleteness.lean",
+      "sha256": "3CF670517A24456EB5FD12086D05235D3198AB5384F4EF41A2F0E01AEDB150E9"
+    },
+    {
+      "file": "NPCompleteness.lean",
+      "sha256": "73331FBFE70AC18F63C1A0A35FDB600B81C53FAE6767D6D084752DF5CFDD0BF8"
+    },
+    {
+      "file": "FinalAudit.lean",
+      "sha256": "86852032B7E6C0F40E272FD34847DE9C0A85723ACAC67A22544FB69042638B12"
+    },
+    {
+      "file": "Audit.lean",
+      "sha256": "1444EE8DEC875AEE415FD173176A8BE6B6BB33B44324CAC9628653CAFC80200E"
+    }
+  ]
+}

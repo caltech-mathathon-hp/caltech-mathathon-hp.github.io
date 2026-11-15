@@ -1,0 +1,8 @@
+import ProteinFolding.Tetrahedral.ReductionTM2CanonicalSoundness
+
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.guard_of_accepts
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.accepts_iff_support
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.accepts_of_prescribed_support
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.accepts_of_prescribed_support_subset
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_of_accepts_valid
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.source_of_accepts

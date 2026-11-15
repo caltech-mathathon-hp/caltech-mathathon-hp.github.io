@@ -1,0 +1,25 @@
+import ProteinFolding.Tetrahedral.ReductionTM2BulkRuntimeFamily
+import ProteinFolding.Tetrahedral.ReductionTM2CanonicalCounts
+import ProteinFolding.Tetrahedral.ReductionTM2ColourFlagFacts
+import ProteinFolding.Tetrahedral.ReductionTM2BulkRuntimePieces
+import ProteinFolding.Tetrahedral.ReductionTM2LinkerParity
+import ProteinFolding.Tetrahedral.ReductionTM2CanonicalColours
+
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.computable
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkOrientedPath.emit_nonempty_iff
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.recordComponentEquiv
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeFold_inside
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeFold_disjoint
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeFold_covers
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeFold_colours
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeFirst_surface
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimeLast_surface
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.lengths_mass
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.hydrophobicCount_eq
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.phpIndices_card
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.ColourFlags.flags_next
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimePieces_pairwise
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.BulkScan.runtimePieces_hSupport
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.longLinkerLength_caps_parity
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.flags_next
+#print axioms ProteinFolding.Tetrahedral.ReductionTM2.Canonical.unitColours_bulk_physical

@@ -1,0 +1,8 @@
+import ProteinFolding.Tetrahedral.ReductionDimerProvenanceCounts
+import ProteinFolding.Tetrahedral.ReductionDimerProvenanceSeparator
+
+#print axioms ProteinFolding.Tetrahedral.DimerCatalogue.occurrence_bijective
+#print axioms ProteinFolding.Tetrahedral.ReductionDimerProvenance.catalogue
+#print axioms ProteinFolding.Tetrahedral.ReductionDimerProvenance.small_chain_card
+#print axioms ProteinFolding.Tetrahedral.ReductionDimerProvenance.chain_positive
+#print axioms ProteinFolding.Tetrahedral.ReductionDimerProvenance.separator_witnesses
