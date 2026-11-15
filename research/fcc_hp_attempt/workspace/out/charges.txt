@@ -1,0 +1,39 @@
+O_6: U* = 18
+   (-5, 0, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4
+   (0, -5, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4
+   (0, 0, -5) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4
+   (0, 0, 5) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4
+   (0, 5, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4
+   (5, 0, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4
+O_9 with island 3 at (1,2): U* = 21
+   (-8, 0, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 4
+   (0, -8, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 4
+   (0, 0, -8) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 4
+   (0, 0, 8) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 3, 5: 3, 6: 3, 7: 3, 8: 4
+   (0, 8, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 3, 5: 3, 6: 3, 7: 3, 8: 4
+   (2, 3, 5) (7 empty neighbours): largest charge 1; by L: 2: 1
+   (2, 5, 3) (7 empty neighbours): largest charge 1; by L: 2: 1
+   (4, 3, 3) (7 empty neighbours): largest charge 1; by L: 2: 1
+   (8, 0, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 3, 6: 3, 7: 3, 8: 3
+O_9 with island 3 at (0,0): U* = 21
+   (-8, 0, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 4
+   (0, -8, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 4
+   (0, 0, -8) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4, 6: 4, 7: 4, 8: 4
+   (0, 0, 8) (7 empty neighbours): largest charge 2; by L: 2: 1, 3: 2, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1
+   (0, 3, 5) (4 empty neighbours): largest charge 3/2; by L: 5: 3/2, 6: 3/2, 7: 3/2, 8: 3/2
+   (0, 8, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4, 6: 2, 7: 2, 8: 2
+   (1, 1, 8) (7 empty neighbours): largest charge 1; by L: 2: 1, 3: 1
+   (1, 3, 6) (7 empty neighbours): largest charge 1; by L: 2: 1, 8: 1
+   (3, 0, 5) (4 empty neighbours): largest charge 3/2; by L: 5: 3/2, 6: 3/2, 7: 3/2, 8: 3/2
+   (3, 1, 6) (7 empty neighbours): largest charge 1; by L: 2: 1, 8: 1
+   (8, 0, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4, 6: 2, 7: 2, 8: 2
+O_6 without a vertex: U* = 19
+   (-5, 0, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 4
+   (0, -5, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 2
+   (0, 0, -5) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 2
+   (0, 0, 5) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 2
+   (0, 5, 0) (vertex of an octahedron): largest charge 4; by L: 2: 4, 3: 4, 4: 4, 5: 2
+   (4, -1, 0) (6 empty neighbours): largest charge 1; by L: 3: 1, 4: 1, 5: 1
+   (4, 0, -1) (6 empty neighbours): largest charge 1; by L: 3: 1, 4: 1, 5: 1
+   (4, 0, 1) (6 empty neighbours): largest charge 1; by L: 3: 1, 4: 1, 5: 1
+   (4, 1, 0) (6 empty neighbours): largest charge 1; by L: 3: 1, 4: 1, 5: 1

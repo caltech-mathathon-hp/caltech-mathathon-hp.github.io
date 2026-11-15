@@ -1,0 +1,4 @@
+O_9 with island k = 3 at (1, 1): N = 495, U* = 21, least Lam_n = 330 at n = 8; M_n < 0 for n in [3, 4, 5, 6]; M'_n < 0 for n in []
+O_13 with island k = 4 at (0, 4): N = 1479, U* = 21, least Lam_n = 744 at n = 11; M_n < 0 for n in [3, 4, 5, 6, 7]; M'_n < 0 for n in []
+O_17 with island k = 6 at (1, 4): N = 3302, U* = 21, least Lam_n = 1332 at n = 15; M_n < 0 for n in [3, 4, 5, 6, 7, 8]; M'_n < 0 for n in []
+O_21 with island k = 9 at (1, 5): N = 6226, U* = 21, least Lam_n = 2106 at n = 18; M_n < 0 for n in [3, 4, 5, 6, 7, 8, 9]; M'_n < 0 for n in []

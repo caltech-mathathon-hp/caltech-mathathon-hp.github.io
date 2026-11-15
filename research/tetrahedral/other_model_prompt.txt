@@ -1,0 +1,19 @@
+Please audit and repair the exact-length padding argument in Section 8.5,
+Lemma F(D), of HP_tetrahedral_proof.md. The original construction adds
+2 + 2(r + 4d) = 2 + 2r + 8d sites for a fixed r, so it supplies only one residue
+class modulo eight. It does not establish every sufficiently large length
+of the required parity.
+
+Give an explicit replacement construction covering all four parity-compatible
+residue classes modulo eight. Prove lattice adjacency, self-avoidance, and
+disjointness from the approach paths, other linkers, radial arms, and near-field
+routing. Derive a polynomial length threshold that can be chosen independently
+of the packing, as required by Section 9. Distinguish a repair of this lemma
+from verification of the remaining computer-assisted lemmas. Please provide
+replacement manuscript text and any independent checks you use.
+
+If you receive the revised project manuscript, independently audit its proposed
+replacement in Parts D-E instead: it uses both crossing types plus an optional
+four-site hexagon detour, claims every even increase of at least six sites,
+and takes L* = 1000(m + |W| + 1) + 6. Check the derivation and separation bounds
+rather than assuming that a finite test validates the unbounded construction.

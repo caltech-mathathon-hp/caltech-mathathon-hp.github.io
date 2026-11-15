@@ -1,0 +1,20 @@
+m=80 K=1: NEAR FIELD OK: m=80 K=1 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=80 K=2: NEAR FIELD OK: m=80 K=2 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=80 K=3: NEAR FIELD OK: m=80 K=3 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=80 K=4: NEAR FIELD OK: m=80 K=4 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=80 K=5: NEAR FIELD OK: m=80 K=5 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=80 K=6: NEAR FIELD OK: m=80 K=6 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=80 K=7: NEAR FIELD OK: m=80 K=7 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=80 K=8: NEAR FIELD OK: m=80 K=8 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=80 cut-test (two bins of two items of 4 dimers): NEAR FIELD OK: m=80 K=2
+m=82 K=1: NEAR FIELD OK: m=82 K=1 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=82 K=2: NEAR FIELD OK: m=82 K=2 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=82 K=3: NEAR FIELD OK: m=82 K=3 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=82 K=4: NEAR FIELD OK: m=82 K=4 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=82 K=5: NEAR FIELD OK: m=82 K=5 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=82 K=6: NEAR FIELD OK: m=82 K=6 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=82 K=7: NEAR FIELD OK: m=82 K=7 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=82 K=8: NEAR FIELD OK: m=82 K=8 | Appendix C shapes: OK ; all sites of frame links in skin 1: True
+m=82 cut-test (two bins of two items of 4 dimers): NEAR FIELD OK: m=82 K=2
+m=92 K=10: NEAR FIELD OK: m=92 K=10 | Appendix C shapes: OK ; all sites of frame links in skin 1: True | linker caps: 30849 (borrowed columns: 12) ; columns blocked by near-field P's: 0
+NCHECK tether caps of the 2-slots with borrowed column: 11 of 11 ; linker caps: 11 ; 6-slot anchor caps borrowed: 0

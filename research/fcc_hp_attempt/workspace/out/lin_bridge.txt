@@ -1,0 +1,2 @@
+two O_5 joined by one site: 146 bodies; with Lam_n < 0: 0; least Lam_n = 176 at n = 4 (v = (10, 1, 1), site (5, 1, 0), U* = 43, n2* = 125, D = 74560)
+two O_6 joined by one site: 233 bodies; with Lam_n < 0: 0; least Lam_n = 266 at n = 5 (v = (12, 1, 1), site (6, 0, 1), U* = 43, n2* = 157, D = 119872)

@@ -1,0 +1,16 @@
+site: N=1 U*=15 T=6 b1=0 chi=2  U*-6T+18=-3  U*-6T+9chi=-3
+pair: N=2 U*=26 T=6 b1=0 chi=2  U*-6T+18=8  U*-6T+9chi=8
+O_2: N=6 U*=42 T=6 b1=0 chi=2  U*-6T+18=24  U*-6T+9chi=24
+O_3: N=19 U*=54 T=6 b1=0 chi=2  U*-6T+18=36  U*-6T+9chi=36
+O_5: N=85 U*=18 T=6 b1=0 chi=2  U*-6T+18=0  U*-6T+9chi=0
+O_6: N=146 U*=18 T=6 b1=0 chi=2  U*-6T+18=0  U*-6T+9chi=0
+tip next to tip: N=292 U*=44 T=10 b1=0 chi=2  U*-6T+18=2  U*-6T+9chi=2
+tips coincide: N=291 U*=51 T=10 b1=0 chi=2  U*-6T+18=9  U*-6T+9chi=9
+one-site bridge: N=293 U*=43 T=10 b1=0 chi=2  U*-6T+18=1  U*-6T+9chi=1
+zig bridge: N=294 U*=54 T=12 b1=0 chi=2  U*-6T+18=0  U*-6T+9chi=0
+ring of four: N=584 U*=104 T=16 b1=2 chi=0  U*-6T+18=26  U*-6T+9chi=8
+O_9 with a tunnel along z: N=392 U*=300 T=6 b1=2 chi=0  U*-6T+18=282  U*-6T+9chi=264
+O_9 with cavity O_3: N=470 U*=126 T=6 b1=0 chi=4  U*-6T+18=108  U*-6T+9chi=126
+rod 10: N=10 U*=114 T=6 b1=0 chi=2  U*-6T+18=96  U*-6T+9chi=96
+tetra 6: N=56 U*=60 T=6 b1=0 chi=2  U*-6T+18=42  U*-6T+9chi=42
+twin tops: N=316 U*=42 T=10 b1=0 chi=2  U*-6T+18=0  U*-6T+9chi=0

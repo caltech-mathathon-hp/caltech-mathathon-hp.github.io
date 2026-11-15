@@ -1,0 +1,22 @@
+m=20: 1600 dangling sites, arms pairwise disjoint up to 44 steps ; bulk paths 490 ; 0s
+frame built: links {6: 3, 3: 3, 10: 2} ; max skin of a frame link site: 1 0s
+  separator 1 on track dimers 6,7: entry tether P^21 (taut 15, slack 6, skin 2) ; exit tether P^57 (taut 27, slack 30, skin 4)
+  separator 2 on track dimers 12,13: entry tether P^45 (taut 27, slack 18, skin 3) ; exit tether P^39 (taut 15, slack 24, skin 5)
+tethers routed in margins, 0s
+bulk: 490 runs in 490 units (chaining False), 0s
+linker caps: 1007 (borrowed columns: 3) ; columns blocked by near-field P's: 0
+near field done: 504 units, 1745 P sites reserved, 0s
+ordered scheme, stages A and B: 1006 wires, 70 levels (rho 53..341), slabs X = 49..10109, 5769155 sites, pairwise disjoint ; 15s
+far field: 503 linkers routed, shells rho = 53 ... 2065, 8940293 P's in linkers, 27s
+chain length 8951691 (H: 10660, P: 8941031)
+H-H bonds in this fold: 20520 ; proved upper bound 2N-2m^2: 20520 ; OPTIMAL: True
+H-run lengths: 1:7 2:189 (dimers) ; shortest other run 3
+P-run lengths <= 10: {1: 1, 3: 179, 6: 3, 10: 2}
+PHP count: 6 ; HPH: False ; HPPH: False
+  unit: anchor(1) P^21 separator(2) P^57 anchor(3)
+  unit: anchor(1) P^45 separator(2) P^39 anchor(3)
+  unit: filler-left(6)
+  unit: item 1 (size 2) in bin 1, track dimers 8..9
+  unit: item 2 (size 2) in bin 1, track dimers 10..11
+  unit: filler-right(5)
+written /home/claude/work/nochain20_fold_*.txt ; total 37s

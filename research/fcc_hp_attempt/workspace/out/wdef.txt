@@ -1,0 +1,32 @@
+site: N=1 U*=15 W=-15 def1=0 def2=10 kappa=11 n2*=1
+pair: N=2 U*=26 W=-16 def1=0 def2=14 kappa=16 n2*=2
+O_2: N=6 U*=42 W=-18 def1=0 def2=20 kappa=26 n2*=6
+O_3: N=19 U*=54 W=-18 def1=0 def2=24 kappa=42 n2*=18
+O_4: N=44 U*=42 W=-18 def1=0 def2=20 kappa=58 n2*=38
+O_5: N=85 U*=18 W=-18 def1=0 def2=12 kappa=74 n2*=62
+O_6: N=146 U*=18 W=-18 def1=0 def2=12 kappa=90 n2*=78
+O_8: N=344 U*=18 W=-18 def1=0 def2=12 kappa=122 n2*=110
+tetra 4: N=20 U*=60 W=0 def1=0 def2=20 kappa=40 n2*=20
+tetra 6: N=56 U*=60 W=12 def1=0 def2=16 kappa=60 n2*=44
+tetra 9: N=165 U*=78 W=30 def1=0 def2=16 kappa=90 n2*=74
+O_7+(1, 1, 0): N=280 U*=20 W=-16 def1=0 def2=12 kappa=112 n2*=100
+O_7+(2, 2, 0): N=327 U*=34 W=-14 def1=0 def2=16 kappa=122 n2*=106
+O_7+(3, 3, 0): N=370 U*=36 W=-12 def1=0 def2=16 kappa=132 n2*=116
+O_7+(2, 2, 2): N=358 U*=24 W=-12 def1=0 def2=12 kappa=124 n2*=112
+O_7+(2, 1, 1): N=322 U*=22 W=-14 def1=0 def2=12 kappa=118 n2*=106
+O_7+(4, 0, 0): N=377 U*=54 W=-6 def1=0 def2=20 kappa=134 n2*=114
+O_7+(6, 0, 0): N=418 U*=54 W=-6 def1=0 def2=20 kappa=150 n2*=130
+O_7+(12, 0, 0): N=461 U*=51 W=-9 def1=0 def2=20 kappa=197 n2*=177
+O_7+(13, 1, 0): N=462 U*=44 W=-16 def1=0 def2=20 kappa=204 n2*=184
+O_7+(12, 1, 1): N=462 U*=46 W=-14 def1=0 def2=20 kappa=198 n2*=178
+O_7+(12, 2, 0): N=462 U*=52 W=-8 def1=0 def2=20 kappa=200 n2*=180
+O_7+(8, 3, 3): N=462 U*=54 W=-6 def1=0 def2=20 kappa=174 n2*=154
+O_7+(4, 4, 4): N=443 U*=66 W=-6 def1=0 def2=24 kappa=154 n2*=130
+O_7+(5, 4, 3): N=444 U*=54 W=-6 def1=0 def2=20 kappa=154 n2*=134
+O_7 minus a vertex: N=230 U*=19 W=-14 def1=0 def2=11 kappa=104 n2*=93
+O_7 plus a cell: N=232 U*=29 W=-16 def1=0 def2=15 kappa=110 n2*=95
+plate 6x6 (z=0): N=49 U*=399 W=225 def1=0 def2=58 kappa=107 n2*=49
+rod 10: N=10 U*=114 W=-24 def1=0 def2=46 kappa=56 n2*=10
+block: N=108 U*=144 W=132 def1=0 def2=4 kappa=68 n2*=64
+O_9 with tunnel along z: N=392 U*=300 W=168 def1=28 def2=16 kappa=112 n2*=124
+O_9 with cavity O_3: N=470 U*=126 W=-36 def1=42 def2=12 kappa=96 n2*=126

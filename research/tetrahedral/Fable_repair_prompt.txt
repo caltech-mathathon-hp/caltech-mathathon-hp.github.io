@@ -1,0 +1,39 @@
+Please repair HP_tetrahedral_proof.md and its verification code, addressing all of the audit findings below. Preserve the original and deliver a new revised manuscript, matching code, reproducible commands, and logs. These findings have different severity: distinguish false statements, incomplete coverage, and simple errata. Reproduce the witnesses before changing anything.
+
+1. Make the tether definition, length formulas, and program agree.
+
+For the actual input K=B=1, Section 6 gives Sigma*=58, lambda=C=66, J=132, R=133, m=336. The first entry tether has j_1=132 and uses skin j=2. The printed sigma_e(1)=6 prescribes 273 P-sites. But Appendix C's borrowed column and Section 8.4's two stated rows have shortest length 279, hence slack 12.
+
+Coordinates: slot a-site (0,676,-664); start cap (2,678,-664); borrowed second site (3,679,-663); skin-2 column endpoint (4,680,-664); target cap (266,672,-406); target column endpoint (266,674,-408). The surface row route, in F'-bilayer coordinates, is (332,5,1) -> (336,1,1) -> (204,1,133). Exhaustive BFS over the two full rows and column portions confirms the 279-site minimum. Entry k=2 similarly needs 425 rather than the printed 421 sites. The displayed explicit route gives sigma_e(k)=10k+2, still within the existing bound 10k+5.
+
+build3.py's corridor_ok/tether searches a broader part of the whole F'-bilayer, not just those two rows. Choose one precise routing definition and make the word, formulas, avoidance proof, and checker implement it. If adopting explicit lengths, prove them for all parameters, including exits, parity, slack bounds, and packing independence.
+
+2. Repair the false owner-radius premise in Lemma N's finite-coverage argument.
+
+Section 8.4(2), around lines 838-840, says every non-frame object lies within max-norm radius 2 of its owner; subsequent translations treat owners as edge sites. This fails for an ordinary PPP in the same m=336 layout. Boundary 22 of the left filler has the path
+
+H(45,671,-625), P(46,672,-626), P(47,673,-625), P(48,672,-624), H(47,671,-623).
+
+For e3[i]=(i,670+(i mod 2),-670+i), no index i is within radius 2 of all three P-sites. The middle P's y-coordinate forces i odd; the outer P-sites' x-coordinates force 46<=i<=48; the only candidate i=47 misses the first P's z-coordinate by 3. The minimum owner radius is 3.
+
+Specify the owner of each object type precisely. Recompute or independently justify the interaction cutoffs 20/12/4, the relevant neighborhood radii, and the complete list of neighboring object pairs. Re-prove that the finite representatives cover every layout in family F, including arbitrarily large K and all allowed item cuts. If using pair-valued owners, define their boxes and translation maps explicitly. Do not assume that changing one radius leaves the old two-layout coverage proof valid.
+
+3. Certify the exact construction stated in the manuscript.
+
+Section 6 uses each canonical bulk path as a separate H-run. But sweepN.sh uses 'chain': build3.py joins some bulk paths with extra PPP links and then checks columns only for the remaining linker caps. Run checks for the actual unchained assembly, or prove a precise implication from the tested assembly to the stated one. Include every original bulk-end column and all borrowed columns. Eliminate other silent differences between the specification and the checker.
+
+4. Correct and justify the bulk representative-table coverage.
+
+The assertions that the same 74-entry table occurs at every m=14,...,44 and that all classes occur for m>=14 are inaccurate under bulktable.py's own key and filtering rule. Independent counts are 10 entries at m=14, 19 at m=15, and 39 at each of m=24,25,30,44,45,50,60; 74 entries are accumulated across sizes/phases, without conflicts. State the correct representative family and prove that it covers every relevant large-m case using explicit transfer hypotheses, radii, phases, and boundary cases. Retain and verify the lexicographic potential and six-step escape certificates. A stable finite table alone is not an all-parameter coverage proof.
+
+5. Align the Bulk Lemma's quantifiers with its proof.
+
+It is stated for every m>=9, but Claim 1 explicitly leaves some sizes 61-87 uncovered. Either verify the remaining finite sizes or restrict the lemma to a proved range and separately establish any auxiliary smaller test sizes used elsewhere. The reduction uses m>=336, so this is repairable without necessarily changing the reduction.
+
+6. Correct Corollary 4's false arithmetic estimate.
+
+The claimed bound (4/3)*(m^2-1/2)^(3/2) <= (4/3)*m^3-m+1/(8*m) is false. At m=2 it would imply 112*sqrt(14)<=419, but their squares are 175616>175561. A valid replacement for m>=1 is
+
+(4/3)*(m^2-1/2)^(3/2) <= (4/3)*m*(m^2-1/2) = (4/3)*m^3-(2/3)*m < N_m.
+
+Deliver a coherent revised proof, not only a list of intended fixes. Include an independent checker that consumes the stated coordinate paths and verifies lattice membership, adjacency, disjointness, column avoidance, exact lengths, and the resulting fixed HP word. Run the revised finite certificates, representative test layouts, actual Section 6 instances (including K=B=1 and a K>8 case), and different packings of one input that must produce the same word. Explain exactly why the finite checks cover all parameters. Recheck downstream constants and both directions of the reduction after the changes. Clearly identify any unresolved obligation; do not claim completeness merely because finite examples pass.

@@ -1,0 +1,6 @@
+14 (1, 1) defects per half 12 strips used -> cases {0: 3, 1: 41, 2: 117, 3: 8}
+14 (-1, 1) defects per half 12 strips used -> cases {0: 3, 1: 41, 2: 117, 3: 8}
+16 (1, 1) defects per half 29 strips used -> cases {0: 11, 1: 189, 2: 668, 3: 32}
+16 (-1, 1) defects per half 29 strips used -> cases {0: 11, 1: 189, 2: 668, 3: 32}
+18 (1, 1) defects per half 50 strips used -> cases {0: 23, 1: 493, 2: 2013, 3: 72}
+18 (-1, 1) defects per half 50 strips used -> cases {0: 23, 1: 493, 2: 2013, 3: 72}

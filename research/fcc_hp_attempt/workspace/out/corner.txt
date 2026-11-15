@@ -1,0 +1,19 @@
+(number of empty neighbours, corners c1): least u-, number of sets
+   (5, 1) 0 24   4u- < 3c1 in 24 sets; equality in 0
+   (6, 1) 0 168   4u- < 3c1 in 48 sets; equality in 0
+   (7, 1) 0 336   4u- < 3c1 in 24 sets; equality in 0
+   (7, 2) 1 84   4u- < 3c1 in 84 sets; equality in 0
+   (8, 1) 2 96   4u- < 3c1 in 0 sets; equality in 0
+   (8, 2) 1 216   4u- < 3c1 in 48 sets; equality in 0
+   (8, 3) 1 96   4u- < 3c1 in 96 sets; equality in 0
+   (8, 4) 3 6   4u- < 3c1 in 0 sets; equality in 6
+   (9, 2) 3 24   4u- < 3c1 in 0 sets; equality in 0
+   (9, 3) 2 24   4u- < 3c1 in 24 sets; equality in 0
+   (9, 4) 2 132   4u- < 3c1 in 48 sets; equality in 84
+   (9, 6) 3 32   4u- < 3c1 in 32 sets; equality in 0
+   (10, 6) 4 24   4u- < 3c1 in 24 sets; equality in 0
+   (10, 8) 3 18   4u- < 3c1 in 18 sets; equality in 0
+   (10, 9) 6 24   4u- < 3c1 in 24 sets; equality in 0
+   (11, 14) 9 12   4u- < 3c1 in 12 sets; equality in 0
+   (12, 24) 15 1   4u- < 3c1 in 1 sets; equality in 0
+sets with 4 u- < 3 c1: 507 of 1317 sets with a corner

@@ -1,0 +1,126 @@
+[
+  {
+    "m": 336,
+    "K": 1,
+    "B": 1,
+    "unitItems": false,
+    "frameLinks": 8,
+    "ppps": 3337,
+    "nearPsites": 11518,
+    "longCaps": 25,
+    "tetherLengths": [
+      277,
+      437,
+      423,
+      295
+    ],
+    "columnChecks": 10136
+  },
+  {
+    "m": 732,
+    "K": 1,
+    "B": 3,
+    "unitItems": false,
+    "frameLinks": 8,
+    "ppps": 7297,
+    "nearPsites": 24982,
+    "longCaps": 25,
+    "tetherLengths": [
+      541,
+      965,
+      951,
+      559
+    ],
+    "columnChecks": 22016
+  },
+  {
+    "m": 732,
+    "K": 1,
+    "B": 3,
+    "unitItems": true,
+    "frameLinks": 8,
+    "ppps": 7295,
+    "nearPsites": 24980,
+    "longCaps": 29,
+    "tetherLengths": [
+      541,
+      965,
+      951,
+      559
+    ],
+    "columnChecks": 22014
+  },
+  {
+    "m": 848,
+    "K": 2,
+    "B": 2,
+    "unitItems": true,
+    "frameLinks": 10,
+    "ppps": 8455,
+    "nearPsites": 30733,
+    "longCaps": 33,
+    "tetherLengths": [
+      517,
+      1235,
+      867,
+      889,
+      1217,
+      543
+    ],
+    "columnChecks": 25573
+  },
+  {
+    "m": 1576,
+    "K": 6,
+    "B": 1,
+    "unitItems": false,
+    "frameLinks": 18,
+    "ppps": 15737,
+    "nearPsites": 70323,
+    "longCaps": 45,
+    "tetherLengths": [
+      637,
+      2627,
+      963,
+      2305,
+      1289,
+      1983,
+      1615,
+      1661,
+      1941,
+      1339,
+      2267,
+      1017,
+      2593,
+      695
+    ],
+    "columnChecks": 47951
+  },
+  {
+    "m": 4072,
+    "K": 6,
+    "B": 3,
+    "unitItems": true,
+    "frameLinks": 18,
+    "ppps": 40685,
+    "nearPsites": 180135,
+    "longCaps": 69,
+    "tetherLengths": [
+      1261,
+      6995,
+      2211,
+      6049,
+      3161,
+      5103,
+      4111,
+      4157,
+      5061,
+      3211,
+      6011,
+      2265,
+      6961,
+      1319
+    ],
+    "columnChecks": 122819
+  }
+]

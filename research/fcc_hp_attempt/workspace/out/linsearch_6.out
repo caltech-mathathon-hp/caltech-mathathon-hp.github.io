@@ -1,0 +1,7 @@
+blob 0: g 4.2574 -> 1.0541; end N = 52, U* = 36, n2* = 44, least Lam_n = 234 at n = 3, D = 82944
+blob 1: g 3.9403 -> 0.9628; end N = 76, U* = 34, n2* = 56, least Lam_n = 285 at n = 3, D = 103348
+blob 2: g 4.5203 -> 1.0714; end N = 89, U* = 48, n2* = 64, least Lam_n = 360 at n = 3, D = 177408
+blob 3: g 4.0588 -> 0.9474; end N = 89, U* = 39, n2* = 65, least Lam_n = 324 at n = 3, D = 134784
+blob 4: g 4.7171 -> 0.9485; end N = 105, U* = 42, n2* = 76, least Lam_n = 387 at n = 3, D = 172404
+blob 5: g 4.6200 -> 1.2000; end N = 84, U* = 55, n2* = 65, least Lam_n = 420 at n = 3, D = 227200
+LEAST g 0.9473684210526315 blob 3

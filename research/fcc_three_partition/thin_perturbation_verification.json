@@ -1,0 +1,7 @@
+{
+  "C_sites": 144,
+  "hole_sites": 8,
+  "all_hole_deletion_subsets": 256,
+  "perturbation_cases": 1000,
+  "inequality": "3*t+2*c <= 2*loss+13*s"
+}

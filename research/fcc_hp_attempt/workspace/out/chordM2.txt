@@ -1,0 +1,6 @@
+named bodies: 15 bodies; largest n with M_n < 0, by number of bodies: {0: 10, 2: 5}; worst (2, 'tetra 4', 60)
+unions O_7, O_7+v: 79 bodies; largest n with M_n < 0, by number of bodies: {0: 1, 2: 69, 3: 8, 5: 1}; worst (5, (2, 2, 2), 24)
+unions O_5, O_8+v: 61 bodies; largest n with M_n < 0, by number of bodies: {2: 51, 3: 10}; worst (3, (2, 2, 1), 21)
+bodies at one site from O_5: 206 bodies; largest n with M_n < 0, by number of bodies: {0: 6, 2: 144, 3: 56}; worst (3, (-3, -2, -1), 24)
+bodies at one site from O_7: 398 bodies; largest n with M_n < 0, by number of bodies: {0: 42, 2: 212, 3: 144}; worst (3, (-5, -2, -1), 24)
+two O_5 joined by one site: 146 bodies; largest n with M_n < 0, by number of bodies: {0: 51, 2: 81, 3: 11, 4: 3}; worst (4, ((10, 1, 1), (5, 1, 0)), 43)

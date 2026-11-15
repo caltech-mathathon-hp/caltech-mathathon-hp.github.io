@@ -1,0 +1,114 @@
+{
+  "status": "passed",
+  "checked": 79465,
+  "cases": [
+    {
+      "m": 6,
+      "R": 0,
+      "Rprime": 0,
+      "checked": 357
+    },
+    {
+      "m": 7,
+      "R": 0,
+      "Rprime": 0,
+      "checked": 550
+    },
+    {
+      "m": 9,
+      "R": 0,
+      "Rprime": 3,
+      "checked": 1079
+    },
+    {
+      "m": 10,
+      "R": 0,
+      "Rprime": 3,
+      "checked": 1478
+    },
+    {
+      "m": 16,
+      "R": 0,
+      "Rprime": 10,
+      "checked": 5636
+    },
+    {
+      "m": 17,
+      "R": 0,
+      "Rprime": 10,
+      "checked": 6783
+    },
+    {
+      "m": 7,
+      "R": 2,
+      "Rprime": 0,
+      "checked": 550
+    },
+    {
+      "m": 8,
+      "R": 2,
+      "Rprime": 0,
+      "checked": 807
+    },
+    {
+      "m": 10,
+      "R": 2,
+      "Rprime": 3,
+      "checked": 1478
+    },
+    {
+      "m": 11,
+      "R": 2,
+      "Rprime": 3,
+      "checked": 1961
+    },
+    {
+      "m": 17,
+      "R": 2,
+      "Rprime": 10,
+      "checked": 6783
+    },
+    {
+      "m": 18,
+      "R": 2,
+      "Rprime": 10,
+      "checked": 8076
+    },
+    {
+      "m": 11,
+      "R": 6,
+      "Rprime": 0,
+      "checked": 3268
+    },
+    {
+      "m": 12,
+      "R": 6,
+      "Rprime": 0,
+      "checked": 4053
+    },
+    {
+      "m": 12,
+      "R": 6,
+      "Rprime": 3,
+      "checked": 3998
+    },
+    {
+      "m": 13,
+      "R": 6,
+      "Rprime": 3,
+      "checked": 4901
+    },
+    {
+      "m": 19,
+      "R": 6,
+      "Rprime": 10,
+      "checked": 12887
+    },
+    {
+      "m": 20,
+      "R": 6,
+      "Rprime": 10,
+      "checked": 14820
+    }
+  ]
+}

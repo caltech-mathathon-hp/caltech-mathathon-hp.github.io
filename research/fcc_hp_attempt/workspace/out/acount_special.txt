@@ -1,0 +1,7 @@
+O_7 with a one-site cavity: U* = 36, |I| = 6, def1 = 11, a_max = 24, 4U* - 3 a_max = 72; a_L: {2: 24, 3: 24, 4: 24, 5: 24, 6: 24}
+ring of four O_5: U* = 141, |I| = 32, def1 = 0, a_max = 96, 4U* - 3 a_max = 276; a_L: {2: 64, 3: 96, 4: 40}
+three O_6 in a row, vertex to vertex: U* = 70, |I| = 18, def1 = 0, a_max = 72, 4U* - 3 a_max = 64; a_L: {2: 72, 3: 72, 4: 72, 5: 72}
+three O_6 at a right angle: U* = 70, |I| = 18, def1 = 0, a_max = 72, 4U* - 3 a_max = 64; a_L: {2: 72, 3: 72, 4: 72, 5: 72}
+two O_7 along an axis, offset 6: U* = 54, |I| = 14, def1 = 0, a_max = 40, 4U* - 3 a_max = 96; a_L: {2: 40, 3: 40, 4: 24, 5: 32, 6: 32}
+two O_6 joined by a zigzag: U* = 54, |I| = 14, def1 = 0, a_max = 48, 4U* - 3 a_max = 72; a_L: {2: 48, 3: 48, 4: 48, 5: 48}
+two O_6 and a site: U* = 43, |I| = 13, def1 = 0, a_max = 48, 4U* - 3 a_max = 28; a_L: {2: 48, 3: 48, 4: 48, 5: 48}

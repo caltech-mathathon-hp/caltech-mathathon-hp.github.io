@@ -1,0 +1,23 @@
+single site: N = 1, U* = 15, chords oo/ob/bb = 24/0/0, kappa = 24.00, slack of (A) = -6.00, of (K) = -3.00, of (B) = 0.0
+two adjacent sites: N = 2, U* = 26, chords oo/ob/bb = 32/0/0, kappa = 28.00, slack of (A) = 0.00, of (K) = 5.00, of (B) = 2.0
+O_2: N = 6, U* = 42, chords oo/ob/bb = 48/0/0, kappa = 24.00, slack of (A) = 24.00, of (K) = 24.00, of (B) = 0.0
+O_3: N = 19, U* = 54, chords oo/ob/bb = 72/0/0, kappa = 24.00, slack of (A) = 36.00, of (K) = 36.00, of (B) = 0.0
+O_4: N = 44, U* = 42, chords oo/ob/bb = 96/0/0, kappa = 24.00, slack of (A) = 24.00, of (K) = 24.00, of (B) = 0.0
+O_5: N = 85, U* = 18, chords oo/ob/bb = 120/0/0, kappa = 24.00, slack of (A) = 0.00, of (K) = 0.00, of (B) = 0.0
+O_6: N = 146, U* = 18, chords oo/ob/bb = 144/0/0, kappa = 24.00, slack of (A) = 0.00, of (K) = 0.00, of (B) = 0.0
+O_7: N = 231, U* = 18, chords oo/ob/bb = 168/0/0, kappa = 24.00, slack of (A) = 0.00, of (K) = 0.00, of (B) = 0.0
+O_8: N = 344, U* = 18, chords oo/ob/bb = 192/0/0, kappa = 24.00, slack of (A) = 0.00, of (K) = 0.00, of (B) = 0.0
+O_9: N = 489, U* = 18, chords oo/ob/bb = 216/0/0, kappa = 24.00, slack of (A) = 0.00, of (K) = 0.00, of (B) = 0.0
+tetrahedron 4: N = 20, U* = 60, chords oo/ob/bb = 60/0/0, kappa = 24.00, slack of (A) = 24.00, of (K) = 42.00, of (B) = 18.0
+tetrahedron 6: N = 56, U* = 60, chords oo/ob/bb = 84/0/0, kappa = 24.00, slack of (A) = 12.00, of (K) = 42.00, of (B) = 30.0
+tetrahedron 9: N = 165, U* = 78, chords oo/ob/bb = 120/0/0, kappa = 24.00, slack of (A) = 12.00, of (K) = 60.00, of (B) = 48.0
+O_7 u O_7+(2,0,0): N = 316, U* = 42, chords oo/ob/bb = 192/96/0, kappa = 40.00, slack of (A) = 0.00, of (K) = 12.00, of (B) = 96.0
+O_7 u O_7+(4,0,0): N = 377, U* = 54, chords oo/ob/bb = 216/80/0, kappa = 40.00, slack of (A) = 12.00, of (K) = 24.00, of (B) = 160.0
+O_7 u O_7+(1,1,0): N = 280, U* = 20, chords oo/ob/bb = 176/0/0, kappa = 24.57, slack of (A) = -0.86, of (K) = 1.57, of (B) = 2.0
+O_7 u O_7+(2,2,2): N = 358, U* = 24, chords oo/ob/bb = 192/132/0, kappa = 30.00, slack of (A) = -9.00, of (K) = 1.50, of (B) = 138.0
+O_6 u O_6+(11,1,0): N = 292, U* = 44, chords oo/ob/bb = 272/12/0, kappa = 47.20, slack of (A) = -4.80, of (K) = 8.60, of (B) = 66.0
+two O_6 and a site: N = 293, U* = 43, chords oo/ob/bb = 280/14/0, kappa = 50.00, slack of (A) = -9.00, of (K) = 5.50, of (B) = 60.0
+O_6 without a vertex: N = 145, U* = 19, chords oo/ob/bb = 140/0/0, kappa = 24.80, slack of (A) = -3.20, of (K) = 0.40, of (B) = 6.0
+O_6 with a site on a face: N = 147, U* = 24, chords oo/ob/bb = 144/18/0, kappa = 30.00, slack of (A) = -6.00, of (K) = 1.50, of (B) = 25.0
+rod of 10: N = 10, U* = 114, chords oo/ob/bb = 96/0/0, kappa = 92.00, slack of (A) = 0.00, of (K) = 45.00, of (B) = 18.0
+(111) layer: N = 37, U* = 195, chords oo/ob/bb = 96/0/0, kappa = 48.00, slack of (A) = 66.00, of (K) = 159.00, of (B) = 18.0

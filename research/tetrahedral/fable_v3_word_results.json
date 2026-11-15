@@ -1,0 +1,30 @@
+{
+  "method": "Independent section 6 construction for the complete non-bulk prefix; independent full bulk cover for bulk run-length/endpoint-colour multiset (not Python set iteration order)",
+  "m": 80,
+  "K": 2,
+  "C": 12,
+  "J": 14,
+  "R": 35,
+  "items": [
+    4,
+    8,
+    8,
+    4
+  ],
+  "nonBulkUnits": 17,
+  "bulkUnits": 11470,
+  "totalUnits": 11487,
+  "w": 22972,
+  "Lstar": 23053006,
+  "runs": 24556,
+  "H": 682640,
+  "totalLength": 264787518214,
+  "md5": "bb7efa24667bb8ad702132e9aacb3674",
+  "checks": {
+    "nonBulkWordExact": true,
+    "bulkLengthAndEndpointColourMultiset": true,
+    "allBulkVerticesCovered": true,
+    "finalP": true
+  },
+  "failures": 0
+}

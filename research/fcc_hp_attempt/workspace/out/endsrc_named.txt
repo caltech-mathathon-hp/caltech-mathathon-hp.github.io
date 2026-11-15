@@ -1,0 +1,33 @@
+single site: U* = 15, Sigma = 0 (first ends 0, breaks 0), 8U* - 3 Sigma = 120; end-sources by length of chord: {}
+pair: U* = 26, Sigma = 0 (first ends 0, breaks 0), 8U* - 3 Sigma = 208; end-sources by length of chord: {}
+O_2: U* = 42, Sigma = 0 (first ends 0, breaks 0), 8U* - 3 Sigma = 336; end-sources by length of chord: {}
+O_3: U* = 54, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 288; end-sources by length of chord: {2: 48}
+O_4: U* = 42, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 192; end-sources by length of chord: {2: 48}
+O_5: U* = 18, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 0; end-sources by length of chord: {2: 48}
+O_6: U* = 18, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 0; end-sources by length of chord: {2: 48}
+O_7: U* = 18, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 0; end-sources by length of chord: {2: 48}
+O_8: U* = 18, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 0; end-sources by length of chord: {2: 48}
+O_9: U* = 18, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 0; end-sources by length of chord: {2: 48}
+tetra 4: U* = 60, Sigma = 0 (first ends 0, breaks 0), 8U* - 3 Sigma = 480; end-sources by length of chord: {}
+tetra 6: U* = 60, Sigma = 0 (first ends 0, breaks 0), 8U* - 3 Sigma = 480; end-sources by length of chord: {}
+tetra 9: U* = 78, Sigma = 0 (first ends 0, breaks 0), 8U* - 3 Sigma = 624; end-sources by length of chord: {}
+rod: U* = 114, Sigma = 0 (first ends 0, breaks 0), 8U* - 3 Sigma = 912; end-sources by length of chord: {}
+layer: U* = 195, Sigma = 0 (first ends 0, breaks 0), 8U* - 3 Sigma = 1560; end-sources by length of chord: {}
+O_6 without a vertex: U* = 19, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 8; end-sources by length of chord: {2: 40, 3: 8}
+O_6 with a site on a face: U* = 24, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 48; end-sources by length of chord: {2: 48}
+O_7 u O_7+(2,2,2): U* = 24, Sigma = 60 (first ends 60, breaks 0), 8U* - 3 Sigma = 12; end-sources by length of chord: {2: 60}
+O_7 u O_7+(1,1,0): U* = 20, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 16; end-sources by length of chord: {2: 40, 3: 8}
+O_7 u O_7+(2,0,0): U* = 42, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 192; end-sources by length of chord: {2: 48}
+O_7 u O_7+(4,0,0): U* = 54, Sigma = 96 (first ends 96, breaks 0), 8U* - 3 Sigma = 144; end-sources by length of chord: {2: 80, 6: 16}
+two O_5 and a site: U* = 43, Sigma = 96 (first ends 96, breaks 0), 8U* - 3 Sigma = 56; end-sources by length of chord: {2: 96}
+two O_6 vertex to vertex: U* = 44, Sigma = 96 (first ends 96, breaks 0), 8U* - 3 Sigma = 64; end-sources by length of chord: {2: 96}
+two O_7 tip to tip: U* = 51, Sigma = 96 (first ends 96, breaks 0), 8U* - 3 Sigma = 120; end-sources by length of chord: {2: 96}
+O_9 with island 3 at (0,0): U* = 21, Sigma = 60 (first ends 58, breaks 2), 8U* - 3 Sigma = -12; end-sources by length of chord: {2: 48, 3: 4, 4: 2, 5: 4, 8: 2}
+O_9 with island 3 at (1,2): U* = 21, Sigma = 54 (first ends 54, breaks 0), 8U* - 3 Sigma = 6; end-sources by length of chord: {2: 54}
+O_9 with island 5 at (1,1): U* = 21, Sigma = 54 (first ends 54, breaks 0), 8U* - 3 Sigma = 6; end-sources by length of chord: {2: 54}
+O_13 with island 6 at (2,2): U* = 21, Sigma = 54 (first ends 54, breaks 0), 8U* - 3 Sigma = 6; end-sources by length of chord: {2: 54}
+O_9 with reversed island 3: U* = 33, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 120; end-sources by length of chord: {2: 48}
+O_5 u O_8+(3,1,1): U* = 21, Sigma = 60 (first ends 58, breaks 2), 8U* - 3 Sigma = -12; end-sources by length of chord: {2: 48, 3: 4, 5: 2, 6: 2, 7: 4}
+O_9 with a cavity O_3: U* = 126, Sigma = 48 (first ends 48, breaks 0), 8U* - 3 Sigma = 864; end-sources by length of chord: {2: 48}
+O_8 and O_4 on a vertex: U* = 54, Sigma = 96 (first ends 96, breaks 0), 8U* - 3 Sigma = 144; end-sources by length of chord: {2: 80, 3: 16}
+O_8 and O_4 on a face: U* = 60, Sigma = 90 (first ends 84, breaks 6), 8U* - 3 Sigma = 210; end-sources by length of chord: {2: 78, 5: 6, 6: 6}

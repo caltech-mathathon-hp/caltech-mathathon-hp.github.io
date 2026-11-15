@@ -1,0 +1,40 @@
+roof O_7, legs O_5, J = 2: 104 connected bodies
+   least Psi: +8.163 at (a, b, c) = (11, 0, 1) (U* = 70, K = 15.17, long chains 18)
+   largest 3 L - U*: -16 at (a, b, c) = (11, 0, 1) (U* = 70, long chains 18, of which seen from above 3, Psi = +8.163)
+   bodies with three long chains seen from above (roof and both legs): 11; among them least U* = 70, least U* - 3 L = 16, least Psi = +8.163
+   alarms (Psi < 0 or 3 L > U*): 0
+      (a, b, c) = (11, 0, 1): N = 401, U* = 70, long chains 18 (3 from above), U* - 3 L = 16, K = 15.17, Psi = +8.163
+      (a, b, c) = (11, 1, 0): N = 401, U* = 70, long chains 18 (3 from above), U* - 3 L = 16, K = 15.17, Psi = +8.163
+      (a, b, c) = (1, 1, 10): N = 364, U* = 57, long chains 12 (2 from above), U* - 3 L = 21, K = 9.58, Psi = +9.418
+      (a, b, c) = (1, 1, 8): N = 357, U* = 54, long chains 8 (2 from above), U* - 3 L = 30, K = 8.41, Psi = +9.595
+      (a, b, c) = (10, 0, 0): N = 399, U* = 84, long chains 18 (3 from above), U* - 3 L = 30, K = 14.25, Psi = +13.752
+roof O_7, legs O_6, J = 3: 130 connected bodies
+   least Psi: +7.348 at (a, b, c) = (2, 2, 1) (U* = 40, K = 5.99, long chains 6)
+   largest 3 L - U*: -16 at (a, b, c) = (12, 0, 1) (U* = 70, long chains 18, of which seen from above 3, Psi = +7.426)
+   bodies with three long chains seen from above (roof and both legs): 11; among them least U* = 70, least U* - 3 L = 16, least Psi = +7.426
+   alarms (Psi < 0 or 3 L > U*): 0
+      (a, b, c) = (12, 0, 1): N = 523, U* = 70, long chains 18 (3 from above), U* - 3 L = 16, K = 15.91, Psi = +7.426
+      (a, b, c) = (12, 1, 0): N = 523, U* = 70, long chains 18 (3 from above), U* - 3 L = 16, K = 15.91, Psi = +7.426
+      (a, b, c) = (1, 1, 11): N = 447, U* = 57, long chains 12 (2 from above), U* - 3 L = 21, K = 9.83, Psi = +9.166
+      (a, b, c) = (2, 2, 1): N = 343, U* = 40, long chains 6 (1 from above), U* - 3 L = 22, K = 5.99, Psi = +7.348
+      (a, b, c) = (11, 0, 0): N = 521, U* = 84, long chains 18 (3 from above), U* - 3 L = 30, K = 15.04, Psi = +12.956
+roof O_6, legs O_6, J = 2: 116 connected bodies
+   least Psi: +4.148 at (a, b, c) = (1, 1, 2) (U* = 30, K = 5.85, long chains 6)
+   largest 3 L - U*: -12 at (a, b, c) = (1, 1, 2) (U* = 30, long chains 6, of which seen from above 1, Psi = +4.148)
+   bodies with three long chains seen from above (roof and both legs): 17; among them least U* = 70, least U* - 3 L = 16, least Psi = +7.406
+   alarms (Psi < 0 or 3 L > U*): 0
+      (a, b, c) = (1, 1, 2): N = 258, U* = 30, long chains 6 (1 from above), U* - 3 L = 12, K = 5.85, Psi = +4.148
+      (a, b, c) = (1, 2, 1): N = 278, U* = 32, long chains 6 (1 from above), U* - 3 L = 14, K = 5.83, Psi = +4.832
+      (a, b, c) = (2, 1, 1): N = 278, U* = 32, long chains 6 (1 from above), U* - 3 L = 14, K = 5.83, Psi = +4.832
+      (a, b, c) = (11, 0, 1): N = 438, U* = 70, long chains 18 (3 from above), U* - 3 L = 16, K = 15.93, Psi = +7.406
+      (a, b, c) = (11, 1, 0): N = 438, U* = 70, long chains 18 (3 from above), U* - 3 L = 16, K = 15.93, Psi = +7.406
+roof O_8, legs O_4, J = 2: 96 connected bodies
+   least Psi: +4.887 at (a, b, c) = (5, 0, 1) (U* = 34, K = 6.45, long chains 10)
+   largest 3 L - U*: -4 at (a, b, c) = (5, 0, 1) (U* = 34, long chains 10, of which seen from above 1, Psi = +4.887)
+   bodies with three long chains seen from above (roof and both legs): 8; among them least U* = 94, least U* - 3 L = 52, least Psi = +18.094
+   alarms (Psi < 0 or 3 L > U*): 0
+      (a, b, c) = (5, 0, 1): N = 376, U* = 34, long chains 10 (1 from above), U* - 3 L = 4, K = 6.45, Psi = +4.887
+      (a, b, c) = (5, 1, 0): N = 376, U* = 34, long chains 10 (2 from above), U* - 3 L = 4, K = 6.45, Psi = +4.887
+      (a, b, c) = (0, 1, 5): N = 376, U* = 40, long chains 8 (1 from above), U* - 3 L = 16, K = 6.45, Psi = +6.887
+      (a, b, c) = (1, 0, 5): N = 376, U* = 40, long chains 8 (1 from above), U* - 3 L = 16, K = 6.45, Psi = +6.887
+      (a, b, c) = (4, 0, 2): N = 376, U* = 46, long chains 7 (1 from above), U* - 3 L = 25, K = 6.45, Psi = +8.887

@@ -1,0 +1,2 @@
+islands on a face of O_9: 110 bodies; largest n with M_n < 0: {0: 11, 3: 74, 4: 5, 5: 14, 6: 6}; largest n with M'_n < 0: {0: 110}; worst for M': (0, (True, 1, 0, 0), 24)
+bodies at one site from O_7: 398 bodies; largest n with M_n < 0: {0: 254, 3: 144}; largest n with M'_n < 0: {0: 398}; worst for M': (0, (-7, -1, 0), 29)

@@ -1,0 +1,7 @@
+n = 12: cut pairs 72, run ends not of the form path end + (sign x, sign y, 0): 0
+n = 14: cut pairs 190, run ends not of the form path end + (sign x, sign y, 0): 0
+n = 16: cut pairs 382, run ends not of the form path end + (sign x, sign y, 0): 0
+n = 18: cut pairs 660, run ends not of the form path end + (sign x, sign y, 0): 0
+n = 20: cut pairs 1044, run ends not of the form path end + (sign x, sign y, 0): 0
+n = 22: cut pairs 1546, run ends not of the form path end + (sign x, sign y, 0): 0
+n = 24: cut pairs 2186, run ends not of the form path end + (sign x, sign y, 0): 0

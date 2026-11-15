@@ -1,0 +1,377 @@
+{
+  "construction": "one edge, two face crossings, long separators",
+  "gapDistanceChecks": [
+    {
+      "gap": 0,
+      "shortestEdges": 3
+    },
+    {
+      "gap": 1,
+      "shortestEdges": 6
+    },
+    {
+      "gap": 2,
+      "shortestEdges": 7
+    },
+    {
+      "gap": 3,
+      "shortestEdges": 8
+    },
+    {
+      "gap": 4,
+      "shortestEdges": 9
+    },
+    {
+      "gap": 5,
+      "shortestEdges": 10
+    },
+    {
+      "gap": 6,
+      "shortestEdges": 11
+    },
+    {
+      "gap": 7,
+      "shortestEdges": 12
+    },
+    {
+      "gap": 8,
+      "shortestEdges": 13
+    },
+    {
+      "gap": 9,
+      "shortestEdges": 14
+    },
+    {
+      "gap": 10,
+      "shortestEdges": 15
+    },
+    {
+      "gap": 11,
+      "shortestEdges": 16
+    },
+    {
+      "gap": 12,
+      "shortestEdges": 17
+    }
+  ],
+  "markerPlacementChecks": [
+    {
+      "q": 2,
+      "B": 2,
+      "g": 8,
+      "d": 28,
+      "states": 28,
+      "solutions": 2
+    },
+    {
+      "q": 2,
+      "B": 4,
+      "g": 10,
+      "d": 38,
+      "states": 64,
+      "solutions": 2
+    },
+    {
+      "q": 2,
+      "B": 6,
+      "g": 12,
+      "d": 48,
+      "states": 116,
+      "solutions": 2
+    },
+    {
+      "q": 3,
+      "B": 2,
+      "g": 8,
+      "d": 38,
+      "states": 82,
+      "solutions": 2
+    },
+    {
+      "q": 3,
+      "B": 4,
+      "g": 10,
+      "d": 52,
+      "states": 314,
+      "solutions": 2
+    },
+    {
+      "q": 3,
+      "B": 6,
+      "g": 12,
+      "d": 66,
+      "states": 802,
+      "solutions": 2
+    },
+    {
+      "q": 4,
+      "B": 2,
+      "g": 8,
+      "d": 48,
+      "states": 244,
+      "solutions": 2
+    },
+    {
+      "q": 4,
+      "B": 4,
+      "g": 10,
+      "d": 66,
+      "states": 1564,
+      "solutions": 2
+    },
+    {
+      "q": 4,
+      "B": 6,
+      "g": 12,
+      "d": 84,
+      "states": 5604,
+      "solutions": 2
+    }
+  ],
+  "cases": [
+    {
+      "q": 2,
+      "B": 6,
+      "sizes": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "groups": [
+        [
+          0,
+          2,
+          4
+        ],
+        [
+          1,
+          3,
+          5
+        ]
+      ],
+      "separatorH": 12,
+      "side": 50,
+      "connectorPs": 400,
+      "residues": 144808,
+      "hCount": 125000,
+      "bondScore": 367500,
+      "backboneHH": 117504,
+      "nonbackboneScore": 249996,
+      "bounds": [
+        [
+          -17,
+          74
+        ],
+        [
+          -11,
+          193
+        ],
+        [
+          -172,
+          203
+        ]
+      ],
+      "strictThreePartition": true,
+      "status": "PASS: literal single word, every step, global injectivity, all H/P labels, cube coverage, and both scores"
+    },
+    {
+      "q": 3,
+      "B": 6,
+      "sizes": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "groups": [
+        [
+          8,
+          1,
+          5
+        ],
+        [
+          0,
+          7,
+          3
+        ],
+        [
+          6,
+          4,
+          2
+        ]
+      ],
+      "separatorH": 12,
+      "side": 68,
+      "connectorPs": 544,
+      "residues": 350352,
+      "hCount": 314432,
+      "bondScore": 929424,
+      "backboneHH": 300564,
+      "nonbackboneScore": 628860,
+      "bounds": [
+        [
+          -17,
+          95
+        ],
+        [
+          -11,
+          283
+        ],
+        [
+          -244,
+          284
+        ]
+      ],
+      "strictThreePartition": true,
+      "status": "PASS: literal single word, every step, global injectivity, all H/P labels, cube coverage, and both scores"
+    },
+    {
+      "q": 2,
+      "B": 12,
+      "sizes": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "groups": [
+        [
+          5,
+          2,
+          0
+        ],
+        [
+          3,
+          1,
+          4
+        ]
+      ],
+      "separatorH": 18,
+      "side": 80,
+      "connectorPs": 640,
+      "residues": 558100,
+      "hCount": 512000,
+      "bondScore": 1516800,
+      "backboneHH": 492804,
+      "nonbackboneScore": 1023996,
+      "bounds": [
+        [
+          -17,
+          104
+        ],
+        [
+          -11,
+          335
+        ],
+        [
+          -295,
+          338
+        ]
+      ],
+      "strictThreePartition": true,
+      "status": "PASS: literal single word, every step, global injectivity, all H/P labels, cube coverage, and both scores"
+    },
+    {
+      "q": 2,
+      "B": 20,
+      "sizes": [
+        6,
+        8,
+        6,
+        6,
+        6,
+        8
+      ],
+      "groups": [
+        [
+          1,
+          3,
+          4
+        ],
+        [
+          5,
+          0,
+          2
+        ]
+      ],
+      "separatorH": 26,
+      "side": 120,
+      "connectorPs": 960,
+      "residues": 1825956,
+      "hCount": 1728000,
+      "bondScore": 5140800,
+      "backboneHH": 1684804,
+      "nonbackboneScore": 3455996,
+      "bounds": [
+        [
+          -17,
+          144
+        ],
+        [
+          -11,
+          542
+        ],
+        [
+          -457,
+          518
+        ]
+      ],
+      "strictThreePartition": true,
+      "status": "PASS: literal single word, every step, global injectivity, all H/P labels, cube coverage, and both scores"
+    },
+    {
+      "q": 2,
+      "B": 6,
+      "sizes": [
+        2,
+        4,
+        4,
+        2
+      ],
+      "groups": [
+        [
+          1,
+          0
+        ],
+        [
+          3,
+          2
+        ]
+      ],
+      "separatorH": 12,
+      "side": 50,
+      "connectorPs": 400,
+      "residues": 144008,
+      "hCount": 125000,
+      "bondScore": 367500,
+      "backboneHH": 117504,
+      "nonbackboneScore": 249996,
+      "bounds": [
+        [
+          -17,
+          72
+        ],
+        [
+          -11,
+          195
+        ],
+        [
+          -178,
+          203
+        ]
+      ],
+      "strictThreePartition": false,
+      "status": "PASS: literal single word, every step, global injectivity, all H/P labels, cube coverage, and both scores"
+    }
+  ]
+}

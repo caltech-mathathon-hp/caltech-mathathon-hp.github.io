@@ -1,0 +1,17 @@
+   pair: U* = 26, (K') least slack 13.33 at x = 1/2; least increment 238.00 at n = 3; M'_3 = 150.0; least M'_n, n >= 4: 388.0
+   O_2: U* = 42, (K') least slack 64.00 at x = 1/2; least increment 372.00 at n = 3; M'_3 = 252.0; least M'_n, n >= 4: 624.0
+   O_3: U* = 54, (K') least slack 96.00 at x = 1/2; least increment 432.00 at n = 3; M'_3 = 324.0; least M'_n, n >= 4: 756.0
+   O_4: U* = 42, (K') least slack 64.00 at x = 1/2; least increment 264.00 at n = 3; M'_3 = 216.0; least M'_n, n >= 4: 480.0
+   O_5: U* = 18, (K') least slack 0.00 at x = 1/2; least increment 0.00 at n = 3; M'_3 = 0.0; least M'_n, n >= 4: 0.0
+   O_6: U* = 18, (K') least slack 0.00 at x = 1/2; least increment 0.00 at n = 3; M'_3 = 0.0; least M'_n, n >= 4: 0.0
+   O_7: U* = 18, (K') least slack 0.00 at x = 1/2; least increment 0.00 at n = 3; M'_3 = 0.0; least M'_n, n >= 4: 0.0
+   O_8: U* = 18, (K') least slack 0.00 at x = 1/2; least increment 0.00 at n = 3; M'_3 = 0.0; least M'_n, n >= 4: 0.0
+   O_9: U* = 18, (K') least slack 0.00 at x = 1/2; least increment 0.00 at n = 3; M'_3 = 0.0; least M'_n, n >= 4: 0.0
+   tetra 4: U* = 60, (K') least slack 112.00 at x = 1/2; least increment 498.00 at n = 3; M'_3 = 288.0; least M'_n, n >= 4: 786.0
+   tetra 6: U* = 60, (K') least slack 112.00 at x = 1/2; least increment 462.00 at n = 3; M'_3 = 180.0; least M'_n, n >= 4: 642.0
+   tetra 9: U* = 78, (K') least slack 160.00 at x = 1/2; least increment 606.00 at n = 3; M'_3 = 180.0; least M'_n, n >= 4: 786.0
+   rod: U* = 114, (K') least slack 120.00 at x = 1/2; least increment 1050.00 at n = 3; M'_3 = 552.0; least M'_n, n >= 4: 1602.0
+   layer: U* = 195, (K') least slack 424.00 at x = 1/2; least increment 1803.00 at n = 3; M'_3 = 882.0; least M'_n, n >= 4: 2685.0
+   O_6 without a vertex: U* = 19, (K') least slack 5.33 at x = 5/2; least increment 6.00 at n = 4; M'_3 = 12.0; least M'_n, n >= 4: 26.0
+   O_7 u O_7+(2,2,2): U* = 24, (K') least slack -124.00 at x = 1; least increment 12.00 at n = 3; M'_3 = 225.0; least M'_n, n >= 4: 237.0
+   two O_5 and a site: U* = 43, (K') least slack 14.67 at x = 1/2; least increment 47.00 at n = 3; M'_3 = -15.0; least M'_n, n >= 4: 32.0

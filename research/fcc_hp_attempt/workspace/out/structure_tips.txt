@@ -1,0 +1,4 @@
+Lemma 68 (d): for each of the 12 ridges and both directions (24 cases) the only shape-regular set that the next site of the line can have is that of the same ridge.
+for each of the 24 pairs (nu, k): an active run of 2 sites with tip X forces the four neighbours of X on the side away from the tip to be in S
+and three of the four neighbours of X in the plane orthogonal to the axis to be empty; the four faces around one axis direction leave out four different ones.
+So X is the tip of 4 such fans of one axis direction if all four are empty, and of at most 1 if exactly three are.

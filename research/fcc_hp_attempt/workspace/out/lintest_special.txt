@@ -1,0 +1,12 @@
+   O_9 with a cavity O_3: N = 470, U* = 126, least Lam_n = 2106 at n = 3; largest n with M_n < 0: 2
+   O_7 with a one-site cavity: N = 230, U* = 36, least Lam_n = 612 at n = 4; largest n with M_n < 0: 2
+   ring of four O_5: N = 316, U* = 141, least Lam_n = 1701 at n = 3; largest n with M_n < 0: 2
+   three O_6 in a row, vertex to vertex: N = 438, U* = 70, least Lam_n = 716 at n = 5; largest n with M_n < 0: 3
+   three O_6 at a right angle: N = 438, U* = 70, least Lam_n = 716 at n = 5; largest n with M_n < 0: 3
+   two O_7 tip to tip: N = 461, U* = 51, least Lam_n = 912 at n = 5; largest n with M_n < 0: 2
+   two O_7 along an axis, offset 6: N = 418, U* = 54, least Lam_n = 1368 at n = 4; largest n with M_n < 0: 2
+   O_8 and O_4 on a vertex: N = 382, U* = 54, least Lam_n = 1152 at n = 4; largest n with M_n < 0: 2
+   O_8 and O_4 on a face: N = 388, U* = 60, least Lam_n = 1236 at n = 4; largest n with M_n < 0: 2
+   two O_6 joined by a zigzag: N = 294, U* = 54, least Lam_n = 558 at n = 4; largest n with M_n < 0: 3
+   O_7 with twin tops (2,0,0): N = 316, U* = 42, least Lam_n = 984 at n = 4; largest n with M_n < 0: 2
+special bodies: 11 bodies; with Lam_n < 0: 0; least Lam_n = 558 at n = 4 (two O_6 joined by a zigzag, U* = 54); largest n with M_n < 0, by number of bodies: {2: 8, 3: 3}

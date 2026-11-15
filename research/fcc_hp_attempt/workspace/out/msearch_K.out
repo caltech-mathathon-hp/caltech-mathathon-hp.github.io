@@ -1,0 +1,8 @@
+unions O_7, O_7+v: 79 bodies; with 3 H_j > 4 U* j for some j: 0; least (4/3) U* j - H_j = 1.33 at j = 1 ((2, 1, 1), U* = 22)
+unions O_9, O_9+v: 146 bodies; with 3 H_j > 4 U* j for some j: 0; least (4/3) U* j - H_j = 1.33 at j = 1 ((2, 1, 1), U* = 22)
+unions O_5, O_8+v: 61 bodies; with 3 H_j > 4 U* j for some j: 0; least (4/3) U* j - H_j = 1.00 at j = 1 ((2, 2, 1), U* = 21)
+unions O_6, O_9+v: 88 bodies; with 3 H_j > 4 U* j for some j: 0; least (4/3) U* j - H_j = 1.00 at j = 1 ((2, 2, 1), U* = 21)
+bodies at one site from O_5: 206 bodies; with 3 H_j > 4 U* j for some j: 0; least (4/3) U* j - H_j = 1.33 at j = 4 ((-4, 0, 0), U* = 19)
+bodies at one site from O_6: 294 bodies; with 3 H_j > 4 U* j for some j: 0; least (4/3) U* j - H_j = 2.00 at j = 1 ((-4, -2, -1), U* = 24)
+bodies at one site from O_7: 398 bodies; with 3 H_j > 4 U* j for some j: 0; least (4/3) U* j - H_j = 2.00 at j = 1 ((-5, -2, -1), U* = 24)
+bodies at one site from O_8: 518 bodies; with 3 H_j > 4 U* j for some j: 0; least (4/3) U* j - H_j = 2.00 at j = 1 ((-6, -2, -1), U* = 24)

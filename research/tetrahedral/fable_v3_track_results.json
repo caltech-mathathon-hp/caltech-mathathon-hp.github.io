@@ -1,0 +1,229 @@
+{
+  "method": "Independent lattice-neighbour and octahedron-inequality calculation; no author code imported",
+  "results": [
+    {
+      "m": 80,
+      "basePositions": 70,
+      "combinations": 3500,
+      "meetingTypes": [
+        [
+          "Acap",
+          "PPPa",
+          0
+        ],
+        [
+          "PPPa",
+          "Acap",
+          2
+        ],
+        [
+          "PPPa",
+          "PPPa",
+          2
+        ],
+        [
+          "PPPb",
+          "PPPb",
+          2
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          0
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          2
+        ]
+      ]
+    },
+    {
+      "m": 81,
+      "basePositions": 71,
+      "combinations": 3550,
+      "meetingTypes": [
+        [
+          "Acap",
+          "PPPa",
+          0
+        ],
+        [
+          "PPPa",
+          "Acap",
+          2
+        ],
+        [
+          "PPPa",
+          "PPPa",
+          2
+        ],
+        [
+          "PPPb",
+          "PPPb",
+          2
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          0
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          2
+        ]
+      ]
+    },
+    {
+      "m": 82,
+      "basePositions": 72,
+      "combinations": 3600,
+      "meetingTypes": [
+        [
+          "Acap",
+          "PPPa",
+          0
+        ],
+        [
+          "PPPa",
+          "Acap",
+          2
+        ],
+        [
+          "PPPa",
+          "PPPa",
+          2
+        ],
+        [
+          "PPPb",
+          "PPPb",
+          2
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          0
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          2
+        ]
+      ]
+    },
+    {
+      "m": 336,
+      "basePositions": 326,
+      "combinations": 16300,
+      "meetingTypes": [
+        [
+          "Acap",
+          "PPPa",
+          0
+        ],
+        [
+          "PPPa",
+          "Acap",
+          2
+        ],
+        [
+          "PPPa",
+          "PPPa",
+          2
+        ],
+        [
+          "PPPb",
+          "PPPb",
+          2
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          0
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          2
+        ]
+      ]
+    },
+    {
+      "m": 1000,
+      "basePositions": 990,
+      "combinations": 49500,
+      "meetingTypes": [
+        [
+          "Acap",
+          "PPPa",
+          0
+        ],
+        [
+          "PPPa",
+          "Acap",
+          2
+        ],
+        [
+          "PPPa",
+          "PPPa",
+          2
+        ],
+        [
+          "PPPb",
+          "PPPb",
+          2
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          0
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          2
+        ]
+      ]
+    },
+    {
+      "m": 1000000,
+      "basePositions": 6,
+      "combinations": 300,
+      "meetingTypes": [
+        [
+          "Acap",
+          "PPPa",
+          0
+        ],
+        [
+          "PPPa",
+          "Acap",
+          2
+        ],
+        [
+          "PPPa",
+          "PPPa",
+          2
+        ],
+        [
+          "PPPb",
+          "PPPb",
+          2
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          0
+        ],
+        [
+          "PPPb",
+          "Tcap",
+          2
+        ]
+      ]
+    }
+  ],
+  "totalCombinations": 76750,
+  "failures": 0
+}

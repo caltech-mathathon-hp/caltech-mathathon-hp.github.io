@@ -1,0 +1,22 @@
+O_7: N=231 U*=18 W=-18 def2=12 def1=0  tops T=6 (one-site 6, at 6 sites)  U*-3T=0  U*-(4T-6)=0  U*-(6T-18)=0
+O_7 + cell of a vertex: N=232 U*=29 W=-16 def2=15 def1=0  tops T=7 (one-site 7, at 6 sites)  U*-3T=8  U*-(4T-6)=7  U*-(6T-18)=5
+O_7 + site on a face: N=232 U*=24 W=-15 def2=13 def1=0  tops T=6 (one-site 6, at 6 sites)  U*-3T=6  U*-(4T-6)=6  U*-(6T-18)=6
+O_7 + site over an edge: N=232 U*=32 W=-13 def2=15 def1=0  tops T=8 (one-site 8, at 7 sites)  U*-3T=8  U*-(4T-6)=6  U*-(6T-18)=2
+O_7 + 5 sites on a vertex: N=236 U*=51 W=-9 def2=20 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=21  U*-(4T-6)=17  U*-(6T-18)=9
+O_7+(13, 1, 0): N=462 U*=44 W=-16 def2=20 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=14  U*-(4T-6)=10  U*-(6T-18)=2
+O_7+(12, 0, 0): N=461 U*=51 W=-9 def2=20 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=21  U*-(4T-6)=17  U*-(6T-18)=9
+O_7+(4, 0, 0): N=377 U*=54 W=-6 def2=20 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=24  U*-(4T-6)=20  U*-(6T-18)=12
+O_7+(2, 2, 2): N=358 U*=24 W=-12 def2=12 def1=0  tops T=6 (one-site 6, at 6 sites)  U*-3T=6  U*-(4T-6)=6  U*-(6T-18)=6
+O_7+(1, 1, 0): N=280 U*=20 W=-16 def2=12 def1=0  tops T=6 (one-site 4, at 4 sites)  U*-3T=2  U*-(4T-6)=2  U*-(6T-18)=2
+O_7+(4, 4, 4): N=443 U*=66 W=-6 def2=24 def1=0  tops T=12 (one-site 12, at 12 sites)  U*-3T=30  U*-(4T-6)=24  U*-(6T-18)=12
+O_7+(8, 3, 3): N=462 U*=54 W=-6 def2=20 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=24  U*-(4T-6)=20  U*-(6T-18)=12
+O_7+(3, 3, 0): N=370 U*=36 W=-12 def2=16 def1=0  tops T=8 (one-site 8, at 8 sites)  U*-3T=12  U*-(4T-6)=10  U*-(6T-18)=6
+O_7+(5, 4, 3): N=444 U*=54 W=-6 def2=20 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=24  U*-(4T-6)=20  U*-(6T-18)=12
+O_7+(12, 2, 0): N=462 U*=52 W=-8 def2=20 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=22  U*-(4T-6)=18  U*-(6T-18)=10
+three in a row: N=438 U*=70 W=-14 def2=28 def1=0  tops T=14 (one-site 14, at 14 sites)  U*-3T=28  U*-(4T-6)=20  U*-(6T-18)=4
+O_7 + O_3+(4, 3, 3): N=250 U*=54 W=-9 def2=21 def1=0  tops T=9 (one-site 9, at 9 sites)  U*-3T=27  U*-(4T-6)=24  U*-(6T-18)=18
+O_7 + O_4+(4, 4, 3): N=275 U*=53 W=-7 def2=19 def1=1  tops T=9 (one-site 9, at 9 sites)  U*-3T=26  U*-(4T-6)=23  U*-(6T-18)=17
+O_7 + O_3+(8, 0, 0): N=249 U*=63 W=-9 def2=24 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=33  U*-(4T-6)=29  U*-(6T-18)=21
+O_7 + O_3+(9, 1, 0): N=250 U*=68 W=-16 def2=28 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=38  U*-(4T-6)=34  U*-(6T-18)=26
+O_7 + O_4+(10, 1, 0): N=275 U*=56 W=-16 def2=24 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=26  U*-(4T-6)=22  U*-(6T-18)=14
+O_7 + O_5+(11, 1, 0): N=316 U*=44 W=-16 def2=20 def1=0  tops T=10 (one-site 10, at 10 sites)  U*-3T=14  U*-(4T-6)=10  U*-(6T-18)=2

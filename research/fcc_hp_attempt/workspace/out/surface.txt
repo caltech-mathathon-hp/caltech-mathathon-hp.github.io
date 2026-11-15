@@ -1,0 +1,12 @@
+n = 8: decoration valid (18 units, 110 doubly decorated sites): True; four pieces of 22 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 10: decoration valid (18 units, 142 doubly decorated sites): True; four pieces of 46 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 12: decoration valid (18 units, 174 doubly decorated sites): True; four pieces of 78 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 14: decoration valid (18 units, 206 doubly decorated sites): True; four pieces of 118 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 16: decoration valid (18 units, 238 doubly decorated sites): True; four pieces of 166 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 18: decoration valid (18 units, 270 doubly decorated sites): True; four pieces of 222 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 20: decoration valid (18 units, 302 doubly decorated sites): True; four pieces of 286 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 22: decoration valid (18 units, 334 doubly decorated sites): True; four pieces of 358 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 24: decoration valid (18 units, 366 doubly decorated sites): True; four pieces of 438 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 26: decoration valid (18 units, 398 doubly decorated sites): True; four pieces of 526 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 28: decoration valid (18 units, 430 doubly decorated sites): True; four pieces of 622 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True
+n = 30: decoration valid (18 units, 462 doubly decorated sites): True; four pieces of 726 sites: True; row lengths as stated: True; adjacencies inside the pieces as stated: True; consecutive rows form strips: True

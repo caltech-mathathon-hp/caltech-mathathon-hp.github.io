@@ -1,0 +1,13 @@
+O_6 and O_9: 88 connected unions up to symmetry
+  no overlap (touching): 26 unions, least U* = 44 at v = (14, 1, 0) (overlap 0, n2* = 200, ratio to one-octahedron capacity 1.27)
+  overlap at most 10% of the smaller: 45 unions, least U* = 44 at v = (14, 1, 0) (overlap 0, n2* = 200, ratio to one-octahedron capacity 1.27)
+  overlap at most 50%: 77 unions, least U* = 37 at v = (5, 2, 2) (overlap 61, n2* = 139, ratio to one-octahedron capacity 0.91)
+  any overlap: 88 unions, least U* = 21 at v = (2, 2, 1) (overlap 125, n2* = 127, ratio to one-octahedron capacity 0.87)
+  all unions with U* <= 36:
+    v = (2, 2, 1): U* = 21, overlap 125 of 146, n2* = 127, N = 510, ratio 0.87
+    v = (3, 1, 1): U* = 21, overlap 125 of 146, n2* = 127, N = 510, ratio 0.87
+    v = (4, 1, 0): U* = 26, overlap 110 of 146, n2* = 130, N = 525, ratio 0.88
+    v = (3, 2, 0): U* = 32, overlap 110 of 146, n2* = 128, N = 525, ratio 0.87
+    v = (5, 1, 1): U* = 34, overlap 80 of 146, n2* = 134, N = 555, ratio 0.89
+    v = (4, 2, 1): U* = 35, overlap 90 of 146, n2* = 131, N = 545, ratio 0.88
+  unions with U* <= 36 and n2* above the capacity of one octahedron of that size: 0; largest ratio among U* <= 36: 0.890

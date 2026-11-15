@@ -1,0 +1,4 @@
+n = 18: pairs of cuts tried 134 (cut slices at |z| >= 3), failing 0; run ends of kind a/b: 268/0
+n = 20: pairs of cuts tried 266 (cut slices at |z| >= 3), failing 0; run ends of kind a/b: 530/2
+n = 22: pairs of cuts tried 449 (cut slices at |z| >= 3), failing 0; run ends of kind a/b: 896/2
+n = 24: pairs of cuts tried 693 (cut slices at |z| >= 3), failing 0; run ends of kind a/b: 1382/4

@@ -1,0 +1,1 @@
+unions O_9, O_9+v: 146 bodies; (K') fails: 5, least slack -172.00 at x = 1 ((2, 2, 2), U* = 24); (I_n) fails: 0, least increment 12.00 at n = 3 ((2, 2, 2), U* = 24); M'_3 < 0: 0; M'_n < 0 for some n >= 4: 0; least positive value of min over n >= 4 of M'_n: 58.0 ((1, 1, 0))

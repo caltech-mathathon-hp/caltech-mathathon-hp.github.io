@@ -1,0 +1,2 @@
+n = 12, defects in rows 1 <= |z| <= 6: piece (1, 1): 30 defects in each half, 961 combinations, no pairing in 2; piece (-1, 1): 30 defects in each half, 961 combinations, no pairing in 2
+n = 14, defects in rows 1 <= |z| <= 8: piece (1, 1): 49 defects in each half, 2500 combinations, no pairing in 2; piece (-1, 1): 49 defects in each half, 2500 combinations, no pairing in 2

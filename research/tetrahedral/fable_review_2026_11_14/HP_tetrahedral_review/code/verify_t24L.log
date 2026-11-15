@@ -1,0 +1,5 @@
+valid self-avoiding walk on the tetrahedral lattice: yes
+length 7693861, H 18424, P 7675437
+H-H bonds (chain bonds included): 35696
+N = N_m with m = 24 ; proved upper bound 2N - 2m^2 = 35696 ; bound attained: True
+isoperimetric check |S| <= (4/3)(|dS|/4)^1.5 : 18424 <= 18432.0

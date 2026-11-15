@@ -1,0 +1,12 @@
+instance n12: n = 12, items [3, 3, 4, 3, 3, 4], B = 10, triples [(0, 1, 2), (3, 4, 5)]
+  slots 1320, largest radius 3988, P-runs 661, lambda = 31222 (the routes need at least 18003)
+  chain of 20640054 residues; word equals the word of Section 6 with lambda = 92mn^2 + 188mn + 14n + 46: True
+  checker: adjacent True; self-avoiding True; H's 2312, contacts 10492, Loss 2136; Lemma 1 holds True; n_1 = 624, n_2 = 348; HPH occurs False; gap = 18.0 against 9m = 18: WITNESS
+instance n14: n = 14, items [5, 6, 6, 5, 5, 7], B = 17, triples [(0, 1, 2), (3, 4, 5)]
+  slots 1768, largest radius 5336, P-runs 885, lambda = 41570 (the routes need at least 24358)
+  chain of 36793118 residues; word equals the word of Section 6 with lambda = 92mn^2 + 188mn + 14n + 46: True
+  checker: adjacent True; self-avoiding True; H's 3668, contacts 16872, Loss 2936; Lemma 1 holds True; n_1 = 944, n_2 = 412; HPH occurs False; gap = 18.0 against 9m = 18: WITNESS
+
+real	0m17.165s
+user	0m15.679s
+sys	0m1.385s

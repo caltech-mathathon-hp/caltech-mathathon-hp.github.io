@@ -1,0 +1,8 @@
+WORD: 15425 units, w = 30848 wires, linker length 7429692 (+1), total length 114596622238, H = 1038220 (N = 1038220), runs 32740, md5 f2bb92a56683fbd67b2f167619066575
+WORD: 15425 units, w = 30848 wires, linker length 7429692 (+1), total length 114596622238, H = 1038220 (N = 1038220), runs 32740, md5 f2bb92a56683fbd67b2f167619066575
+  separator 1 on track dimers 8,9: entry tether P^31 (taut 19, slack 12, skin 2) ; exit tether P^61 (taut 31, slack 30, skin 4)
+H-H bonds in this fold: 35696 ; proved upper bound 2N-2m^2: 35696 ; OPTIMAL: True
+valid self-avoiding walk on the tetrahedral lattice: yes N = N_m with m = 24 ; proved upper bound 2N - 2m^2 = 35696 ; bound attained: True 
+chain length 2888350 (H: 29260, P: 2859090) H-H bonds in this fold: 56952 ; proved upper bound 2N-2m^2: 56952 ; OPTIMAL: True valid self-avoiding walk on the tetrahedral lattice: yes N = N_m with m = 28 ; proved upper bound 2N - 2m^2 = 56952 ; bound attained: True 775764f0b8a8c1ba84bf1145041f7d09
+chain length 2888350 (H: 29260, P: 2859090) H-H bonds in this fold: 56952 ; proved upper bound 2N-2m^2: 56952 ; OPTIMAL: True valid self-avoiding walk on the tetrahedral lattice: yes N = N_m with m = 28 ; proved upper bound 2N - 2m^2 = 56952 ; bound attained: True 775764f0b8a8c1ba84bf1145041f7d09
+chain length 2888350 (H: 29260, P: 2859090) H-H bonds in this fold: 56952 ; proved upper bound 2N-2m^2: 56952 ; OPTIMAL: True valid self-avoiding walk on the tetrahedral lattice: yes N = N_m with m = 28 ; proved upper bound 2N - 2m^2 = 56952 ; bound attained: True 775764f0b8a8c1ba84bf1145041f7d09

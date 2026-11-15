@@ -1,0 +1,10 @@
+{
+  "tiles": 4,
+  "within_raw": 38,
+  "between_raw": 15,
+  "HH_per_tile": 2,
+  "exhaustive_mixed_examples": 340,
+  "exhaustive_odd_examples": 680,
+  "formula": "E(W_sigma) = 51*m-15 for |sigma|=2*m",
+  "odd_formula": "E(W_sigma) = 51*m-3+5*last_bit for |sigma|=2*m+1>=3"
+}

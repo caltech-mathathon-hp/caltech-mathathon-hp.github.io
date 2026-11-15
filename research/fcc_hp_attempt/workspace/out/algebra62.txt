@@ -1,0 +1,4 @@
+Proposition 62: identities hold on 2000 random integer cases
+O_6 without a vertex: the two other forms of M_n agree for n = 1..13; delta = 4, kappa_j for j = 1..7: ['16/3', '20/3', '8', '28/3', '8/3', '12', '112/3']
+O_7 u O_7+(2,2,2): the two other forms of M_n agree for n = 1..13; delta = 12, kappa_j for j = 1..7: ['2', '4', '12', '20', '28', '36', '32']
+two O_5 and a site: the two other forms of M_n agree for n = 1..13; delta = 20, kappa_j for j = 1..7: ['22/3', '50/3', '26', '106/3', '170/3', '112', '508/3']

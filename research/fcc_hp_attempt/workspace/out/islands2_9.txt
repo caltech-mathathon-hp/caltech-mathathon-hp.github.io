@@ -1,0 +1,8 @@
+k = 1: 20 positions; largest n with M_n < 0: 3 (shift (0, 1), U* = 24); least slack of (K): 2.00 (shift (0, 1), U* = 24); least Lam_n = 561 at n = 7 (shift (0, 0))
+k = 2: 16 positions; largest n with M_n < 0: 3 (shift (0, 1), U* = 24); least slack of (K): 5.00 (shift (0, 1), U* = 24); least Lam_n = 579 at n = 7 (shift (0, 0))
+k = 3: 12 positions; largest n with M_n < 0: 6 (shift (1, 1), U* = 21); least slack of (K): 0.00 (shift (1, 2), U* = 21); least Lam_n = 330 at n = 8 (shift (0, 0))
+k = 4: 9 positions; largest n with M_n < 0: 6 (shift (1, 1), U* = 21); least slack of (K): 1.00 (shift (0, 1), U* = 21); least Lam_n = 348 at n = 8 (shift (0, 0))
+k = 5: 6 positions; largest n with M_n < 0: 5 (shift (1, 1), U* = 21); least slack of (K): 1.00 (shift (0, 1), U* = 21); least Lam_n = 366 at n = 8 (shift (0, 0))
+k = 6: 4 positions; largest n with M_n < 0: 3 (shift (0, 0), U* = 21); least slack of (K): 1.00 (shift (0, 1), U* = 21); least Lam_n = 384 at n = 8 (shift (0, 0))
+k = 7: 2 positions; largest n with M_n < 0: 0 (shift (0, 0), U* = 21); least slack of (K): 4.00 (shift (0, 0), U* = 21); least Lam_n = 402 at n = 8 (shift (0, 0))
+k = 8: 1 positions; largest n with M_n < 0: 0 (shift (0, 0), U* = 21); least slack of (K): 10.00 (shift (0, 0), U* = 21); least Lam_n = 420 at n = 8 (shift (0, 0))

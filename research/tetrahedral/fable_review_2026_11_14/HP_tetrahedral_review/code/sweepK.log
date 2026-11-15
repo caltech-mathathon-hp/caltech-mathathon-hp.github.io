@@ -1,0 +1,12 @@
+m=80 K=1: NEAR FIELD OK: m=80 K=1 | borrowed: borrowed columns: 3 | slacks: 6 30 18 24 
+m=80 K=2: NEAR FIELD OK: m=80 K=2 | borrowed: borrowed columns: 4 | slacks: 6 44 18 38 28 32 
+m=80 K=3: NEAR FIELD OK: m=80 K=3 | borrowed: borrowed columns: 5 | slacks: 6 58 18 52 28 46 38 40 
+m=80 K=4: NEAR FIELD OK: m=80 K=4 | borrowed: borrowed columns: 6 | slacks: 6 72 18 66 28 60 38 54 48 48 
+m=80 K=5: NEAR FIELD OK: m=80 K=5 | borrowed: borrowed columns: 7 | slacks: 6 86 18 80 28 74 38 68 48 62 58 56 
+m=80 K=6: NEAR FIELD OK: m=80 K=6 | borrowed: borrowed columns: 8 | slacks: 6 100 18 94 28 88 38 82 48 76 58 70 68 64 
+m=82 K=1: NEAR FIELD OK: m=82 K=1 | borrowed: borrowed columns: 3 | slacks: 6 30 18 24 
+m=82 K=2: NEAR FIELD OK: m=82 K=2 | borrowed: borrowed columns: 4 | slacks: 6 44 18 38 28 32 
+m=82 K=3: NEAR FIELD OK: m=82 K=3 | borrowed: borrowed columns: 5 | slacks: 6 58 18 52 28 46 38 40 
+m=82 K=4: NEAR FIELD OK: m=82 K=4 | borrowed: borrowed columns: 6 | slacks: 6 72 18 66 28 60 38 54 48 48 
+m=82 K=5: NEAR FIELD OK: m=82 K=5 | borrowed: borrowed columns: 7 | slacks: 6 86 18 80 28 74 38 68 48 62 58 56 
+m=82 K=6: NEAR FIELD OK: m=82 K=6 | borrowed: borrowed columns: 8 | slacks: 6 100 18 94 28 88 38 82 48 76 58 70 68 64 

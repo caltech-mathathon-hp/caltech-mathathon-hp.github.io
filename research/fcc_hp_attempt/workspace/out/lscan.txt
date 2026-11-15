@@ -1,0 +1,4 @@
+O_7, O_7, J = 2: 79 unions; least U* - 3 L = 2 at v = (1, 1, 0) (overlap 182); unions with 3 L > U*: 0; unions with a long chain that does not start at a local top: 43, among them least U* - 3 L = 4 at v = (2, 1, 1)
+O_9, O_9, J = 3: 146 unions; least U* - 3 L = 2 at v = (1, 1, 0) (overlap 408); unions with 3 L > U*: 0; unions with a long chain that does not start at a local top: 70, among them least U* - 3 L = 4 at v = (2, 1, 1)
+O_5, O_8, J = 2: 61 unions; least U* - 3 L = 3 at v = (2, 2, 1) (overlap 70); unions with 3 L > U*: 0; unions with a long chain that does not start at a local top: 40, among them least U* - 3 L = 3 at v = (2, 2, 1)
+O_6, O_9, J = 2: 88 unions; least U* - 3 L = 3 at v = (2, 2, 1) (overlap 125); unions with 3 L > U*: 0; unions with a long chain that does not start at a local top: 62, among them least U* - 3 L = 3 at v = (2, 2, 1)

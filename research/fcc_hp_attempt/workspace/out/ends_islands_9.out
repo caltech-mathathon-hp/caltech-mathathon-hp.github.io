@@ -1,0 +1,1 @@
+islands on a face of O_9: 110 bodies; (K') fails: 30, least slack -62.00 at x = 1 ((True, 5, 1, 1), U* = 21); (I_n) fails: 0, least increment 3.00 at n = 3 ((True, 3, 1, 2), U* = 21); M'_3 < 0: 0; M'_n < 0 for some n >= 4: 0; least positive value of min over n >= 4 of M'_n: 46.5 ((True, 3, 0, 0))

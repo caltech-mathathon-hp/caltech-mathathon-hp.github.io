@@ -1,0 +1,90 @@
+{
+  "certified_pairs": 124,
+  "possible_pairs": 144,
+  "random_mixtures": 100,
+  "improved_candidate_first_module_determinant": 2,
+  "raw_formula": "53*m-15 for any concatenation of certified pairs",
+  "ordinary_formula": "53*m-15 minus the actual word-dependent consecutive-HH count",
+  "uncertified_pairs": [
+    [
+      0,
+      5
+    ],
+    [
+      0,
+      6
+    ],
+    [
+      0,
+      11
+    ],
+    [
+      0,
+      12
+    ],
+    [
+      0,
+      15
+    ],
+    [
+      2,
+      15
+    ],
+    [
+      2,
+      17
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      11,
+      0
+    ],
+    [
+      12,
+      0
+    ],
+    [
+      12,
+      5
+    ],
+    [
+      12,
+      6
+    ],
+    [
+      14,
+      0
+    ],
+    [
+      15,
+      3
+    ],
+    [
+      15,
+      5
+    ],
+    [
+      15,
+      6
+    ],
+    [
+      15,
+      8
+    ],
+    [
+      17,
+      5
+    ],
+    [
+      17,
+      6
+    ],
+    [
+      17,
+      8
+    ]
+  ]
+}

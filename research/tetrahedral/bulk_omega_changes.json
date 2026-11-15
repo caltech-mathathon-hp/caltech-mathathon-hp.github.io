@@ -1,0 +1,117 @@
+[
+  {
+    "side": -1,
+    "id": 822,
+    "row": false,
+    "alpha": 53,
+    "xhat": 1,
+    "before": false,
+    "after": true,
+    "sites": [
+      [
+        0,
+        4,
+        0
+      ],
+      [
+        1,
+        3,
+        -1
+      ]
+    ],
+    "shift": [
+      0,
+      0,
+      0
+    ],
+    "largeM": 100030,
+    "neighbours": [
+      {
+        "id": 791,
+        "row": true,
+        "alpha": 55,
+        "xhat": -2,
+        "sites": [
+          [
+            -1,
+            3,
+            1
+          ]
+        ]
+      },
+      {
+        "id": 878,
+        "row": false,
+        "alpha": 51,
+        "xhat": 4,
+        "sites": [
+          [
+            2,
+            4,
+            -2
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "side": 1,
+    "id": 821,
+    "row": false,
+    "alpha": 53,
+    "xhat": -1,
+    "before": false,
+    "after": true,
+    "sites": [
+      [
+        -1,
+        113,
+        -1
+      ],
+      [
+        0,
+        112,
+        0
+      ]
+    ],
+    "shift": [
+      0,
+      400000,
+      0
+    ],
+    "largeM": 100030,
+    "neighbours": [
+      {
+        "id": 760,
+        "row": false,
+        "alpha": 51,
+        "xhat": -5,
+        "sites": [
+          [
+            -3,
+            111,
+            -1
+          ],
+          [
+            -2,
+            112,
+            -2
+          ]
+        ]
+      },
+      {
+        "id": 877,
+        "row": true,
+        "alpha": 55,
+        "xhat": 2,
+        "sites": [
+          [
+            1,
+            113,
+            1
+          ]
+        ]
+      }
+    ]
+  }
+]

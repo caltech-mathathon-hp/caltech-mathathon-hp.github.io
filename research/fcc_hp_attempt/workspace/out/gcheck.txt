@@ -1,0 +1,14 @@
+unions O_7, O_7: 79 bodies, least slack 0 at v = (2, 0, 0), with slack 0: 1
+unions O_9, O_9: 146 bodies, least slack 0 at v = (2, 0, 0), with slack 0: 1
+unions O_5, O_8: 61 bodies, least slack 0 at v = (5, 0, 0), with slack 0: 1
+unions O_6, O_9: 88 bodies, least slack 0 at v = (5, 0, 0), with slack 0: 1
+one site from O_5: 206 bodies, least slack 1, with slack 0: 0
+one site from O_6: 294 bodies, least slack 1, with slack 0: 0
+one site from O_7: 398 bodies, least slack 1, with slack 0: 0
+one site from O_8: 518 bodies, least slack 1, with slack 0: 0
+roof O_6, legs O_5: 92 bodies, least slack 0 at (3, 0, 0)
+roof O_7, legs O_5: 104 bodies, least slack 0 at (4, 0, 0)
+roof O_7, legs O_6: 130 bodies, least slack 0 at (3, 0, 0)
+roof O_6, legs O_6: 116 bodies, least slack 0 at (0, 2, 0)
+roof O_8, legs O_4: 96 bodies, least slack 0 at (6, 0, 0)
+2328 bodies; G holds on all of them

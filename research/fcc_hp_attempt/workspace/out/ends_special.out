@@ -1,0 +1,13 @@
+   O_9 with a cavity O_3: U* = 126, (K') least slack 288.00 at x = 1/2; least increment 1026.00 at n = 3; M'_3 = 486.0; least M'_n, n >= 4: 1512.0
+   O_7 with a one-site cavity: U* = 36, (K') least slack 48.00 at x = 1/2; least increment 171.00 at n = 3; M'_3 = 81.0; least M'_n, n >= 4: 252.0
+   ring of four O_5: U* = 141, (K') least slack 248.00 at x = 1/2; least increment 1011.00 at n = 3; M'_3 = 933.0; least M'_n, n >= 4: 1944.0
+   three O_6 in a row, vertex to vertex: U* = 70, (K') least slack 58.67 at x = 1/2; least increment 152.00 at n = 3; M'_3 = 60.0; least M'_n, n >= 4: 212.0
+   three O_6 at a right angle: U* = 70, (K') least slack 58.67 at x = 1/2; least increment 152.00 at n = 3; M'_3 = 60.0; least M'_n, n >= 4: 212.0
+   two O_7 tip to tip: U* = 51, (K') least slack 56.00 at x = 1/2; least increment 168.00 at n = 3; M'_3 = 132.0; least M'_n, n >= 4: 300.0
+   two O_7 along an axis, offset 6: U* = 54, (K') least slack 64.00 at x = 1/2; least increment 348.00 at n = 3; M'_3 = 396.0; least M'_n, n >= 4: 744.0
+   O_8 and O_4 on a vertex: U* = 54, (K') least slack 64.00 at x = 1/2; least increment 264.00 at n = 3; M'_3 = 252.0; least M'_n, n >= 4: 516.0
+   O_8 and O_4 on a face: U* = 60, (K') least slack 82.00 at x = 1/2; least increment 322.50 at n = 3; M'_3 = 202.5; least M'_n, n >= 4: 525.0
+   two O_6 joined by a zigzag: U* = 54, (K') least slack 24.00 at x = 1/2; least increment 144.00 at n = 3; M'_3 = 36.0; least M'_n, n >= 4: 180.0
+   O_7 with twin tops (2,0,0): U* = 42, (K') least slack 0.00 at x = 1; least increment 216.00 at n = 3; M'_3 = 312.0; least M'_n, n >= 4: 528.0
+   two O_6 vertex to vertex: U* = 44, (K') least slack 29.33 at x = 1/2; least increment 76.00 at n = 3; M'_3 = 30.0; least M'_n, n >= 4: 106.0
+   two O_6 and a site: U* = 43, (K') least slack 14.67 at x = 1/2; least increment 47.00 at n = 3; M'_3 = -15.0; least M'_n, n >= 4: 32.0

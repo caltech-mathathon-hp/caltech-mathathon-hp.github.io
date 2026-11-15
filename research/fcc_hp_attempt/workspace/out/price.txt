@@ -1,0 +1,4 @@
+O_7, O_7: 76 unions with K > 6.1; least price 5.10 at v = (13, 1, 0) (overlap 0, U* = 44, K = 11.10); least price among overlapping unions 7.03 at v = (12, 0, 0) (overlap 1, U* = 51, K = 10.69)
+O_9, O_9: 141 unions with K > 6.1; least price 4.90 at v = (17, 1, 0) (overlap 0, U* = 44, K = 11.30); least price among overlapping unions 6.62 at v = (16, 0, 0) (overlap 1, U* = 51, K = 10.99)
+O_5, O_8: 59 unions with K > 6.1; least price 6.13 at v = (12, 1, 0) (overlap 0, U* = 44, K = 10.24); least price among overlapping unions 8.59 at v = (11, 0, 0) (overlap 1, U* = 51, K = 9.84)
+O_6, O_9: 84 unions with K > 6.1; least price 5.71 at v = (14, 1, 0) (overlap 0, U* = 44, K = 10.55); least price among overlapping unions 7.87 at v = (13, 0, 0) (overlap 1, U* = 51, K = 10.19)

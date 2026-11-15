@@ -1,0 +1,5 @@
+named bodies: 15 bodies; largest n with M_n < 0: {0: 15}; largest n with M'_n < 0: {0: 15}; worst for M': (0, 'single site', 15)
+unions O_7, O_7+v: 79 bodies; largest n with M_n < 0: {0: 70, 3: 8, 5: 1}; largest n with M'_n < 0: {0: 79}; worst for M': (0, (1, 1, 0), 20)
+unions O_5, O_8+v: 61 bodies; largest n with M_n < 0: {0: 51, 3: 10}; largest n with M'_n < 0: {0: 61}; worst for M': (0, (2, 2, 1), 21)
+bodies at one site from O_5: 206 bodies; largest n with M_n < 0: {0: 150, 3: 56}; largest n with M'_n < 0: {0: 206}; worst for M': (0, (-5, -1, 0), 29)
+bodies at one site from O_6: 294 bodies; largest n with M_n < 0: {0: 198, 3: 96}; largest n with M'_n < 0: {0: 294}; worst for M': (0, (-6, -1, 0), 29)

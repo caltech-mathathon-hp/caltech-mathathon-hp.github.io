@@ -1,0 +1,27 @@
+m=80: 25600 dangling sites, arms pairwise disjoint up to 64 steps ; bulk paths 11470 ; 18s
+frame built: links {6: 8, 3: 3, 10: 7} ; max skin of a frame link site: 1 18s
+  separator 1 on track dimers 20,21: entry tether P^49 (taut 43, slack 6, skin 2) ; exit tether P^219 (taut 119, slack 100, skin 9)
+  separator 2 on track dimers 26,27: entry tether P^73 (taut 55, slack 18, skin 3) ; exit tether P^201 (taut 107, slack 94, skin 10)
+  separator 3 on track dimers 32,33: entry tether P^95 (taut 67, slack 28, skin 4) ; exit tether P^183 (taut 95, slack 88, skin 11)
+  separator 4 on track dimers 38,39: entry tether P^117 (taut 79, slack 38, skin 5) ; exit tether P^165 (taut 83, slack 82, skin 12)
+  separator 5 on track dimers 44,45: entry tether P^139 (taut 91, slack 48, skin 6) ; exit tether P^147 (taut 71, slack 76, skin 13)
+  separator 6 on track dimers 50,51: entry tether P^161 (taut 103, slack 58, skin 7) ; exit tether P^129 (taut 59, slack 70, skin 14)
+  separator 7 on track dimers 56,57: entry tether P^183 (taut 115, slack 68, skin 8) ; exit tether P^111 (taut 47, slack 64, skin 15)
+tethers routed in margins, 22s
+bulk: 11470 runs in 11470 units (chaining False), 22s
+linker caps: 22997 (borrowed columns: 8) ; columns blocked by near-field P's: 0
+near field done: 11499 units, 27415 P sites reserved, 24s
+m=82: 26896 dangling sites, arms pairwise disjoint up to 64 steps ; bulk paths 12084 ; 22s
+frame built: links {6: 8, 3: 3, 10: 7} ; max skin of a frame link site: 1 22s
+  separator 1 on track dimers 20,21: entry tether P^49 (taut 43, slack 6, skin 2) ; exit tether P^223 (taut 123, slack 100, skin 9)
+  separator 2 on track dimers 26,27: entry tether P^73 (taut 55, slack 18, skin 3) ; exit tether P^205 (taut 111, slack 94, skin 10)
+  separator 3 on track dimers 32,33: entry tether P^95 (taut 67, slack 28, skin 4) ; exit tether P^187 (taut 99, slack 88, skin 11)
+  separator 4 on track dimers 38,39: entry tether P^117 (taut 79, slack 38, skin 5) ; exit tether P^169 (taut 87, slack 82, skin 12)
+  separator 5 on track dimers 44,45: entry tether P^139 (taut 91, slack 48, skin 6) ; exit tether P^151 (taut 75, slack 76, skin 13)
+  separator 6 on track dimers 50,51: entry tether P^161 (taut 103, slack 58, skin 7) ; exit tether P^133 (taut 63, slack 70, skin 14)
+  separator 7 on track dimers 56,57: entry tether P^183 (taut 115, slack 68, skin 8) ; exit tether P^115 (taut 51, slack 64, skin 15)
+tethers routed in margins, 26s
+bulk: 12084 runs in 12084 units (chaining False), 27s
+linker caps: 24225 (borrowed columns: 8) ; columns blocked by near-field P's: 0
+near field done: 12113 units, 28731 P sites reserved, 28s
+step m=80 -> 82 (K=6): 26731 near-field sites of B ; without a matching 5-ball in A: 0 ; translations used: 6

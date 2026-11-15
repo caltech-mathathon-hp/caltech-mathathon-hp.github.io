@@ -1,0 +1,17 @@
+O_5: U* = 18, Pi = 54, def1 = 0; least slack of (I0_n) = 0.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(8, 4, 9): 6}
+O_7: U* = 18, Pi = 54, def1 = 0; least slack of (I0_n) = 0.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(8, 4, 9): 6}
+O_6 without a vertex: U* = 19, Pi = 45, def1 = 0; least slack of (I0_n) = 6.0 at n = 4; sites with pi != 0 by (deg, e, pi): {(8, 4, 9): 5}
+O_6 with a site on a face: U* = 24, Pi = 45, def1 = 0; least slack of (I0_n) = 46.5 at n = 3; sites with pi != 0 by (deg, e, pi): {(2, 0, -6): 3, (8, 4, 9): 6, (9, 4, 9): 1}
+O_7 u O_7+(2,0,0): U* = 42, Pi = 54, def1 = 0; least slack of (I0_n) = 216.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(2, 0, -9): 4, (8, 4, 9): 10}
+O_7 u O_7+(4,0,0): U* = 54, Pi = 54, def1 = 0; least slack of (I0_n) = 300.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(2, 0, -9): 4, (8, 4, 9): 10}
+O_7 u O_7+(1,1,0): U* = 20, Pi = 48, def1 = 0; least slack of (I0_n) = 28.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(7, 3, 3): 4, (8, 4, 9): 4}
+O_7 u O_7+(2,2,2): U* = 24, Pi = 36, def1 = 0; least slack of (I0_n) = 12.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(2, 0, -6): 6, (7, 3, 3): 6, (8, 4, 9): 6}
+two O_6 vertex to vertex: U* = 44, Pi = 66, def1 = 0; least slack of (I0_n) = 58.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(7, 2, -12): 2, (8, 4, 9): 10}
+two O_6 and a site: U* = 43, Pi = 69, def1 = 0; least slack of (I0_n) = 32.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(7, 2, -12): 2, (8, 4, 9): 10, (10, 4, 3): 1}
+O_9 with island 3 at (1,2): U* = 21, Pi = 45, def1 = 0; least slack of (I0_n) = -9.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(2, 0, -6): 3, (7, 3, 3): 3, (8, 4, 9): 6}
+O_9 with island 5 at (1,1): U* = 21, Pi = 45, def1 = 0; least slack of (I0_n) = 6.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(2, 0, -6): 3, (7, 3, 3): 3, (8, 4, 9): 6}
+O_13 with island 6 at (2,2): U* = 21, Pi = 45, def1 = 0; least slack of (I0_n) = -7.5 at n = 3; sites with pi != 0 by (deg, e, pi): {(2, 0, -6): 3, (7, 3, 3): 3, (8, 4, 9): 6}
+O_9 with reversed island 3: U* = 33, Pi = 27, def1 = 0; least slack of (I0_n) = 102.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(2, 0, -3): 6, (5, 1, -3): 3, (8, 4, 9): 6}
+tetrahedron 6: U* = 60, Pi = -36, def1 = 0; least slack of (I0_n) = 462.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(6, 2, -3): 24, (9, 4, 9): 4}
+two O_7 tip to tip: U* = 51, Pi = 63, def1 = 0; least slack of (I0_n) = 144.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(4, 0, -27): 1, (8, 4, 9): 10}
+O_8 and O_4 on a vertex: U* = 54, Pi = 54, def1 = 0; least slack of (I0_n) = 228.0 at n = 3; sites with pi != 0 by (deg, e, pi): {(2, 0, -9): 4, (8, 4, 9): 10}

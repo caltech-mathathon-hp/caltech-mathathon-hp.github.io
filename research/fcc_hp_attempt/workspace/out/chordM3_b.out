@@ -1,0 +1,2 @@
+unions O_9, O_9+v: 146 bodies; largest n with M_n < 0: {0: 137, 3: 8, 5: 1}; largest n with M'_n < 0: {0: 146}; worst for M': (0, (1, 1, 0), 20)
+unions O_6, O_9+v: 88 bodies; largest n with M_n < 0: {0: 79, 3: 9}; largest n with M'_n < 0: {0: 88}; worst for M': (0, (2, 2, 1), 21)

@@ -1,0 +1,109 @@
+**Near-field target N_A.** For the actual Section 6 parameter family, the following explicit construction is
+intended to satisfy N1–N5. Its tether arithmetic is proved below. Its remaining universal local-compatibility
+obligation N is stated at the end; the finite tests are not promoted to an unproved induction.
+
+**Domain and separation.** Let K,B≥1, C=(18K+48)B, J=C+18K+48, R_fill=J+1, and
+ m=(K+2)(18K+48)B+38K+100.
+Thus m≥336, C≥18K+48, J≥36K+96, and j_{k+1}−j_k=C+2. These bounds separate the separator/item region from
+the two strings of anchor slots. No whole configuration of size 80 or 82 is used as an induction base.
+
+**Explicit frame templates.** Put r_0=2m−2, and use absolute coordinates
+ e1(i)=(i mod 2, r_0+i, −r_0+i),
+ e2(i)=(r_0−i, r_0+i, −[i odd]),
+ e3(i)=(i, r_0+[i odd], −r_0+i).
+Each row below lists, in order, the P-site offsets from its first H-site h. The last P-site is adjacent to the
+specified second H-site. Reverse a row when traversing e2 in the word's opposite direction.
+
+| Link | First and second H-sites | Ordered P-offsets from the first H |
+|---|---|---|
+| Start of e1 | e1(0), e1(3) | (−1,1,−1), (0,2,−2), (1,3,−1), (0,4,0), (1,5,1), (2,4,2) |
+| e1 two-slot k | e1(6k−1), e1(6k+2) | (1,1,−1), (0,2,−2), (−1,3,−1), (0,4,0), (−1,5,1), (−2,4,2) |
+| End of e1 | e1(r_0−2), e1(r_0) | (−1,1,−1), (−2,2,0), (−1,3,1) |
+| Start of e2 | e2(0), e2(2) | (1,1,1), (0,2,2), (−1,3,1) |
+| e2 six-slot κ | e2(10κ+5), e2(10κ+12) | (1,1,−1), (2,2,0), (1,3,1), (0,4,0), (−1,5,1), (−2,6,0), (−3,7,1), (−4,8,0), (−5,9,1), (−6,8,2) |
+| End of e2 | e2(r_0−2), e2(r_0) | (1,1,1), (0,2,2), (−1,3,1) |
+
+The table specifies actual paths, not a search for unspecified paths. Their consecutive bond vectors, endpoints,
+and placement in skin 1 are checked by substitution in D and the face inequalities. Mutual frame-link separation
+also follows from the displayed coordinate intervals: successive e1 slot paths have disjoint Y-intervals
+[6k,6k+4] relative to the centre; successive e2 slot paths have disjoint intervals [10κ+6,10κ+14].
+The start/end paths and paths on different edges are separated by the Section 6 bounds, except at the shared
+frame vertex, where the two listed P-paths use different dangling sites. Compatibility with bulk ends and all
+other P-sites is a separate obligation, not a consequence of these interval checks alone.
+
+**Selected borrowed columns.** Ordinary cap columns are used except for the following specified caps. Here h
+is the H-site, p its dangling site, h' the surface H-site whose unused column is borrowed, and w the second site
+of that column. The entry is p~w, after which the route follows the column of h'.
+
+| Cap | Borrowed source h' | Entry site w |
+|---|---|---|
+| h=e1(6k), the entry anchor's a-site | h+(−2,−2,0) | h+(−2,0,−2) |
+| h=e1(6k+1), the entry anchor's b-site | h+(2,−2,0) | h+(2,0,−2) |
+| h=e1(2), the left filler's first H | h+(−2,0,2) | h+(−2,2,0) |
+
+These are distinct sources on second rows along an X-plane edge. The N3 second-row condition excludes bulk
+run ends at these sources. The left-filler choice is essential: its other adjacent candidate, h+(−2,−2,0),
+can have its column occupied by a ring PPP. That collision was found during the Astra reconstruction. The
+table uses the other candidate and is included in the combined checks.
+
+For definiteness, order each of the three ring boundary cycles by starting at its lexicographically least
+b-site and choosing its lexicographically smaller cycle-neighbour as the next site. Pair consecutive sites
+around the cycle and traverse the dimers alternately in their forward and reverse orders. This fixes the
+otherwise unspecified ring endpoint choices. All these are explicit coordinate rules independent of a packing.
+
+**Exact tether routes and lengths.** In the face coordinates of §8.2, the entry slot's b-site is
+(a_0,b_0,0)=(m−2−3k,3k,0). Its selected borrowed source is (a_0,b_0−1,1). In skin j=k+1 the borrowed column reaches
+the sub-surface site (a_0+j,b_0+j−1,2), adjacent to
+ S=(a_0+j,b_0+j−1,1)
+on the row c=1. Starting at the original cap, reaching that sub-surface site takes 2j−2 bonds, including the
+borrowed-column entry. From S follow row c=1 with decreasing b to b=j−1, then row b=j−1 with increasing c to
+ (m−2−j_k+j,j−1,j_k+1).
+Step to the separator's sub-surface column site (m−2−j_k+j,j,j_k+1), and descend to its first b-site's cap.
+The two column portions contribute 4j−4 bonds, the two connector bonds contribute 2, and the surface-row
+portions contribute 6k+2j_k. Counting P-sites rather than bonds gives
+ L_e=4j−4+2+6k+2j_k+1=2j_k+3+10k.
+Thus σ_e(k)=10k for every k, with no shortest-path assertion.
+
+The exit tether uses j=K+2+k and κ=K+1−k. Ascend from the separator's second b-site to
+(m−3−j_k+j,j,j_k+2), step to (m−3−j_k+j,j−1,j_k+2), follow row b=j−1 to (j−1,j−1,m), and then row a=j−1 to
+(j−1,5κ+3+j,m−4−5κ). Step to the exit anchor's column at (j,5κ+3+j,m−4−5κ), and descend to its cap.
+The row portions have 2(m−2−j_k) and 2(5κ+4) bonds. Therefore
+ L_x=(4j−4)+2+2(m−2−j_k)+2(5κ+4)+1
+    =2(m−2−j_k)+3+(14K+22−6k).
+Hence σ_x(k)=14K+22−6k. For 1≤k≤K+1, both slacks are nonnegative even integers smaller than Σ*=18K+40.
+The converse argument in §7 uses only that bound, so this change to the entry slack preserves it.
+
+**Conditional avoidance argument for the tethers.** Assume the first-skin compatibility facts described below,
+including N3. The row margins in Lemma R(d) exclude ordinary cap columns from b=j−1 and a=j−1. In row c=1,
+only columns based on c=0 or c=1 can occur. The c=1 bulk sites are excluded as run ends by N3; the c=0 entry
+anchor columns with smaller k stop in lower skins, and those with larger k lie beyond the route's starting
+b-coordinate. The borrowed b-anchor source has b=3k−1,c=1 and obeys the same ordering. Separator columns have
+b=j, and the exit-anchor/corner columns have a=j, so the margin rows avoid them. Distinct tether horizontal
+parts lie in distinct skins; the same inequalities exclude their intersections with the other tether columns.
+The remaining P-paths lie in skin 1. Thus their compatibility with the entry/exit prefixes, together with the
+specified free-column conditions, proves disjointness of the entire tether family. This is an all-K argument
+conditional on the first-skin facts; it does not use the invalid m=80,82 induction.
+
+**Outstanding universal obligation N (first-skin compatibility).** It remains to prove, for every admissible
+parameter choice and every allowed item subdivision, that:
+
+* the frame templates avoid all required dangling sites and the first two sites of every bulk-end column;
+* the selected borrowed entries and tails are free of frame links, ring/anchor/track PPPs, and other cap tails;
+* N3 holds everywhere, including vertex patches;
+* a PPP or the alternative pair of item-end caps can be used at every permitted item boundary without creating
+  a collision elsewhere. A cap's own entry prefix is, of course, excluded from the other-P avoidance condition.
+
+A local-template proof could discharge this obligation, but must give an explicit complete classification
+and a valid dependence radius. The original radius-five checks do not certify a radius-eleven rule, and the
+new explicit paths do not by themselves prove compatibility with every possible bulk endpoint. Merely observing
+the same template in several experiments is not a proof that no new interface type occurs.
+
+**Independent checks supplied here.** The Astra checker constructs these fixed paths, all surface PPPs, chosen
+borrowed entries, all tethers, singleton/vertex caps, and reserved non-bulk linker columns. It checks actual
+site collisions and tests near-field sites against bulk-end columns by evaluating the local bulk rules. It
+distinguishes the two columns at a vertex and the two radial arms meeting a bend site; neither may be conflated.
+The combined checks pass for (K,B)=(1,1),(1,3),(2,2),(6,1),(6,3), including both one item per bin and unit-item
+subdivision at (1,3). These are actual Section 6 sizes, including m=336,732,848,1576,4072. The largest test has
+180,135 near-field P-sites. This is substantial evidence for the proposed repair, but obligation N remains
+explicitly open until the universal template coverage is established.
+

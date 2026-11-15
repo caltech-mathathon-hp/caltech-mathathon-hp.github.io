@@ -1,0 +1,30 @@
+pair: U* = 26, shape-irregular sites 2, fans 0 {}, 4U* - 3 fans = 104, weighted fans (n = 6, 12, 24, 48): 0.00, 0.00, 0.00, 0.00
+O_2: U* = 42, shape-irregular sites 6, fans 0 {}, 4U* - 3 fans = 168, weighted fans (n = 6, 12, 24, 48): 0.00, 0.00, 0.00, 0.00
+O_3: U* = 54, shape-irregular sites 6, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 144, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_4: U* = 42, shape-irregular sites 6, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 96, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_5: U* = 18, shape-irregular sites 6, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 0, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_6: U* = 18, shape-irregular sites 6, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 0, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_7: U* = 18, shape-irregular sites 6, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 0, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_8: U* = 18, shape-irregular sites 6, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 0, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_9: U* = 18, shape-irregular sites 6, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 0, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+tetra 4: U* = 60, shape-irregular sites 16, fans 0 {}, 4U* - 3 fans = 240, weighted fans (n = 6, 12, 24, 48): 0.00, 0.00, 0.00, 0.00
+tetra 6: U* = 60, shape-irregular sites 28, fans 0 {}, 4U* - 3 fans = 240, weighted fans (n = 6, 12, 24, 48): 0.00, 0.00, 0.00, 0.00
+tetra 9: U* = 78, shape-irregular sites 46, fans 0 {}, 4U* - 3 fans = 312, weighted fans (n = 6, 12, 24, 48): 0.00, 0.00, 0.00, 0.00
+rod: U* = 114, shape-irregular sites 10, fans 0 {}, 4U* - 3 fans = 456, weighted fans (n = 6, 12, 24, 48): 0.00, 0.00, 0.00, 0.00
+layer: U* = 195, shape-irregular sites 37, fans 0 {}, 4U* - 3 fans = 780, weighted fans (n = 6, 12, 24, 48): 0.00, 0.00, 0.00, 0.00
+O_6 without a vertex: U* = 19, shape-irregular sites 9, fans 24 {'tip, apex': 20, 'two roots': 4}, 4U* - 3 fans = 4, weighted fans (n = 6, 12, 24, 48): 15.67, 19.58, 21.73, 22.85
+O_6 with a site on a face: U* = 24, shape-irregular sites 10, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 24, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_7 u O_7+(2,2,2): U* = 24, shape-irregular sites 18, fans 30 {'tip, apex': 24, 'tip, other': 6}, 4U* - 3 fans = 6, weighted fans (n = 6, 12, 24, 48): 20.83, 25.21, 27.55, 28.76
+O_7 u O_7+(1,1,0): U* = 20, shape-irregular sites 8, fans 24 {'tip, apex': 16, 'tip, other': 4, 'two roots': 4}, 4U* - 3 fans = 8, weighted fans (n = 6, 12, 24, 48): 15.67, 19.58, 21.73, 22.85
+O_7 u O_7+(2,0,0): U* = 42, shape-irregular sites 14, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 96, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_7 u O_7+(4,0,0): U* = 54, shape-irregular sites 14, fans 48 {'tip, apex': 40, 'two roots': 8}, 4U* - 3 fans = 72, weighted fans (n = 6, 12, 24, 48): 28.00, 36.33, 41.75, 44.77
+two O_5 and a site: U* = 43, shape-irregular sites 13, fans 48 {'tip, apex': 40, 'tip, other': 8}, 4U* - 3 fans = 28, weighted fans (n = 6, 12, 24, 48): 33.33, 40.33, 44.08, 46.02
+two O_6 vertex to vertex: U* = 44, shape-irregular sites 12, fans 48 {'tip, apex': 40, 'tip, other': 8}, 4U* - 3 fans = 32, weighted fans (n = 6, 12, 24, 48): 33.33, 40.33, 44.08, 46.02
+two O_7 tip to tip: U* = 51, shape-irregular sites 11, fans 48 {'tip, apex': 40, 'tip, other': 8}, 4U* - 3 fans = 60, weighted fans (n = 6, 12, 24, 48): 33.33, 40.33, 44.08, 46.02
+O_9 with island 3 at (1,2): U* = 21, shape-irregular sites 12, fans 27 {'tip, apex': 24, 'tip, other': 3}, 4U* - 3 fans = 3, weighted fans (n = 6, 12, 24, 48): 18.75, 22.69, 24.80, 25.89
+O_9 with island 5 at (1,1): U* = 21, shape-irregular sites 12, fans 27 {'tip, apex': 24, 'tip, other': 3}, 4U* - 3 fans = 3, weighted fans (n = 6, 12, 24, 48): 18.75, 22.69, 24.80, 25.89
+O_13 with island 6 at (2,2): U* = 21, shape-irregular sites 12, fans 27 {'tip, apex': 24, 'tip, other': 3}, 4U* - 3 fans = 3, weighted fans (n = 6, 12, 24, 48): 18.75, 22.69, 24.80, 25.89
+O_9 with reversed island 3: U* = 33, shape-irregular sites 21, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 60, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_9 with a cavity O_3: U* = 126, shape-irregular sites 6, fans 24 {'tip, apex': 24}, 4U* - 3 fans = 432, weighted fans (n = 6, 12, 24, 48): 16.67, 20.17, 22.04, 23.01
+O_8 and O_4 on a vertex: U* = 54, shape-irregular sites 14, fans 48 {'tip, apex': 40, 'two roots': 8}, 4U* - 3 fans = 72, weighted fans (n = 6, 12, 24, 48): 31.33, 39.17, 43.46, 45.70
+O_8 and O_4 on a face: U* = 60, shape-irregular sites 30, fans 39 {'tip, apex': 36, 'tip, other': 3}, 4U* - 3 fans = 123, weighted fans (n = 6, 12, 24, 48): 27.08, 32.77, 35.82, 37.39

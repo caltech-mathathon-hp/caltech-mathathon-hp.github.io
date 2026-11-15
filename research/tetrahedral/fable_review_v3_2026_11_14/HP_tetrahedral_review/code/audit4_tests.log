@@ -1,0 +1,18 @@
+T8: NCHECK Appendix C shapes: OK ; all sites of frame links in skin 1: True
+T8: NCHECK track objects: 50 type pairs at owner distances 0..6 (three base positions, identical results); meeting pairs (all share an attachment site): [('Acap', 'PPPa', 0), ('PPPa', 'Acap', 2), ('PPPa', 'PPPa', 2), ('PPPb', 'PPPb', 2), ('PPPb', 'Tcap', 0), ('PPPb', 'Tcap', 2)]
+T8: NEAR FIELD OK: m=80 K=8
+TC: NCHECK Appendix C shapes: OK ; all sites of frame links in skin 1: True
+TC: NCHECK track objects: 50 type pairs at owner distances 0..6 (three base positions, identical results); meeting pairs (all share an attachment site): [('Acap', 'PPPa', 0), ('PPPa', 'Acap', 2), ('PPPa', 'PPPa', 2), ('PPPb', 'PPPb', 2), ('PPPb', 'Tcap', 0), ('PPPb', 'Tcap', 2)]
+TC: NEAR FIELD OK: m=80 K=2
+T3: NCHECK Appendix C shapes: OK ; all sites of frame links in skin 1: True
+T3: NCHECK track objects: 50 type pairs at owner distances 0..6 (three base positions, identical results); meeting pairs (all share an attachment site): [('Acap', 'PPPa', 0), ('PPPa', 'Acap', 2), ('PPPa', 'PPPa', 2), ('PPPb', 'PPPb', 2), ('PPPb', 'Tcap', 0), ('PPPb', 'Tcap', 2)]
+T3: NEAR FIELD OK: m=80 K=1
+no packing: WORD: 11487 units, w = 22972 wires, linker length 23053006 (+1), total length 264787518214, H = 682640 (N = 682640), runs 24556, md5 bb7efa24667bb8ad702132e9aacb3674
+packing 1: WORD: 11487 units, w = 22972 wires, linker length 23053006 (+1), total length 264787518214, H = 682640 (N = 682640), runs 24556, md5 bb7efa24667bb8ad702132e9aacb3674
+packing 2: WORD: 11487 units, w = 22972 wires, linker length 23053006 (+1), total length 264787518214, H = 682640 (N = 682640), runs 24556, md5 bb7efa24667bb8ad702132e9aacb3674
+packing 3: WORD: 11487 units, w = 22972 wires, linker length 23053006 (+1), total length 264787518214, H = 682640 (N = 682640), runs 24556, md5 bb7efa24667bb8ad702132e9aacb3674
+run-length encoded word of packing 1 is byte-identical to the packing-free word
+run-length encoded word of packing 2 is byte-identical to the packing-free word
+run-length encoded word of packing 3 is byte-identical to the packing-free word
+H1 P23053006 H1 P23053007 H1 P23053007 H1 P23053007 H1 P6 H3 P6 H4 P6 H4 P6 H137 P3 H1 P3 H125 P10 H4 P10 H4 P10 H4 P3 H1 P23053007 H2 P43 H2 P3 H2 P175 H2 P3 H2 P3 H2 P23053007 H2 P81 H2 P3 H2 P141 H2 P3 H2 P3 H2 P23053007 H2 P119 H2 P3 H2 P107 H2 P3 H2 P3 H2 P23053007 H2 P3 H2 P3 H2 P3 H2 P3 H2 P3 ...
+152 P23053007 H36 P23053006 H44 P23053007 H12 P23053007 H30 P23053006 H44 P23053006 H118 P23053007 H98 P23053007 H70 P1

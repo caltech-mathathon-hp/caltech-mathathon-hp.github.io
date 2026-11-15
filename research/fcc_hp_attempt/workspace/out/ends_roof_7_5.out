@@ -1,0 +1,1 @@
+roof O_7 over two legs O_5: 104 bodies; (K') fails: 0, least slack 6.67 at x = 1 ((4, 2, 2), U* = 56); (I_n) fails: 0, least increment 152.00 at n = 3 ((11, 0, 1), U* = 70); M'_3 < 0: 0; M'_n < 0 for some n >= 4: 0; least positive value of min over n >= 4 of M'_n: 212.0 ((11, 0, 1))

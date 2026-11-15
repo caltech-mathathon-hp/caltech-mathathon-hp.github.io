@@ -1,0 +1,64 @@
+m=  9:     122 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=-: False
+m= 10:     153 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=-: False
+m= 11:     188 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=-: False
+m= 12:     227 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=-: False
+m= 13:     270 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=-: False
+m= 14:     317 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 15:     368 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 16:     423 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 17:     482 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 18:     545 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 19:     612 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 20:     683 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 21:     758 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 22:     837 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 23:     920 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 24:    1007 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 25:    1098 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 26:    1193 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 27:    1292 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 28:    1395 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 29:    1502 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 30:    1613 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 31:    1728 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 32:    1847 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 33:    1970 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 34:    2097 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 35:    2228 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 36:    2363 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 37:    2502 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 38:    2645 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 39:    2792 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 40:    2943 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 41:    3098 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 42:    3257 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 43:    3420 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 44:    3587 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 45:    3758 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 46:    3933 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 47:    4112 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 48:    4295 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 49:    4482 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 50:    4673 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 51:    4868 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 52:    5067 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 53:    5270 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 54:    5477 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 55:    5688 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 56:    5903 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 57:    6122 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 58:    6345 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 59:    6572 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+m= 60:    6803 segments ; ties 0 ; strict local maxima 10 ; all certified within 6 steps: True ; same list as m=14: True
+ALL OK: True
+local maxima (vertex, first site rel. vertex, #sites, certificate):
+    (0, (3, -1, 1), 2, 'path ends after 2')
+    (1, (-2, 4, -2), 4, 'dominated after 4')
+    (1, (1, 5, 1), 2, 'path ends after 2')
+    (2, (-3, 1, 9), 8, 'dominated after 3')
+    (2, (3, 3, 5), 1, 'path ends after 6')
+    (3, (-3, -3, -7), 8, 'path ends after 1')
+    (3, (3, -3, -5), 1, 'dominated after 6')
+    (4, (-2, -4, 2), 2, 'dominated after 4')
+    (4, (0, -6, 2), 6, 'path ends after 2')
+    (5, (-4, 2, 2), 2, 'path ends after 2')

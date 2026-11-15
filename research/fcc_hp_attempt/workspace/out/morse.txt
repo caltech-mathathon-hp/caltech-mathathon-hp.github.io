@@ -1,0 +1,15 @@
+O_6: N=146 U*=18 T=6 sigma=0 b1=0  U*-3T-3sigma=0
+tip next to tip: N=292 U*=44 T=10 sigma=4 b1=0  U*-3T-3sigma=2
+one-site bridge: N=293 U*=43 T=10 sigma=4 b1=0  U*-3T-3sigma=1
+zig bridge: N=294 U*=54 T=12 sigma=6 b1=0  U*-3T-3sigma=0
+ring of four (connected: True): N=584 U*=104 T=16 sigma=14 b1=2  U*-3T-3sigma=14
+O_9 with a tunnel along z: N=392 U*=300 T=6 sigma=4 b1=2  U*-3T-3sigma=270
+O_9 with cavity O_3: N=470 U*=126 T=6 sigma=0 b1=0  U*-3T-3sigma=108
+O_9 with a pit from above: N=479 U*=75 T=6 sigma=0 b1=0  U*-3T-3sigma=57
+lambda: bar with two O_5: N=181 U*=141 T=18 sigma=12 b1=0  U*-3T-3sigma=51
+O_7+(4, 0, 0): N=377 U*=54 T=10 sigma=4 b1=0  U*-3T-3sigma=12
+O_7+(2, 2, 2): N=358 U*=24 T=6 sigma=0 b1=0  U*-3T-3sigma=6
+O_7+(4, 4, 4): N=443 U*=66 T=12 sigma=6 b1=0  U*-3T-3sigma=12
+O_7+(8, 3, 3): N=462 U*=54 T=10 sigma=4 b1=0  U*-3T-3sigma=12
+O_7+(3, 3, 0): N=370 U*=36 T=8 sigma=2 b1=0  U*-3T-3sigma=6
+O_7+(5, 4, 3): N=444 U*=54 T=10 sigma=4 b1=0  U*-3T-3sigma=12

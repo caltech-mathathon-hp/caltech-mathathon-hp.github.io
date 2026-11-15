@@ -1,0 +1,14 @@
+O_r, r = 5..10: Lam_n = 36 (n - r)^2 for n = 3..39
+O_2: N = 6, U* = 42, n2* = 6, boundary = 48, D = 2304, least Lam_n = 252 at n = 3
+O_3: N = 19, U* = 54, n2* = 18, boundary = 108, D = 46656, least Lam_n = 324 at n = 3
+O_4: N = 44, U* = 42, n2* = 38, boundary = 192, D = 85248, least Lam_n = 252 at n = 3
+single site: N = 1, U* = 15, n2* = 1, boundary = 12, D = -1152, least Lam_n = 90 at n = 3
+two adjacent sites: N = 2, U* = 26, n2* = 2, boundary = 22, D = -2864, least Lam_n = 156 at n = 3
+tetrahedron 4: N = 20, U* = 60, n2* = 20, boundary = 120, D = 57600, least Lam_n = 360 at n = 3
+tetrahedron 6: N = 56, U* = 60, n2* = 44, boundary = 252, D = 191808, least Lam_n = 432 at n = 3
+tetrahedron 9: N = 165, U* = 78, n2* = 74, boundary = 540, D = 724032, least Lam_n = 972 at n = 3
+tetrahedron 12: N = 364, U* = 96, n2* = 104, boundary = 936, D = 1795392, least Lam_n = 1836 at n = 3
+unions O_7, O_7+v: 79 bodies, with Lam_n < 0: 0; least Lam_n = 190 at n = 7 (v = (1, 1, 0), U* = 20, D = 40000)
+unions O_9, O_9+v: 146 bodies, with Lam_n < 0: 0; least Lam_n = 318 at n = 9 (v = (1, 1, 0), U* = 20, D = 66112)
+unions O_5, O_8+v: 61 bodies, with Lam_n < 0: 0; least Lam_n = 294 at n = 7 (v = (2, 2, 1), U* = 21, D = 65808)
+unions O_6, O_9+v: 88 bodies, with Lam_n < 0: 0; least Lam_n = 384 at n = 8 (v = (2, 2, 1), U* = 21, D = 85968)

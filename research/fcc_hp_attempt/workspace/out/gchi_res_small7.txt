@@ -1,0 +1,7 @@
+2 sites: 6 sets; values of chi: [(2, 6)]; least U* - 6T + 9 chi = 8 (chi = 2)
+3 sites: 50 sets; values of chi: [(2, 50)]; least U* - 6T + 9 chi = 13 (chi = 2)
+4 sites: 475 sets; values of chi: [(2, 475)]; least U* - 6T + 9 chi = 18 (chi = 2)
+5 sites: 4881 sets; values of chi: [(2, 4881)]; least U* - 6T + 9 chi = 17 (chi = 2)
+6 sites: 52835 sets; values of chi: [(0, 28), (2, 52807)]; least U* - 6T + 9 chi = 24 (chi = 2)
+7 sites: 593382 sets; values of chi: [(0, 1008), (2, 592374)]; least U* - 6T + 9 chi = 27 (chi = 2)
+651629 sets in all

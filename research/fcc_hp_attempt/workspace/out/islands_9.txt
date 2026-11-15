@@ -1,0 +1,29 @@
+island k = 1, same orientation, shift (0, 0): N = 490, U* = 24, n2* = 126, least Lam_n = 561 at n = 7; M_n < 0 for n in []; least slack of (K) = 5.00
+island k = 1, same orientation, shift (1, 1): N = 490, U* = 24, n2* = 126, least Lam_n = 561 at n = 7; M_n < 0 for n in [3]; least slack of (K) = 2.00
+island k = 1, same orientation, shift (2, 1): N = 490, U* = 24, n2* = 126, least Lam_n = 561 at n = 7; M_n < 0 for n in [3]; least slack of (K) = 2.00
+island k = 2, same orientation, shift (0, 0): N = 492, U* = 24, n2* = 126, least Lam_n = 579 at n = 7; M_n < 0 for n in []; least slack of (K) = 8.00
+island k = 2, same orientation, shift (1, 1): N = 492, U* = 24, n2* = 126, least Lam_n = 579 at n = 7; M_n < 0 for n in [3]; least slack of (K) = 5.00
+island k = 2, same orientation, shift (2, 1): N = 492, U* = 24, n2* = 126, least Lam_n = 579 at n = 7; M_n < 0 for n in [3]; least slack of (K) = 5.00
+island k = 3, same orientation, shift (0, 0): N = 495, U* = 21, n2* = 127, least Lam_n = 330 at n = 8; M_n < 0 for n in [3, 4, 5]; least slack of (K) = 4.00
+island k = 3, same orientation, shift (1, 1): N = 495, U* = 21, n2* = 127, least Lam_n = 330 at n = 8; M_n < 0 for n in [3, 4, 5, 6]; least slack of (K) = 1.00
+island k = 3, same orientation, shift (2, 1): N = 495, U* = 21, n2* = 127, least Lam_n = 330 at n = 8; M_n < 0 for n in [3, 4, 5, 6]; least slack of (K) = 0.00
+island k = 4, same orientation, shift (0, 0): N = 499, U* = 21, n2* = 127, least Lam_n = 348 at n = 8; M_n < 0 for n in [3, 4]; least slack of (K) = 4.00
+island k = 4, same orientation, shift (1, 1): N = 499, U* = 21, n2* = 127, least Lam_n = 348 at n = 8; M_n < 0 for n in [3, 4, 5, 6]; least slack of (K) = 1.00
+island k = 4, same orientation, shift (2, 1): N = 499, U* = 21, n2* = 127, least Lam_n = 348 at n = 8; M_n < 0 for n in [3, 4, 5, 6]; least slack of (K) = 1.00
+island k = 5, same orientation, shift (0, 0): N = 504, U* = 21, n2* = 127, least Lam_n = 366 at n = 8; M_n < 0 for n in [3]; least slack of (K) = 4.00
+island k = 5, same orientation, shift (1, 1): N = 504, U* = 21, n2* = 127, least Lam_n = 366 at n = 8; M_n < 0 for n in [3, 4, 5]; least slack of (K) = 1.00
+island k = 5, same orientation, shift (2, 1): N = 504, U* = 21, n2* = 127, least Lam_n = 366 at n = 8; M_n < 0 for n in [3, 4]; least slack of (K) = 1.00
+island k = 6, same orientation, shift (0, 0): N = 510, U* = 21, n2* = 127, least Lam_n = 384 at n = 8; M_n < 0 for n in [3]; least slack of (K) = 4.00
+island k = 6, same orientation, shift (1, 1): N = 510, U* = 21, n2* = 127, least Lam_n = 384 at n = 8; M_n < 0 for n in [3]; least slack of (K) = 1.00
+island k = 7, same orientation, shift (0, 0): N = 517, U* = 21, n2* = 127, least Lam_n = 402 at n = 8; M_n < 0 for n in []; least slack of (K) = 4.00
+island k = 8, same orientation, shift (0, 0): N = 525, U* = 21, n2* = 127, least Lam_n = 420 at n = 8; M_n < 0 for n in []; least slack of (K) = 10.00
+island k = 1, reversed orientation, shift (0, 0): N = 490, U* = 24, n2* = 126, least Lam_n = 561 at n = 7; M_n < 0 for n in []; least slack of (K) = 5.00
+island k = 1, reversed orientation, shift (1, 1): N = 490, U* = 24, n2* = 126, least Lam_n = 561 at n = 7; M_n < 0 for n in [3]; least slack of (K) = 2.00
+island k = 1, reversed orientation, shift (2, 1): N = 490, U* = 24, n2* = 126, least Lam_n = 561 at n = 7; M_n < 0 for n in [3]; least slack of (K) = 2.00
+island k = 2, reversed orientation, shift (0, 0): N = 492, U* = 27, n2* = 127, least Lam_n = 738 at n = 6; M_n < 0 for n in [3]; least slack of (K) = 6.00
+island k = 2, reversed orientation, shift (1, 1): N = 492, U* = 27, n2* = 127, least Lam_n = 738 at n = 6; M_n < 0 for n in [3]; least slack of (K) = 6.00
+island k = 2, reversed orientation, shift (2, 1): N = 492, U* = 27, n2* = 127, least Lam_n = 738 at n = 6; M_n < 0 for n in [3]; least slack of (K) = 6.00
+island k = 3, reversed orientation, shift (0, 0): N = 495, U* = 33, n2* = 127, least Lam_n = 1020 at n = 5; M_n < 0 for n in [3]; least slack of (K) = 14.00
+island k = 3, reversed orientation, shift (1, 1): N = 495, U* = 33, n2* = 127, least Lam_n = 1020 at n = 5; M_n < 0 for n in [3]; least slack of (K) = 14.00
+island k = 3, reversed orientation, shift (2, 1): N = 495, U* = 33, n2* = 127, least Lam_n = 1020 at n = 5; M_n < 0 for n in [3]; least slack of (K) = 14.00
+island k = 4, reversed orientation, shift (0, 0): N = 499, U* = 39, n2* = 127, least Lam_n = 1203 at n = 5; M_n < 0 for n in []; least slack of (K) = 22.00

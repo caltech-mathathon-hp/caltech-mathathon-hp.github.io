@@ -1,0 +1,28 @@
+single site: N = 1, U* = 15, H = 24, U + p - H = 0, least M_n = 90.0 at n = 3
+two adjacent sites: N = 2, U* = 26, H = 32, U + p - H = 10, least M_n = 150.0 at n = 3
+O_2: N = 6, U* = 42, H = 48, U + p - H = 24, least M_n = 252.0 at n = 3
+O_3: N = 19, U* = 54, H = 72, U + p - H = 36, least M_n = 324.0 at n = 3
+O_4: N = 44, U* = 42, H = 96, U + p - H = 24, least M_n = 216.0 at n = 3
+O_5: N = 85, U* = 18, H = 120, U + p - H = 0, least M_n = 0.0 at n = 3
+O_6: N = 146, U* = 18, H = 144, U + p - H = 0, least M_n = 0.0 at n = 3
+O_7: N = 231, U* = 18, H = 168, U + p - H = 0, least M_n = 0.0 at n = 3
+O_8: N = 344, U* = 18, H = 192, U + p - H = 0, least M_n = 0.0 at n = 3
+O_9: N = 489, U* = 18, H = 216, U + p - H = 0, least M_n = 0.0 at n = 3
+tetrahedron 4: N = 20, U* = 60, H = 60, U + p - H = 60, least M_n = 288.0 at n = 3
+tetrahedron 6: N = 56, U* = 60, H = 84, U + p - H = 72, least M_n = 180.0 at n = 3
+tetrahedron 9: N = 165, U* = 78, H = 120, U + p - H = 108, least M_n = 180.0 at n = 3
+O_7 u O_7+(2, 0, 0): N = 316, U* = 42, H = 192, U + p - H = 24, least M_n = 96.0 at n = 3
+O_7 u O_7+(4, 0, 0): N = 377, U* = 54, H = 216, U + p - H = 36, least M_n = 132.0 at n = 3
+O_7 u O_7+(1, 1, 0): N = 280, U* = 20, H = 176, U + p - H = 4, least M_n = 30.0 at n = 3
+O_7 u O_7+(2, 2, 2): N = 358, U* = 24, H = 192, U + p - H = 12, least M_n = -72.0 at n = 3
+O_7 u O_7+(2, 2, 0): N = 327, U* = 34, H = 192, U + p - H = 18, least M_n = 90.0 at n = 3
+O_7 u O_7+(13, 1, 0): N = 462, U* = 44, H = 320, U + p - H = 22, least M_n = -24.0 at n = 3
+two O_6 and a site: N = 293, U* = 43, H = 280, U + p - H = 20, least M_n = -69.0 at n = 3
+O_6 without a vertex: N = 145, U* = 19, H = 140, U + p - H = 4, least M_n = 12.0 at n = 3
+O_6 with a site on a face: N = 147, U* = 24, H = 144, U + p - H = 9, least M_n = -16.5 at n = 3
+rod of 10: N = 10, U* = 114, H = 96, U + p - H = 90, least M_n = 552.0 at n = 3
+(111) layer: N = 37, U* = 195, H = 96, U + p - H = 252, least M_n = 882.0 at n = 3
+unions O_7, O_7+v: 79 bodies, with M_n < 0: 9; least M_n = -72.0 at n = 3 (v = (2, 2, 2), U* = 24)
+unions O_9, O_9+v: 146 bodies, with M_n < 0: 9; least M_n = -72.0 at n = 3 (v = (2, 2, 2), U* = 24)
+unions O_5, O_8+v: 61 bodies, with M_n < 0: 10; least M_n = -54.0 at n = 3 (v = (11, 1, 1), U* = 46)
+unions O_6, O_9+v: 88 bodies, with M_n < 0: 9; least M_n = -54.0 at n = 3 (v = (13, 1, 1), U* = 46)

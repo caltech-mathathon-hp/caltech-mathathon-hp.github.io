@@ -1,0 +1,6 @@
+m=18: 39 entries at this size ; identical to the table of m=- ; union so far 39 (new 39) ; clashes so far 0
+m=19: 39 entries at this size ; identical to the table of m=- ; union so far 74 (new 35) ; clashes so far 0
+m=79: 39 entries at this size ; identical to the table of m=19 ; union so far 74 (new 0) ; clashes so far 0
+m=80: 39 entries at this size ; identical to the table of m=18 ; union so far 74 (new 0) ; clashes so far 0
+
+A' (kind Z: one neighbour with alpha+2 or a row): True ; B' (kind Y: neighbours on opposite sides in X, or a neighbour of kind Z/row): True ; C' (row: a row neighbour farther out): True ; clashes: 0

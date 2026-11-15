@@ -1,0 +1,4 @@
+unions O_9, O_9+v: 146 bodies; largest n with M_n < 0, by number of bodies: {0: 1, 2: 136, 3: 8, 5: 1}; worst (5, (2, 2, 2), 24)
+unions O_6, O_9+v: 88 bodies; largest n with M_n < 0, by number of bodies: {2: 79, 3: 9}; worst (3, (2, 2, 1), 21)
+bodies at one site from O_6: 294 bodies; largest n with M_n < 0, by number of bodies: {0: 30, 2: 168, 3: 96}; worst (3, (-4, -2, -1), 24)
+bodies at one site from O_8: 518 bodies; largest n with M_n < 0, by number of bodies: {0: 54, 2: 264, 3: 200}; worst (3, (-6, -2, -1), 24)

@@ -1,0 +1,5 @@
+B = 7, t = 4, n = 86: triples 3, failing 0; run ends of kind a/b: 6/0; cut slices at |z| between 4 and 14 (N = 84)
+B = 10, t = 2, n = 62: triples 3, failing 0; run ends of kind a/b: 6/0; cut slices at |z| between 4 and 9 (N = 60)
+B = 11, t = 2, n = 68: triples 6, failing 0; run ends of kind a/b: 12/0; cut slices at |z| between 2 and 12 (N = 66)
+B = 13, t = 2, n = 80: triples 3, failing 0; run ends of kind a/b: 6/0; cut slices at |z| between 7 and 12 (N = 78)
+B = 17, t = 2, n = 104: triples 6, failing 0; run ends of kind a/b: 12/0; cut slices at |z| between 6 and 17 (N = 102)

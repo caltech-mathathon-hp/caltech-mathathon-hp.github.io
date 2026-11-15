@@ -1,0 +1,1 @@
+bodies at one site from O_5: 206 bodies; (K') fails: 0, least slack 2.00 at x = 1 ((-2, -2, -2), U* = 24); (I_n) fails: 0, least increment 2.00 at n = 3 ((-4, 0, 0), U* = 19); M'_3 < 0: 0; M'_n < 0 for some n >= 4: 0; least positive value of min over n >= 4 of M'_n: 14.0 ((-4, 0, 0))

@@ -1,0 +1,1 @@
+two O_5 joined by one site: 146 bodies; (K') fails: 0, least slack 10.67 at x = 1/2 (((10, 2, 0), (5, 1, 0)), U* = 43); (I_n) fails: 0, least increment 44.00 at n = 3 (((10, 2, 0), (5, 1, 0)), U* = 43); M'_3 < 0: 3; M'_n < 0 for some n >= 4: 0; least positive value of min over n >= 4 of M'_n: 14.0 (((10, 2, 0), (5, 1, 0)))

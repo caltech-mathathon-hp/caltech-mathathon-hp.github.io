@@ -1,0 +1,4 @@
+largest possible number of chords blocked by a site, by shape: {'interior': 0, 'trough': 4, 'irregular': 16, 'face': 0, 'ridge': 0}
+largest number of open ends at a site: 48 ; largest number of chords blocked by a site: 16
+largest value of 3 deg - 9 + (3/2) o + (3/2) bl at a shape-irregular site (the constant of Theorem 69): 99.0
+face, ridge and interior sites block no chord; a trough site blocks at most 4; an exposed site with an open end is a ridge site or shape-irregular: checked on all 4,096 sets

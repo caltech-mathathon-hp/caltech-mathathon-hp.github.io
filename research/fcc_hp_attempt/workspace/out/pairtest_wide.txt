@@ -1,0 +1,5 @@
+n = 12, defects in rows 3 <= |z| <= 5: piece (1, 1): 14 defects in each half, 225 combinations, no pairing in 0; piece (-1, 1): 14 defects in each half, 225 combinations, no pairing in 0
+n = 14, defects in rows 3 <= |z| <= 7: piece (1, 1): 29 defects in each half, 900 combinations, no pairing in 0; piece (-1, 1): 29 defects in each half, 900 combinations, no pairing in 0
+n = 16, defects in rows 3 <= |z| <= 9: piece (1, 1): 48 defects in each half, 2401 combinations, no pairing in 0; piece (-1, 1): 48 defects in each half, 2401 combinations, no pairing in 0
+n = 18, defects in rows 3 <= |z| <= 11: piece (1, 1): 71 defects in each half, 5184 combinations, no pairing in 0; piece (-1, 1): 71 defects in each half, 5184 combinations, no pairing in 0
+n = 20, defects in rows 3 <= |z| <= 13: piece (1, 1): 98 defects in each half, 6197 combinations, no pairing in 0; piece (-1, 1): 98 defects in each half, 6197 combinations, no pairing in 0

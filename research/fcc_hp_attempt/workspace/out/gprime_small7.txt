@@ -1,0 +1,7 @@
+2 sites: 6 sets (0 with a cycle in a piece graph); least U* - 6T + 18 = 8 (U* = 26, T = 6); least U* - 3T - 3 sigma = 8 (U* = 26, T = 6, sigma = 0, b1 = 0)
+3 sites: 50 sets (0 with a cycle in a piece graph); least U* - 6T + 18 = 13 (U* = 37, T = 7); least U* - 3T - 3 sigma = 13 (U* = 37, T = 7, sigma = 1, b1 = 0)
+4 sites: 475 sets (3 with a cycle in a piece graph); least U* - 6T + 18 = 18 (U* = 48, T = 8); least U* - 3T - 3 sigma = 14 (U* = 44, T = 6, sigma = 4, b1 = 2)
+5 sites: 4881 sets (72 with a cycle in a piece graph); least U* - 6T + 18 = 17 (U* = 59, T = 10); least U* - 3T - 3 sigma = 17 (U* = 59, T = 10, sigma = 4, b1 = 0)
+6 sites: 52835 sets (1282 with a cycle in a piece graph); least U* - 6T + 18 = 24 (U* = 42, T = 6); least U* - 3T - 3 sigma = 18 (U* = 66, T = 9, sigma = 7, b1 = 2)
+7 sites: 593382 sets (20508 with a cycle in a piece graph); least U* - 6T + 18 = 27 (U* = 45, T = 6); least U* - 3T - 3 sigma = 19 (U* = 73, T = 8, sigma = 10, b1 = 4)
+651629 sets in all

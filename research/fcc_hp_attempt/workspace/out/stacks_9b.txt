@@ -1,0 +1,12 @@
+O_9 with islands k = 3 at (1,1) on all eight faces: N = 537, U* = 42, least Lam_n = 1488 at n = 5; least increment 36.0 at n = 3; M'_3 = 552.0; least M'_n, n >= 4: 588.0
+O_9 with islands k = 3 at (0,0) on all eight faces: N = 537, U* = 42, least Lam_n = 1488 at n = 5; least increment 84.0 at n = 3; M'_3 = 360.0; least M'_n, n >= 4: 444.0
+O_9 with islands k = 4 at (1,1) on all eight faces: N = 569, U* = 42, least Lam_n = 1632 at n = 5; least increment 24.0 at n = 3; M'_3 = 840.0; least M'_n, n >= 4: 864.0
+O_9 with islands k = 6 at (0,0) on all eight faces: N = 657, U* = 42, least Lam_n = 1920 at n = 5; least increment 180.0 at n = 3; M'_3 = 960.0; least M'_n, n >= 4: 1140.0
+O_9 with islands k = 5 at (1,1) on all eight faces: N = 609, U* = 42, least Lam_n = 1776 at n = 5; least increment 48.0 at n = 3; M'_3 = 900.0; least M'_n, n >= 4: 948.0
+O_9 with islands k = 2 at (1,1) on all eight faces: N = 513, U* = 66, least Lam_n = 1800 at n = 3; least increment 348.0 at n = 3; M'_3 = 480.0; least M'_n, n >= 4: 828.0
+O_9 with islands k = 1 at (1,1) on all eight faces: N = 497, U* = 66, least Lam_n = 1656 at n = 3; least increment 396.0 at n = 3; M'_3 = 264.0; least M'_n, n >= 4: 660.0
+O_9 with stacked islands (5, 2) at (0,0): N = 507, U* = 27, least Lam_n = 828 at n = 6; least increment 88.5 at n = 3; M'_3 = 103.5; least M'_n, n >= 4: 192.0
+O_9 with stacked islands (6, 3) at (0,0): N = 516, U* = 24, least Lam_n = 642 at n = 7; least increment 54.0 at n = 3; M'_3 = 114.0; least M'_n, n >= 4: 168.0
+O_9 with stacked islands (6, 3) at (1,0): N = 516, U* = 24, least Lam_n = 642 at n = 7; least increment 39.0 at n = 3; M'_3 = 135.0; least M'_n, n >= 4: 174.0
+O_9 with stacked islands (4, 1) at (1,1): N = 500, U* = 27, least Lam_n = 792 at n = 6; least increment 63.0 at n = 3; M'_3 = 133.5; least M'_n, n >= 4: 196.5
+O_9 with stacked islands (7, 4, 1) at (0,0): N = 528, U* = 30, least Lam_n = 1026 at n = 6; least increment 111.0 at n = 3; M'_3 = 147.0; least M'_n, n >= 4: 258.0

@@ -1,0 +1,11 @@
+O_6: E = 126, H = 144, H1 = 0, H2 = 0, Pi = 54, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..9
+O_6 without a vertex: E = 125, H = 140, H1 = 0, H2 = 0, Pi = 45, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..9
+O_6 with a site on a face: E = 129, H = 144, H1 = 18, H2 = 0, Pi = 45, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..9
+O_7 u O_7+(2,2,2): E = 180, H = 192, H1 = 132, H2 = 0, Pi = 36, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..10
+two O_5 and a site: E = 209, H = 232, H1 = 14, H2 = 0, Pi = 69, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..9
+O_9 with island 4 at (1,1): E = 201, H = 216, H1 = 54, H2 = 0, Pi = 45, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..12
+tetrahedron 6: E = 96, H = 84, H1 = 0, H2 = 0, Pi = -36, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..9
+rod of 10: E = 72, H = 96, H1 = 0, H2 = 0, Pi = 72, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..13
+two O_7 tip to tip: E = 291, H = 312, H1 = 16, H2 = 0, Pi = 63, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..10
+O_9 with a cavity O_3: E = 126, H = 216, H1 = 0, H2 = 48, Pi = 126, def1 = 42: Lemma 66 and both forms of the increment hold for n = 1..12
+single site: E = 9, H = 24, H1 = 0, H2 = 0, Pi = 45, def1 = 0: Lemma 66 and both forms of the increment hold for n = 1..6

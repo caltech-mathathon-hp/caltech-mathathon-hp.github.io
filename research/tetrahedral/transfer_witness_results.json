@@ -1,0 +1,312 @@
+{
+  "bulkOmegaCounterexample": [
+    {
+      "m": 30,
+      "P": {
+        "sites": [
+          [
+            0,
+            4,
+            0
+          ],
+          [
+            1,
+            3,
+            -1
+          ]
+        ],
+        "joints": [
+          [
+            -1,
+            3,
+            1
+          ],
+          [
+            2,
+            4,
+            -2
+          ]
+        ],
+        "alpha": 53,
+        "xhat": 1,
+        "row": false,
+        "omega": 530001
+      },
+      "Q": {
+        "sites": [
+          [
+            -1,
+            3,
+            1
+          ]
+        ],
+        "joints": [
+          [
+            -2,
+            4,
+            2
+          ],
+          [
+            0,
+            4,
+            0
+          ]
+        ],
+        "alpha": 55,
+        "xhat": -2,
+        "row": true,
+        "omega": 1000000002
+      },
+      "R": {
+        "sites": [
+          [
+            2,
+            4,
+            -2
+          ]
+        ],
+        "joints": [
+          [
+            1,
+            5,
+            -3
+          ],
+          [
+            1,
+            3,
+            -1
+          ]
+        ],
+        "alpha": 51,
+        "xhat": 4,
+        "row": false,
+        "omega": 510004
+      },
+      "PisLocalMaximum": false,
+      "escapeWithinSixSegments": [
+        {
+          "distance": 1,
+          "end": false,
+          "largerOmega": true,
+          "sites": [
+            [
+              -1,
+              3,
+              1
+            ]
+          ]
+        },
+        {
+          "distance": 2,
+          "end": false,
+          "largerOmega": true,
+          "sites": [
+            [
+              -2,
+              4,
+              2
+            ],
+            [
+              -3,
+              5,
+              1
+            ]
+          ]
+        },
+        {
+          "distance": 3,
+          "end": false,
+          "largerOmega": true,
+          "sites": [
+            [
+              -4,
+              6,
+              2
+            ],
+            [
+              -5,
+              7,
+              1
+            ]
+          ]
+        },
+        {
+          "distance": 4,
+          "end": false,
+          "largerOmega": true,
+          "sites": [
+            [
+              -6,
+              8,
+              2
+            ],
+            [
+              -7,
+              9,
+              1
+            ]
+          ]
+        },
+        {
+          "distance": 5,
+          "end": false,
+          "largerOmega": true,
+          "sites": [
+            [
+              -8,
+              10,
+              2
+            ],
+            [
+              -9,
+              11,
+              1
+            ]
+          ]
+        },
+        {
+          "distance": 6,
+          "end": false,
+          "largerOmega": true,
+          "sites": [
+            [
+              -10,
+              12,
+              2
+            ],
+            [
+              -11,
+              13,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "m": 50034,
+      "P": {
+        "sites": [
+          [
+            0,
+            4,
+            0
+          ],
+          [
+            1,
+            3,
+            -1
+          ]
+        ],
+        "joints": [
+          [
+            -1,
+            3,
+            1
+          ],
+          [
+            2,
+            4,
+            -2
+          ]
+        ],
+        "alpha": 100061,
+        "xhat": 1,
+        "row": false,
+        "omega": 1000610001
+      },
+      "Q": {
+        "sites": [
+          [
+            -1,
+            3,
+            1
+          ]
+        ],
+        "joints": [
+          [
+            -2,
+            4,
+            2
+          ],
+          [
+            0,
+            4,
+            0
+          ]
+        ],
+        "alpha": 100063,
+        "xhat": -2,
+        "row": true,
+        "omega": 1000000002
+      },
+      "R": {
+        "sites": [
+          [
+            2,
+            4,
+            -2
+          ]
+        ],
+        "joints": [
+          [
+            1,
+            5,
+            -3
+          ],
+          [
+            1,
+            3,
+            -1
+          ]
+        ],
+        "alpha": 100059,
+        "xhat": 4,
+        "row": false,
+        "omega": 1000590004
+      },
+      "PisLocalMaximum": true,
+      "escapeWithinSixSegments": []
+    }
+  ],
+  "validReductionParameters": {
+    "K": 1,
+    "B": 252,
+    "m": 50034
+  },
+  "lemmaTCounterexample": {
+    "m": 11,
+    "R": 0,
+    "Rprime": 10,
+    "v": [
+      0,
+      30,
+      10
+    ],
+    "before": [
+      0,
+      40,
+      20,
+      20,
+      41,
+      1,
+      21,
+      21
+    ],
+    "after": [
+      -2,
+      28,
+      10
+    ],
+    "afterDepths": [
+      0,
+      40,
+      16,
+      16,
+      37,
+      -3,
+      21,
+      21
+    ]
+  }
+}

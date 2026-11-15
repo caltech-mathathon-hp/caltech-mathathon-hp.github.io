@@ -1,0 +1,10 @@
+{
+  "cases": 1000,
+  "C_sites": 489,
+  "C_edges": 2448,
+  "hole_sites": 3,
+  "inequality": "2*(e(C)-e(S union A)) >= d+2*c(D)-15*s0",
+  "refined_oct_bin_inequality": "2*(e(C)-e(S union A)) >= d+2*c(D)-11*s0",
+  "sequence_aware_bound": "3*|A outside U|+2*c(D) <= 2*loss+12*s, if outside item H degree <=10",
+  "sequence_aware_cases": 1000
+}

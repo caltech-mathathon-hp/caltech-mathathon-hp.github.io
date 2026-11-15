@@ -1,0 +1,5 @@
+O_5: 206 bodies at one site from it; least U* = 19; least Psi = +0.653 (removed (-4, 0, 0), U* = 19); bodies with U* <= 18: 0; with Psi < 1/3: 0
+O_6: 294 bodies at one site from it; least U* = 19; least Psi = +0.601 (removed (-5, 0, 0), U* = 19); bodies with U* <= 18: 0; with Psi < 1/3: 0
+O_7: 398 bodies at one site from it; least U* = 19; least Psi = +0.563 (removed (-6, 0, 0), U* = 19); bodies with U* <= 18: 0; with Psi < 1/3: 0
+O_8: 518 bodies at one site from it; least U* = 19; least Psi = +0.534 (removed (-7, 0, 0), U* = 19); bodies with U* <= 18: 0; with Psi < 1/3: 0
+O_5: 21055 connected bodies at two sites from it; least U* = 20; least Psi = +1.246 (sites (-4, 0, 0), (0, -4, 0), U* = 20); with Psi < 1/3: 0

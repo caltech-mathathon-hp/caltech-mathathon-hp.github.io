@@ -1,0 +1,4 @@
+unchanged:         = 220; HPH occurs False; gap = 18.0 against 9m = 18: WITNESS
+one residue moved: checker: adjacent False; self-avoiding False; H's 688, conta
+word shifted:      PH occurs False; gap = 2390.0 against 9m = 18: NOT a witness
+one P turned to H:  HPH occurs False; gap = 24.0 against 9m = 18: NOT a witness

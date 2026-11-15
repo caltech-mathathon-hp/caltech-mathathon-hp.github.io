@@ -1,0 +1,7 @@
+named bodies: 28 bodies; (1) holds at 3200 ends of ridge sites, (2) for 2233 runs, (3) for 2953 active runs, (4) for 5876 charges
+unions O_7, O_7+v: 79 bodies; (1) holds at 15572 ends of ridge sites, (2) for 10356 runs, (3) for 13768 active runs, (4) for 26810 charges
+unions O_5, O_8+v: 61 bodies; (1) holds at 11120 ends of ridge sites, (2) for 7444 runs, (3) for 10013 active runs, (4) for 19513 charges
+bodies at one site from O_6: 294 bodies; (1) holds at 27072 ends of ridge sites, (2) for 18360 runs, (3) for 25824 active runs, (4) for 50448 charges
+islands on a face of O_9: 110 bodies; (1) holds at 18320 ends of ridge sites, (2) for 14293 runs, (3) for 17279 active runs, (4) for 33892 charges
+two O_5 joined by one site: 146 bodies; (1) holds at 20392 ends of ridge sites, (2) for 12506 runs, (3) for 19650 active runs, (4) for 38604 charges
+roof O_6 over two legs O_5: 92 bodies; (1) holds at 16308 ends of ridge sites, (2) for 8312 runs, (3) for 13558 active runs, (4) for 26258 charges

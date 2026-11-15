@@ -1,0 +1,1 @@
+bodies at two sites from O_5: 21055 bodies; least 4U* - 3 a_max = 8 (((-4, 0, 0), (0, -4, 0)), U* = 20, a_max = 24); bodies with 4U* - 3 a_max <= 0: 0 []; number of bodies by 4U* - 3 a_max (12 = 12 or more): {8: 15, 12: 21040}; largest |I| / U* = 0.69

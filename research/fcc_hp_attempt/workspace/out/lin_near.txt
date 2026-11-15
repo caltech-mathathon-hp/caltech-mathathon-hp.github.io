@@ -1,0 +1,4 @@
+O_5: 206 bodies at one site; with Lam_n < 0: 0; least Lam_n = 38 at n = 5 (site (-4, 0, 0), U* = 19, n2* = 61, D = 7168)
+O_6: 294 bodies at one site; with Lam_n < 0: 0; least Lam_n = 60 at n = 6 (site (-5, 0, 0), U* = 19, n2* = 77, D = 11392)
+O_7: 398 bodies at one site; with Lam_n < 0: 0; least Lam_n = 86 at n = 7 (site (-6, 0, 0), U* = 19, n2* = 93, D = 16384)
+O_8: 518 bodies at one site; with Lam_n < 0: 0; least Lam_n = 116 at n = 8 (site (-7, 0, 0), U* = 19, n2* = 109, D = 22144)

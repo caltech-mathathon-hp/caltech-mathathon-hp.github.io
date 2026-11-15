@@ -1,0 +1,28 @@
+instance n8: n = 8, items [24, 24, 25, 23, 25, 25], B = 73, triples [(0, 1, 2), (3, 4, 5)]
+  slots 616, largest radius 1868, P-runs 309, lambda = 14942 (the routes need at least 8143)
+  chain of 4617766 residues; word equals the word of Section 6 with lambda = 92mn^2 + 188mn + 14n + 46: True
+  checker: adjacent True; self-avoiding True; H's 688, contacts 2980, Loss 920; Lemma 1 holds True; n_1 = 176, n_2 = 220; HPH occurs False; gap = 18.0 against 9m = 18: WITNESS
+instance n8x: n = 8, items [24, 23, 25, 25, 24, 25], B = 73, triples [(0, 2, 4), (1, 3, 5)]
+  slots 616, largest radius 1868, P-runs 309, lambda = 14942 (the routes need at least 8143)
+  chain of 4617766 residues; word equals the word of Section 6 with lambda = 92mn^2 + 188mn + 14n + 46: True
+  checker: adjacent True; self-avoiding True; H's 688, contacts 2980, Loss 920; Lemma 1 holds True; n_1 = 176, n_2 = 220; HPH occurs False; gap = 18.0 against 9m = 18: WITNESS
+instance n8m3: n = 8, items [24, 25, 23, 24, 26, 25, 24, 24, 24], B = 73, triples [(0, 1, 3), (2, 4, 6), (5, 7, 8)]
+  slots 924, largest radius 2792, P-runs 463, lambda = 22334 (the routes need at least 12191)
+  chain of 10341674 residues; word equals the word of Section 6 with lambda = 92mn^2 + 188mn + 14n + 46: True
+  checker: adjacent True; self-avoiding True; H's 1032, contacts 4470, Loss 1380; Lemma 1 holds True; n_1 = 264, n_2 = 330; HPH occurs False; gap = 27.0 against 9m = 27: WITNESS
+instance n10: n = 10, items [14, 14, 15, 13, 15, 15], B = 43, triples [(0, 1, 2), (3, 4, 5)]
+  slots 936, largest radius 2832, P-runs 469, lambda = 22346 (the routes need at least 12678)
+  chain of 10481614 residues; word equals the word of Section 6 with lambda = 92mn^2 + 188mn + 14n + 46: True
+  checker: adjacent True; self-avoiding True; H's 1340, contacts 5968, Loss 1464; Lemma 1 holds True; n_1 = 368, n_2 = 284; HPH occurs False; gap = 18.0 against 9m = 18: WITNESS
+instance n10x: n = 10, items [14, 13, 15, 15, 14, 15], B = 43, triples [(0, 2, 4), (1, 3, 5)]
+  slots 936, largest radius 2832, P-runs 469, lambda = 22346 (the routes need at least 12678)
+  chain of 10481614 residues; word equals the word of Section 6 with lambda = 92mn^2 + 188mn + 14n + 46: True
+  checker: adjacent True; self-avoiding True; H's 1340, contacts 5968, Loss 1464; Lemma 1 holds True; n_1 = 368, n_2 = 284; HPH occurs False; gap = 18.0 against 9m = 18: WITNESS
+instance n12: n = 12, items [3, 3, 4, 3, 3, 4], B = 10, triples [(0, 1, 2), (3, 4, 5)]
+  slots 1320, largest radius 3988, P-runs 661, lambda = 31222 (the routes need at least 18003)
+  chain of 20640054 residues; word equals the word of Section 6 with lambda = 92mn^2 + 188mn + 14n + 46: True
+  checker: adjacent True; self-avoiding True; H's 2312, contacts 10492, Loss 2136; Lemma 1 holds True; n_1 = 624, n_2 = 348; HPH occurs False; gap = 18.0 against 9m = 18: WITNESS
+instance n14: n = 14, items [5, 6, 6, 5, 5, 7], B = 17, triples [(0, 1, 2), (3, 4, 5)]
+  slots 1768, largest radius 5336, P-runs 885, lambda = 41570 (the routes need at least 24358)
+  chain of 36793118 residues; word equals the word of Section 6 with lambda = 92mn^2 + 188mn + 14n + 46: True
+  checker: adjacent True; self-avoiding True; H's 3668, contacts 16872, Loss 2936; Lemma 1 holds True; n_1 = 944, n_2 = 412; HPH occurs False; gap = 18.0 against 9m = 18: WITNESS

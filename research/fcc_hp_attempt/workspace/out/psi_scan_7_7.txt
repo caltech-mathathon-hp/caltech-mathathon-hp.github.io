@@ -1,0 +1,11 @@
+O_7: N = 231, U* = 18, X3 = 39, K = 5.970, Psi = +0.030
+O_7 and O_7: 79 connected unions up to symmetry; least Psi +0.853; unions with Psi < 1/3: 0; with Psi < 0: 0
+   v = (1, 1, 0): overlap 182, N = 280, U* = 20, X3 = 41, K = 5.814, Psi = +0.853
+   v = (2, 1, 1): overlap 140, N = 322, U* = 22, X3 = 43, K = 5.795, Psi = +1.538
+   v = (2, 2, 2): overlap 104, N = 358, U* = 24, X3 = 45, K = 5.859, Psi = +2.141
+   v = (13, 1, 0): overlap 0, N = 462, U* = 44, X3 = 77, K = 11.097, Psi = +3.570
+   v = (12, 1, 1): overlap 0, N = 462, U* = 46, X3 = 73, K = 10.275, Psi = +5.058
+   v = (2, 2, 0): overlap 135, N = 327, U* = 34, X3 = 45, K = 6.130, Psi = +5.203
+   v = (3, 3, 0): overlap 92, N = 370, U* = 36, X3 = 49, K = 6.498, Psi = +5.502
+   v = (3, 2, 1): overlap 100, N = 362, U* = 36, X3 = 47, K = 6.194, Psi = +5.806
+   touching only: least Psi +3.570 at v = (13, 1, 0) (U* = 44, K = 11.097)

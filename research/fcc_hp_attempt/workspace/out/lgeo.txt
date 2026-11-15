@@ -1,0 +1,17 @@
+O_5: U* = 18, long geometric chains (J = 3): 6, steps [4, 4, 4, 4, 4, 4]  [0.002 s]
+O_6: U* = 18, long geometric chains (J = 3): 6, steps [5, 5, 5, 5, 5, 5]  [0.002 s]
+O_7: U* = 18, long geometric chains (J = 3): 6, steps [6, 6, 6, 6, 6, 6]  [0.002 s]
+O_8: U* = 18, long geometric chains (J = 3): 6, steps [7, 7, 7, 7, 7, 7]  [0.003 s]
+O_7 + translate by (13, 1, 0): U* = 44, long geometric chains (J = 3): 12, of which not from a local top 2, U* - 3 L = 8, steps [5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6]
+O_7 + translate by (12, 2, 0): U* = 52, long geometric chains (J = 3): 12, of which not from a local top 2, U* - 3 L = 16, steps [5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6]
+O_7 + translate by (8, 3, 3): U* = 54, long geometric chains (J = 3): 6, of which not from a local top 0, U* - 3 L = 36, steps [5, 5, 5, 5, 6, 6]
+O_7 + translate by (5, 4, 3): U* = 54, long geometric chains (J = 3): 6, of which not from a local top 0, U* - 3 L = 36, steps [4, 4, 4, 4, 4, 4]
+O_7 + translate by (2, 2, 2): U* = 24, long geometric chains (J = 3): 6, of which not from a local top 6, U* - 3 L = 6, steps [4, 4, 4, 4, 4, 4]
+O_7 + translate by (1, 1, 0): U* = 20, long geometric chains (J = 3): 6, of which not from a local top 0, U* - 3 L = 2, steps [6, 6, 6, 6, 6, 6]
+O_7 + translate by (3, 3, 0): U* = 36, long geometric chains (J = 3): 6, of which not from a local top 2, U* - 3 L = 18, steps [4, 4, 6, 6, 6, 6]
+O_7 + translate by (6, 0, 0): U* = 54, long geometric chains (J = 3): 2, of which not from a local top 0, U* - 3 L = 48, steps [6, 6]
+O_7 + translate by (12, 0, 0): U* = 51, long geometric chains (J = 3): 12, of which not from a local top 2, U* - 3 L = 15, steps [5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6]
+O_9 + translate by (2, 2, 2): U* = 24, long geometric chains (J = 3): 6, of which not from a local top 6, U* - 3 L = 6, steps [6, 6, 6, 6, 6, 6]
+O_9 + translate by (17, 1, 0): U* = 44, long geometric chains (J = 3): 12, of which not from a local top 2, U* - 3 L = 8, steps [7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8]
+tetrahedron of side 6: U* = 60, long geometric chains (J = 3): 0
+tetrahedron of side 9: U* = 78, long geometric chains (J = 3): 0

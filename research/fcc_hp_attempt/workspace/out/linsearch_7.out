@@ -1,0 +1,4 @@
+O_5: g 0.0000 -> 0.0000; end N = 85, U* = 18, n2* = 62, least Lam_n = 0 at n = 5, D = 0
+O_6: g 0.0000 -> 0.0000; end N = 146, U* = 18, n2* = 78, least Lam_n = 0 at n = 6, D = 0
+O_7: g 0.0000 -> 0.0000; end N = 231, U* = 18, n2* = 94, least Lam_n = 0 at n = 7, D = 0
+LEAST g 0.0 O_5

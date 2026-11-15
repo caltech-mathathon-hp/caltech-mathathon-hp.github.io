@@ -1,0 +1,6 @@
+O_6 u O_6+(7, 3, 2): start 4U* - 3 a_max = 82; least value reached on a body that is not a regular octahedron: 82 (N = 292, U* = 52, a_max = 42); violations found: 0
+O_6 u O_6+(7, 2, 1): start 4U* - 3 a_max = 72; least value reached on a body that is not a regular octahedron: 72 (N = 286, U* = 48, a_max = 40); violations found: 0
+O_6 u O_6+(6, 4, 0): start 4U* - 3 a_max = 104; least value reached on a body that is not a regular octahedron: 92 (N = 286, U* = 53, a_max = 40); violations found: 0
+O_6 u O_6+(7, 1, 0): start 4U* - 3 a_max = 80; least value reached on a body that is not a regular octahedron: 80 (N = 282, U* = 50, a_max = 40); violations found: 0
+O_6 u O_6+(5, 5, 0): start 4U* - 3 a_max = 88; least value reached on a body that is not a regular octahedron: 88 (N = 286, U* = 52, a_max = 40); violations found: 0
+O_6 u O_6+(5, 3, 2): start 4U* - 3 a_max = 106; least value reached on a body that is not a regular octahedron: 69 (N = 280, U* = 42, a_max = 33); violations found: 0

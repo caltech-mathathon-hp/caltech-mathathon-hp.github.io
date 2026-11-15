@@ -1,0 +1,11 @@
+O_9 u O_9+(2,2,2): N = 706, U* = 24, H = 240, (M_n) fails for n in [2, 3, 4, 5]; least Lam_n = 840 at n = 8
+O_9 u O_9+(4,4,4): N = 869, U* = 66, H = 288, (M_n) fails for n in [2]; least Lam_n = 2616 at n = 4
+O_9 u O_9+(6,6,6): N = 978, U* = 72, H = 336, (M_n) fails for n in [2]; least Lam_n = 2844 at n = 4
+O_9 u O_9+(2, 2, 0): N = 649, U* = 34, H = 240, (M_n) fails for n in [2]; least Lam_n = 1356 at n = 6
+O_9 u O_9+(4, 4, 0): N = 793, U* = 44, H = 272, (M_n) fails for n in [2]; least Lam_n = 1798 at n = 5
+O_9 u O_9+(3, 3, 0): N = 724, U* = 36, H = 256, (M_n) fails for n in [2]; least Lam_n = 1494 at n = 6
+O_9 u O_9+(1, 1, 2): N = 642, U* = 22, H = 232, (M_n) fails for n in [2, 3]; least Lam_n = 590 at n = 8
+O_9 u O_9+(2, 2, 4): N = 773, U* = 50, H = 264, (M_n) fails for n in [2]; least Lam_n = 2116 at n = 4
+O_9 u O_9+(3, 1, 0): N = 698, U* = 44, H = 248, (M_n) fails for n in [2]; least Lam_n = 1870 at n = 5
+O_9 u O_9+(4, 2, 0): N = 760, U* = 46, H = 264, (M_n) fails for n in [2]; least Lam_n = 1982 at n = 5
+O_9 u O_9+(6, 2, 0): N = 843, U* = 52, H = 288, (M_n) fails for n in [2]; least Lam_n = 2300 at n = 5
