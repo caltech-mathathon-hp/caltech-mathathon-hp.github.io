@@ -1,0 +1,29 @@
+---
+/**
+ * One step card in the side-by-side comparison: the board's card (board.css, pb-card) in a compact
+ * size, linking to the step on its own board, where the board opens it in its popup.
+ * Used only by ProofCompare.astro.
+ */
+import Pips from '../proof-map/Pips.astro';
+import { inline } from '../proof-map/inline';
+
+interface Props {
+  card: { n: number; title: string; caption: string; difficulty: 1 | 2 | 3; href: string };
+  /** Name of the board, for screen readers. */
+  side: string;
+}
+const { card, side } = Astro.props;
+---
+
+<a class={`pb-card pb-card-nofig pc-card pb-d${card.difficulty}`} href={card.href}>
+  <span class="pb-card-in">
+    <span class="pb-card-text">
+      <span class="pb-card-meta">
+        <span class="pb-num"><span class="visually-hidden">{side}, step </span>{card.n}</span>
+        <Pips d={card.difficulty} />
+      </span>
+      <span class="pb-card-title">{card.title}</span>
+      <span class="pb-card-cap" set:html={inline(card.caption)} />
+    </span>
+  </span>
+</a>

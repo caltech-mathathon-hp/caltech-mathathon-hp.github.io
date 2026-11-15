@@ -1,0 +1,66 @@
+---
+/**
+ * One comparison card: a stack like the proof board's groups (board.css, pb-group). Closed, it shows
+ * the stage, whether the step is the same or changed, what changes, and the steps of each board.
+ * Open, it shows the cards of the two boards side by side (one under the other when narrow).
+ * Used only by ProofCompare.astro.
+ */
+import CompareCard from './CompareCard.astro';
+import { inline } from '../proof-map/inline';
+import type { Side, Stage } from './stages';
+
+type Card = { n: number; title: string; caption: string; difficulty: 1 | 2 | 3; href: string };
+interface Props {
+  stage: Stage;
+  sides: [Side, Side];
+  /** The cards of the stage on each board. */
+  cards: [Card[], Card[]];
+}
+const { stage, sides, cards } = Astro.props;
+const TAG = { same: 'Same step', changed: 'Changed' } as const;
+const DIFF = { 1: 'routine', 2: 'needs care', 3: 'hard' } as const;
+---
+
+<details class="pb-group pc-pair" data-kind={stage.kind}>
+  <summary class="pb-group-sum">
+    <span class="pb-group-in">
+      <span class="pb-group-meta ui">
+        <span class={`pc-tag pc-tag-${stage.kind}`}>{TAG[stage.kind]}</span>
+      </span>
+      <span class="pb-group-title">{stage.title}</span>
+      <span class="pb-group-cap" set:html={inline(stage.note)} />
+      <span class="pc-pair-lists ui">
+        {
+          sides.map((side, k) => (
+            <span class="pc-pair-list">
+              <span class="pc-pair-side">{side.short}</span>
+              <span class="pb-group-list">
+                {cards[k].map((c) => (
+                  <span class={`pb-group-li pb-d${c.difficulty}`}>
+                    <b>{c.n}</b> {c.title}
+                    <span class="visually-hidden"> ({DIFF[c.difficulty]})</span>
+                  </span>
+                ))}
+              </span>
+            </span>
+          ))
+        }
+      </span>
+      <span class="pb-group-act ui">
+        <span class="pb-group-show">Show the cards</span>
+        <span class="pb-group-hide">Hide the cards</span>
+      </span>
+    </span>
+  </summary>
+  <div class="pc-pair-cards">
+    {
+      sides.map((side, k) => (
+        <div class="pc-pair-col" data-side={side.name}>
+          {cards[k].map((c) => (
+            <CompareCard card={c} side={side.name} />
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</details>

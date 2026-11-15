@@ -1,0 +1,41 @@
+---
+title: Reading off a packing
+caption: 'An item rod lies on consecutive nodes of the bin edge and cannot cross a separator, so it sits inside one gap. The gaps hold $B$ nodes each, so the items that share a gap form one bin.'
+lane: left
+order: 7
+difficulty: 1
+source: 'New; compare “Packing the items into bins”, p. 38'
+---
+
+### The idea
+
+By now a perfect fold has no freedom left that matters. The separators lie along the bin edge and cut it into $K$ gaps of $B$ nodes each, and the item rods fill the gaps. An item rod lies on consecutive nodes of the bin edge ([6 Two edges stay free](#step-ours-skeleton)), and the separators are in the way, so it lies inside one gap. The items whose rods share a gap add up to the $B$ nodes of that gap. So the gaps sort the items into $K$ bins of size exactly $B$: a packing.
+
+### Statement
+
+In a perfect fold, every item rod lies in one gap, and the items that share a gap form one bin of a packing.
+
+### Exact statement
+
+In a perfect fold, number the gaps $1,\dots,K$ and let $U_m$ be the set of items whose rods lie in gap $m$. Then $U_1,\dots,U_K$ is a packing: every item lies in exactly one $U_m$, and the sizes in each $U_m$ add up to $B$. So the puzzle has a solution.
+
+### Uses
+
+[6 Two edges stay free](#step-ours-skeleton): (4). [9 Separators line up](#step-ours-order): (3). [10 Every gap holds B](#step-ours-gaps).
+
+### Proof
+
+1. **One gap per item.** An item rod fills a run of consecutive nodes of the bin edge by [6 Two edges stay free](#step-ours-skeleton) (4). The run contains no separator node, so it lies between two consecutive separators, in one gap.
+2. **Sizes.** By [9 Separators line up](#step-ours-order) (3) the item rods fill the gaps, and by [10 Every gap holds B](#step-ours-gaps) each gap has $B$ nodes. The rods in gap $m$ have $\sum_{u\in U_m}s(u)$ H's, so this sum is $B$.
+
+### Where it comes from
+
+New. In the original proof, a padding and a plug first have to take their places in each strip ([9 Reading off a packing](../original-proof/#step-bl-packing)).
+
+### Rating
+
+1: a direct reading.
+
+### Our note
+
+The fold does not fix the order of the items inside a gap, nor which bin goes into which gap. The reverse direction uses this freedom: any packing, in any order, can be laid out ([14 Filling the front face](#step-ours-front-face)).

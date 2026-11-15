@@ -1,0 +1,65 @@
+---
+title: Why a cube
+caption: 'Among all shapes of $n^3$ nodes the cube has the most pairs of neighbours, and it is the only one with that many. So the perfect folds are exactly the folds with the most contacts.'
+lane: setup
+order: 2
+difficulty: 2
+figure: bl-cube
+source: 'Fact 3.1 and Theorem 3.2, p. 32'
+---
+
+import More from '../../../widgets/proof-map/More.astro';
+
+### The idea
+
+This step is the same as in the original proof ([3 Why a cube](../original-proof/#step-bl-cube)). An H on the surface of a shape touches fewer H's than one inside it, and among shapes of $n^3$ nodes the cube has the least surface. So $n^3$ H's make the most H–H pairs when they fill a cube, and only then.
+
+Here we count the pairs line by line. On a line of the lattice, $k$ nodes of a shape make at most $k-1$ pairs, and exactly $k-1$ when they are consecutive. So a shape loses one pair for every line it meets, and the cube meets the fewest lines: $n^2$ in each of the three directions.
+
+H–H pairs also count H's that are neighbours in the string. A string fixes how many of those there are, so the folds with the most pairs are also the folds with the most contacts. A perfect fold leaves no room inside the cube, so every P lies outside it.
+
+### Statement
+
+$n^3$ H's touch each other most often when they fill a cube, and only then. So the perfect folds are exactly the folds with the most contacts.
+
+### Exact statement
+
+**Fact 3.1.** A set $X$ of $n^3$ nodes of $\mathbb Z^3$ contains at most $3n^2(n-1)$ pairs of neighbouring nodes, and exactly that many only if $X$ is an $n\times n\times n$ cube.
+
+**Theorem 3.2.** A string with $n^3$ H's has a fold with at least $3n^2(n-1)$ H–H pairs if and only if it has a perfect fold.
+
+### Uses
+
+[2 Why bin packing](#step-ours-problems): the definitions.
+
+### Proof
+
+Let $X$ have $N$ nodes, and let $a$, $b$ and $c$ be the numbers of lines parallel to the three axes that meet $X$.
+
+1. **Line by line.** A line that meets $X$ in $k$ nodes holds at most $k-1$ of its pairs, with equality only if the $k$ nodes are consecutive. Every pair lies on one line, so summing over the lines of the three directions, $X$ has at most $3N-(a+b+c)$ pairs.
+2. **Loomis–Whitney.** The lines of one direction that meet $X$ correspond to the nodes of its projection to the plane of the other two axes, so $a$, $b$ and $c$ are the sizes of the three projections. The inequality of Loomis and Whitney gives $N^2\le abc$ (More).
+3. **Arithmetic and geometric means.** $a+b+c\ge3(abc)^{1/3}\ge3N^{2/3}$. With $N=n^3$, $X$ has at most $3n^3-3n^2=3n^2(n-1)$ pairs, and the cube has exactly that many.
+4. **Equality.** If $X$ has $3n^2(n-1)$ pairs, every inequality above is an equality. So $a=b=c=n^2$, $N^2=abc$, and every line that meets $X$ meets it in consecutive nodes. Equality in step 2 makes $X$ a product $A\times B\times C$ of three finite sets of integers (More). Consecutive nodes on every line make $A$, $B$ and $C$ runs of consecutive integers, and $|A||B|=|A||C|=|B||C|=n^2$ gives $|A|=|B|=|C|=n$. So $X$ is a cube.
+5. A fold of a string with $n^3$ H's puts them on a set of $n^3$ nodes, and its H–H pairs are the pairs of neighbours in that set. Steps 1–4 give Theorem 3.2.
+
+<More title="Loomis–Whitney and its equality case">
+
+Write $f(x,y)$, $g(x,z)$ and $h(y,z)$ for the indicators of the three projections of $X$, and put $G(x)=\sum_z g(x,z)$ and $H(y)=\sum_z h(y,z)$. Then $\sum_x G(x)=b$ and $\sum_y H(y)=c$. Every node of $X$ has all three projections, so by the Cauchy–Schwarz inequality, used twice,
+
+$$N\le\sum_{x,y,z}f\,g\,h\le\sum_{x,y}f(x,y)\sqrt{G(x)H(y)}\le\sqrt{a\sum_{x,y}f(x,y)G(x)H(y)}\le\sqrt{a\,b\,c}.$$
+
+Suppose $N^2=abc$. Equality in the last step makes $f(x,y)=1$ whenever $G(x)>0$ and $H(y)>0$. Equality in the first use of Cauchy–Schwarz makes the 0–1 sequences $z\mapsto g(x,z)$ and $z\mapsto h(y,z)$ equal whenever both are nonzero, so they all have one common support $C$. Equality in the first step then says that $X$ consists of all nodes $(x,y,z)$ with $G(x)>0$, $H(y)>0$ and $z\in C$: a product $A\times B\times C$.
+
+</More>
+
+### Where in the paper
+
+§3.1, p. 32: Fact 3.1 and Theorem 3.2. The paper calls the inequality of proof step 2 "a classic result in geometry".
+
+### Rating
+
+2: one cited inequality, its equality case and a count.
+
+### Our note
+
+The statement is that of [3 Why a cube](../original-proof/#step-bl-cube) on the original board, which counts open sides and proves the inequality of <Cite k="loomis1949inequality" /> slice by slice. Here we count pairs line by line and prove the inequality with Cauchy–Schwarz. Both proofs need the equality case, and both use the condition of consecutive nodes on every line to rule out products with gaps. [4 Spelling the string](#step-ours-string) turns the bound into $2n^3-4$ contacts for our string.

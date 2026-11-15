@@ -1,0 +1,49 @@
+---
+title: Folding is NP-complete
+caption: 'The two directions together show that the string folds perfectly exactly when the items fit. The string has about $n^3$ letters with $n$ linear in the size of the puzzle, and a fold is quick to check.'
+lane: end
+order: 1
+difficulty: 1
+source: '§§2–3, pp. 31–32, footnotes 1–2'
+---
+
+### The idea
+
+The two lanes together show that $S$ has a perfect fold exactly when the items fit. A perfect fold is a fold with the most contacts possible ([3 Why a cube](#step-ours-cube)), so a program that answers folding questions also solves the packing puzzle. NP-complete asks for two more things, as in the original proof ([15 Folding is NP-complete](../original-proof/#step-bl-conclusion)).
+
+First, the translation must be fast. $S$ has about $n^3$ letters, and here $n$ grows only linearly with $KB$, the sum of the sizes. With every size written in tally marks, the puzzle is at least that long, so $S$ has at most a constant times the cube of the puzzle's length.
+
+Second, a proposed fold must be quick to check: one node per letter, consecutive letters on neighbouring nodes, no node used twice, and enough contacts.
+
+### Statement
+
+Deciding whether an HP string has a fold on the cubic lattice with at least a given number of contacts is NP-complete.
+
+### Exact statement
+
+Deciding whether an HP string has a fold in $\mathbb Z^3$ with at least $m$ H–H pairs is NP-complete. So is the same question with contacts in place of pairs, and the question whether a string with $n^3$ H's has a perfect fold. The reduction of this board maps a bin packing instance of unary size $N$ to a string of length $O(N^3)$.
+
+### Uses
+
+[2 Why bin packing](#step-ours-problems), [3 Why a cube](#step-ours-cube), [4 Spelling the string](#step-ours-string), and the two lanes: [11 Reading off a packing](#step-ours-packing) and [16 Joining the items](#step-ours-item-routes).
+
+### Proof
+
+1. **Equivalence.** The left lane, ending in [11 Reading off a packing](#step-ours-packing), shows that a perfect fold of $S$ gives a packing. The right lane, ending in [16 Joining the items](#step-ours-item-routes), shows that a packing gives a perfect fold. By [3 Why a cube](#step-ours-cube), $S$ has a perfect fold exactly when it has a fold with at least $m=3n^2(n-1)$ H–H pairs, and by [4 Spelling the string](#step-ours-string) (6) exactly when it has one with at least $2n^3-4$ contacts.
+2. **Size.** Write $N$ for the size of the instance with every number in unary, so $KB\le N$. Then $n=(K+1)(B+6)+KB+2=O(KB)=O(N)$, and by [4 Spelling the string](#step-ours-string) (4), $S$ has $n^3+O(n^2)=O(N^3)$ letters. It can be written down letter by letter in that time. Instances with $K=1$ go to a fixed string with a perfect fold ([2 Why bin packing](#step-ours-problems)).
+3. **Why unary.** With its numbers in binary, $B$ could be exponential in the length of the input, and so could $S$. The reduction runs in polynomial time because bin packing stays NP-complete with its numbers in unary.
+4. **In NP.** A fold of a string of length $L$ can be shifted to use coordinates between $-L$ and $L$. Given such a fold, checking that consecutive letters are neighbours and that no node is used twice, and counting the H–H pairs, takes time polynomial in $L$.
+
+The perfect-fold question is NP-hard by steps 1–3, and so are both threshold questions, with $m=3n^2(n-1)$ pairs or $2n^3-4$ contacts. All three questions are in NP by step 4.
+
+### Where in the paper
+
+§2, p. 31: the problems. §3, p. 31, footnote 1: the problems are NP-hard, and in NP. Footnote 2, p. 32, on the length of the string.
+
+### Rating
+
+1: putting the cards together, a size bound and a direct check.
+
+### Our note
+
+The original string has $n=q(2q+1)+2$ with $q=2\max(K,\lceil B^{1/3}\rceil)$, so its length grows like $K^6+B^2$. Ours grows like $(KB)^3$. Neither is better in every case. What matters is that both are polynomial in the unary size of the puzzle.

@@ -1,0 +1,58 @@
+---
+title: Walls fix the ends
+caption: 'The anchor rod fills one free edge but for a node, so the separators and the items go on the other edge. The two walls run straight across the front face between the two, and fix where the row of separators starts and ends.'
+lane: left
+group: bins
+order: 4
+difficulty: 2
+source: 'New'
+---
+
+### The idea
+
+Leaving out the spacers, the front part of the string reads: single, wall, separators, wall, anchor rod. All its rods lie on the two free edges ([6 Two edges stay free](#step-ours-skeleton)).
+
+The anchor rod has $n-3$ H's, so it fills a free edge but for one node at an end. We call that edge the **anchor edge**. Every separator and every item rod has at least two H's, so none fits into that one node, and they all go on the other free edge, the **bin edge**. They have $n-2$ H's together, as many as the bin edge has nodes, so they fill it. The single takes the last node of the anchor edge.
+
+Each wall leads from a rod on one free edge to a rod on the other, across the front face ([7 One face is left](#step-ours-working-face)). So both free edges are sides of the front face, opposite ones since they share no corner. With the rod H's at its two ends, a wall is a walk of $n-1$ steps between two nodes $n-1$ apart, so it runs straight along a row. The first wall puts the start of the first separator in the row of the single, at an end of the bin edge. The second wall puts the end of the last separator in the row where the anchor rod starts, which is at an end of the anchor rod's run. So the two ends of the row of separators are 1 or $n-3$ rows apart.
+
+### Statement
+
+The single and the anchor rod fill one free edge, and the separators and the item rods the other. The two walls run straight across the front face, and the row of separators starts and ends 1 or $n-3$ rows apart.
+
+### Exact statement
+
+In a perfect fold:
+
+1. the anchor rod fills all nodes but one end node of a free edge, the **anchor edge**, and the single fills that end node;
+2. the separators and the item rods fill the other free edge, the **bin edge**;
+3. the two free edges are opposite sides of the front face.
+
+Put coordinates $(i,j,k)$, $0\le i,j,k\le n-1$, on the cube, with the front face at $k=0$, the anchor edge at $(0,j,0)$ and the bin edge at $(n-1,j,0)$, $1\le j\le n-2$. A **row** is a set of face nodes $(i,j,0)$, $1\le i\le n-2$, with $j$ fixed. Then:
+
+4. each wall fills one row of the front face;
+5. the first H of the first separator and the last H of the last separator lie in rows $j$ and $j'$ with $|j-j'|$ equal to 1 or $n-3$.
+
+### Uses
+
+[4 Spelling the string](#step-ours-string): the order of the front part and the rod lengths. [5 The counts match](#step-ours-local-rules): (c), (d). [6 Two edges stay free](#step-ours-skeleton): (3) and (4). [7 One face is left](#step-ours-working-face): the walls lie on the front face.
+
+### Proof
+
+1. **The anchor rod.** By [6 Two edges stay free](#step-ours-skeleton) (4), the anchor rod fills $n-3$ consecutive nodes of a free edge of $n-2$ nodes. So one node of that edge is left, at one of its ends.
+2. **The bin edge.** Every separator and every item rod has at least two H's, so by (4) it fills a run of at least two nodes, which the anchor edge no longer has. So they all lie on the other free edge. They have $(K+1)g+KB=n-2$ H's, so they fill it. By (d) every skeleton node holds a lone H, and the single is the only rod left, so it fills the last node of the anchor edge. This proves (1) and (2).
+3. **Opposite sides.** The first wall's first H is a neighbour of the single's H by (c), and its last H a neighbour of the first separator's first H. The wall lies on the front face, so a face node of the front face is next to a node of each free edge, and both free edges are edges of the front face. They share no corner, so they are opposite sides of it. This proves (3).
+4. **Straight walls.** Take the first wall with the H's of the single and of the first separator at its ends. It is a walk of $(n-2)+1=n-1$ steps from a node with $i=0$ to a node with $i=n-1$. Each step changes $i$ by at most 1, so every step increases $i$ by 1, and $j$ and $k$ stay fixed. So the wall fills one row, and its two end H's lie in that row. The second wall, from the last separator to the anchor rod, is the same. This proves (4).
+5. **The ends of the train.** By step 4, the first separator's first H lies in the row of the single, $j=1$ or $j=n-2$. The last separator's last H lies in the row of the anchor rod's first H, which is an end of the anchor rod's run, $[2,n-2]$ if the single is at $j=1$ and $[1,n-3]$ if it is at $j=n-2$. In all four cases the two rows differ by 1 or by $n-3$. This proves (5).
+
+### Where it comes from
+
+New. In the original proof the walls cross the front face $2q$ times and the rods of lengths $q$ and $2q+1$ fix their rows ([7 One length per edge](../original-proof/#step-bl-free-edges) and [8 Walls run straight](../original-proof/#step-bl-walls)). Here two walls do the same job for the two ends of the bin edge.
+
+### Rating
+
+2: a distance argument and a short case check.
+
+### Our note
+
+Proof step 4 is the argument of the first wall in [8 Walls run straight](../original-proof/#step-bl-walls) of the original board. The delicate second wall of the original, with its six P's and footnote 7, has no counterpart here: both walls meet their rods with <Seq s="PP" />, so rule (c) applies at all four ends.

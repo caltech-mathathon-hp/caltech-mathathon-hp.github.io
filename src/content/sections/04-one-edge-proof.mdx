@@ -1,0 +1,53 @@
+---
+title: A proof with bins on one edge
+slug: one-edge-proof
+navTitle: One-edge proof
+kicker: Part II
+lede: Our variant of Berger and Leighton's reduction, which puts every bin on a single edge of the cube.
+summary: Our reduction from bin packing to HP folding with every bin on one edge of the cube, in seventeen cards, each with its proof.
+order: 4
+status: draft
+---
+
+import ProofBoard from '../../widgets/proof-map/ProofBoard.astro';
+
+<Theorem kind="Theorem" name="bins on one edge" status="draft">
+From every bin packing puzzle with even sizes we can build, in time polynomial in its size written in unary, an HP string with $n^3$ H's that has a perfect fold on the cubic lattice $\mathbb Z^3$ exactly when the items fit. Here $n$ grows linearly with the sum of the sizes.
+</Theorem>
+
+[The original proof](../original-proof/) makes its bins out of strips of one face of the cube. Walls cut the strips out, paddings and plugs give them the right size, and the items are ribbons that fill them. Here the bins are gaps on one edge of the cube. Long rods, the separators, hang on that edge with $B$ nodes between each two, and each item is a rod that fills part of a gap. Two walls fix the two ends of the row of separators, and one ribbon fills the rest of the face.
+
+The board has the layout of the original one. Cards [2](#step-ours-problems), [3](#step-ours-cube), [5](#step-ours-local-rules) and [6](#step-ours-skeleton) are the original steps, restated for our string. The new steps are [7](#step-ours-working-face)–[11](#step-ours-packing) on the left and [13](#step-ours-frame)–[16](#step-ours-item-routes) on the right. The new idea is in [10 Every gap holds B](#step-ours-gaps): the P's between two separators cannot reach around a gap of more than $B$ nodes, because the rods in the gap have already taken the nodes just outside it.
+
+Each card opens on the idea of its step and its claim in words, with the exact statement, the proof and our notes under "The details". One step gets three dots: [15 Seven corner routes](#step-ours-corner-routes), whose case analysis is long.
+
+<div class="full"><ProofBoard map="ours" lanes={{ setup: { title: 'Setting up the reduction', note: 'as in §2, §3.1, §3.2.2' }, left: { title: 'A perfect fold gives a packing', note: 'cards 5–11' }, right: { title: 'A packing gives a perfect fold', note: 'cards 12–16' }, end: { title: 'Both directions together', note: 'as in §§2–3' } }} groups={{ forced: { title: 'Rods and ribbons are forced', caption: "Counting puts the rods on the edges and the ribbons on the faces. The longest rod leaves two edges free, five ribbons fill five faces, and the walls and the filler fill the sixth, the front face." }, bins: { title: 'The separators make the bins', caption: "The two walls pin the ends of the row of separators to the two ends of an edge. Long separators can only follow each other in order, and the short runs of P's between them cannot reach around a gap of more than B nodes, so every gap holds exactly B." }, fixed: { title: 'Placing every piece', caption: "Given a packing, we place every piece but the linkers in coordinates: the frame on ten edges, five faces and the inside, then the front face and its two edges, with the item rods of each bin in one gap." }, links: { title: 'Routing the linkers', caption: "The long runs of P's between pieces run outside the cube. Seven go round an edge of the cube, each at its own depth, and those between items each use their own plane to the right of the bin edge." } }} /></div>
+
+## Glossary
+
+The words of [the original glossary](../original-proof/#glossary) keep their meaning: perfect fold, packing, rod, ribbon, core, face ribbon, corner rod, tenth-edge rod, free edges, front face, wall, snake and skeleton. This table adds the new words, in the order of [4 Spelling the string](#step-ours-string).
+
+| Word | Meaning |
+|---|---|
+| anchor edge | the free edge that holds the single and the anchor rod |
+| bin edge | the other free edge, which holds the separators and the item rods |
+| single | the rod <Seq s="PHP" /> with one H, at one end of the anchor edge |
+| separator | a rod of $B+6$ H's on the bin edge; there are $K+1$ |
+| spacer | the run of $B+2$ P's between two consecutive separators |
+| gap | the nodes of the bin edge between two consecutive separators; a gap plays a bin |
+| anchor rod | the rod of $n-3$ H's that fills the anchor edge but for the single |
+| filler | the ribbon of $(n-2)(n-4)$ H's that fills the front face between the two walls |
+| item rod | a rod with as many H's as the size of its item, <Seq s="(PHP)^{s(u)}" /> |
+| linker | a run of $8n$ P's between two large pieces; $\lvert U\rvert+6$ of them |
+| $g$ | the length of a separator, $B+6$ |
+| $n$ | the side of the cube, $(K+1)(B+6)+KB+2$ |
+
+## Compared with the original proof
+
+[The two proofs side by side](../compare/) puts the two boards next to each other, step by step, with what changes between them and a table of the main numbers.
+
+## What we checked
+
+- **A perfect fold gives a packing.** Cards 5–11 give the whole argument.
+- **A packing gives a perfect fold.** Cards 12–16 give every coordinate and every route, from our notes on the construction. A coordinate checker built the whole fold, letter by letter, for five instances with up to 1,825,956 letters. It checked that consecutive letters are neighbours, that no node is used twice, that the H's fill the cube, and both counts of contacts. It also confirmed by search the shortest walks around gaps of 0 to 12 nodes used in [10 Every gap holds B](#step-ours-gaps). These checks support the proofs on the cards; they do not replace them.
+- **Lean.** None of this board is formalised in Lean.

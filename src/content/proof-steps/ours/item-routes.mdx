@@ -1,0 +1,56 @@
+---
+title: Joining the items
+caption: 'The items follow each other in the string but sit in scattered gaps. Each linker between two items runs as a rectangle in its own plane to the right of the bin edge, so no two of them can cross, and its depth is chosen to give exactly $8n$ P''s.'
+lane: right
+group: links
+order: 5
+difficulty: 2
+source: 'New; replaces the switchboard of pp. 35–37'
+---
+
+### The idea
+
+The item rods follow each other in the string in a fixed order, but the packing scatters them over the gaps. In the original proof the linkers between items had to pass each other in front of the cube, which needed a switchboard ([13 Untangling the linkers](../original-proof/#step-bl-crossbar)). Here all the item ends lie on one edge, each in its own row ([14 Filling the front face](#step-ours-front-face)), and that makes the routing easy.
+
+Give the linker after the $\ell$-th item its own plane to the right of the bin edge, $20+\ell$ steps out. The linker leaves the end of the item straight to the right until it reaches its plane, runs in that plane as three sides of a rectangle to the row of the next item, and comes straight back in. Different linkers lie in different planes. Their straight stems run along rows that no other linker uses, so nothing crosses. The rectangle's depth in front of the cube is chosen so that the walk has exactly the right length.
+
+### Statement
+
+The linkers between consecutive items can each be routed as a rectangle in its own plane to the right of the bin edge, with exactly $8n$ P's each. Together with the earlier cards this gives a perfect fold of $S$.
+
+### Exact statement
+
+Number the items $1,\dots,|U|$ in string order. For $1\le\ell<|U|$, let item $\ell$ end at $(n-1,a,0)$ and item $\ell+1$ start at $(n-1,c,0)$, and set
+
+$$h_\ell=20+\ell,\qquad R_\ell=\tfrac12\big(8n+3-2h_\ell-|a-c|\big).$$
+
+1. $R_\ell$ is a positive integer, and the walk along straight segments
+$$(n-1,a,0)\to(n-1+h_\ell,a,0)\to(n-1+h_\ell,a,-R_\ell)\to(n-1+h_\ell,c,-R_\ell)\to(n-1+h_\ell,c,0)\to(n-1,c,0)$$
+has exactly $8n+3$ steps.
+2. These $|U|-1$ walks and the seven routes of [15 Seven corner routes](#step-ours-corner-routes) share no node, and none uses a node of a piece other than its two end P's.
+3. Hence the placements of [13 Folding the frame](#step-ours-frame) and [14 Filling the front face](#step-ours-front-face) and these routes form a perfect fold of $S$.
+
+### Uses
+
+[4 Spelling the string](#step-ours-string): $|U|<(n-2)/4$. [14 Filling the front face](#step-ours-front-face): (4) and (5). [15 Seven corner routes](#step-ours-corner-routes).
+
+### Proof
+
+1. **Length.** The walk has $2h_\ell+2R_\ell+|a-c|$ steps, which is $8n+3$ by the choice of $R_\ell$. Item $\ell$ ends at an even row and item $\ell+1$ starts at an odd one, so $|a-c|$ is odd and $R_\ell$ is an integer. It is positive: $2h_\ell+2+|a-c|\le2(19+|U|)+2+(n-3)=n+2|U|+37$, and with $|U|<n/4$ that is less than $\tfrac32n+37<8n+3$.
+2. **Simple.** $a\ne c$ and $R_\ell\ge1$, so the walk is three sides of a rectangle with its two stems, and does not meet itself.
+3. **Item walks apart.** Walk $\ell$ lies in the plane $i=n-1+h_\ell$, apart from its stems. These run along rows $a$ and $c$ at $k=0$. Different walks lie in different planes. A walk meets another walk's plane at $k=0$ only at the ends of its own stems, and no two item ends share a row, so it does not meet the other walk's stems either.
+4. **Pieces.** Every P of a piece to the right of the cube lies one step out, at $i=n$. Among the nodes with $1\le j\le n-2$ and $k\le0$, these are the P's of the separators and item rods at $(n,j,0)$. A stem passes such a node only in its own row, at the end P of its own item. The rest of every walk lies at least 21 steps out.
+5. **Corner routes.** Routes 3 and 4 of [15 Seven corner routes](#step-ours-corner-routes) pass to the right of the cube only at $k=n-2$, or below $j=0$, or above $j=n-1$, while the item walks have $k\le0$ and $1\le j\le n-2$. Route 7 stays at most 19 steps to the right of the bin edge, where the item walks have only their stems, at $k=0$. Route 7 reaches $k=0$ there only in row $v_1$, along which it enters the first item, and no item walk uses that row. The other four routes do not go to the right of the cube.
+6. **The whole fold.** Every piece of $S$ is placed, every linker has exactly $8n$ P's between the end P's of its pieces, and no node is used twice. The H's fill the cube and every P lies outside it. So this is a perfect fold.
+
+### Where it comes from
+
+New. The original proof routes the linkers of its item part through a three-dimensional switchboard in front of the cube and takes up their slack in loops ([13 Untangling the linkers](../original-proof/#step-bl-crossbar) and [14 Loops take up slack](../original-proof/#step-bl-linkers)).
+
+### Rating
+
+2: a simple picture with a few separations to check.
+
+### Our note
+
+The planes $20+\ell$ steps out start just beyond route 7, which reaches 19 steps out to the right. Our checker built these walks for five instances, including one with items of different sizes and one with items placed out of string order.
