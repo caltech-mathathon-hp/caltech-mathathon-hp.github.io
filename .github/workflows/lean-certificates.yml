@@ -41,3 +41,53 @@ jobs:
             lean/cubic/checks/local-*
             lean/cubic/checks/CubicSourceAudit.lean
           if-no-files-found: ignore
+
+  # The shelf proof (lean/shelf): our reduction from bin packing to perfect folding, proving the
+  # team's statements above. It builds against its own copy of lean/cubic in vendor/.
+  shelf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the shelf proof
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: lean/shelf
+          auto-config: false
+          build: true
+          use-mathlib-cache: true
+      - name: Main results print what checks/publication-axioms.txt records
+        working-directory: lean/shelf
+        run: |
+          lake env lean checks/ShelfHardness.lean > checks/local-publication-axioms.txt
+          diff -u checks/publication-axioms.txt checks/local-publication-axioms.txt
+      - name: Every lemma rests only on propext, Classical.choice and Quot.sound
+        working-directory: lean/shelf
+        run: |
+          lake env lean checks/Axioms.lean > checks/local-axioms.txt
+          python3 - checks/local-axioms.txt checks/local-publication-axioms.txt <<'PY'
+          import re, sys
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          bad, seen = [], 0
+          for path in sys.argv[1:]:
+              for line in open(path, encoding="utf-8"):
+                  if "does not depend on any axioms" in line:
+                      seen += 1
+                  m = re.search(r"depends on axioms: \[(.*)\]", line)
+                  if m:
+                      seen += 1
+                      extra = {a.strip() for a in m.group(1).split(",")} - allowed
+                      if extra:
+                          bad.append(f"{path}: {line.strip()}")
+          print(f"{seen} axiom reports read")
+          if bad or seen == 0:
+              print("\n".join(bad) or "no axiom reports found")
+              sys.exit(1)
+          PY
+      - name: Upload the output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shelf-verification
+          path: lean/shelf/checks/local-*
+          if-no-files-found: ignore
