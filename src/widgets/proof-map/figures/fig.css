@@ -11,10 +11,16 @@
   --pmf-i3: var(--item-3);
   --pmf-i4: var(--item-4);
   --pmf-pad: var(--item-pad);
+  --pmf-plug: color-mix(in srgb, var(--item-pad) 45%, var(--bg-elev));
   display: block;
   width: 100%;
   height: auto;
   overflow: visible;
+}
+/* In dark mode a plug is lighter than padding, as it is in light mode: both lean toward --fg. */
+:root[data-theme='dark'] .pmf {
+  --pmf-pad: color-mix(in srgb, var(--item-pad) 80%, var(--fg));
+  --pmf-plug: color-mix(in srgb, var(--item-pad) 35%, var(--fg));
 }
 .pmf .pmf-face {
   fill: var(--bg-sunk);
@@ -160,4 +166,121 @@
 }
 .pmf .pmf-no {
   fill: var(--diff-3-ink);
+}
+
+/* ---------- The kit (kit/*.astro): beads, sticks, contacts, nodes, bins, items, legends ---------- */
+/* A lit bead: disc in its colour (--c), darker rim, highlight up and to the left. */
+.pmf .pmf-bead > circle:first-child {
+  fill: var(--c);
+  stroke: color-mix(in srgb, var(--c) 72%, #000);
+}
+.pmf .pmf-bead .pmf-hl {
+  fill: #fff;
+  opacity: 0.42;
+}
+.pmf .pmf-bead.is-hollow > circle:first-child {
+  fill: color-mix(in srgb, var(--c) 10%, var(--bg-elev));
+  stroke: var(--c);
+}
+.pmf .pmf-bead.is-ghost > circle:first-child {
+  fill: none;
+  stroke: var(--c);
+  stroke-dasharray: 1.6 1.4;
+}
+.pmf .is-dim {
+  opacity: 0.32;
+}
+.pmf .pmf-stick {
+  fill: none;
+  stroke: var(--backbone);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pmf .pmf-contact {
+  stroke: var(--bond);
+  stroke-linecap: butt;
+}
+.pmf .pmf-nodes circle,
+.pmf .pmf-nodes-dot {
+  fill: color-mix(in srgb, var(--lattice) 75%, var(--fg-subtle));
+}
+.pmf .pmf-ring-group {
+  fill: none;
+  stroke-width: 1.3;
+}
+.pmf .pmf-ring-group.is-dashed {
+  stroke-dasharray: 3 2.5;
+}
+/* Bins and items, as in the bin packing game. */
+.pmf .pmf-track {
+  fill: var(--bg-elev);
+  stroke: var(--rule-strong);
+  stroke-width: 1.2;
+}
+.pmf .pmf-bin-track.is-full .pmf-track {
+  stroke: var(--st-proved);
+}
+.pmf .pmf-track-dot {
+  fill: var(--lattice);
+}
+.pmf .pmf-item-bar {
+  fill: var(--c);
+}
+.pmf .pmf-item-tick {
+  stroke: color-mix(in srgb, var(--bg-elev) 50%, transparent);
+  stroke-width: 0.8;
+}
+.pmf .pmf-item-chip {
+  fill: var(--bg-elev);
+}
+.pmf .pmf-chip-text {
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  fill: var(--fg);
+}
+/* The cube seen edge-on (a pale slab) and the switchboard (a pale blue box), as in the video. */
+.pmf .pmf-slab {
+  fill: var(--h-weak);
+  stroke: none;
+}
+.pmf .pmf-slab-top {
+  fill: color-mix(in srgb, var(--h-weak) 70%, var(--bg-elev));
+}
+.pmf .pmf-slab-side {
+  fill: color-mix(in srgb, var(--h-weak) 82%, var(--h));
+}
+.pmf .pmf-slab-edge {
+  stroke: color-mix(in srgb, var(--h) 45%, var(--h-weak));
+  stroke-width: 1;
+}
+.pmf .pmf-board {
+  fill: var(--accent-weak);
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+/* Labels in the colour of what they name. */
+.pmf .pmf-label-p {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--p);
+}
+.pmf .pmf-label-accent {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--accent);
+}
+.pmf .pmf-label-h {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--h);
+}
+.pmf .pmf-label-sm {
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  fill: var(--fg-muted);
 }

@@ -1,0 +1,15 @@
+---
+/** A contact: a dashed gold stick between two beads that touch, stopping at their rims. */
+import { trim, f } from './kit';
+import type { Pt } from '../lib';
+
+interface Props {
+  a: Pt;
+  b: Pt;
+  r?: number;
+}
+const { a, b, r = 4 } = Astro.props;
+const s = trim(a, b, r * 0.9);
+---
+
+<line class="pmf-contact" {...s} stroke-width={f(Math.max(1.2, r * 0.34))} stroke-dasharray={`${f(Math.max(1.6, r * 0.5))} ${f(Math.max(1.4, r * 0.4))}`} />

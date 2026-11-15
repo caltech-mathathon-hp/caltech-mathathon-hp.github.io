@@ -1,105 +1,85 @@
 ---
 /**
- * Footnote 7 of Berger–Leighton in cross-section: the plane through one row of the front face,
- * seen from above, with the edge of the cube seen end-on at (0, 0).
- * i runs to the right along the front face, k downward into the cube (cube: i ≥ 0, k ≥ 0).
- * The last H of a long rod sits on the edge; its P before it is at (0, −1); the six P's of
- * `P P^4 P` (the rod's last P, P^4, the first P of the wall) go round that P to the first H of the
- * wall at (1, 0).
+ * Footnote 7 of Berger–Leighton in cross-section, drawn with the kit: the plane through one row of
+ * the front face, seen from above, with the edge of the cube seen end-on at (0, 0).
+ * i runs to the right along the front face, k downward into the cube (cube: i ≥ 0, k ≥ 0), drawn on
+ * the cube's pale face colour; its other H's are faded.
+ * The last H of a long rod sits on the edge; its P before it is at (0, −1) (grey: the rod's P's fill
+ * the nodes in front of the edge); the six P's of `P P^4 P` (the rod's last P, P^4, the first P of
+ * the wall) go round that P to the first H of the wall at (1, 0), which touches the rod's last H.
  */
-const c = 34;
-const X = (i: number) => 18 + (i + 2) * c;
-const Y = (k: number) => 22 + (k + 3) * c;
-const xy = (i: number, k: number) => `${X(i)},${Y(k)}`;
+import './fig.css';
+import Bead from './kit/Bead.astro';
+import Strand from './kit/Strand.astro';
+import Contact from './kit/Contact.astro';
 
-const route: [number, number][] = [[-1, 0], [-1, -1], [-1, -2], [0, -2], [1, -2], [1, -1]];
-const wallH: [number, number][] = [[1, 0], [2, 0], [3, 0], [4, 0]];
-const wallP: [number, number][] = [[2, -1], [3, -1], [4, -1]];
-const chain: [number, number][] = [[0, -1], [0, 0], ...route, [1, 0], [2, 0], [2, -1], [3, -1], [3, 0], [4, 0], [4, -1]];
-const dots: [number, number][] = [];
-for (let i = 0; i <= 4; i++) for (let k = 1; k <= 2; k++) dots.push([i, k]);
+type Pt = [number, number];
+const c = 34;
+const r = 10;
+const X = (i: number) => 56 + (i + 1) * c;
+const Y = (k: number) => 24 + (k + 2) * c;
+const at = ([i, k]: Pt): Pt => [X(i), Y(k)];
+
+const rodP: Pt = [0, -1];
+const rodH: Pt = [0, 0];
+const route: Pt[] = [[-1, 0], [-1, -1], [-1, -2], [0, -2], [1, -2], [1, -1]];
+const wall: { p: Pt; t: 'H' | 'P' }[] = [
+  { p: [1, 0], t: 'H' },
+  { p: [2, 0], t: 'H' },
+  { p: [2, -1], t: 'P' },
+  { p: [3, -1], t: 'P' },
+  { p: [3, 0], t: 'H' },
+  { p: [4, 0], t: 'H' },
+  { p: [4, -1], t: 'P' },
+];
+const chain: Pt[] = [rodP, rodH, ...route, ...wall.map((w) => w.p)];
+const inside: Pt[] = [];
+for (let k = 1; k <= 2; k++) for (let i = 0; i <= 4; i++) inside.push([i, k]);
+const x0 = X(-0.5);
+const x1 = X(4.7);
+const y0 = Y(-0.5);
+const y1 = Y(2.6);
+const edgeAt = at(rodH);
 ---
 
-<svg class="pmf-six" viewBox="0 0 322 234" role="img" aria-labelledby="pmf-six-t">
-  <title id="pmf-six-t">A cross-section through one row of the front face, with the edge seen end-on. The last H of a long rod sits on the edge, with one of its P's in front of it. Six P's, numbered 1 to 6, go round that P and end in front of the face node next to the edge, where the first H of the wall sits.</title>
-  <rect class="pmf-cube" x={X(-0.5)} y={Y(-0.5)} width={X(4.7) - X(-0.5)} height={Y(2.6) - Y(-0.5)} />
-  <line class="pmf-surface" x1={X(-0.5)} y1={Y(-0.5)} x2={X(4.7)} y2={Y(-0.5)} />
-  <line class="pmf-surface" x1={X(-0.5)} y1={Y(-0.5)} x2={X(-0.5)} y2={Y(2.6)} />
-  {dots.map(([i, k]) => <circle class="pmf-dot" cx={X(i)} cy={Y(k)} r="2" />)}
-  <line class="pmf-bond" x1={X(0)} y1={Y(0)} x2={X(1)} y2={Y(0)} />
-  <polyline class="pmf-chain" points={chain.map(([i, k]) => xy(i, k)).join(' ')} />
-  <circle class="pmf-p pmf-own" cx={X(0)} cy={Y(-1)} r="9" />
-  {wallP.map(([i, k]) => <circle class="pmf-p" cx={X(i)} cy={Y(k)} r="7" />)}
+<svg class="pmf pmf-six-ps" viewBox="0 0 320 206" role="img" aria-labelledby="pmf-six-ps-t">
+  <title id="pmf-six-ps-t">A cross-section through one row of the front face, with the edge seen end-on; the cube's other H's in this plane are drawn faded. The last H of a long rod sits on the edge, with one of the rod's P's, drawn grey, in front of it. Six P's, numbered 1 to 6, go round that P and end in front of the face node next to the edge, where the first H of the wall sits, touching the rod's last H. The wall runs on along the front face.</title>
+  <rect class="pmf-slab" x={x0} y={y0} width={x1 - x0} height={y1 - y0} />
+  <line class="pmf-slab-edge" x1={x0} y1={y0} x2={x1} y2={y0} />
+  <line class="pmf-slab-edge" x1={x0} y1={y0} x2={x0} y2={y1} />
+  {inside.map((p) => <Bead x={at(p)[0]} y={at(p)[1]} r={r} kind="H" dim />)}
+
+  <Strand pts={chain.map(at)} r={r} to={[X(4.55), Y(-1)]} bare />
+  <Contact a={at(rodH)} b={at([1, 0])} r={r} />
+  <Bead x={at(rodP)[0]} y={at(rodP)[1]} r={r} kind="P" color="var(--fg-subtle)" />
+  <Bead x={edgeAt[0]} y={edgeAt[1]} r={r} kind="H" />
+  {wall.map((w) => <Bead x={at(w.p)[0]} y={at(w.p)[1]} r={r} kind={w.t} />)}
   {
-    route.map(([i, k], n) => (
+    route.map((p, n) => (
       <g>
-        <circle class="pmf-p" cx={X(i)} cy={Y(k)} r="9" />
-        <text class="pmf-num" x={X(i)} y={Y(k) + 3.5} text-anchor="middle">{n + 1}</text>
+        <Bead x={at(p)[0]} y={at(p)[1]} r={r} kind="P" />
+        <text class="pmf-six-ps-num" x={at(p)[0]} y={at(p)[1] + 3.8} text-anchor="middle">{n + 1}</text>
       </g>
     ))
   }
-  <circle class="pmf-h" cx={X(0)} cy={Y(0)} r="8" />
-  {wallH.map(([i, k]) => <circle class="pmf-h" cx={X(i)} cy={Y(k)} r="8" />)}
-  <text class="pmf-label" x={X(4.7) + 6} y={Y(-0.5) + 4}>front face</text>
-  <text class="pmf-label" x={X(-0.5)} y={Y(2.6) + 15} text-anchor="middle">left face</text>
-  <text class="pmf-label" x={X(-0.5) - 8} y={Y(0.5) + 12} text-anchor="end">edge</text>
-  <text class="pmf-label" x={X(2.5)} y={Y(0) + 24} text-anchor="middle">wall</text>
-  <text class="pmf-label pmf-in" x={X(2.5)} y={Y(1.5) + 4} text-anchor="middle">inside the cube</text>
+
+  <text class="pmf-label" x={x1 + 6} y={y0 + 4}>front face</text>
+  <text class="pmf-label" x={X(4) + r + 7} y={Y(0) + 4}>wall</text>
+  <text class="pmf-label" x={x0} y={y1 + 15} text-anchor="middle">left face</text>
+  <text class="pmf-label-sm" x={X(2.5)} y={y1 + 15} text-anchor="middle">inside the cube</text>
+  <polyline class="pmf-lead" points={`${edgeAt[0] - r * 0.75},${edgeAt[1] + r * 0.75} ${X(-1.1)},${Y(0.85)}`} />
+  <text class="pmf-label" x={X(-1.1) - 2} y={Y(0.85) + 13} text-anchor="middle">edge</text>
 </svg>
 
 <style>
-  .pmf-six {
-    display: block;
-    width: 100%;
+  .pmf-six-ps {
     max-width: 24rem;
-    height: auto;
     margin-inline: auto;
   }
-  .pmf-cube {
-    fill: var(--bg-sunk);
-  }
-  .pmf-surface {
-    stroke: var(--rule-strong);
-    stroke-width: 1.5;
-  }
-  .pmf-dot {
-    fill: var(--lattice);
-  }
-  .pmf-chain {
-    fill: none;
-    stroke: var(--backbone);
-    stroke-width: 2;
-    stroke-linejoin: round;
-  }
-  .pmf-bond {
-    stroke: var(--bond);
-    stroke-width: 2.5;
-    stroke-dasharray: 4 3;
-  }
-  .pmf-h {
-    fill: var(--h);
-  }
-  .pmf-p {
-    fill: var(--bg);
-    stroke: var(--p);
-    stroke-width: 2;
-  }
-  .pmf-own {
-    stroke: var(--fg-subtle);
-    stroke-dasharray: 3 2;
-  }
-  .pmf-num {
+  .pmf-six-ps-num {
     font-family: var(--font-sans);
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 650;
     fill: var(--fg);
-  }
-  .pmf-label {
-    font-family: var(--font-sans);
-    font-size: 11px;
-    fill: var(--fg-muted);
-  }
-  .pmf-in {
-    fill: var(--fg-subtle);
   }
 </style>

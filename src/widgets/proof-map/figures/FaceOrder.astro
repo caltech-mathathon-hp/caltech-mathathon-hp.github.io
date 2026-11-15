@@ -1,118 +1,150 @@
 ---
 /**
- * Card "The frame" (BL pp. 33–34, Figs. 4–7): the order in which the intended fold fills the cube,
- * on a net. 1 the corner rod: the edges of the top and bottom faces and the back right edge (thick).
- * 2 the back face, by a snake. 3 the tenth-edge rod: the back left edge. 4–7 the left, bottom, right
- * and top faces, by snakes. 8 the interior, by the core. 9 the front face, left open for the walls
- * and the items (dots: its free nodes, free edges included).
+ * Card "Folding the frame" (BL p. 34, Figs. 4–7): the order in which the frame fills the cube, on a
+ * net of a cube of side n = 6 (each face: a 4 × 4 square of face nodes inside a border of edge
+ * nodes). Numbers give the order. 1 the corner rod: lone H's on the edges of the top and bottom
+ * faces and on the back right edge. 2 the back face, by a snake. 3 the tenth-edge rod: the back left
+ * edge (it shows twice on the net, at both ends). 4–7 the left, bottom, right and top faces, by
+ * snakes. 8 the core: it fills the inside, entering and leaving through the two nodes the top
+ * snake leaves open. 9 the front face and its two free edges, left empty (dots).
+ * The snakes start and end as in the card's More: back and bottom run column by column, left,
+ * right and top row by row, each starting and ending next to the back face.
+ * Drawn like the explainer video: a snake's H's are joined by sticks (the P's of a ribbon sit just
+ * outside its H's, so seen face on the chain runs from H to H); a rod's H's are lone beads.
  */
 import './fig.css';
+import Tx from './Tx.astro';
+import Bead from './kit/Bead.astro';
+import Strand from './kit/Strand.astro';
+import Nodes from './kit/Nodes.astro';
+import Ring from './kit/Ring.astro';
 import { N } from './notation';
+import type { Pt } from './lib';
 
-const Sx = 56;
-const Sy = 64;
-const f = 44;
-const ox = 20;
-const oy = 14;
-const fx = (c: number) => ox + c * Sx;
-const fy = (r: number) => oy + r * Sy;
-const faces = [
-  { name: 'back', n: 2, col: 3, row: 1 },
-  { name: 'left', n: 4, col: 0, row: 1 },
-  { name: 'bottom', n: 5, col: 1, row: 2 },
-  { name: 'right', n: 6, col: 2, row: 1 },
-  { name: 'top', n: 7, col: 1, row: 0 },
-];
-const k = 4;
-const p = (f - 12) / (k - 1);
-const snake = (x: number, y: number) => {
-  const a: [number, number][] = [];
-  for (let r = 0; r < k; r++)
-    for (let c = 0; c < k; c++) a.push([x + 6 + (r % 2 === 0 ? c : k - 1 - c) * p, y + 6 + r * p]);
-  return a;
+const s = 13; // lattice spacing
+const f = 5 * s; // side of a face: nodes 0..5, so n = 6
+const r = 3.9;
+const X0 = 24;
+const Y0 = 24;
+type Face = 'top' | 'left' | 'front' | 'right' | 'back' | 'bottom';
+const cell: Record<Face, [number, number]> = {
+  top: [1, 0],
+  left: [0, 1],
+  front: [1, 1],
+  right: [2, 1],
+  back: [3, 1],
+  bottom: [1, 2],
 };
-const ptsOf = (a: [number, number][]) => a.map((q) => q.join(',')).join(' ');
-/* The front face: free nodes, n columns (free edges included) by n − 2 rows. */
-const front = { x: fx(1), y: fy(1) };
-const frontDots: [number, number][] = [];
-for (let r = 0; r < k; r++) for (let c = 0; c < k + 2; c++) frontDots.push([front.x + (c * f) / (k + 1), front.y + 6 + r * p]);
-/* Rods: the squares of the top and bottom faces, the back right edge, the back left edge. */
-const sq = (c: number, r: number) => `M${fx(c)} ${fy(r)}h${f}v${f}h${-f}Z`;
-const cornerRod = [sq(1, 0), sq(1, 2), `M${fx(2) + f} ${fy(1)}v${f}`];
-const tenth = `M${fx(3) + f} ${fy(1)}v${f}`;
-const badge = (x: number, y: number, n: number) => ({ x, y, n });
-const badges = [
-  ...faces.map((fc) => badge(fx(fc.col) + f - 1, fy(fc.row) + 1, fc.n)),
-  badge(fx(1) - 10, fy(0) + f / 2, 1),
-  badge(fx(3) + f + 10, fy(1) + f / 2, 3),
-  badge(front.x + f - 1, front.y + 1, 9),
+/** Node (a, b) of a face: a = 0..5 left to right, b = 0..5 top to bottom, as the net shows it. */
+const P = (fc: Face, a: number, b: number): Pt => [X0 + cell[fc][0] * f + a * s, Y0 + cell[fc][1] * f + b * s];
+const x0 = (fc: Face) => X0 + cell[fc][0] * f;
+const y0 = (fc: Face) => Y0 + cell[fc][1] * f;
+
+/** A snake through the 4 × 4 face nodes: `cols` runs column by column, else row by row. */
+const snake = (fc: Face, lines: number[], starts: number[], cols: boolean, stop = 4): Pt[] =>
+  lines.flatMap((l, i) => {
+    const run = starts[i] === 1 ? [1, 2, 3, 4] : [4, 3, 2, 1];
+    const cut = i === lines.length - 1 ? run.slice(0, stop) : run;
+    return cut.map((m) => (cols ? P(fc, l, m) : P(fc, m, l)));
+  });
+const snakes: { fc: Face; pts: Pt[] }[] = [
+  { fc: 'back', pts: snake('back', [1, 2, 3, 4], [4, 1, 4, 1], true) },
+  { fc: 'left', pts: snake('left', [1, 2, 3, 4], [1, 4, 1, 4], false) },
+  { fc: 'bottom', pts: snake('bottom', [1, 2, 3, 4], [4, 1, 4, 1], true) },
+  { fc: 'right', pts: snake('right', [4, 3, 2, 1], [4, 1, 4, 1], false) },
+  // The top snake is one block short: it stops two nodes early and leaves them to the core.
+  { fc: 'top', pts: snake('top', [1, 2, 3, 4], [4, 1, 4, 1], false, 2) },
 ];
-const lx = fx(2) + 4;
+const coreIn = [P('top', 3, 4), P('top', 4, 4)];
+
+/* Border nodes. On the net the back left edge shows twice (left of the left face, right of the
+   back face); the free edges are the borders between the front face and its neighbours. */
+const key = ([x, y]: Pt) => `${x},${y}`;
+const seen = new Set<string>();
+const cornerRod: Pt[] = [];
+const tenth: Pt[] = [];
+const empty: Pt[] = [];
+const take = (p: Pt, into: Pt[]) => {
+  if (seen.has(key(p))) return;
+  seen.add(key(p));
+  into.push(p);
+};
+for (let a = 0; a <= 5; a++) for (let b = 1; b <= 4; b++) take(P('front', a, b), empty);
+for (let b = 1; b <= 4; b++) {
+  take(P('left', 0, b), tenth);
+  take(P('back', 5, b), tenth);
+}
+for (const fc of Object.keys(cell) as Face[])
+  for (let a = 0; a <= 5; a++)
+    for (let b = 0; b <= 5; b++) if (a === 0 || a === 5 || b === 0 || b === 5) take(P(fc, a, b), cornerRod);
+
+const frame: Face[] = ['top', 'left', 'right', 'back', 'bottom'];
+const mid = (fc: Face) => y0(fc) + f / 2;
+/* Badges: on the net next to what they number, and in the legend. */
+const badges: { x: number; y: number; n: number; t?: string }[] = [
+  { x: x0('top') + 10, y: 11, n: 7, t: 'top' },
+  { x: x0('left') + 11, y: y0('left') + f + 14, n: 4, t: 'left' },
+  { x: x0('right') + 11, y: y0('right') + f + 14, n: 6, t: 'right' },
+  { x: x0('back') + 11, y: y0('back') + f + 14, n: 2, t: 'back' },
+  { x: X0 + 10, y: y0('bottom') + f - 14, n: 5, t: 'bottom' },
+  { x: x0('top') - 13, y: mid('top'), n: 1 },
+  { x: X0 - 13, y: mid('left'), n: 3 },
+  { x: x0('back') + f + 13, y: mid('back'), n: 3 },
+  { x: x0('front') + f / 2, y: mid('front'), n: 9 },
+];
+const coreBadge = { x: x0('right') + 16, y: 70 };
+const lx = 190;
 const legend = [
-  { n: 1, t: N.corner, y: fy(0) + 14 },
-  { n: 3, t: N.tenth, y: fy(0) + 36 },
-  { n: 8, t: 'interior: the core', y: fy(2) + 16 },
-  { n: 9, t: 'front face: last', y: fy(2) + 38 },
+  { n: 1, t: N.corner },
+  { n: 3, t: N.tenth },
+  { n: 8, t: 'core: the inside' },
+  { n: 9, t: 'front face: last' },
 ];
 ---
 
-<svg class="pmf" viewBox="0 0 320 206" role="img" aria-labelledby="pmf-order-t">
-  <title id="pmf-order-t">A net of the cube, numbered in the order the fold fills it. 1: the corner rod, along the edges of the top and bottom faces and the back right edge. 2: the back face, by a snake. 3: the tenth-edge rod, along the back left edge. 4 to 7: the left, bottom, right and top faces, each by a snake. 8: the interior, by the core. 9: the front face, left open until last.</title>
+<svg class="pmf" viewBox="0 0 320 226" role="img" aria-labelledby="pmf-face-order-t">
+  <title id="pmf-face-order-t">A net of the cube, numbered in the order the frame fills it. 1: the corner rod, lone H's along the edges of the top and bottom faces and the back right edge. 2: the back face, by a snake of H's, column by column. 3: the tenth-edge rod, lone H's along the back left edge, which shows at both ends of the net. 4 to 7: the left, bottom, right and top faces, each by a snake. The top snake stops two nodes short; 8: the core goes in through one of them, fills the inside, and comes out through the other. 9: the front face and its two free edges, still empty, are filled last.</title>
+  {frame.map((fc) => <rect class="pmf-slab" x={x0(fc)} y={y0(fc)} width={f} height={f} />)}
+  {frame.map((fc) => <rect class="pmf-fo-fold" x={x0(fc)} y={y0(fc)} width={f} height={f} />)}
+  <rect class="pmf-fo-empty" x={x0('front') - s / 2} y={y0('front') + s / 2} width={f + s} height={f - s} rx="4" />
+  <Nodes pts={empty} r={r} />
+
+  {snakes.map((sn) => <Strand pts={sn.pts} r={r} />)}
+  {[...cornerRod, ...tenth].map(([x, y]) => <Bead x={x} y={y} r={r} kind="H" />)}
+  {coreIn.map(([x, y]) => <Bead x={x} y={y} r={r} kind="H" />)}
+  <Ring x1={coreIn[0][0]} y1={coreIn[0][1]} x2={coreIn[1][0]} r={r} pad={1.4} color="var(--fg)" dashed />
+  <path class="pmf-lead" d={`M${coreBadge.x - 7} ${coreBadge.y}H${coreIn[1][0] + r + 1.6}`} />
+
   {
-    faces.map((fc) => {
-      const x = fx(fc.col);
-      const y = fy(fc.row);
-      const s = snake(x, y);
-      return (
-        <g>
-          <rect class="pmf-face" x={x} y={y} width={f} height={f} />
-          <polyline class="pmf-chain" points={ptsOf(s)} />
-          {s.map(([cx, cy]) => (
-            <circle class="pmf-h" cx={cx} cy={cy} r="2.6" />
-          ))}
-          <text class="pmf-label" x={x + f / 2} y={y + f + 13} text-anchor="middle">
-            {fc.name}
-          </text>
-        </g>
-      );
-    })
-  }
-  <rect class="pmf-face pmf-face-front" x={front.x} y={front.y} width={f} height={f} />
-  {frontDots.map(([x, y]) => <circle class="pmf-dot" cx={x} cy={y} r="2.3" />)}
-  <text class="pmf-label" x={front.x + f / 2} y={front.y + f + 13} text-anchor="middle">front</text>
-  {cornerRod.map((d) => <path class="pmf-fo-rod" d={d} />)}
-  <path class="pmf-fo-rod" d={tenth} />
-  {
-    badges.map((b) => (
+    [...badges, { ...coreBadge, n: 8 }].map((b) => (
       <g>
-        <circle class="pmf-badge" cx={b.x} cy={b.y} r="7.5" />
-        <text class="pmf-badge-num" x={b.x} y={b.y + 3.8} text-anchor="middle">
-          {b.n}
-        </text>
+        <circle class="pmf-badge" cx={b.x} cy={b.y} r="7" />
+        <text class="pmf-badge-num" x={b.x} y={b.y + 3.8} text-anchor="middle">{b.n}</text>
+        {'t' in b && b.t && <text class="pmf-label" x={b.x + 11} y={b.y + 3.8}>{b.t}</text>}
       </g>
     ))
   }
   {
-    legend.map((l) => (
+    legend.map((l, i) => (
       <g>
-        <circle class="pmf-badge" cx={lx + 7.5} cy={l.y - 4} r="7.5" />
-        <text class="pmf-badge-num" x={lx + 7.5} y={l.y - 0.2} text-anchor="middle">
-          {l.n}
-        </text>
-        <text class="pmf-label" x={lx + 21} y={l.y}>
-          {l.t}
-        </text>
+        <circle class="pmf-badge" cx={lx} cy={13 + i * 16} r="7" />
+        <text class="pmf-badge-num" x={lx} y={16.8 + i * 16} text-anchor="middle">{l.n}</text>
+        <Tx x={lx + 11} y={16.8 + i * 16} t={l.t} />
       </g>
     ))
   }
 </svg>
 
 <style>
-  .pmf-fo-rod {
+  .pmf-fo-fold {
     fill: none;
-    stroke: var(--h);
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+    stroke: var(--pmf-fo-edge, color-mix(in srgb, var(--h) 30%, var(--h-weak)));
+    stroke-width: 0.8;
+  }
+  .pmf-fo-empty {
+    fill: var(--bg-sunk);
+    stroke: var(--rule-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 2.5;
   }
 </style>

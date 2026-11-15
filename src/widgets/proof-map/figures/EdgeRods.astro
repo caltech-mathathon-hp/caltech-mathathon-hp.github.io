@@ -1,18 +1,25 @@
 ---
 /**
- * Card "The free edges" (BL Lemma 3.12), drawn for q = 4: a free edge has q(2q + 1) = 36 nodes.
- * There are q long rods (9 H's), 2q short rods (4 H's) and the spaced rod (q H's between P's).
- * Row 1: the long rods fill one free edge, E₁. Row 2: the short rods and the spaced rod (ringed) fill the other, E₂,
- * in the order the walls lay them. Rows 3–4: an edge of short rods and long rods only, with a short rod in
+ * Card "One length per edge" (BL Lemma 3.12), drawn for q = 4: a free edge has q(2q + 1) = 36 nodes.
+ * There are q long rods (9 H's), 2q short rods (4 H's) and the spaced rod (q H's between runs of P's).
+ * Each row is one free edge, a pale blue slot of 36 empty nodes as in the skeleton figure; each rod a
+ * ring round its lone H's. Row 1: the long rods fill one free edge, E₁. Row 2: the short rods and the
+ * spaced rod (its H's ringed in blue, joined below by its runs of P's) fill the other, E₂, in the
+ * order the walls lay them. Rows 3–4: an edge of short rods and long rods only, with a short rod in
  * it, fails: a mix leaves a node empty, and short rods alone would need 2q + 1 of them.
  */
 import './fig.css';
 import Tx from './Tx.astro';
+import Bead from './kit/Bead.astro';
+import Nodes from './kit/Nodes.astro';
+import Ring from './kit/Ring.astro';
 import { N } from './notation';
+import type { Pt } from './lib';
 
 const q = 4;
 const L = q * (2 * q + 1);
 const pitch = 8;
+const r = 2.5;
 const x0 = 18;
 const X = (i: number) => x0 + i * pitch;
 type Row = { label: string; rods: number[]; spaced?: number[]; missing?: number; ok: boolean; verdict: string; edge?: string };
@@ -29,63 +36,70 @@ const rows: Row[] = [
   { label: 'mixed: 3 · 9 + 2 · 4 = 35', rods: [9, 9, 9, 4, 4], ok: false, verdict: 'a node left' },
   { label: `${N.qRod}s only: 9 · 4`, rods: [4, 4, 4, 4, 4, 4, 4, 4], missing: 4, ok: false, verdict: 'only 8 exist' },
 ];
-const y = (r: number) => 46 + r * 42;
-const layout = (r: Row) => {
+const y = (k: number) => 44 + k * 42;
+const layout = (row: Row) => {
   let u = 0;
-  return r.rods.map((len, k) => {
+  return row.rods.map((len, k) => {
     const a = u;
     u += len;
-    return { a, len, spaced: r.spaced?.includes(k) ?? false };
+    return { a, len, spaced: row.spaced?.includes(k) ?? false };
   });
+};
+const all: Pt[] = Array.from({ length: L }, (_, i) => [X(i), 0]);
+const R = r + 0.9; // ring of a rod
+/* The run of P's between two H's of the spaced rod, drawn as a dotted arc below the edge. */
+const arc = (a: number, b: number, yy: number) => {
+  const x1 = X(a);
+  const x2 = X(b);
+  const d = 9;
+  return `M${x1} ${yy + r + 3}C${x1} ${yy + d + 4} ${x2} ${yy + d + 4} ${x2} ${yy + r + 3}`;
 };
 ---
 
-<svg class="pmf" viewBox="0 0 320 218" role="img" aria-labelledby="pmf-edge-t">
-  <title id="pmf-edge-t">Rods along a free edge, drawn for q = 4, where an edge has q(2q + 1) = 36 nodes. Four long rods of 9 H's fill one free edge, E1. Eight short rods of 4 H's and the four H's between P's of the spaced rod, ringed, fill the other, E2, in the order the walls lay them. Mixing the rods fails: three 9's and two 4's make 35 and leave a node empty. Nine short rods would fill it, but there are only eight.</title>
+<svg class="pmf pmf-er" viewBox="0 0 320 200" role="img" aria-labelledby="pmf-edge-rods-t">
+  <title id="pmf-edge-rods-t">Rods along a free edge, drawn for q = 4, where an edge has q(2q + 1) = 36 nodes. Each row is one free edge with its rods ringed. Four long rods of 9 lone H's fill one free edge, E1. Eight short rods of 4 H's and the four H's of the spaced rod, ringed in blue and joined below by its runs of P's, fill the other, E2, in the order the walls lay them. Mixing the rods fails: three 9's and two 4's make 35 and leave a node empty. Nine short rods would fill it, but there are only eight.</title>
   <Tx x={x0 - 6} y="16" t={`drawn for ${N.q} = 4: an edge of ${N.q}(2${N.q} + 1) = 36 nodes`} />
   {
-    rows.map((r, k) => {
-      const rods = layout(r);
+    rows.map((row, k) => {
+      const rods = layout(row);
       const used = rods.reduce((s, d) => s + d.len, 0);
-      const yy = y(k) + 15;
+      const yy = y(k) + 14;
       return (
         <g>
-          <Tx x={x0 - 6} y={y(k)} t={r.label} c="pmf-label-strong" />
+          <Tx x={x0 - 6} y={y(k)} t={row.label} c="pmf-label-strong" />
           <text class="pmf-label" x={X(L - 1) + 6} y={y(k)} text-anchor="end">
-            <tspan class:list={[r.ok ? 'pmf-ok' : 'pmf-no']} font-weight="700">
-              {r.ok ? '✓' : '✗'}
+            <tspan class:list={[row.ok ? 'pmf-ok' : 'pmf-no']} font-weight="700">
+              {row.ok ? '✓' : '✗'}
             </tspan>{' '}
-            {r.verdict}
-            {r.edge && (
+            {row.verdict}
+            {row.edge && (
               <>
                 {' '}
                 <tspan class="pmf-v">E</tspan>
-                {r.edge}
+                {row.edge}
               </>
             )}
           </text>
-          <line class="pmf-edge-line" x1={x0 - 6} y1={yy} x2={X(L - 1) + 6} y2={yy} />
-          {Array.from({ length: L }, (_, i) => (
-            <circle class="pmf-dot" cx={X(i)} cy={yy} r="1.8" />
-          ))}
+          <rect class="pmf-er-slot" x={x0 - 6} y={yy - 6.5} width={X(L - 1) - x0 + 12} height="13" rx="6.5" />
+          <Nodes pts={all.map(([x]) => [x, yy] as Pt)} r={r} />
           {rods.map(({ a, len, spaced }) =>
             spaced ? (
               <g>
-                <circle class="pmf-h" cx={X(a)} cy={yy} r="3" />
-                <circle class="pmf-ring" cx={X(a)} cy={yy} r="5.2" />
+                <Bead x={X(a)} y={yy} r={r} />
+                <circle class="pmf-er-spaced" cx={X(a)} cy={yy} r={R} />
               </g>
             ) : (
               <g>
-                <rect class="pmf-er-rod" x={X(a) - 4.6} y={yy - 5.6} width={(len - 1) * pitch + 9.2} height="11.2" rx="5.6" />
-                <line class="pmf-chain" x1={X(a)} y1={yy} x2={X(a + len - 1)} y2={yy} />
+                <Ring x1={X(a)} y1={yy} x2={X(a + len - 1)} r={r} pad={0.9} color="var(--fg-subtle)" />
                 {Array.from({ length: len }, (_, i) => (
-                  <circle class="pmf-h" cx={X(a + i)} cy={yy} r="3" />
+                  <Bead x={X(a + i)} y={yy} r={r} />
                 ))}
               </g>
             ),
           )}
-          {r.missing && <rect class="pmf-er-gap" x={X(used) - 4.6} y={yy - 5.6} width={(r.missing - 1) * pitch + 9.2} height="11.2" rx="5.6" />}
-          {!r.ok && !r.missing && <circle class="pmf-er-gap" cx={X(used)} cy={yy} r="4.6" />}
+          {row.spaced && row.spaced.slice(1).map((_, i) => <path class="pmf-er-prun" d={arc(rods[row.spaced![i]].a, rods[row.spaced![i + 1]].a, yy)} />)}
+          {row.missing && <rect class="pmf-er-gap" x={X(used) - R} y={yy - R} width={(row.missing - 1) * pitch + 2 * R} height={2 * R} rx={R} />}
+          {!row.ok && !row.missing && <circle class="pmf-er-gap" cx={X(used)} cy={yy} r={R} />}
         </g>
       );
     })
@@ -93,14 +107,30 @@ const layout = (r: Row) => {
 </svg>
 
 <style>
-  .pmf-er-rod {
-    fill: var(--bg-elev);
-    stroke: var(--rule-strong);
+  .pmf-er-slot {
+    fill: var(--accent-weak);
+    stroke: color-mix(in srgb, var(--accent) 35%, var(--accent-weak));
+    stroke-width: 1;
+  }
+  .pmf-er-spaced {
+    fill: none;
+    stroke: var(--p);
+    stroke-width: 1.2;
+  }
+  .pmf-er-prun {
+    fill: none;
+    stroke: var(--p);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-dasharray: 0.1 3;
   }
   .pmf-er-gap {
     fill: none;
     stroke: var(--diff-3-ink);
-    stroke-width: 1.3;
-    stroke-dasharray: 2 2;
+    stroke-width: 1.2;
+    stroke-dasharray: 2 1.6;
+  }
+  .pmf.pmf-er :global(.pmf-ring-group) {
+    stroke-width: 1;
   }
 </style>

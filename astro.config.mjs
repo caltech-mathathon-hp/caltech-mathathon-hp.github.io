@@ -5,6 +5,7 @@ import preact from '@astrojs/preact';
 import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import rehypeMathPunct from './src/lib/rehype-math-punct.mjs';
 import yaml from '@modyfi/vite-plugin-yaml';
 
 // Deployment: SITE_URL=https://<owner>.github.io, and SITE_BASE=/ for a repository named
@@ -23,7 +24,7 @@ export default defineConfig({
     // LaTeX in Markdown/MDX: $inline$ and $$display$$, rendered to HTML at build time.
     processor: unified({
       remarkPlugins: [remarkMath],
-      rehypePlugins: [[rehypeKatex, { strict: false }]],
+      rehypePlugins: [[rehypeKatex, { strict: false }], rehypeMathPunct],
     }),
   },
   integrations: [mdx(), preact()],

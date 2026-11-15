@@ -1,0 +1,45 @@
+---
+/**
+ * A bin as the bin packing game draws it: a rounded track `units` long with a lattice dot in every
+ * free unit, and the items put in it from the left. A full bin gets a green border.
+ * (x, y): left end of the track's centre line. u: width of a unit; h: height of an item.
+ *
+ *   <Bin x={10} y={40} units={12} items={[{ units: 8, k: 0, chip: 'u₁' }, { units: 4, k: 3 }]} full />
+ */
+import Item from './Item.astro';
+import { f, type Kind } from './kit';
+
+interface BinItem {
+  units: number;
+  k?: number;
+  kind?: Kind;
+  chip?: string;
+  color?: string;
+}
+interface Props {
+  x: number;
+  y: number;
+  units: number;
+  u?: number;
+  h?: number;
+  items?: BinItem[];
+  full?: boolean;
+  /** Leave the free units without dots. */
+  plain?: boolean;
+}
+const { x, y, units, u = 8, h = 12, items = [], full, plain } = Astro.props;
+const pad = 2.5;
+let at = 0;
+const placed = items.map((it) => {
+  const p = { ...it, x: x + at * u };
+  at += it.units;
+  return p;
+});
+const free = Array.from({ length: Math.max(0, units - at) }, (_, i) => x + (at + i + 0.5) * u);
+---
+
+<g class:list={['pmf-bin-track', { 'is-full': full }]}>
+  <rect class="pmf-track" x={f(x - pad)} y={f(y - h / 2 - pad)} width={f(units * u + 2 * pad)} height={f(h + 2 * pad)} rx={f(h / 2 + pad - 1)} />
+  {!plain && free.map((cx) => <circle class="pmf-track-dot" cx={f(cx)} cy={f(y)} r={f(Math.max(0.9, u * 0.13))} />)}
+  {placed.map((it) => <Item x={it.x} y={y} units={it.units} u={u} h={h} k={it.k} kind={it.kind} chip={it.chip} color={it.color} />)}
+</g>

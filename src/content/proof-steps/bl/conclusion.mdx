@@ -1,6 +1,6 @@
 ---
 title: Folding is NP-complete
-caption: 'The two directions together show that the string folds perfectly exactly when the items fit. The string is quick to write because bin packing stays hard with sizes in tally marks, and a fold is quick to check.'
+caption: 'Together the two directions show that the string folds perfectly exactly when the items fit. So if $m$ is the number of contacts a perfect fold makes, the string has a fold with at least $m$ contacts exactly when the items fit. The string is quick to write because bin packing stays hard with sizes in tally marks, and a fold is quick to check.'
 lane: end
 order: 1
 difficulty: 1
@@ -9,7 +9,7 @@ source: '§§2–3, pp. 31–32, footnotes 1–2'
 
 ### The idea
 
-The two directions together show that $S$ has a perfect fold exactly when the items fit. A perfect fold is a fold with the most contacts possible ([3 Why a cube](#step-bl-cube)), so a program that answers folding questions also solves the packing puzzle. NP-complete asks for two more things.
+The two directions together show that $S$ has a perfect fold exactly when the items fit. A perfect fold is a fold with the most contacts possible ([3 Why a cube](#step-bl-cube)). So if $m$ is the number of contacts a perfect fold of $S$ makes, then $S$ has a fold with at least $m$ contacts exactly when the items fit, and a program that answers this question also solves the packing puzzle. NP-complete asks for two more things.
 
 First, the translation must be fast. $S$ has about $n^3$ letters, and $n^3$ grows like $K^6+B^2$. With every size written in tally marks ([2 Why bin packing](#step-bl-problems)), that is at most a fixed power of the puzzle's length, so we can write $S$ down quickly.
 
@@ -17,7 +17,7 @@ Second, a proposed fold must be quick to check. It lists one node per letter, an
 
 ### Statement
 
-Deciding whether an HP string has a fold on the cubic lattice with at least a given number of contacts is NP-complete.
+Given an HP string and a number $m$, deciding whether the string has a fold on the cubic lattice with at least $m$ contacts is NP-complete.
 
 ### Exact statement
 

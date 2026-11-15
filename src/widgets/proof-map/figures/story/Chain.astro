@@ -1,162 +1,213 @@
 ---
 /**
- * Card "The string" (BL Fig. 3), shortened by break marks, in its three parts.
- * Frame: rods PHP, face ribbons PHHP, the core of H's. Walls: q periods (short rod, wall, long rod,
- * wall, short rod), then the spaced rod, whose H's between P's sit between long runs of P's.
- * Item part: q paddings and q − K plugs, then one item ribbon per item u₁, u₂, …; each of these
- * ribbons comes after a linker (a run of P's, drawn as a loop). Ribbons of the item part show their
- * H's only, in pairs (one pair per block PHHP).
+ * Card "Spelling the string" (BL Fig. 3), drawn with the kit: the string, shortened by break marks,
+ * in its three parts, one letter per bead (H lit, P hollow).
+ * Frame: rods PHP, face ribbons PHHP, the core of H's. Walls: one period (short rod, wall, long rod,
+ * wall, short rod) standing for q, then the spaced rod, whose runs of P's are drawn as loops.
+ * Item part: a padding and a plug standing for the q paddings and q − K plugs (their H's grey and
+ * light grey), then one item ribbon per item of the running example (story/items.ts), in its colour,
+ * ringed and named by its size. Each ribbon of the item part comes after a linker, a long run of
+ * P's drawn as a loop.
  */
 import '../fig.css';
 import Tx from '../Tx.astro';
+import Bead from '../kit/Bead.astro';
+import Strand from '../kit/Strand.astro';
+import Ring from '../kit/Ring.astro';
 import { N } from '../notation';
-import { itemColor, hbreak, hbrace, type Pt } from '../lib';
+import { hbreak, hbrace, type Pt } from '../lib';
+import type { Kind } from '../kit/kit';
 import { ITEMS } from './items';
 
-const pitch = 8;
-type Group = { label?: string; s: string };
-/** Beads of a row of groups joined by break marks. */
-const beadRow = (groups: Group[], x0: number, join: number) => {
-  let x = x0;
-  return groups.map((g) => {
-    const beads = [...g.s].map((t, i) => ({ t, x: x + i * pitch }));
-    const out = { ...g, beads, x0: x, x1: x + (g.s.length - 1) * pitch };
-    x = out.x1 + join;
-    return out;
-  });
-};
-/* Frame. */
-const yA = 32;
-const frame = beadRow(
-  [
-    { label: 'rods', s: 'PHPPHP' },
-    { label: 'face ribbons', s: 'PHHPPHHP' },
-    { label: 'core', s: 'HHHH' },
-  ],
-  18,
-  28,
-);
-/* Walls: one period, each piece cut short, then the spaced rod. */
-const yB = 90;
-const period = beadRow(
-  [
-    { s: 'PHP' },
-    { s: 'PHHP' },
-    { s: 'PHP' },
-    { s: 'PHHP' },
-    { s: 'PHP' },
-  ],
-  18,
-  16,
-);
-const pEnd = period.at(-1)!.x1;
-const spacedX = pEnd + 34;
-const loop: Pt[] = [
-  [0, 0],
-  [0, 10],
-  [7, 16],
-  [14, 10],
-  [14, 0],
-];
-/* The spaced rod: P H, then (loop of P's, H) twice more, then P. */
-const spacedH = [spacedX + pitch, spacedX + pitch + 30, spacedX + pitch + 60];
-const spacedLoops = [0, 1].map((i) => loop.map(([dx, dy]) => [spacedH[i] + 8 + dx, yB + dy] as Pt));
+const p = 10; // one letter
+const r = 3.2;
+const x0 = 16;
+type B = { x: number; y: number; kind: Kind; k?: number };
+type Piece = { beads: B[]; label?: string; k?: number; ring?: boolean };
 
-/* Item part: a linker loop, then a ribbon of H's in pairs. */
-const hp = 6.6;
-const pair = 2.4;
-const ribbonRow = (sizes: number[], x0: number, y: number, gap = 6) => {
-  let xx = x0;
-  return sizes.map((size) => {
-    const p = loop.map(([dx, dy]) => [xx + dx, y + dy] as Pt);
-    const start = xx + 14 + 8;
-    const beads = Array.from({ length: size }, (_, u) => start + u * hp + Math.floor(u / 2) * pair);
-    xx = beads[beads.length - 1] + gap;
-    return { p, beads, y };
-  });
+/** A run of letters "PHHP…" from x along row y; H's drawn as `h` (item k, padding, plug). */
+const run = (s: string, x: number, y: number, h: Kind = 'H', k?: number): B[] =>
+  [...s].map((t, i) => ({ x: x + i * p, y, kind: t === 'P' ? 'P' : h, k }));
+/** A run of P's hanging below the row as a loop, starting at x (a linker, or the spaced rod's P's). */
+const loop = (x: number, y: number): B[] => [
+  { x, y, kind: 'P' },
+  { x, y: y + p, kind: 'P' },
+  { x: x + p, y: y + p, kind: 'P' },
+  { x: x + p, y, kind: 'P' },
+];
+const lastX = (a: B[]) => a[a.length - 1].x;
+/** Break: the stick runs on from x1 to x2, with a gap and a break mark in the middle. */
+const brk = (x1: number, x2: number, y: number) => ({ x1, x2, y, m: (x1 + x2) / 2 });
+
+/* ---------- frame ---------- */
+const yA = 36;
+const rods = run('PHPPHP', x0, yA);
+const ribs = run('PHHPPHHP', lastX(rods) + 26, yA);
+const core = run('PHHHH', lastX(ribs) + 26, yA);
+const frame: Piece[] = [
+  { beads: rods, label: 'rods' },
+  { beads: ribs, label: 'face ribbons' },
+  { beads: core, label: 'core' },
+];
+const frameBreaks = [brk(lastX(rods), ribs[0].x, yA), brk(lastX(ribs), core[0].x, yA), brk(lastX(core), lastX(core) + 24, yA)];
+
+/* ---------- walls ---------- */
+const yB = 100;
+const periodSpec = [
+  ['PHP', 'short rod'],
+  ['PHHP', 'wall'],
+  ['PHP', 'long rod'],
+  ['PHHP', 'wall'],
+  ['PHP', 'short rod'],
+];
+let px = x0;
+const period: Piece[] = periodSpec.map(([s, label]) => {
+  const beads = run(s, px, yB);
+  px = lastX(beads) + 17;
+  return { beads, label };
+});
+const pEnd = lastX(period.at(-1)!.beads);
+const periodBreaks = period.slice(1).map((g, i) => brk(lastX(period[i].beads), g.beads[0].x, yB));
+const sx = pEnd + 26;
+const spacedHs = [sx + p, sx + 4 * p, sx + 7 * p];
+const spaced: B[] = [
+  { x: sx, y: yB, kind: 'P' },
+  { x: spacedHs[0], y: yB, kind: 'H' },
+  ...loop(spacedHs[0] + p, yB),
+  { x: spacedHs[1], y: yB, kind: 'H' },
+  ...loop(spacedHs[1] + p, yB),
+  { x: spacedHs[2], y: yB, kind: 'H' },
+  { x: spacedHs[2] + p, y: yB, kind: 'P' },
+];
+const toSpaced = brk(pEnd, sx, yB);
+
+/* ---------- item part ---------- */
+type Spec = { s: string; h: Kind; k?: number; label: string; ring?: boolean; cut?: number; tail?: boolean };
+/**
+ * A row of the item part: each ribbon after a linker loop. `cut` breaks a ribbon after that many
+ * letters (it is much longer), `tail` breaks the run after it (more ribbons of the kind follow).
+ * Returns the beads, the runs the stick goes through, and where the break marks go.
+ */
+const itemRow = (y: number, specs: Spec[], last = false) => {
+  let x = x0;
+  const pieces: (Piece & { label: string })[] = [];
+  const links: B[][] = [];
+  const marks: number[] = [];
+  const runs: Pt[][] = [];
+  let cur: Pt[] = [[x - 9, y]];
+  const breakAt = (x1: number) => {
+    const m = x1 + 11;
+    cur.push([m - 4, y]);
+    runs.push(cur);
+    cur = [[m + 4, y]];
+    marks.push(m);
+    return x1 + 22;
+  };
+  for (const sp of specs) {
+    const l = loop(x, y);
+    links.push(l);
+    cur.push(...l.map((b) => [b.x, b.y] as Pt));
+    x += 2 * p;
+    const parts = sp.cut ? [sp.s.slice(0, sp.cut), sp.s.slice(sp.cut)] : [sp.s];
+    const beads: B[] = [];
+    parts.forEach((part, i) => {
+      const bs = run(part, x, y, sp.h, sp.k);
+      beads.push(...bs);
+      cur.push(...bs.map((b) => [b.x, b.y] as Pt));
+      x = lastX(bs);
+      x = i < parts.length - 1 ? breakAt(x) : x + p;
+    });
+    pieces.push({ beads, label: sp.label, k: sp.k, ring: sp.ring });
+    if (sp.tail) x = breakAt(x - p) ;
+  }
+  if (!last) cur.push([x - p + 9, y]);
+  runs.push(cur);
+  return { y, pieces, links, marks, runs: runs.filter((c) => c.length > 1) };
 };
-const yC = 160;
-const pads = ribbonRow([8, 4], 16, yC, 30);
-const padBreak = (pads[0].beads[3] + pads[0].beads[4]) / 2;
-const yD = 214;
-const items = ribbonRow(ITEMS, 16, yD);
-const dots = (x1: number, x2: number, y: number) => ({ x1, x2, y1: y, y2: y });
+const yC = 194;
+const padRow = itemRow(yC, [
+  { s: 'PHHPPHHPPHHP', h: 'pad', label: `${N.q} paddings`, cut: 8, tail: true },
+  { s: 'PHHPPHHP', h: 'plug', label: `${N.q} − ${N.K} plugs`, tail: true },
+]);
+const ribbon = (size: number) => 'PHHP'.repeat(size / 2);
+const order: Spec[] = ITEMS.map((size, k) => ({ s: ribbon(size), h: 'item', k, label: String(size), ring: true }));
+const yD = 240;
+const yE = 284;
+const rows = [padRow, itemRow(yD, order.slice(0, 2)), itemRow(yE, order.slice(2), true)];
+const linkerAt = padRow.links[0];
+const itemC = (k: number) => `var(--pmf-i${(k % 4) + 1})`;
 ---
 
-<svg class="pmf" viewBox="0 0 320 236" role="img" aria-labelledby="pmf-chain-t">
-  <title id="pmf-chain-t">The string, shortened, in three parts. The frame: rods PHP, face ribbons PHHP and a core of H's. The walls: q periods, each a short rod, a wall, a long rod, a wall and a short rod, then the spaced rod, whose H's between P's are far apart. The item part: q paddings and q − K plugs in grey, then one ribbon per item u1, u2, u3, u4 and so on, in the item colours. Each ribbon of the item part comes after a linker, a run of P's drawn as a loop.</title>
-  <text class="pmf-label-strong" x="16" y="14">frame</text>
+<svg class="pmf" viewBox="0 0 320 300" role="img" aria-labelledby="pmf-string-t">
+  <title id="pmf-string-t">The string, shortened, one bead per letter, in three parts. The frame: rods PHP, face ribbons PHHP and the core, a run of H's. The walls: one period, made of a short rod, a wall, a long rod, a wall and a short rod, stands for q periods; then the spaced rod, whose H's are far apart, with long runs of P's between them. The item part: a padding with grey H's stands for the q paddings, a plug with light grey H's for the q − K plugs, then one ribbon per item, of {ITEMS.join(', ')} H's in the item colours. Each ribbon of the item part comes after a linker, a long run of P's drawn as a loop.</title>
+
+  <!-- frame -->
+  <text class="pmf-label-strong" x={x0} y="16">frame</text>
   {
-    frame.map((g, i) => (
+    frameBreaks.map((b) => (
       <g>
-        <line class="pmf-chain" x1={g.x0} y1={yA} x2={g.x1} y2={yA} />
-        <line class="pmf-chain" {...dots(g.x1 + 4, g.x1 + 24, yA)} stroke-dasharray="1 3" />
-        <path class="pmf-break" d={hbreak(g.x1 + 14, yA, 5)} />
-        {g.beads.map((b) => (b.t === 'H' ? <circle class="pmf-h" cx={b.x} cy={yA} r="3.5" /> : <circle class="pmf-p" cx={b.x} cy={yA} r="2.9" />))}
-        <text class="pmf-label" x={(g.x0 + g.x1) / 2} y={yA + 18} text-anchor="middle">
-          {g.label}
-        </text>
+        <Strand pts={[[b.x1, yA], [b.m - 4, yA]]} bare r={r} />
+        <Strand pts={[[b.m + 4, yA], [b.x2, yA]]} bare r={r} />
+        <path class="pmf-break" d={hbreak(b.m, yA, 5)} />
+      </g>
+    ))
+  }
+  {
+    frame.map((g) => (
+      <g>
+        <Strand pts={g.beads.map((b) => [b.x, b.y] as Pt)} kinds={g.beads.map((b) => b.kind)} r={r} />
+        <Tx x={(g.beads[0].x + lastX(g.beads)) / 2} y={yA + 18} t={g.label!} a="middle" />
       </g>
     ))
   }
 
-  <text class="pmf-label-strong" x="16" y="72">walls</text>
+  <!-- walls -->
+  <text class="pmf-label-strong" x={x0} y="80">walls</text>
   {
-    period.map((g, i) => (
+    [...periodBreaks, toSpaced].map((b) => (
       <g>
-        <line class="pmf-chain" x1={g.x0} y1={yB} x2={g.x1} y2={yB} />
-        {i < period.length - 1 && <line class="pmf-chain" {...dots(g.x1 + 4, g.x1 + 12, yB)} stroke-dasharray="1 3" />}
-        {i < period.length - 1 && <path class="pmf-break" d={hbreak(g.x1 + 8, yB, 4)} />}
-        {g.beads.map((b) => (b.t === 'H' ? <circle class="pmf-h" cx={b.x} cy={yB} r="3.5" /> : <circle class="pmf-p" cx={b.x} cy={yB} r="2.9" />))}
+        <Strand pts={[[b.x1, yB], [b.m - 4, yB]]} bare r={r} />
+        <Strand pts={[[b.m + 4, yB], [b.x2, yB]]} bare r={r} />
+        <path class="pmf-break" d={hbreak(b.m, yB, 5)} />
       </g>
     ))
   }
-  <path class="pmf-brace" d={hbrace(period[0].x0 - 3, pEnd + 3, yB + 8, 1)} />
-  <Tx x={(period[0].x0 + pEnd) / 2} y={yB + 28} t={`${N.q} periods`} a="middle" />
-  <line class="pmf-chain" {...dots(pEnd + 4, spacedX - 4, yB)} stroke-dasharray="1 3" />
-  <path class="pmf-break" d={hbreak((pEnd + spacedX) / 2, yB, 5)} />
-  <polyline class="pmf-chain" points={[[spacedX, yB], [spacedH[0], yB], ...spacedLoops[0], [spacedH[1], yB], ...spacedLoops[1], [spacedH[2], yB], [spacedH[2] + pitch, yB]].map((q) => q.join(',')).join(' ')} />
-  <circle class="pmf-p" cx={spacedX} cy={yB} r="2.9" />
-  {spacedLoops.map((l) => l.map(([x, y]) => <circle class="pmf-p" cx={x} cy={y} r="2.9" />))}
-  {spacedH.map((x) => <circle class="pmf-h" cx={x} cy={yB} r="3.5" />)}
-  <circle class="pmf-p" cx={spacedH[2] + pitch} cy={yB} r="2.9" />
-  <text class="pmf-label" x={(spacedX + spacedH[2] + pitch) / 2} y={yB + 28} text-anchor="middle">{N.spaced}</text>
+  {
+    period.map((g) => (
+      <g>
+        <Strand pts={g.beads.map((b) => [b.x, b.y] as Pt)} kinds={g.beads.map((b) => b.kind)} r={r} />
+        <Tx x={(g.beads[0].x + lastX(g.beads)) / 2} y={yB + 16} t={g.label!} a="middle" c="pmf-label-sm" />
+      </g>
+    ))
+  }
+  <path class="pmf-brace" d={hbrace(period[0].beads[0].x - 3, pEnd + 3, yB + 22, 1)} />
+  <Tx x={(period[0].beads[0].x + pEnd) / 2} y={yB + 42} t={`${N.q} periods`} a="middle" />
+  <Strand pts={spaced.map((b) => [b.x, b.y] as Pt)} kinds={spaced.map((b) => b.kind)} r={r} />
+  <Tx x={(sx + spacedHs[2] + p) / 2} y={yB + 42} t={N.spaced} a="middle" />
 
-  <text class="pmf-label-strong" x="16" y="132">item part</text>
+  <!-- item part -->
+  <text class="pmf-label-strong" x={x0} y="162">item part</text>
   {
-    [...pads, ...items].map((r, n) => {
-      const isItem = n >= pads.length;
-      const k = n - pads.length;
-      const fill = isItem ? itemColor(k) : 'var(--pmf-pad)';
-      return (
-        <g class:list={[!isItem && n === 1 && 'pmf-chain-plug']}>
-          <polyline class="pmf-chain" points={[...r.p, [r.beads[0], r.y]].map((q) => q.join(',')).join(' ')} />
-          <line class="pmf-chain" x1={r.beads[0]} y1={r.y} x2={r.beads.at(-1)} y2={r.y} />
-          {r.p.map(([px, py]) => <circle class="pmf-p" cx={px} cy={py} r="2.9" />)}
-          {r.beads.map((bx) => <circle cx={bx} cy={r.y} r="3.4" style={`fill:${fill}`} />)}
-          {isItem && <Tx x={(r.beads[0] + r.beads.at(-1)!) / 2} y={r.y - 10} t={N.item(k + 1)} a="middle" c="pmf-label-strong" style={`fill:${itemColor(k)}`} />}
-        </g>
-      );
-    })
-  }
-  <rect class="pmf-gap" x={padBreak - 3} y={yC - 5} width="6" height="10" />
-  <path class="pmf-break" d={hbreak(padBreak, yC, 6)} />
-  {
-    pads.map((r) => (
+    rows.map((row) => (
       <g>
-        <line class="pmf-chain" {...dots(r.beads.at(-1)! + 5, r.beads.at(-1)! + 23, yC)} stroke-dasharray="1 3" />
-        <path class="pmf-break" d={hbreak(r.beads.at(-1)! + 14, yC, 5)} />
+        {row.runs.map((c) => <Strand pts={c} bare r={r} />)}
+        {row.marks.map((m) => <path class="pmf-break" d={hbreak(m, row.y, 5)} />)}
+        {row.links.map((l) => l.map((b) => <Bead x={b.x} y={b.y} r={r} kind="P" />))}
+        {row.pieces.map((pc) => (
+          <g>
+            {pc.ring && <Ring x1={pc.beads[0].x} y1={row.y} x2={lastX(pc.beads)} r={r} color={itemC(pc.k!)} />}
+            {pc.beads.map((b) => <Bead x={b.x} y={b.y} r={r} kind={b.kind} k={b.k} />)}
+            {pc.ring ? (
+              <text class="pmf-label-strong" x={(pc.beads[0].x + lastX(pc.beads)) / 2} y={row.y - 11} text-anchor="middle" style={`fill:${itemC(pc.k!)}`}>
+                {pc.label}
+              </text>
+            ) : (
+              <Tx x={(pc.beads[0].x + lastX(pc.beads)) / 2} y={row.y - 10} t={pc.label} a="middle" />
+            )}
+          </g>
+        ))}
       </g>
     ))
   }
-  <Tx x={(pads[0].beads[0] + pads[0].beads.at(-1)!) / 2} y={yC - 10} t={`${N.q} paddings`} a="middle" />
-  <Tx x={(pads[1].beads[0] + pads[1].beads.at(-1)!) / 2} y={yC - 10} t={`${N.q} − ${N.K} plugs`} a="middle" />
-  <text class="pmf-label" x={pads[0].p[2][0]} y={yC + 30} text-anchor="middle">{N.linker}</text>
-  <text class="pmf-label" x={items.at(-1)!.beads.at(-1)! + 8} y={yD + 4}>…</text>
+  <text class="pmf-label-sm" x={linkerAt[0].x + p / 2} y={yC + p + 16} text-anchor="middle">{N.linker}</text>
 </svg>
-
-<style>
-  .pmf-chain-plug circle:not(.pmf-p) {
-    opacity: 0.5;
-  }
-</style>

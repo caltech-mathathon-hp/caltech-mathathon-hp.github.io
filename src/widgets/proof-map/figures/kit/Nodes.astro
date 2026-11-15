@@ -1,0 +1,15 @@
+---
+/** Empty lattice nodes: a small dot on each point, as on the fold game's board. */
+import { f } from './kit';
+import type { Pt } from '../lib';
+
+interface Props {
+  pts: Pt[];
+  /** Radius of the beads the figure uses; the dot is a quarter of it. */
+  r?: number;
+}
+const { pts, r = 4 } = Astro.props;
+const d = f(Math.max(0.9, r * 0.28));
+---
+
+<g class="pmf-nodes">{pts.map(([x, y]) => <circle cx={f(x)} cy={f(y)} r={d} />)}</g>

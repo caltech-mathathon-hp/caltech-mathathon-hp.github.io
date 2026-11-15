@@ -1,0 +1,33 @@
+---
+/**
+ * The outline that gathers a run of beads into one item (or any group): a rounded box in the
+ * group's colour around the beads from (x1, y1) to (x2, y2), with radius r of the beads inside.
+ */
+import { f } from './kit';
+
+interface Props {
+  x1: number;
+  y1: number;
+  x2?: number;
+  y2?: number;
+  r?: number;
+  color?: string;
+  pad?: number;
+  dashed?: boolean;
+}
+const { x1, y1, r = 4, color = 'var(--fg-muted)', dashed } = Astro.props;
+const x2 = Astro.props.x2 ?? x1;
+const y2 = Astro.props.y2 ?? y1;
+const pad = Astro.props.pad ?? r * 0.55;
+const R = r + pad;
+---
+
+<rect
+  class:list={['pmf-ring-group', { 'is-dashed': dashed }]}
+  x={f(Math.min(x1, x2) - R)}
+  y={f(Math.min(y1, y2) - R)}
+  width={f(Math.abs(x2 - x1) + 2 * R)}
+  height={f(Math.abs(y2 - y1) + 2 * R)}
+  rx={f(R)}
+  style={`stroke:${color}`}
+/>

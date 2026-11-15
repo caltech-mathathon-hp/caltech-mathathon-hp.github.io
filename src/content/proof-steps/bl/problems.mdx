@@ -10,7 +10,7 @@ source: '§2, p. 31'
 
 ### The idea
 
-The translation from a puzzle to a string has to be fast, so the string can't be much longer than the puzzle's description. Bin packing suits us. It asks whether items with given sizes can be split into $K$ bins so that each bin holds exactly $B$. An item of size 6 will become a piece with 6 H's, and a bin a region of $B$ nodes of the cube.
+The translation from a puzzle to a string has to be fast, so the string can't be much longer than the puzzle's description. Bin packing suits us. It asks whether items with given sizes can be split into $K$ bins so that each bin holds exactly $B$. Our running example, the one of the bin packing game, has items of sizes 6, 2, 8 and 4 and two bins of size 10, and they fit as $6+4$ and $2+8$. An item of size 6 will become a piece with 6 H's, and a bin a region of $B$ nodes of the cube.
 
 The trouble is that the string then grows with the sizes themselves, while the puzzle needs only their digits: a size of $10^{100}$ takes 101 digits to write down but $10^{100}$ H's to spell. Bin packing survives this. It stays hard even when every size is written in tally marks, as $6=111111$. Written that way, the puzzle is at least as long as its sizes, and the number of letters in our string is at most a fixed power of the puzzle's length ([15 Folding is NP-complete](#step-bl-conclusion)).
 

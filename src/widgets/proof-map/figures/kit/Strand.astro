@@ -1,0 +1,40 @@
+---
+/**
+ * A piece of the chain: the grey stick through the points, then a bead on each point.
+ * `kinds` is a pattern repeated along the points ("PHHP", "H", ["P","item"] …); with `item`,
+ * every H of the pattern is drawn in item k's colour. `open` leaves the stick running a little
+ * past either end (the chain goes on), `from`/`to` say where it runs to.
+ *
+ *   <Strand pts={[[10,10],[20,10],[30,10]]} kinds="PHP" r={4} />
+ */
+import Bead from './Bead.astro';
+import { kindsOf, f, type Kind } from './kit';
+import type { Pt } from '../lib';
+
+interface Props {
+  pts: Pt[];
+  kinds?: string | Kind[];
+  r?: number;
+  k?: number;
+  item?: boolean;
+  color?: string;
+  dim?: boolean;
+  /** Where the stick goes before the first and after the last bead (not drawn as beads). */
+  from?: Pt;
+  to?: Pt;
+  /** Draw only the stick. */
+  bare?: boolean;
+  /** Draw only the beads. */
+  noStick?: boolean;
+}
+const { pts, kinds = 'H', r = 4, k = 0, item, color, dim, from, to, bare, noStick } = Astro.props;
+const ks = kindsOf(kinds, pts.length, item);
+const line = [...(from ? [from] : []), ...pts, ...(to ? [to] : [])];
+---
+
+<g class:list={['pmf-strand', { 'is-dim': dim }]}>
+  {!noStick && line.length > 1 && (
+    <polyline class="pmf-stick" points={line.map(([x, y]) => `${f(x)},${f(y)}`).join(' ')} stroke-width={f(Math.max(1.4, r * 0.5))} />
+  )}
+  {!bare && pts.map(([x, y], i) => <Bead x={x} y={y} r={r} kind={ks[i]} k={k} color={color} />)}
+</g>

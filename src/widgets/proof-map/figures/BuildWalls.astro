@@ -1,27 +1,36 @@
 ---
 /**
  * Card "Building the walls" (BL "Making the bins", pp. 34–35, Fig. 8), in the geometry of
- * story/face.ts: the top of the front face, shortened. One period of the string, numbered in string
- * order: a short rod up the right free edge (1), a wall across (2), a long rod down the left free
- * edge (3), a wall back (4), a short rod up (5). Its two walls bound a strip. The ringed H belongs to
- * the spaced rod. The next period (faded) starts on the row right below.
+ * story/face.ts and the look of the explainer video (still v17): the top of the front face,
+ * shortened. One period of the string, numbered in string order: a short rod up the right free
+ * edge (1), a wall across (2), a long rod down the left free edge (3), a wall back (4), a short rod up
+ * (5). Rods are lone H's, walls pairs of H's. An arrow inside the strip follows the period round; its
+ * two walls bound the strip. The H ringed in blue belongs to the spaced rod. The next period (faded)
+ * starts on the row right below.
  */
 import './fig.css';
 import Tx from './Tx.astro';
+import Bead from './kit/Bead.astro';
+import Strand from './kit/Strand.astro';
+import Nodes from './kit/Nodes.astro';
 import { N } from './notation';
-import { pts, hbreak, type Pt } from './lib';
-import { faceGeom } from './story/face';
+import { hbreak, type Pt } from './lib';
+import { faceGeom, pairs } from './story/face';
 
-const F = faceGeom({ ox: 30, oy: 30, s: 13, gx: 16, gy: 0 });
+const s = 14;
+const r = 4.2;
+const F = faceGeom({ ox: 26, oy: 30, s, gx: 16, gy: 0 });
 const { at, X, Y, right } = F;
 const q1 = F.period(0);
 const q2 = F.period(1);
-const period: Pt[] = [...q1.qRod1, ...q1.wall1, ...q1.q2Rod, ...q1.wall2, ...q1.qRod2];
-const next: Pt[] = [...q2.qRod1, ...q2.wall1, ...q2.q2Rod.slice(0, 3)];
 const lastRow = F.top(1) + 2;
-const frame: Pt[] = [];
-for (let c = 0; c <= right; c++) frame.push(at(c, 0));
-const stripCells = F.stripSnake(0);
+const rods = [...q1.qRod1, ...q1.q2Rod, ...q1.qRod2];
+const walls = [...pairs(q1.wall1), ...pairs(q1.wall2)];
+const nextRods = [...q2.qRod1, ...q2.q2Rod.slice(0, 3), q2.spaced];
+const nextDots = F.stripRows(1)
+  .filter((row) => row <= lastRow)
+  .flatMap((row) => Array.from({ length: F.inner }, (_, i) => at(i + 1, row)));
+const frame: Pt[] = Array.from({ length: right + 1 }, (_, c) => at(c, 0));
 const t = F.top(0);
 const b = F.bot(0);
 const cb = F.colBreak;
@@ -33,48 +42,77 @@ const badges: { n: number; p: Pt }[] = [
   { n: 4, p: [cb, Y(b)] },
   { n: 5, p: [edgeR, (Y(b) + Y(b - 1)) / 2] },
 ];
+/* The arrow round the strip, in string order, half a spacing inside the walls and rods. */
+const h = s / 2;
+const loop: Pt[] = [
+  [X(right) - h, Y(t + 1) + 2],
+  [X(right) - h, Y(t) + h],
+  [X(0) + h, Y(t) + h],
+  [X(0) + h, Y(b) - h],
+  [X(right) - h, Y(b) - h],
+  [X(right) - h, Y(b - 1) - 2],
+];
+const loopD = 'M' + loop.map(([x, y]) => `${x} ${y}`).join('L');
+/* Arrowheads along the loop: on the far wall, the long rod and the near wall. */
+const heads: { p: Pt; dir: 'l' | 'd' | 'r' | 'u' }[] = [
+  { p: [X(right) - h, Y(t + 1) - 3], dir: 'u' },
+  { p: [X(3), Y(t) + h], dir: 'l' },
+  { p: [X(0) + h, Y(t + 2) + 2], dir: 'd' },
+  { p: [X(7), Y(b) - h], dir: 'r' },
+  { p: [X(right) - h, Y(b - 1) + 1], dir: 'u' },
+];
+const head = ([x, y]: Pt, dir: string) => {
+  const a = 3.2;
+  const pts: Pt[] =
+    dir === 'l' ? [[x + a, y - a], [x, y], [x + a, y + a]]
+    : dir === 'r' ? [[x - a, y - a], [x, y], [x - a, y + a]]
+    : dir === 'd' ? [[x - a, y - a], [x, y], [x + a, y - a]]
+    : [[x - a, y + a], [x, y], [x + a, y + a]];
+  return 'M' + pts.map(([u, v]) => `${u} ${v}`).join('L') + 'z';
+};
 const steps = [N.qRod, `wall of ${N.n} − 2`, N.q2Rod, `wall of ${N.n} − 2`, N.qRod];
-const lx = 200;
-const ly = (k: number) => 52 + k * 21;
-const faceTop = Y(0) - F.s / 2 - 2;
-const faceBot = Y(lastRow) + F.s / 2 + 2;
-const [bx1, by1] = at(1, t + 1);
-const [bx2, by2] = at(F.inner, t + 3);
+const lx = 206;
+const ly = (k: number) => 50 + k * 20;
+const faceTop = Y(0) - s / 2 - 2;
+const faceBot = Y(lastRow) + s / 2 + 2;
 ---
 
-<svg class="pmf" viewBox="0 0 320 196" role="img" aria-labelledby="pmf-build-t">
-  <title id="pmf-build-t">The top of the front face, shortened, with the order in which one period of the string lays its H's: 1, a short rod up the right free edge; 2, a wall of n − 2 H's straight across; 3, a long rod down the left free edge; 4, a wall of n − 2 H's straight back; 5, a short rod up the right free edge. The ringed H between the two short rods belongs to the spaced rod. The two walls bound an empty strip. The next period starts on the row right below.</title>
-  <rect class="pmf-face pmf-face-front" x={X(0) - F.s / 2 - 2} y={faceTop} width={X(right) - X(0) + F.s + 4} height={faceBot - faceTop} />
-  {frame.map(([x, y]) => <circle class="pmf-h pmf-faded" cx={x} cy={y} r="3.8" />)}
-  <g class="pmf-faded">
-    <polyline class="pmf-chain" points={pts(next)} />
-    {next.map(([x, y]) => <circle class="pmf-h" cx={x} cy={y} r="3.8" />)}
-    <circle class="pmf-h" cx={q2.spaced[0]} cy={q2.spaced[1]} r="3.8" />
-    {F.stripRows(1).filter((r) => r <= lastRow).map((r) => Array.from({ length: F.inner }, (_, i) => <circle class="pmf-dot" cx={X(i + 1)} cy={Y(r)} r="1.8" />))}
+<svg class="pmf" viewBox="0 0 320 186" role="img" aria-labelledby="pmf-build-walls-t">
+  <title id="pmf-build-walls-t">The top of the front face, shortened, below the faded top edge of the cube, with the order in which one period of the string lays its H's: 1, a short rod of lone H's up the right free edge; 2, a wall of n − 2 H's, in pairs, straight across; 3, a long rod down the left free edge; 4, a wall of n − 2 H's straight back; 5, a short rod up the right free edge. An arrow follows this order round the strip that the two walls enclose, which stays empty. The H ringed in blue, between the two short rods, belongs to the spaced rod. The next period, faded, starts on the row right below.</title>
+  <rect class="pmf-slab" x={X(0) - s / 2 - 2} y={faceTop} width={X(right) - X(0) + s + 4} height={faceBot - faceTop} rx="4" />
+  {frame.map(([x, y]) => <Bead x={x} y={y} r={r} dim />)}
+  <g class="is-dim">
+    {pairs(q2.wall1).map((w) => <Strand pts={w} r={r} />)}
+    {nextRods.map(([x, y]) => <Bead x={x} y={y} r={r} />)}
+    <Nodes pts={nextDots} r={r} />
   </g>
-  <rect class="pmf-bin" x={bx1 - F.s / 2 + 2} y={by1 - F.s / 2 + 2} width={bx2 - bx1 + F.s - 4} height={by2 - by1 + F.s - 4} rx="3" />
-  {stripCells.map(([x, y]) => <circle class="pmf-dot" cx={x} cy={y} r="1.8" />)}
-  <text class="pmf-label-strong pmf-halo " x={(X(2) + X(3)) / 2} y={Y(t + 2) + 4} text-anchor="middle">{N.strip}</text>
-  <polyline class="pmf-chain" points={pts(period)} />
-  {period.map(([x, y]) => <circle class="pmf-h" cx={x} cy={y} r="3.8" />)}
-  <circle class="pmf-h" cx={q1.spaced[0]} cy={q1.spaced[1]} r="3.8" />
-  <circle class="pmf-ring" cx={q1.spaced[0]} cy={q1.spaced[1]} r="6.2" />
+
+  <Nodes pts={F.stripSnake(0)} r={r} />
+  <path class="pmf-bw-loop" d={loopD} />
+  {heads.map((a) => <path class="pmf-bw-head" d={head(a.p, a.dir)} />)}
+  <text class="pmf-label-strong pmf-bw-halo" x={(X(2) + X(3)) / 2} y={Y(t + 2) + 4} text-anchor="middle">{N.strip}</text>
+
+  {walls.map((w) => <Strand pts={w} r={r} />)}
+  {rods.map(([x, y]) => <Bead x={x} y={y} r={r} />)}
+  <Bead x={q1.spaced[0]} y={q1.spaced[1]} r={r} />
+  <circle class="pmf-bw-spaced" cx={q1.spaced[0]} cy={q1.spaced[1]} r={r + 2.4} />
   {[faceTop, faceBot].map((y) => <path class="pmf-break" d={hbreak(cb, y, 5)} />)}
   {
     badges.map((g) => (
       <g>
-        <circle class="pmf-badge" cx={g.p[0]} cy={g.p[1]} r="7.5" />
+        <circle class="pmf-badge" cx={g.p[0]} cy={g.p[1]} r="7" />
         <text class="pmf-badge-num" x={g.p[0]} y={g.p[1] + 3.8} text-anchor="middle">
           {g.n}
         </text>
       </g>
     ))
   }
-  <text class="pmf-label-strong" x={lx} y="30">one period</text>
+
+  <text class="pmf-label-strong" x={lx} y="28">one period</text>
   {
     steps.map((name, k) => (
       <g>
-        <circle class="pmf-badge" cx={lx + 7} cy={ly(k) - 4} r="7.5" />
+        <circle class="pmf-badge" cx={lx + 7} cy={ly(k) - 4} r="7" />
         <text class="pmf-badge-num" x={lx + 7} y={ly(k) - 0.2} text-anchor="middle">
           {k + 1}
         </text>
@@ -82,8 +120,35 @@ const [bx2, by2] = at(F.inner, t + 3);
       </g>
     ))
   }
-  <circle class="pmf-h" cx={lx + 7} cy={ly(5) - 4} r="3.8" />
-  <circle class="pmf-ring" cx={lx + 7} cy={ly(5) - 4} r="6.2" />
+  <Bead x={lx + 7} y={ly(5) - 4} r={r} />
+  <circle class="pmf-bw-spaced" cx={lx + 7} cy={ly(5) - 4} r={r + 2.4} />
   <text class="pmf-label" x={lx + 20} y={ly(5)}>{N.spaced}</text>
-  <text class="pmf-label" x={lx} y={ly(6) + 6}>next period below</text>
+  <text class="pmf-label-sm" x={lx} y={ly(6) + 4}>next period below</text>
 </svg>
+
+<style>
+  .pmf-bw-loop {
+    fill: none;
+    stroke: var(--fg-muted);
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .pmf-bw-head {
+    fill: var(--fg-muted);
+    stroke: var(--fg-muted);
+    stroke-width: 0.8;
+    stroke-linejoin: round;
+  }
+  .pmf-bw-halo {
+    paint-order: stroke;
+    stroke: var(--h-weak);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+  }
+  .pmf-bw-spaced {
+    fill: none;
+    stroke: var(--p);
+    stroke-width: 1.3;
+  }
+</style>

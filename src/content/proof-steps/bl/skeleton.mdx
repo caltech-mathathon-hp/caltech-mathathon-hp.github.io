@@ -1,6 +1,6 @@
 ---
 title: Two edges stay free
-caption: 'The longest rod is as long as a path along the edges can be, so it must pass all 8 corners and cover 9 edges. A second rod takes a tenth edge, which leaves two edges free for the walls to hang between.'
+caption: 'The longest rod is as long as a path along the edges can be, so it must pass all 8 corners and cover 9 edges. A second rod, the tenth-edge rod, takes a tenth edge, which leaves two edges free for the walls to hang between.'
 lane: left
 group: forced
 order: 2
@@ -13,7 +13,7 @@ source: '“Forming the bins”, p. 37'
 
 The rods fill the edges and corners of the cube: 8 corners joined by 12 edges of $n-2$ nodes each, and each rod lies along them as a path ([5 The counts match](#step-bl-local-rules)). The walls will need two empty edges to hang between. So the string starts with the corner rod of [4 Spelling the string](#step-bl-string), which has $9n-10$ H's and, as we now show, almost no choice in where it lies.
 
-A path along the edges turns only at corners. Between two corners it covers a whole edge, and before its first corner and after its last it covers at most one edge each. So a path through $r$ corners has at most $r+(r+1)(n-2)$ nodes. The corner rod has $9n-10=8+9(n-2)$, so it passes all 8 corners and covers 9 whole edges. At each corner it uses at least two of the three edges, so the three edges it misses share no corner. A second rod, of $n-2$ H's, fills one of them. The other two stay empty, and these are the free edges.
+A path along the edges turns only at corners. Between two corners it covers a whole edge, and before its first corner and after its last it covers at most one edge each. So a path through $r$ corners has at most $r+(r+1)(n-2)$ nodes. The corner rod has $9n-10=8+9(n-2)$, so it passes all 8 corners and covers 9 whole edges. At each corner it uses at least two of the three edges, so the three edges it misses share no corner. A second rod, the tenth-edge rod of $n-2$ H's, fills one of them. The other two stay empty, and these are the free edges.
 
 ### Statement
 

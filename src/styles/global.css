@@ -166,6 +166,34 @@ th {
   border-bottom: 1.5px solid var(--rule-strong);
 }
 
+/* A table of terms (<div class="glossary">): on phones each row becomes a short entry. */
+@media (max-width: 40rem) {
+  .glossary table,
+  .glossary tbody,
+  .glossary tr,
+  .glossary td {
+    display: block;
+  }
+  .glossary thead {
+    display: none;
+  }
+  .glossary tr {
+    padding: var(--s-2) 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .glossary td {
+    padding: 0;
+    border: 0;
+  }
+  .glossary td:first-child {
+    font-weight: 600;
+  }
+  .glossary td:nth-child(3):not(:empty)::before {
+    content: 'In the paper: ';
+    color: var(--fg-subtle);
+  }
+}
+
 /* KaTeX: keep display math from overflowing on phones. */
 .katex-display {
   overflow-x: auto;
@@ -174,6 +202,10 @@ th {
 }
 .katex {
   font-size: 1.04em;
+}
+/* Inline math and the punctuation after it (src/lib/rehype-math-punct.mjs) break as one word. */
+.math-nobr {
+  white-space: nowrap;
 }
 
 /* ---------- Page grid ---------- */

@@ -1,97 +1,110 @@
 ---
 /**
- * Card "Filling the strips" (BL pp. 35–36). Every strip has T free nodes. Each takes a padding of
- * T − B nodes (drawn shortened, with a break), which leaves B. Strips 1 to K are the bins: the item
- * ribbons of bin i fill the B nodes of strip i, in snake order. The other strips take a plug of B.
- * Ribbons are drawn as dominoes (one per block PHHP), so each starts on an even node.
+ * Card "Filling the strips" (BL pp. 35–36). Every strip has T free nodes, drawn as one row of
+ * beads (the snake through the strip, straightened). Each takes a padding of T − B H's (grey,
+ * drawn shortened with a break), which leaves B. Strips 1 to K are the bins: the item ribbons of
+ * bin i fill the B nodes of strip i (story/items.ts: bin 1 = 6 + 4, bin 2 = 2 + 8). The other strips
+ * take a plug of B (light grey). Every strip is then exactly full, so its track has the game's
+ * green border. Ribbons are drawn as the video draws them: H's in joined pairs, one pair per block
+ * PHHP, so every ribbon starts on an even node.
  */
 import './fig.css';
 import Tx from './Tx.astro';
+import Strand from './kit/Strand.astro';
+import Ring from './kit/Ring.astro';
+import Legend from './kit/Legend.astro';
 import { N } from './notation';
-import { itemColor, hbrace, hbreak } from './lib';
-import { ITEMS, CAP, inBin, domino } from './story/items';
+import { itemColor, hbrace, hbreak, type Pt } from './lib';
+import { ITEMS, CAP, inBin } from './story/items';
+import type { Kind } from './kit/kit';
 
+const s = 12; // node spacing
+const r = 3.6;
 const x0 = 16;
 const x1 = 304;
-const pitch = 11;
-const cell = 9.4;
-const cellX = (u: number) => x1 - cell - (CAP - 1 - u) * pitch; // the B free nodes sit at the right end
-const padEnd = cellX(0) - 5;
-const brk = (x0 + padEnd) / 2;
-const barY = [56, 104, 162];
-type Seg = { k: number | null; plug?: boolean; n: number };
-const rows: { label: string; segs: Seg[]; bin?: number }[] = [
-  { label: `${N.strip} 1`, segs: inBin(0).map((k) => ({ k, n: ITEMS[k] })), bin: 0 },
-  { label: `${N.strip} 2`, segs: inBin(1).map((k) => ({ k, n: ITEMS[k] })), bin: 1 },
-  { label: `${N.strip}s ${N.K} + 1 to ${N.q}`, segs: [{ k: null, plug: true, n: CAP }] },
+const xB = (i: number) => x1 - 6 - (CAP - 1 - i) * s; // the B free nodes sit at the right end
+const padR = [6, 5, 4, 3, 2, 1].map((i) => xB(0) - i * s); // padding just before them
+const padL = [0, 1, 2, 3, 4, 5].map((i) => x0 + 6 + i * s); // and from the start of the strip
+const brk = (padL.at(-1)! + padR[0]) / 2;
+const rowY = [56, 106, 166];
+const half = 9; // half the height of a strip's track
+
+type Run = { kind: Kind; k?: number; n: number };
+const rows: { label: string; runs: Run[]; bin?: number }[] = [
+  { label: `${N.strip} 1`, runs: inBin(0).map((k) => ({ kind: 'item', k, n: ITEMS[k] })), bin: 0 },
+  { label: `${N.strip} 2`, runs: inBin(1).map((k) => ({ kind: 'item', k, n: ITEMS[k] })), bin: 1 },
+  { label: `${N.strip}s ${N.K} + 1 to ${N.q}`, runs: [{ kind: 'plug', n: CAP }] },
 ];
-const blocks = (segs: Seg[]) => {
-  let u = 0;
-  return segs.flatMap((sg) => {
-    const out = domino(sg.n).map((d) => ({ ...sg, u: u + d.x }));
-    u += sg.n;
-    return out;
+/** The B part of a row: each run from its first node, cut into pairs. */
+const place = (runs: Run[]) => {
+  let at = 0;
+  return runs.map((run) => {
+    const pts = Array.from({ length: run.n }, (_, i) => xB(at + i));
+    at += run.n;
+    return { ...run, pts };
   });
 };
-const last = barY[2];
+const pairs = (xs: number[], y: number): Pt[][] =>
+  Array.from({ length: xs.length / 2 }, (_, i) => [
+    [xs[2 * i], y],
+    [xs[2 * i + 1], y],
+  ]);
+const last = rowY[2];
 ---
 
-<svg class="pmf" viewBox="0 0 320 206" role="img" aria-labelledby="pmf-pad-t">
-  <title id="pmf-pad-t">Strips of T free nodes each, drawn as bars. Every strip takes a grey padding of T − B nodes, drawn shortened, which leaves B nodes at its end. Strips 1 to K are the bins: strip 1 takes the item ribbons of bin 1, u1 and u4, strip 2 those of bin 2, u2 and u3, and so on. Strips K + 1 to q take a plug of B nodes, in light grey. Every ribbon is made of blocks of two nodes.</title>
+<svg class="pmf" viewBox="0 0 320 224" role="img" aria-labelledby="pmf-padding-t">
+  <title id="pmf-padding-t">Strips of T free nodes each, drawn as rows of beads. Every strip takes a grey padding of T − B H's, drawn shortened, which leaves B nodes at its end. Strips 1 to K are the bins: strip 1 takes the item ribbons of bin 1, the items 6 and 4, strip 2 those of bin 2, the items 2 and 8, and so on. Strips K + 1 to q take a light grey plug of B H's. Every strip is then exactly full. Every ribbon is made of pairs of H's.</title>
   <Tx x={x0} y="16" t={`each ${N.strip}: ${N.T} free nodes`} c="pmf-label-strong" />
   {
-    rows.map((row, r) => {
-      const y = barY[r];
+    rows.map((row, ri) => {
+      const y = rowY[ri];
+      const runs = place(row.runs);
       return (
         <g>
-          <Tx x={x0} y={y - 13} t={row.label} c="pmf-label-strong" />
+          <Tx x={x0} y={y - half - 6} t={row.label} c="pmf-label-strong" />
           {row.bin !== undefined ? (
-            <text class="pmf-label" x={x1} y={y - 13} text-anchor="end">
-              bin {row.bin + 1}:{' '}
+            <text class="pmf-label" x={x1} y={y - half - 6} text-anchor="end">
+              bin {row.bin + 1} ={' '}
               {inBin(row.bin).map((k, i) => (
                 <>
-                  {i > 0 && ', '}
-                  <tspan class="pmf-v" font-weight="600" style={`fill:${itemColor(k)}`}>u</tspan>
-                  <tspan font-weight="600" style={`fill:${itemColor(k)}`}>{N.item(k + 1).slice(1)}</tspan>
+                  {i > 0 && ' + '}
+                  <tspan font-weight="650" style={`fill:${itemColor(k)}`}>{ITEMS[k]}</tspan>
                 </>
               ))}
             </text>
           ) : (
-            <text class="pmf-label" x={x1} y={y - 13} text-anchor="end">{N.plug}</text>
+            <text class="pmf-label" x={x1} y={y - half - 6} text-anchor="end">{N.plug}</text>
           )}
-          <rect class="pmf-bin" x={x0 - 4} y={y - 9} width={x1 - x0 + 8} height="18" rx="4" />
-          <rect class="pmf-pad-bar" x={x0} y={y - cell / 2} width={brk - 5 - x0} height={cell} rx="2" />
-          <rect class="pmf-pad-bar" x={brk + 5} y={y - cell / 2} width={padEnd - brk - 5} height={cell} rx="2" />
-          <rect class="pmf-gap" x={brk - 5} y={y - 8} width="10" height="16" />
-          <path class="pmf-break" d={hbreak(brk, y, 8)} />
-          {blocks(row.segs).map((b) => (
-            <rect
-              class:list={[b.plug && 'pmf-pad-plug']}
-              x={cellX(b.u)}
-              y={y - cell / 2}
-              width={pitch + cell}
-              height={cell}
-              rx="2"
-              style={`fill:${b.k === null ? 'var(--pmf-pad)' : itemColor(b.k)}`}
-            />
+          <g class="pmf-bin-track is-full">
+            <rect class="pmf-track" x={x0 - 2} y={y - half} width={x1 - x0 + 4} height={2 * half} rx={half} />
+          </g>
+          <rect class="pmf-gap" x={brk - 6} y={y - half - 2} width="12" height={2 * half + 4} />
+          <path class="pmf-break" d={hbreak(brk, y, half + 1)} />
+          {[...pairs(padL, y), ...pairs(padR, y)].map((p) => <Strand pts={p} kinds={['pad']} r={r} />)}
+          {runs.map((run) => (
+            <>
+              {run.kind === 'item' && <Ring x1={run.pts[0]} y1={y} x2={run.pts.at(-1)} r={r} pad={1.3} color={itemColor(run.k!)} />}
+              {pairs(run.pts, y).map((p) => <Strand pts={p} kinds={run.kind === 'item' ? 'H' : [run.kind]} item={run.kind === 'item'} k={run.k} r={r} />)}
+            </>
           ))}
         </g>
       );
     })
   }
-  <text class="pmf-label" x={x0} y={(barY[1] + barY[2]) / 2 + 2}>⋮</text>
-  <Tx x={x0 + 10} y={(barY[1] + barY[2]) / 2 + 2} t={`to ${N.strip} ${N.K}`} />
-  <path class="pmf-brace" d={hbrace(x0, padEnd, last + 11, 1)} />
-  <Tx x={(x0 + padEnd) / 2} y={last + 31} t={`${N.padding}: ${N.T} − ${N.B}`} a="middle" />
-  <path class="pmf-brace" d={hbrace(cellX(0), cellX(CAP - 1) + cell, last + 11, 1)} />
-  <Tx x={(cellX(0) + cellX(CAP - 1) + cell) / 2} y={last + 31} t={N.B} a="middle" />
+  <text class="pmf-label" x={x0 + 1} y={(rowY[1] + rowY[2]) / 2 - 4}>⋮</text>
+  <path class="pmf-brace" d={hbrace(x0, xB(0) - s / 2, last + half + 4, 1)} />
+  <Tx x={(x0 + xB(0) - s / 2) / 2} y={last + half + 23} t={`${N.padding}: ${N.T} − ${N.B}`} a="middle" />
+  <path class="pmf-brace" d={hbrace(xB(0) - s / 2 + 2, x1, last + half + 4, 1)} />
+  <Tx x={(xB(0) - s / 2 + 2 + x1) / 2} y={last + half + 23} t={N.B} a="middle" />
+  <Legend
+    x={x0}
+    y={last + half + 42}
+    across
+    gap={86}
+    rows={[
+      { kind: 'item', ks: [0, 1, 2, 3], label: 'items' },
+      { kind: 'pad', label: N.padding },
+      { kind: 'plug', label: N.plug },
+    ]}
+  />
 </svg>
-
-<style>
-  .pmf-pad-bar {
-    fill: var(--pmf-pad);
-  }
-  .pmf-pad-plug {
-    opacity: 0.5;
-  }
-</style>

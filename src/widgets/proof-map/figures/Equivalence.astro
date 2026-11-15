@@ -3,81 +3,92 @@
  * Card "The idea": the items fit into K bins of size B (left) exactly when the string folds
  * perfectly (right). Each arrow is one direction, proved by one lane of the board; the labels do not
  * say "left" or "right", since on phones the lanes stack. The packing drawn is the one of
- * story/items.ts: bin 1 = {u₁, u₄}, bin 2 = {u₂, u₃}; ribbons as dominoes (blocks PHHP).
+ * story/items.ts, the running example: bin 1 = 6 + 4, bin 2 = 2 + 8. Drawn with the kit (kit/), like the game.
+ * Also used on the front page (home.mdx): keep this path and the default export.
  */
 import './fig.css';
 import Tx from './Tx.astro';
+import Bin from './kit/Bin.astro';
+import Bead from './kit/Bead.astro';
+import Strand from './kit/Strand.astro';
 import { N } from './notation';
-import { itemColor, oblique, pts, hbrace, type P3 } from './lib';
-import { ITEMS, CAP, inBin, domino } from './story/items';
+import { oblique, pts, hbrace, type P3, type Pt } from './lib';
+import { ITEMS, CAP, inBin } from './story/items';
 
-const c = 7.6;
-const g = 8.6;
+const u = 8.2;
 const bx = 14;
-const binY = [86, 112];
+const binY = [90, 118];
+const binW = CAP * u;
 const m = 2; // a 3 × 3 × 3 cube
-const pr = oblique(238, 146, 24);
+const s = 22;
+const pr = oblique(232, 150, s);
 const face = (a: P3[]) => pts(a.map(pr));
-const nodes: P3[] = [];
-for (let z = m; z >= 1; z--) for (let x = 0; x <= m; x++) nodes.push([x, m, z]);
-for (let z = m; z >= 1; z--) for (let y = 0; y < m; y++) nodes.push([m, y, z]);
-for (let y = 0; y <= m; y++) for (let x = 0; x <= m; x++) nodes.push([x, y, 0]);
-const ax0 = 128;
-const ax1 = 200;
-const binW = (CAP - 1) * g + c;
-const blocks = (b: number) => {
-  let u = 0;
-  return inBin(b).flatMap((k) => {
-    const out = domino(ITEMS[k]).map((d) => ({ k, u: u + d.x }));
-    u += ITEMS[k];
-    return out;
+const r = 5.2;
+// One perfect fold of the cube, layer by layer (z = 0 is the front face): a snake through each
+// layer, and up to the next layer at the end of the last row. Only what lies on the three visible
+// faces is drawn; the front face last, since it is nearest.
+const path: P3[] = [];
+for (let z = 0; z <= m; z++) {
+  const rows = z % 2 === 0 ? [m, 1, 0] : [0, 1, m];
+  rows.forEach((y, j) => {
+    for (let i = 0; i <= m; i++) path.push([(j + z) % 2 === 0 ? i : m - i, y, z]);
   });
-};
+}
+const onFace = (a: P3, b: P3) =>
+  (a[2] === 0 && b[2] === 0) || (a[1] === m && b[1] === m) || (a[0] === m && b[0] === m);
+const seen = (p: P3) => p[2] === 0 || p[1] === m || p[0] === m;
+const sticks = path.slice(1).map((p, i) => [path[i], p] as [P3, P3]).filter(([a, b]) => onFace(a, b));
+const backSticks = sticks.filter(([a, b]) => a[2] + b[2] > 0);
+const frontSticks = sticks.filter(([a, b]) => a[2] + b[2] === 0);
+const backBeads = path.filter((p) => seen(p) && p[2] > 0).sort((a, b) => b[2] - a[2] || a[1] - b[1] || a[0] - b[0]);
+const frontBeads = path.filter((p) => p[2] === 0);
+const XY = (p: P3): Pt => pr(p);
+const ax0 = 136;
+const ax1 = 196;
 ---
 
 <svg class="pmf" viewBox="0 0 320 186" role="img" aria-labelledby="pmf-iff-t">
-  <title id="pmf-iff-t">On the left, the items packed into K bins of size B: u1 and u4 in bin 1, u2 and u3 in bin 2, and so on. On the right, a cube of H's: the string folds perfectly. An arrow from left to right says that a packing gives a fold; an arrow back says that a fold gives a packing.</title>
-  <text class="pmf-label-strong" x={bx} y="34">the items fit</text>
-  <Tx x={bx} y="50" t={`${N.K} bins of size ${N.B}`} />
-  <path class="pmf-brace" d={hbrace(bx, bx + binW, binY[0] - 10, -1)} />
-  <Tx x={bx + binW / 2} y={binY[0] - 20} t={N.B} a="middle" />
+  <title id="pmf-iff-t">On the left, the items packed into K bins of size B: items of sizes 6 and 4 in bin 1, 2 and 8 in bin 2. On the right, a cube of H's: the string folds perfectly. An arrow from left to right says that a packing gives a fold; an arrow back says that a fold gives a packing.</title>
+  <text class="pmf-label-strong" x={bx - 2} y="30">the items fit</text>
+  <Tx x={bx - 2} y="45" t={`${N.K} bins of size ${N.B}`} />
+  <path class="pmf-brace" d={hbrace(bx, bx + binW, binY[0] - 13, -1)} />
+  <Tx x={bx + binW / 2} y={binY[0] - 23} t={N.B} a="middle" />
   {
     binY.map((y, b) => (
-      <g>
-        <rect class="pmf-face" x={bx - 3} y={y - c / 2 - 3} width={binW + 6} height={c + 6} rx="3" />
-        {blocks(b).map((d) => (
-          <rect x={bx + d.u * g} y={y - c / 2} width={g + c} height={c} rx="1.6" style={`fill:${itemColor(d.k)}`} />
-        ))}
-      </g>
+      <Bin
+        x={bx}
+        y={y}
+        units={CAP}
+        u={u}
+        h={14}
+        full
+        items={inBin(b).map((k) => ({ units: ITEMS[k], k, chip: String(ITEMS[k]) }))}
+      />
     ))
   }
-  <text class="pmf-label" x={bx + binW / 2} y={binY[1] + 24} text-anchor="middle">⋮</text>
-  <text class="pmf-label" x={bx} y={binY[1] + 48}>
-    {
-      ITEMS.map((_, k) => (
-        <>
-          {k > 0 && ', '}
-          <tspan class="pmf-v" font-weight="600" style={`fill:${itemColor(k)}`}>u</tspan><tspan font-weight="600" style={`fill:${itemColor(k)}`}>{N.item(k + 1).slice(1)}</tspan>
-        </>
-      ))
-    }, …
-  </text>
-  <text class="pmf-label-strong" x="306" y="34" text-anchor="end">it folds perfectly</text>
-  <polygon class="pmf-face pmf-face-front" points={face([[0, 0, 0], [m, 0, 0], [m, m, 0], [0, m, 0]])} />
-  <polygon class="pmf-face pmf-face-front" points={face([[0, m, 0], [m, m, 0], [m, m, m], [0, m, m]])} />
-  <polygon class="pmf-face pmf-face-front" points={face([[m, 0, 0], [m, 0, m], [m, m, m], [m, m, 0]])} />
-  {nodes.map((p) => <circle class="pmf-h" cx={pr(p)[0]} cy={pr(p)[1]} r="4.6" />)}
+  <text class="pmf-label" x={bx + binW / 2} y={binY[1] + 26} text-anchor="middle">⋮</text>
+
+  <text class="pmf-label-strong" x="308" y="30" text-anchor="end">it folds perfectly</text>
+  <polygon class="pmf-slab" points={face([[0, 0, 0], [m, 0, 0], [m, m, 0], [0, m, 0]])} />
+  <polygon class="pmf-slab pmf-slab-top" points={face([[0, m, 0], [m, m, 0], [m, m, m], [0, m, m]])} />
+  <polygon class="pmf-slab pmf-slab-side" points={face([[m, 0, 0], [m, 0, m], [m, m, m], [m, m, 0]])} />
+  {backSticks.map(([a, b]) => <Strand pts={[XY(a), XY(b)]} r={r} bare />)}
+  {backBeads.map((p) => <Bead x={XY(p)[0]} y={XY(p)[1]} r={r} kind="H" />)}
+  {frontSticks.map(([a, b]) => <Strand pts={[XY(a), XY(b)]} r={r} bare />)}
+  {frontBeads.map((p) => <Bead x={XY(p)[0]} y={XY(p)[1]} r={r} kind="H" />)}
+  <Tx x={pr([m / 2, 0, 0])[0]} y={pr([0, 0, 0])[1] + 22} t="every node holds an H" a="middle" c="pmf-label-sm" />
+
   <defs>
     <marker id="pmf-iff-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0L8 4L0 8z" class="pmf-iff-head" />
     </marker>
   </defs>
-  <line class="pmf-iff-line" x1={ax0} y1="92" x2={ax1} y2="92" marker-end="url(#pmf-iff-arrow)" />
-  <line class="pmf-iff-line" x1={ax1} y1="120" x2={ax0} y2="120" marker-end="url(#pmf-iff-arrow)" />
-  <text class="pmf-label" x={(ax0 + ax1) / 2} y="68" text-anchor="middle">a packing</text>
-  <text class="pmf-label" x={(ax0 + ax1) / 2} y="82" text-anchor="middle">gives a fold</text>
-  <text class="pmf-label" x={(ax0 + ax1) / 2} y="138" text-anchor="middle">a fold</text>
-  <text class="pmf-label" x={(ax0 + ax1) / 2} y="152" text-anchor="middle">gives a packing</text>
+  <line class="pmf-iff-line" x1={ax0} y1="96" x2={ax1} y2="96" marker-end="url(#pmf-iff-arrow)" />
+  <line class="pmf-iff-line" x1={ax1} y1="112" x2={ax0} y2="112" marker-end="url(#pmf-iff-arrow)" />
+  <text class="pmf-label" x={(ax0 + ax1) / 2} y="72" text-anchor="middle">a packing</text>
+  <text class="pmf-label" x={(ax0 + ax1) / 2} y="86" text-anchor="middle">gives a fold</text>
+  <text class="pmf-label" x={(ax0 + ax1) / 2} y="130" text-anchor="middle">a fold</text>
+  <text class="pmf-label" x={(ax0 + ax1) / 2} y="144" text-anchor="middle">gives a packing</text>
 </svg>
 
 <style>

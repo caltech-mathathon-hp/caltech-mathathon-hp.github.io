@@ -1,54 +1,75 @@
 ---
 /**
- * Card "Items and bins" (BL §2, MODIFIED BIN PACKING). Left: items u₁, u₂, … drawn as bars of
- * dominoes, since every size is even. Right: K empty bins of size B. The bar lengths are only drawn;
- * no instance is meant.
+ * Card "Why bin packing" (BL §2, MODIFIED BIN PACKING), drawn with the kit like the bin packing
+ * game. Left: the items of the running example (story/items.ts), each a bar of its size with a chip
+ * naming it by that size. Right: the K empty bins of size B, a lattice dot in every unit. Below: an
+ * item becomes as many H's as its size, two at a time as in a ribbon.
  */
 import '../fig.css';
 import Tx from '../Tx.astro';
+import Item from '../kit/Item.astro';
+import Bin from '../kit/Bin.astro';
+import Strand from '../kit/Strand.astro';
 import { N } from '../notation';
-import { itemColor, hbrace } from '../lib';
-import { ITEMS, CAP, domino } from './items';
+import { hbrace, type Pt } from '../lib';
+import { ITEMS, CAP } from './items';
 
-const p = 9; // one node
-const ix = 36;
-const itemY = (k: number) => 52 + k * 27;
-const bx = 196;
-const binY = [60, 100, 156];
-const binName = ['bin 1', 'bin 2', `bin ${N.K}`];
-const binW = CAP * p;
+const u = 10; // one unit: one node, one H
+const h = 14;
+const ix = 16;
+const itemY = (k: number) => 48 + k * 22;
+const bx = 202;
+const binY = [64, 96];
+const binW = CAP * u;
+
+/* An item becomes |item| H's: the first item, its H's in pairs as in a ribbon (PHHP)^(size/2). */
+const k0 = 0;
+const size0 = ITEMS[k0];
+const sy = 188;
+const sx = 136;
+const r = 4.4;
+const pairs: Pt[][] = Array.from({ length: size0 / 2 }, (_, i) => [
+  [sx + i * 34, sy],
+  [sx + i * 34 + 14, sy],
+]);
+const sEnd = pairs.at(-1)![1][0];
 ---
 
-<svg class="pmf" viewBox="0 0 320 196" role="img" aria-labelledby="pmf-inst-t">
-  <title id="pmf-inst-t">Items u1, u2, u3, u4 and more, each drawn as a bar of dominoes of two nodes, since every size is even; the first bar is marked with its size s(u1). Next to them, K empty bins, each of size B: bin 1, bin 2, and so on to bin K. The item sizes add up to K times B.</title>
-  <text class="pmf-label-strong" x="16" y="22">items</text>
-  {
-    ITEMS.map((size, k) => (
-      <g>
-        <Tx x="16" y={itemY(k) + 4} t={N.item(k + 1)} c="pmf-label-strong" style={`fill:${itemColor(k)}`} />
-        {domino(size).map((d) => (
-          <rect x={ix + d.x * p} y={itemY(k) - 5} width={d.w * p - 1.6} height="10" rx="2" style={`fill:${itemColor(k)}`} />
-        ))}
-      </g>
-    ))
-  }
-  <Tx x={ix + ITEMS[0] * p + 6} y={itemY(0) + 4} t={N.size(N.item(1))} />
-  <text class="pmf-label" x="19" y={itemY(ITEMS.length) + 2}>⋮</text>
+<svg class="pmf" viewBox="0 0 320 206" role="img" aria-labelledby="pmf-instance-t">
+  <title id="pmf-instance-t">Bin packing as in the game. On the left, the items of sizes {ITEMS.join(', ')}, each a bar as long as its size. On the right, K empty bins, each with room for B units. The sizes are even and add up to K times B. Below, the item of size {size0} becomes {size0} H's of the string, two at a time.</title>
 
-  <Tx x={bx - 4} y="22" t={`${N.K} bins`} c="pmf-label-strong" />
-  <path class="pmf-brace" d={hbrace(bx, bx + binW - 1.6, binY[0] - 12, -1)} />
-  <Tx x={bx + binW / 2} y={binY[0] - 22} t={N.B} a="middle" />
+  <text class="pmf-label-strong" x={ix} y="22">items</text>
+  {ITEMS.map((size, k) => <Item x={ix} y={itemY(k)} units={size} u={u} h={h} k={k} chip={String(size)} />)}
+
+  <Tx x={bx - 2} y="22" t={`${N.K} bins of size ${N.B}`} c="pmf-label-strong" />
+  <path class="pmf-brace" d={hbrace(bx, bx + binW, binY[0] - 13, -1)} />
+  <Tx x={bx + binW / 2} y={binY[0] - 23} t={N.B} a="middle" />
   {
     binY.map((y, b) => (
       <g>
-        <rect class="pmf-face" x={bx - 4} y={y - 9} width={binW + 6.4} height="18" rx="4" />
-        {Array.from({ length: CAP / 2 }, (_, u) => (
-          <rect class="pmf-cell" x={bx + u * 2 * p} y={y - 5} width={2 * p - 1.6} height="10" rx="2" stroke-dasharray="2 2" />
-        ))}
-        <Tx x={bx - 10} y={y + 4} t={binName[b]} a="end" />
+        <Bin x={bx} y={y} units={CAP} u={u} h={h} />
+        <Tx x={bx - 9} y={y + 4} t={`bin ${b + 1}`} a="end" c="pmf-label-sm" />
       </g>
     ))
   }
-  <text class="pmf-label" x={bx + binW / 2} y={(binY[1] + binY[2]) / 2 + 4} text-anchor="middle">⋮</text>
-  <Tx x="16" y="188" t={`sizes even, adding up to ${N.K} · ${N.B}`} />
+  <Tx x={bx + binW / 2} y={binY[1] + 28} t={`here ${N.K} = ${binY.length} and ${N.B} = ${CAP}`} a="middle" c="pmf-label-sm" />
+
+  <Tx x={ix} y="154" t={`sizes even, adding up to ${N.K} · ${N.B}`} />
+
+  <Item x={ix} y={sy} units={size0} u={u} h={h} k={k0} chip={String(size0)} />
+  <line class="pmf-lead" x1={ix + size0 * u + 8} y1={sy} x2={sx - 13} y2={sy} marker-end="url(#pmf-instance-arrow)" />
+  <text class="pmf-label-sm" x={(ix + size0 * u + sx - 5) / 2} y={sy - 8} text-anchor="middle">in the string</text>
+  {pairs.map((p) => <Strand pts={p} kinds="H" item k={k0} r={r} />)}
+  <text class="pmf-label" x={sEnd + 10} y={sy + 4}>{size0} H's</text>
+  <defs>
+    <marker id="pmf-instance-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0L8 4L0 8z" class="pmf-instance-head" />
+    </marker>
+  </defs>
 </svg>
+
+<style>
+  .pmf-instance-head {
+    fill: var(--fg-muted);
+  }
+</style>

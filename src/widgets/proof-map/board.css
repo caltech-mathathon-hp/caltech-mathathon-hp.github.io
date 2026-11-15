@@ -240,6 +240,26 @@
   .pb-row[data-count='3'] {
     --pb-n: 3;
   }
+  /* Cards side by side share their rows, so pictures of different heights still leave the
+     titles on one line: picture zone, then text. A size container cannot be a subgrid, and these
+     cards are too narrow for their picture-beside-text layout anyway, so they drop the container. */
+  .pb-row:not([data-count='1']) .pb-cards {
+    grid-template-rows: auto auto;
+  }
+  .pb-row:not([data-count='1']) :is(.pb-item, .pb-card, .pb-card-in) {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+  }
+  .pb-row:not([data-count='1']) .pb-card {
+    container-type: normal;
+  }
+  .pb-row:not([data-count='1']) .pb-card-fig {
+    align-self: center;
+  }
+  .pb-row:not([data-count='1']) .pb-card-nofig .pb-card-text {
+    grid-row: span 2;
+  }
   .pb-row[data-count='4'] {
     --pb-n: 4;
   }
@@ -644,6 +664,9 @@
 .pb-mini {
   flex: none;
   overflow: visible;
+  /* small enough that the top bar stays one line tall; the blocks are a map, not the main way to move */
+  width: auto;
+  height: 4.5rem;
 }
 .pb-mini-b {
   fill: var(--pb-dw);
@@ -1071,6 +1094,9 @@
   }
   .pb-dlg-top {
     padding-top: max(var(--s-2), env(safe-area-inset-top));
+  }
+  .pb-mini {
+    height: 3.5rem;
   }
   .pb-step-title {
     font-size: var(--fs-h3);

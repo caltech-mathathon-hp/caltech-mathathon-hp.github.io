@@ -1,19 +1,26 @@
 ---
 /**
- * Card "The cube" (BL Fact 3.1, §3.2.1). Left: a section through the middle of the n×n×n cube,
- * drawn flat; every node of it is an H. (1) An H inside: its four neighbours in the section and the
- * two in front and behind (drawn askew, as in the oblique view) are all H's. (2) The H's of a block
- * PHHP: their P's lie outside the cube, so the H's lie on the surface. Right: where the section is.
+ * Card "Why a cube" (BL Fact 3.1, §3.2.1), drawn with the kit. Left: a section through the middle
+ * of the n×n×n cube, drawn flat on the cube's pale face colour; every node of it holds an H (drawn
+ * faded), the nodes around it are empty lattice dots. (1) An H inside: its four neighbours in the
+ * section and the two in front and behind (drawn askew, as in the oblique view) are all H's.
+ * (2) The H's of a block PHHP: their P's lie outside the cube, so each H has an open side and lies on
+ * the surface. Right: the cube cut open at the section, its back half full of H's.
  */
 import '../fig.css';
 import Tx from '../Tx.astro';
+import Bead from '../kit/Bead.astro';
+import Strand from '../kit/Strand.astro';
+import Contact from '../kit/Contact.astro';
+import Nodes from '../kit/Nodes.astro';
 import { N } from '../notation';
 import { oblique, pts, hbrace, type P3, type Pt } from '../lib';
 
 /* ---------- the section ---------- */
 const k = 6; // nodes drawn per side
-const s = 18;
-const x0 = 26;
+const s = 17;
+const r = 5;
+const x0 = 25;
 const y0 = 46;
 const at = (i: number, j: number): Pt => [x0 + i * s, y0 + j * s];
 const box = { x: x0 - s / 2, y: y0 - s / 2, w: k * s, h: k * s };
@@ -24,106 +31,102 @@ const nbrs: Pt[] = [
   [2, 1],
   [2, 3],
 ];
-/* The neighbours in front and behind, along the oblique depth direction of the cube view. */
-const depth: Pt = [8.6, -6.3];
-const [ix, iy] = at(...inner);
-const ghosts: Pt[] = [
-  [ix + depth[0], iy + depth[1]],
-  [ix - depth[0], iy - depth[1]],
-];
+/* The neighbours behind and in front, along the oblique depth direction of the cube view. */
+const depth: Pt = [0.55 * s * 1.2, -0.4 * s * 1.2];
+const I = at(...inner);
+const behind: Pt = [I[0] + depth[0], I[1] + depth[1]];
+const front: Pt = [I[0] - depth[0], I[1] - depth[1]];
 /* A block PHHP on the right side: H's at the surface, P's one step outside. */
 const hs: Pt[] = [at(k - 1, 3), at(k - 1, 4)];
-const ps: Pt[] = [
-  [hs[0][0] + s, hs[0][1]],
-  [hs[1][0] + s, hs[1][1]],
-];
-const ribbon: Pt[] = [[ps[0][0], ps[0][1] - 10], ps[0], hs[0], hs[1], ps[1], [ps[1][0], ps[1][1] + 10]];
+const ps: Pt[] = hs.map(([x, y]) => [x + s, y] as Pt);
 const story = new Set([inner, ...nbrs, [k - 1, 3], [k - 1, 4]].map(([i, j]) => `${i},${j}`));
-const ring: Pt[] = [];
+const rest: Pt[] = [];
+for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) if (!story.has(`${i},${j}`)) rest.push(at(i, j));
+const outside: Pt[] = [];
 for (let i = -1; i <= k; i++)
-  for (let j = -1; j <= k; j++) if (i === -1 || j === -1 || i === k || j === k) ring.push(at(i, j));
-const outside = ring.filter(([x, y]) => !ps.some(([px, py]) => px === x && py === y));
-const badge1: Pt = [ix - s / 2, iy - s / 2];
-const badge2: Pt = [ps[0][0] + 13, (ps[0][1] + ps[1][1]) / 2];
+  for (let j = -1; j <= k; j++) if (i === -1 || j === -1 || i === k || j === k) outside.push(at(i, j));
+const empty = outside.filter(([x, y]) => !ps.some(([px, py]) => px === x && py === y));
+const badge1: Pt = [I[0] - s / 2, I[1] - s / 2];
+const badge2: Pt = [ps[0][0] + 15, (ps[0][1] + ps[1][1]) / 2];
 
-/* ---------- the cube, with the plane of the section ---------- */
-const U = 60;
-const pr = oblique(184, 98, U);
+/* ---------- the cube, cut open at the section ---------- */
+const U = 56;
+const pr = oblique(180, 104, U);
 const face = (a: P3[]) => pts(a.map(pr));
 const zc = 0.5;
-const hidden: [P3, P3][] = [
-  [[0, 0, 1], [1, 0, 1]],
-  [[0, 0, 1], [0, 1, 1]],
-  [[0, 0, 0], [0, 0, 1]],
+const cutBeads: Pt[] = [];
+for (let j = k - 1; j >= 0; j--) for (let i = 0; i < k; i++) cutBeads.push(pr([(i + 0.5) / k, (j + 0.5) / k, zc]));
+/* The front half, taken away: its outline. */
+const gone: [P3, P3][] = [
+  [[0, 0, 0], [1, 0, 0]],
+  [[1, 0, 0], [1, 1, 0]],
+  [[1, 1, 0], [0, 1, 0]],
+  [[0, 1, 0], [0, 0, 0]],
+  [[0, 1, 0], [0, 1, zc]],
+  [[1, 1, 0], [1, 1, zc]],
+  [[1, 0, 0], [1, 0, zc]],
+  [[0, 0, 0], [0, 0, zc]],
 ];
-const planeDots: Pt[] = [];
-for (let i = 0; i < k; i++) for (let j = 0; j < k; j++) planeDots.push(pr([(i + 0.5) / k, (j + 0.5) / k, zc]));
 const f0 = pr([0, 0, 0]);
 const f1 = pr([1, 0, 0]);
-const lx = 168; // legend
+const cutLabel = pr([1, 0.58, zc]);
+const lx = 170; // legend
 ---
 
-<svg class="pmf" viewBox="0 0 320 212" role="img" aria-labelledby="pmf-cube-t">
-  <title id="pmf-cube-t">On the right, a cube of side n made of n³ H's, cut by a plane through its middle. On the left, that section drawn flat: n by n nodes, all H's, framed by the surface of the cube, with the nodes outside the cube around it. Marker 1: an H inside the cube; its four neighbours in the section and the two in front of and behind it are all H's. Marker 2: a block PHHP; its two P's lie outside the cube, so each of its two H's has an open side, where its P sits, and lies on the surface.</title>
+<svg class="pmf" viewBox="0 0 320 224" role="img" aria-labelledby="pmf-cube-t">
+  <title id="pmf-cube-t">On the right, a cube of side n cut open through its middle; the cut face is covered with H's, since the n³ H's fill the cube. On the left, that section drawn flat: n by n nodes, each holding an H, with empty nodes outside the cube around it. Marker 1: an H inside the cube; its four neighbours in the section and the two in front of and behind it are all H's. Marker 2: a block PHHP at the edge of the section; its two P's lie outside the cube, so each of its two H's has an open side, where its P sits, and lies on the surface.</title>
 
   <!-- section -->
-  {outside.map(([x, y]) => <circle class="pmf-dot" cx={x} cy={y} r="1.8" />)}
-  <rect class="pmf-solid" x={box.x} y={box.y} width={box.w} height={box.h} rx="2" />
-  {
-    Array.from({ length: k * k }, (_, n) => {
-      const i = n % k;
-      const j = Math.floor(n / k);
-      if (story.has(`${i},${j}`)) return null;
-      const [x, y] = at(i, j);
-      return <circle class="pmf-h pmf-cube-rest" cx={x} cy={y} r="3.4" />;
-    })
-  }
-  {nbrs.map((q) => <line class="pmf-bond" x1={ix} y1={iy} x2={at(...q)[0]} y2={at(...q)[1]} />)}
-  {ghosts.map(([x, y]) => <line class="pmf-bond" x1={ix} y1={iy} x2={x} y2={y} />)}
-  {ghosts.map(([x, y]) => <circle class="pmf-h pmf-cube-ghost" cx={x} cy={y} r="3.2" />)}
-  {nbrs.map((q) => <circle class="pmf-h" cx={at(...q)[0]} cy={at(...q)[1]} r="4.4" />)}
-  <circle class="pmf-h" cx={ix} cy={iy} r="5" />
-  <polyline class="pmf-chain" points={pts(ribbon)} />
-  {hs.map(([x, y]) => <circle class="pmf-h" cx={x} cy={y} r="4.6" />)}
-  {ps.map(([x, y]) => <circle class="pmf-p" cx={x} cy={y} r="4.2" />)}
-  <path class="pmf-brace" d={hbrace(box.x + 2, box.x + box.w - 2, box.y + box.h + 13, 1)} />
-  <Tx x={box.x + box.w / 2} y={box.y + box.h + 34} t={N.n} a="middle" />
-  <Tx x={box.x} y="18" t="section through the cube" c="pmf-label-strong" />
+  <Tx x={box.x} y="16" t="a section through the cube" c="pmf-label-strong" />
+  <Nodes pts={empty} r={r} />
+  <rect class="pmf-slab" x={box.x} y={box.y} width={box.w} height={box.h} rx="3" />
+  {rest.map(([x, y]) => <Bead x={x} y={y} r={r} kind="H" dim />)}
+  <Bead x={behind[0]} y={behind[1]} r={r * 0.9} kind="H" />
+  <Contact a={I} b={behind} r={r * 0.9} />
+  {nbrs.map((q) => <Contact a={I} b={at(...q)} r={r} />)}
+  {nbrs.map((q) => <Bead x={at(...q)[0]} y={at(...q)[1]} r={r} kind="H" />)}
+  <Bead x={I[0]} y={I[1]} r={r} kind="H" />
+  <Contact a={I} b={front} r={r} />
+  <Bead x={front[0]} y={front[1]} r={r} kind="H" />
+  <Strand pts={[ps[0], hs[0], hs[1], ps[1]]} kinds="PHHP" r={r} from={[ps[0][0], ps[0][1] - 9]} to={[ps[1][0], ps[1][1] + 9]} />
+  <path class="pmf-brace" d={hbrace(box.x + 2, box.x + box.w - 2, box.y + box.h + 14, 1)} />
+  <Tx x={box.x + box.w / 2} y={box.y + box.h + 35} t={N.n} a="middle" />
   {
     [badge1, badge2].map(([x, y], n) => (
       <g>
-        <circle class="pmf-badge" cx={x} cy={y} r="7.5" />
-        <text class="pmf-badge-num" x={x} y={y + 3.8} text-anchor="middle">
+        <circle class="pmf-badge" cx={x} cy={y} r="6.5" />
+        <text class="pmf-badge-num pmf-cube-num" x={x} y={y + 3.4} text-anchor="middle">
           {n + 1}
         </text>
       </g>
     ))
   }
 
-  <!-- the cube -->
-  {hidden.map(([a, b]) => <polyline class="pmf-edge-line" stroke-dasharray="3 3" points={pts([pr(a), pr(b)])} />)}
-  <polygon class="pmf-solid pmf-cube-plane" points={face([[0, 0, zc], [1, 0, zc], [1, 1, zc], [0, 1, zc]])} />
-  {planeDots.map(([x, y]) => <circle class="pmf-h pmf-cube-rest" cx={x} cy={y} r="1.7" />)}
-  <polygon class="pmf-solid pmf-cube-glass" points={face([[0, 0, 0], [1, 0, 0], [1, 1, 0], [0, 1, 0]])} />
-  <polygon class="pmf-solid-side pmf-cube-glass" points={face([[0, 1, 0], [1, 1, 0], [1, 1, 1], [0, 1, 1]])} />
-  <polygon class="pmf-solid-side pmf-cube-glass" points={face([[1, 0, 0], [1, 0, 1], [1, 1, 1], [1, 1, 0]])} />
-  <path class="pmf-brace" d={hbrace(f0[0] + 1, f1[0] - 1, f0[1] + 5, 1)} />
-  <Tx x={(f0[0] + f1[0]) / 2} y={f0[1] + 24} t={N.n} a="middle" />
-  <Tx x={lx} y="138" t={`the ${N.n}³ H's fill the cube`} c="pmf-label-strong" />
+  <!-- the cube, cut open -->
+  <polygon class="pmf-slab pmf-slab-top" points={face([[0, 1, zc], [1, 1, zc], [1, 1, 1], [0, 1, 1]])} />
+  <polygon class="pmf-slab pmf-slab-side" points={face([[1, 0, zc], [1, 0, 1], [1, 1, 1], [1, 1, zc]])} />
+  <polygon class="pmf-slab" points={face([[0, 0, zc], [1, 0, zc], [1, 1, zc], [0, 1, zc]])} />
+  {cutBeads.map(([x, y]) => <Bead x={x} y={y} r={2.6} kind="H" />)}
+  {gone.map(([a, b]) => <polyline class="pmf-cube-gone" points={pts([pr(a), pr(b)])} />)}
+  <polyline class="pmf-lead" points={pts([cutLabel, [272, cutLabel[1]]])} />
+  <text class="pmf-label-sm" x="275" y={cutLabel[1] + 3.4}>section</text>
+  <path class="pmf-brace" d={hbrace(f0[0] + 1, f1[0] - 1, f0[1] + 6, 1)} />
+  <Tx x={(f0[0] + f1[0]) / 2} y={f0[1] + 26} t={N.n} a="middle" />
+  <Tx x={lx} y="148" t={`the ${N.n}³ H's fill the cube`} c="pmf-label-strong" />
   {
     [
-      ['inside: all six', 'neighbours are H'],
+      ['inside: all six', "neighbours are H's"],
       ['open side at its P,', 'so on the surface'],
     ].map(([a, b], n) => {
-      const y = 162 + n * 30;
+      const y = 172 + n * 30;
       return (
         <g>
-          <circle class="pmf-badge" cx={lx + 7.5} cy={y - 4} r="7.5" />
-          <text class="pmf-badge-num" x={lx + 7.5} y={y - 0.2} text-anchor="middle">
+          <circle class="pmf-badge" cx={lx + 6.5} cy={y - 4} r="6.5" />
+          <text class="pmf-badge-num pmf-cube-num" x={lx + 6.5} y={y - 0.6} text-anchor="middle">
             {n + 1}
           </text>
-          <Tx x={lx + 21} y={y} t={a} />
-          <Tx x={lx + 21} y={y + 14} t={b} />
+          <Tx x={lx + 19} y={y} t={a} />
+          <Tx x={lx + 19} y={y + 14} t={b} />
         </g>
       );
     })
@@ -131,17 +134,13 @@ const lx = 168; // legend
 </svg>
 
 <style>
-  .pmf-cube-rest {
-    opacity: 0.55;
+  .pmf-cube-gone {
+    fill: none;
+    stroke: var(--fg-subtle);
+    stroke-width: 1;
+    stroke-dasharray: 3 2.5;
   }
-  .pmf-cube-ghost {
-    opacity: 0.7;
-  }
-  .pmf-cube-glass {
-    fill-opacity: 0.3;
-    stroke-opacity: 0.8;
-  }
-  .pmf-cube-plane {
-    stroke-width: 1.6;
+  .pmf-cube-num {
+    font-size: 10px;
   }
 </style>

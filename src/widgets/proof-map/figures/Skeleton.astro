@@ -1,20 +1,25 @@
 ---
 /**
- * Card "The skeleton" (BL §3.2.2, Figs. 4–5): the 12 edges of the cube, 12n − 16 nodes, drawn for
- * n = 6. The corner rod (PHP)^(9n−10) fills nine edges: around the top face, down the back right
- * edge, around the bottom face (all eight corners). The tenth-edge rod fills the back left edge.
- * The two free edges of the front face stay empty (hollow) until the walls.
- * Edges hidden behind the cube are dashed and their H's faded.
+ * Card "Two edges stay free" (BL §3.2.2, Figs. 4–5): the 12 edges of the cube, 12n − 16 nodes, drawn
+ * for n = 6 in the look of the explainer video (still 15). The corner rod (PHP)^(9n−10) fills nine
+ * edges: around the top face, down the back right edge, around the bottom face (all eight corners).
+ * The tenth-edge rod fills the back left edge (ringed). The two free edges of the front face stay
+ * empty until the walls: blue slots with empty nodes. Rods are lone H's (P's between them), so no
+ * sticks. The faces are pale glass: what lies behind them shows through, faded.
  */
 import './fig.css';
 import Tx from './Tx.astro';
+import Bead from './kit/Bead.astro';
+import Nodes from './kit/Nodes.astro';
+import Ring from './kit/Ring.astro';
 import { N } from './notation';
-import { oblique, pts, hbrace, type P3 } from './lib';
+import { oblique, pts, hbrace, type P3, type Pt } from './lib';
 
 const m = 5; // n − 1 steps per edge
 const U = 100;
 const pr = oblique(22, 178, U / m);
 const face = (a: P3[]) => pts(a.map(pr));
+const r = 4;
 const run = (a: P3, b: P3): P3[] => {
   const d = b.map((v, i) => Math.sign(v - a[i])) as P3;
   const len = Math.max(...b.map((v, i) => Math.abs(v - a[i])));
@@ -40,76 +45,99 @@ const freeL = run([0, 1, 0], [0, m - 1, 0]);
 const freeR = run([m, 1, 0], [m, m - 1, 0]);
 /* Hidden: nodes on the back left, bottom left and bottom back edges, but for visible corners. */
 const hidden = (p: P3) => (p[0] === 0 && p[2] === K && p[1] < T) || (p[1] === 0 && p[0] === 0 && p[2] > 0) || (p[1] === 0 && p[2] === K && p[0] < m);
-/* Split the corner rod into visible and hidden stretches. */
-const stretches: { h: boolean; a: P3[] }[] = [];
-for (let i = 1; i < corner.length; i++) {
-  const h = hidden(corner[i]) || hidden(corner[i - 1]);
-  const last = stretches.at(-1);
-  if (last && last.h === h) last.a.push(corner[i]);
-  else stretches.push({ h, a: [corner[i - 1], corner[i]] });
-}
 const hiddenEdges: [P3, P3][] = [
   [[0, 0, 0], [0, 0, K]],
   [[0, 0, K], [m, 0, K]],
   [[0, 0, K], [0, T, K]],
 ];
+const shownEdges: [P3, P3][] = [
+  [[0, 0, 0], [m, 0, 0]],
+  [[0, T, 0], [m, T, 0]],
+  [[0, 0, 0], [0, T, 0]],
+  [[m, 0, 0], [m, T, 0]],
+  [[0, T, 0], [0, T, K]],
+  [[m, T, 0], [m, T, K]],
+  [[m, 0, 0], [m, 0, K]],
+  [[0, T, K], [m, T, K]],
+  [[m, 0, K], [m, T, K]],
+];
+const XY = (p: P3): Pt => pr(p);
 const f0 = pr([0, 0, 0]);
 const f1 = pr([m, 0, 0]);
-const [tx, ty] = pr([0, m - 1, K]);
-const [cx, cy] = pr([2, T, K]);
-const fy = (pr([0, 1, 0])[1] + pr([0, 2, 0])[1]) / 2 + 4;
-const fl = pr([0, 0, 0])[0];
-const fr = pr([m, 0, 0])[0];
-const lx = 200;
+const [tx1, ty1] = pr([0, 1, K]);
+const [, ty2] = pr([0, m - 1, K]);
+/* The free edges as slots: from the first to the last of their n − 2 nodes. */
+const slots = [freeL, freeR].map((e) => {
+  const [x, y1] = XY(e.at(-1)!);
+  const [, y2] = XY(e[0]);
+  return { x, y1, y2 };
+});
+const fy = (pr([0, 2, 0])[1] + pr([0, 3, 0])[1]) / 2 + 4;
+const fl = f0[0];
+const fr = f1[0];
+const lx = 198;
+const sx = lx + 7; // sample column of the list
+const tx = lx + 18;
 ---
 
-<svg class="pmf" viewBox="0 0 320 206" role="img" aria-labelledby="pmf-skel-t">
-  <title id="pmf-skel-t">The cube with only its twelve edges filled in: 12n − 16 nodes on edges and corners, one H each. The corner rod fills nine edges: around the top face, down the back right edge, and around the bottom face, through all eight corners. The tenth-edge rod fills the back left edge. The two free edges of the front face, on its left and right, stay empty for the walls. Edges hidden behind the cube are dashed.</title>
-  {hiddenEdges.map(([a, b]) => <polyline class="pmf-edge-line" stroke-dasharray="3 3" points={face([a, b])} />)}
-  <polygon class="pmf-face pmf-sk-glass" points={face([[0, T, 0], [m, T, 0], [m, T, K], [0, T, K]])} />
-  <polygon class="pmf-face pmf-sk-glass" points={face([[m, 0, 0], [m, 0, K], [m, T, K], [m, T, 0]])} />
-  <polygon class="pmf-face pmf-face-front pmf-sk-glass" points={face([[0, 0, 0], [m, 0, 0], [m, T, 0], [0, T, 0]])} />
+<svg class="pmf" viewBox="0 0 320 206" role="img" aria-labelledby="pmf-skeleton-t">
+  <title id="pmf-skeleton-t">The cube with only its twelve edges filled in: 12n − 16 nodes on edges and corners, one H each, drawn for n = 6. The corner rod, of lone H's, fills nine edges: around the top face, down the back right edge, and around the bottom face, through all eight corners. The tenth-edge rod, ringed, fills the back left edge. The two free edges of the front face, on its left and right, stay empty for the walls; they are drawn as blue slots with empty nodes. The faces are pale and see-through, so the edges behind the cube show faded, their lines dashed.</title>
+  {hiddenEdges.map(([a, b]) => <polyline class="pmf-slab-edge" stroke-dasharray="3 3" points={face([a, b])} />)}
+  {corner.filter(hidden).map((p) => <Bead x={XY(p)[0]} y={XY(p)[1]} r={r} />)}
+  {tenth.map((p) => <Bead x={XY(p)[0]} y={XY(p)[1]} r={r} />)}
 
-  <!-- tenth-edge rod, behind -->
-  <g class="pmf-sk-behind">
-    <polyline class="pmf-chain" stroke-dasharray="3 3" points={face(tenth)} />
-    {tenth.map((p) => <circle class="pmf-h" cx={pr(p)[0]} cy={pr(p)[1]} r="3.6" />)}
+  <g class="pmf-sk-glass">
+    <polygon class="pmf-slab pmf-slab-top" points={face([[0, T, 0], [m, T, 0], [m, T, K], [0, T, K]])} />
+    <polygon class="pmf-slab pmf-slab-side" points={face([[m, 0, 0], [m, 0, K], [m, T, K], [m, T, 0]])} />
+    <polygon class="pmf-slab" points={face([[0, 0, 0], [m, 0, 0], [m, T, 0], [0, T, 0]])} />
   </g>
-  <!-- corner rod -->
-  {stretches.map((s) => <polyline class:list={['pmf-chain', s.h && 'pmf-sk-behind']} stroke-dasharray={s.h ? '3 3' : undefined} points={face(s.a)} />)}
-  {corner.map((p) => <circle class:list={['pmf-h', hidden(p) && 'pmf-sk-behind']} cx={pr(p)[0]} cy={pr(p)[1]} r="3.6" />)}
-  <!-- free edges -->
-  {[...freeL, ...freeR].map((p) => <circle class="pmf-sk-free" cx={pr(p)[0]} cy={pr(p)[1]} r="3.4" />)}
+  <Ring x1={tx1} y1={ty1} y2={ty2} r={r} pad={2} dashed />
+  {shownEdges.map(([a, b]) => <polyline class="pmf-slab-edge" points={face([a, b])} />)}
+  {corner.filter((p) => !hidden(p)).map((p) => <Bead x={XY(p)[0]} y={XY(p)[1]} r={r} />)}
 
-  <text class="pmf-label pmf-halo" x={(fl + fr) / 2} y={fy} text-anchor="middle">free edges</text>
-  <path class="pmf-lead" d={`M${(fl + fr) / 2 - 31} ${fy - 4}L${fl + 7} ${fy - 4}M${fl + 11} ${fy - 7}L${fl + 7} ${fy - 4}L${fl + 11} ${fy - 1}`} />
-  <path class="pmf-lead" d={`M${(fl + fr) / 2 + 31} ${fy - 4}L${fr - 7} ${fy - 4}M${fr - 11} ${fy - 7}L${fr - 7} ${fy - 4}L${fr - 11} ${fy - 1}`} />
-  <text class="pmf-label" x="2" y="14">{N.tenth}</text>
-  <path class="pmf-lead" d={`M40 19L${tx - 4} ${ty - 3}`} />
-  <text class="pmf-label" x={cx + 6} y="14">{N.corner}</text>
-  <path class="pmf-lead" d={`M${cx + 14} 18L${cx + 2} ${cy - 5}`} />
-  <path class="pmf-brace" d={hbrace(f0[0], f1[0], f0[1] + 6, 1)} />
-  <Tx x={(f0[0] + f1[0]) / 2} y={f0[1] + 26} t={N.n} a="middle" />
+  <!-- the free edges -->
+  {slots.map((sl) => <rect class="pmf-board" x={sl.x - r - 1.5} y={sl.y1 - r - 1.5} width={2 * r + 3} height={sl.y2 - sl.y1 + 2 * r + 3} rx={r + 1.5} />)}
+  <Nodes pts={[...freeL, ...freeR].map(XY)} r={r} />
+  <text class="pmf-label-accent pmf-sk-halo" x={(fl + fr) / 2} y={fy} text-anchor="middle">free edges</text>
+  <path class="pmf-sk-lead" d={`M${(fl + fr) / 2 - 33} ${fy - 4}H${fl + r + 4}M${fl + r + 8} ${fy - 7}L${fl + r + 4} ${fy - 4}L${fl + r + 8} ${fy - 1}`} />
+  <path class="pmf-sk-lead" d={`M${(fl + fr) / 2 + 33} ${fy - 4}H${fr - r - 4}M${fr - r - 8} ${fy - 7}L${fr - r - 4} ${fy - 4}L${fr - r - 8} ${fy - 1}`} />
+  <path class="pmf-brace" d={hbrace(f0[0], f1[0], f0[1] + 7, 1)} />
+  <Tx x={(f0[0] + f1[0]) / 2} y={f0[1] + 27} t={N.n} a="middle" />
 
-  <Tx x={lx} y="44" t="edges and corners:" c="pmf-label-strong" />
-  <Tx x={lx} y="58" t={`12${N.n} − 16 nodes,`} />
-  <text class="pmf-label" x={lx} y="72">one H each</text>
-  <text class="pmf-label" x={lx} y="102">{N.corner}: 9 edges</text>
-  <text class="pmf-label" x={lx} y="118">{N.tenth}: 1</text>
-  <text class="pmf-label" x={lx} y="134">free edges: 2,</text>
-  <text class="pmf-label" x={lx} y="148">left for the walls</text>
+  <Tx x={lx} y="40" t="edges and corners:" c="pmf-label-strong" />
+  <Tx x={lx} y="54" t={`12${N.n} − 16 nodes,`} />
+  <text class="pmf-label" x={lx} y="68">one H each</text>
+
+  <Bead x={sx} y={94} r={r} />
+  <text class="pmf-label" x={tx} y="98">{N.corner}</text>
+  <text class="pmf-label-sm" x={tx} y="111">9 edges, 8 corners</text>
+
+  <Bead x={sx} y={130} r={r} />
+  <Ring x1={sx} y1={130} r={r} pad={2} dashed />
+  <text class="pmf-label" x={tx} y="134">{N.tenth}</text>
+  <text class="pmf-label-sm" x={tx} y="147">1 more edge</text>
+
+  <rect class="pmf-board" x={sx - r - 1.5} y={160} width={2 * r + 3} height={20} rx={r + 1.5} />
+  <Nodes pts={[[sx, 166], [sx, 174]]} r={r} />
+  <text class="pmf-label-accent" x={tx} y="170">2 free edges</text>
+  <text class="pmf-label-sm" x={tx} y="183">left for the walls</text>
 </svg>
 
 <style>
   .pmf-sk-glass {
-    fill-opacity: 0.45;
+    opacity: 0.72;
   }
-  .pmf-sk-behind {
-    opacity: 0.5;
+  .pmf-sk-lead {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
-  .pmf-sk-free {
-    fill: var(--bg-elev);
-    stroke: var(--h);
-    stroke-width: 1.3;
+  .pmf-sk-halo {
+    paint-order: stroke;
+    stroke: var(--h-weak);
+    stroke-width: 4px;
+    stroke-linejoin: round;
   }
 </style>

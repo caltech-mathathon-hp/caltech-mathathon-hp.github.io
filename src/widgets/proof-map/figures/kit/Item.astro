@@ -1,0 +1,52 @@
+---
+/**
+ * An item as the bin packing game draws it: a rounded bar `units` long in item k's colour, thin
+ * pale lines between the units, and a white chip with its name (u₁, s(u) …) or its size.
+ * (x, y) is the left end of the bar's centre line; u is the width of one unit, h the height.
+ */
+import Tx from '../Tx.astro';
+import { beadColor, f, type Kind } from './kit';
+
+interface Props {
+  x: number;
+  y: number;
+  units: number;
+  u?: number;
+  h?: number;
+  k?: number;
+  kind?: Kind;
+  color?: string;
+  chip?: string;
+  /** Where the chip sits: at the start of the bar (default) or in the middle. */
+  chipAt?: 'start' | 'middle';
+  /** Draw the unit lines. */
+  ticks?: boolean;
+  dim?: boolean;
+}
+const { x, y, units, u = 8, h = 12, k = 0, kind = 'item', color, chip, chipAt = 'start', ticks = true, dim } = Astro.props;
+const c = color ?? beadColor(kind, k);
+const w = units * u;
+const rx = Math.min(h * 0.42, w / 2);
+const plain = chip ? chip.replace(/[₀-₉]/g, '') : '';
+const cw = chip ? Math.max(h - 3, plain.length * 6 + (chip.length - plain.length) * 4.6 + 6) : 0;
+// A short bar gets its chip in the middle, as in the game.
+const cx = chipAt === 'middle' || w < 2.4 * cw ? x + w / 2 : x + 2 + cw / 2;
+const showChip = !!chip && cw <= w - 3;
+// Unit lines, leaving out those that would show at the chip's edge.
+const tickXs = ticks
+  ? Array.from({ length: units - 1 }, (_, i) => x + (i + 1) * u).filter((tx) => !showChip || Math.abs(tx - cx) > cw / 2 + 1.5)
+  : [];
+---
+
+<g class:list={['pmf-item', { 'is-dim': dim }]} style={`--c:${c}`}>
+  <rect class="pmf-item-bar" x={f(x)} y={f(y - h / 2)} width={f(w)} height={f(h)} rx={f(rx)} />
+  {tickXs.map((tx) => (
+    <line class="pmf-item-tick" x1={f(tx)} x2={f(tx)} y1={f(y - h / 2 + 1)} y2={f(y + h / 2 - 1)} />
+  ))}
+  {showChip && (
+    <>
+      <rect class="pmf-item-chip" x={f(cx - cw / 2)} y={f(y - h / 2 + 2)} width={f(cw)} height={f(h - 4)} rx={f((h - 4) / 2.4)} />
+      <Tx x={f(cx)} y={f(y + 3.4)} t={chip} a="middle" c="pmf-chip-text" />
+    </>
+  )}
+</g>
