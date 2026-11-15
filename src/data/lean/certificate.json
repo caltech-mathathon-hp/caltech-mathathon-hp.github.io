@@ -1,7 +1,7 @@
 {
-  "_comment": "Written by scripts/build_lean.py from lean/cubic on the lean-certificates branch. Do not edit by hand.",
+  "_comment": "Written by scripts/build_lean.py from lean/cubic. Do not edit by hand.",
   "source": {
-    "ref": "origin/lean-certificates",
+    "ref": "HEAD",
     "path": "lean/cubic",
     "commit": "2254adcb56a81c0048092c263090046b210a41f6",
     "date": "2026-11-14"
@@ -21,7 +21,7 @@
     "repo": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io",
     "tree": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/tree/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic",
     "clone": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io.git",
-    "branch": "lean-certificates",
+    "branch": "main",
     "ci": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/actions/workflows/lean-certificates.yml",
     "docs": {
       "readme": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/README.md",

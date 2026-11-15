@@ -2,7 +2,7 @@ name: Cubic Lean certificates
 
 on:
   push:
-    branches: [lean-certificates]
+    branches: [main]
     paths: ['lean/**', '.gitattributes', '.github/workflows/lean-certificates.yml']
   pull_request:
     paths: ['lean/**', '.gitattributes', '.github/workflows/lean-certificates.yml']

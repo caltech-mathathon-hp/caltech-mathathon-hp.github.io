@@ -11,5 +11,7 @@ This repository is the source of the website <https://caltech-mathathon-hp.githu
   publishes the site. Before you push: `git pull --rebase`, `npm run build`, then
   `git pull --rebase && git push`.
 - Everything here is public, including pages with `status: hidden`.
+- After changing `lean/cubic`, run `python3 scripts/build_lean.py` (the Lean page's data); see
+  `AGENTS.md` for the Lean project.
 - `src/data/papers/papers.json` is generated; don't edit it by hand (see the papers map in
   `README.md`).

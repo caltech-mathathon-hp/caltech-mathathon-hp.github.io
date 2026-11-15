@@ -1,7 +1,7 @@
 /**
  * The Lean page's data. Everything the page shows from the Lean project comes from
- * src/data/lean/certificate.json, which scripts/build_lean.py writes from lean/cubic on the
- * website repo's lean-certificates branch. The page never reads the Lean files themselves.
+ * src/data/lean/certificate.json, which scripts/build_lean.py writes from lean/cubic in this
+ * repository. The page never reads the Lean files themselves.
  */
 import cert from '../../data/lean/certificate.json';
 

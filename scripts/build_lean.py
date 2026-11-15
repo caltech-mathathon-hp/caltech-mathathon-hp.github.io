@@ -53,7 +53,7 @@ SKIP_FILES = {".DS_Store"}
 DEFINITION_KWS = {"def", "abbrev", "structure", "inductive", "class"}
 COUNTED_KWS = DEFINITION_KWS | {"theorem", "lemma", "instance"}
 STATEMENT_KWS = {"theorem", "lemma"}
-COMMENT = ("Written by scripts/build_lean.py from lean/cubic on the lean-certificates branch. "
+COMMENT = ("Written by scripts/build_lean.py from lean/cubic. "
            "Do not edit by hand.")
 
 
@@ -643,7 +643,7 @@ def main(argv: list[str] | None = None) -> int:
         rerun = f"python3 scripts/build_lean.py --lean {args.lean}"
     else:
         repo = args.repo or Path(git("-C", str(SITE), "rev-parse", "--show-toplevel") or SITE)
-        ref = args.ref or src_cfg.get("ref", "origin/lean-certificates")
+        ref = args.ref or src_cfg.get("ref", "HEAD")
         cfg.setdefault("source", {})["ref"] = ref
         files, commit, date = from_git(repo.resolve(), ref, src_cfg.get("path", "lean/cubic"), problems)
         rerun = f"python3 scripts/build_lean.py --repo {args.repo or repo}" + (f" --ref {args.ref}" if args.ref else "")

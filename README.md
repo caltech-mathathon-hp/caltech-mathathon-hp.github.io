@@ -41,7 +41,7 @@ Everything in this repository is public, including pages with `status: hidden`.
 
 A repository named `<owner>.github.io` is served at the root, so the workflow sets `SITE_BASE=/`.
 
-`lean/` (on the branch `lean-certificates` until it is merged) holds the team's Lean certificates
+`lean/` holds the team's Lean certificates
 for Berger and Leighton's theorem; see `lean/README.md`. Its own workflow,
 `.github/workflows/lean-certificates.yml`, builds it.
 
@@ -64,7 +64,7 @@ src/
   lib/                    small helpers (withBase, listedSections)
 scripts/                  generators (e.g. papers.json from the literature notes)
 public/                   static files served as is
-lean/                     the Lean certificates (branch lean-certificates)
+lean/                     the Lean certificates, a Lean 4 project (see lean/README.md)
 explainer-video/          source of the explainer video, not part of the site (npm run stepper inside)
 ```
 

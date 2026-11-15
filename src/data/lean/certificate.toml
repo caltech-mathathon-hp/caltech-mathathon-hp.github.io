@@ -1,15 +1,15 @@
 # Settings for scripts/build_lean.py, which writes certificate.json (next to this file) and the
 # project zip from the teammate's Lean project. Edit by hand, then run
 #   python3 scripts/build_lean.py
-# (add --repo PATH when the branch below lives in another clone).
+# (add --repo PATH to read the project from another clone).
 
 [source]
 # Where the Lean project lives on GitHub; the page's links are built from this.
 repo_url = "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io"
 # The git ref the script reads, in the repo given by --repo (default: the repo holding site/).
-ref = "origin/lean-certificates"
+ref = "HEAD"
 # The branch name, for links when no commit is known.
-branch = "lean-certificates"
+branch = "main"
 # The Lean project's folder in that repo.
 path = "lean/cubic"
 # Declaration names on the page and in docs/theorem-index.md are relative to this namespace.
