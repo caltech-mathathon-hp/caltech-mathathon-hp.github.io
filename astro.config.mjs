@@ -9,8 +9,8 @@ import rehypeMathPunct from './src/lib/rehype-math-punct.mjs';
 import yaml from '@modyfi/vite-plugin-yaml';
 
 // Deployment: SITE_URL=https://<owner>.github.io, and SITE_BASE=/ for a repository named
-// <owner>.github.io or /<repo>/ for any other (the website repository's workflow sets both;
-// see README, Deploying).
+// <owner>.github.io or /<repo>/ for any other (.github/workflows/pages.yml sets both;
+// see README, Publishing).
 // Locally both default to the root, so `npm run dev` serves at http://localhost:4321/.
 const site = process.env.SITE_URL ?? 'http://localhost:4321';
 const base = process.env.SITE_BASE ?? '/';
