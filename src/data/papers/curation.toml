@@ -1,6 +1,6 @@
 # Curation overlay for the papers map and the list of papers (Context page).
 #
-# scripts/build_papers.py merges this file with the facts in ../private/literature/
+# scripts/build_papers.py merges this file with the facts in the team's literature notes
 # (INDEX.md: year, relevance, reading status; refs.bib: authors, title, DOI/URL;
 # notes/<key>.md) and writes src/data/papers/papers.json. Run, from site/:
 #
