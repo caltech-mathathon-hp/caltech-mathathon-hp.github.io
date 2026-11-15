@@ -3,28 +3,163 @@ title: Lean formalization
 slug: lean
 navTitle: Lean
 kicker: Part IV
-lede: The plan for proving in Lean that HP folding on the cubic lattice is NP-complete.
-summary: The plan for a Lean formalization and the status of each part.
+lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem. HP folding on the cubic lattice is NP-complete, assuming one classical theorem, Cook–Levin. You can download the proof and check it yourself.
+summary: Berger and Leighton's theorem checked in Lean, assuming the Cook–Levin theorem, with the files to check it yourself.
 order: 6
 status: draft
 ---
 
-import LeanStatus from '../../widgets/lean/LeanStatus.astro';
+import { lean, date } from '../../widgets/lean/lean';
+import LeanCertificate from '../../widgets/lean/LeanCertificate.astro';
+import LeanCode from '../../widgets/lean/LeanCode.astro';
+import LeanAxioms from '../../widgets/lean/LeanAxioms.astro';
+import LeanCommands from '../../widgets/lean/LeanCommands.astro';
+import LeanIndex from '../../widgets/lean/LeanIndex.astro';
 
-The table lists what will be proved in Lean, what will be argued on paper, and the status of
-each part.
+{/* Everything this page shows from the Lean project (code, names, links, counts, the zip) comes
+    from src/data/lean/certificate.json and public/lean/, which scripts/build_lean.py writes from
+    lean/cubic on the lean-certificates branch. Run it again when that branch changes. */}
 
-<LeanStatus />
+<LeanCertificate />
 
-## Scope
+## Why a computer checks it
 
-We found no formalized hardness result for HP folding in any proof assistant. The only Lean library
-for the HP model, Ptyche by <Cite k="kjoshanssen2024ptyche" />, has the definitions and score
-bounds, but no hardness. Mathlib has no notion of NP or of polynomial-time reductions; see
-<Cite k="mathlib2026computability" />.
+A reduction proof is long and full of cases, and a reader checks many of them by looking at
+pictures. In [our audit](../original-proof/#our-audit-notes) of Berger and Leighton's proof we
+found a footnote that is false as written, and several steps that the paper leaves to the reader.
 
-We plan to follow the approach of <Cite k="kreuzer2023verification" />. The definitions and the
-correctness of the reduction (*a perfect fold exists if and only if the instance has a
-solution*) will be proved in Lean, together with a bound on the length of the string. The
-polynomial running time of the reduction will be argued on paper. A statement on this site carries
-the label <Status kind="lean" /> only if it passes every check listed above.
+In Lean a proof is a program, and Lean accepts it only if every step follows from the definitions
+by the rules of logic. We call a statement **proved in Lean** when
+
+- the Lean project builds;
+- no `sorry` is left in its proof or in anything the proof uses (`sorry` stands for a step that is not proved yet);
+- it rests only on Lean's three standard axioms, `propext`, `Classical.choice` and `Quot.sound`, as `#print axioms` shows;
+- it does not use `native_decide`, which runs compiled code instead of checking a proof.
+
+We found no earlier machine-checked proof that HP folding is hard, in any proof assistant. The
+only Lean library for the HP model, by <Cite k="kjoshanssen2024ptyche" />, defines folds and
+bounds their number of contacts, but proves nothing about hardness.
+
+## What Lean proves
+
+<Theorem kind="Theorem" source="Berger & Leighton 1998" status="lean">
+If SAT is NP-hard, then HP folding on the cubic lattice is NP-complete, and so is perfect folding.
+</Theorem>
+
+Lean follows the plan of the paper. Perfect folding asks whether a string with $n^3$ H's has a
+fold whose H's fill an $n \times n \times n$ cube. Theorem 3.2 of the paper says that this happens
+exactly when the string has a fold with $3n^2(n-1)$ pairs of H's on neighbouring sites, the most
+that $n^3$ sites can have. So perfect folding is HP folding with a particular threshold. Lean
+proves Theorem 3.2 with no assumption.
+It also proves, with no assumption, that both problems are in NP: it builds a Turing machine that
+checks a proposed fold in polynomial time.
+
+For hardness, Lean follows the chain at the top of this page. Each step is a reduction: a
+function that turns instances of one problem into instances of the next, preserves the answer,
+and is computed by a Turing machine whose running time Lean proves polynomial. Only the first
+step, from every problem in NP to SAT, is assumed. These are the main results as Lean states
+them; their proofs are in the files linked below each block.
+
+<LeanCode
+  names="cubeBondThreshold PerfectIffThreshold perfectIffThreshold_holds hpStringFold_inNP perfectHPStringFold_inNP perfectHPStringFold_NPHard perfectHPStringFold_NPComplete hpStringFold_NPComplete"
+  caption="The main results"
+/>
+
+## What Lean assumes
+
+The Cook–Levin theorem says that every problem in NP reduces to SAT in polynomial time. Cook
+proved it in 1971 and Levin, independently, in 1973. It has been checked by computer in Coq
+<Cite k="gaher2021mechanising" /> and in Isabelle <Cite k="balbach2023cook" />, but not in
+mathlib, Lean's main library, because a proof has to write a whole run of a Turing machine as a
+formula, a long project of its own. A Lean 4 proof by <Cite k="rbarish2026npcompleteness" />
+exists, but it uses its own Turing machines instead of mathlib's, so connecting it to our project
+would take more work, and no person has reviewed it.
+
+So the project states Cook–Levin as a proposition, `SAT.CookLevin`, and the three hardness
+theorems take it as a hypothesis `hCL`. A hypothesis is not an axiom: Lean checks that the
+theorem follows from it, and a Lean proof of `SAT.CookLevin` would turn the three theorems into
+unconditional ones.
+
+<LeanCode names="SAT.CookLevin" caption="The hypothesis: SAT is NP-hard" />
+
+`#print axioms` lists the axioms a theorem rests on, but not its hypotheses, so `hCL` shows only
+in the theorem's type. This is what Lean prints for three of the main results:
+
+<LeanAxioms names="perfectIffThreshold_holds hpStringFold_inNP hpStringFold_NPComplete" />
+
+## The definitions
+
+Lean checks every step after the definitions, but not the definitions themselves. If a definition
+said something other than what the paper means, Lean would prove a different theorem. So we show
+them here in full, to compare with the [front page](../) and with the paper. The
+<a href={lean.links.docs.model}>model notes</a> list every choice they make, down to empty strings
+and how numbers are written.
+
+Two choices need a comment. First, the project counts every pair of H's on neighbouring sites,
+including H's that are neighbours on the string, as the paper does; the paper calls them bonds.
+The front page counts only pairs that are not neighbours on the string. The two counts differ by
+the number of HH pairs next to each other in the string, which depends only on the string, so
+both counts give the same folding problem.
+
+Second, mathlib has Turing machines with a polynomial running time, but no class NP and no
+reductions <Cite k="mathlib2026computability" />. The project defines them on top of mathlib's
+machines. A problem is in NP when a polynomial-time machine can check a certificate of polynomial
+length, a reduction is a function computed by a polynomial-time machine that preserves the
+answer, and a problem is NP-hard when every problem in NP reduces to it.
+
+<LeanCode names="Residue Sequence Fold hhBonds bondCount HPStringFold" caption="HP strings, folds and bonds" />
+
+<LeanCode names="latticeDistance cubicLattice HPInstance HPInstance.Accepts" caption="HP folding on the cubic lattice" />
+
+<LeanCode names="cube hydrophobicSites PacksCube PerfectInstance PerfectHPStringFold" caption="Perfect folding: the H's fill a cube" />
+
+<LeanCode names="PolyTimeDecidable InNP KarpReduces NPHard NPComplete" caption="NP, reductions and NP-completeness" />
+
+<LeanCode names="HPStringFoldNPComplete PerfectHPStringFoldNPComplete" caption="The statements of the main theorems" />
+
+## Where the proof differs from the paper
+
+Lean proves the paper's theorem about the paper's problems, but in two places not by the paper's
+argument. The paper takes the hardness of bin packing with small numbers from Garey and Johnson
+<Cite k="garey1979computers" />. The project proves it in Lean instead, from SAT through 3D
+matching, so no published result enters the proof except Cook–Levin.
+
+The reduction from bin packing to perfect folding builds a different string from the one in the
+paper's Figure 3, so the paper's Lemmas 3.3 to 3.8 are not formalized one by one. Lean proves
+both directions for the new string: it has a perfect fold exactly when the items fit. The
+<a href={lean.links.docs.proofRoute}>proof route</a> describes the construction.
+
+## Check it yourself
+
+You need [elan](https://github.com/leanprover/elan), Lean's installer, which fetches the right
+version of Lean by itself. Download the project with the button at the top of this page and
+unpack it,
+
+<LeanCommands step="zip" />
+
+or clone it from GitHub:
+
+<LeanCommands step="git" />
+
+Then download mathlib's compiled files, build the project and print the main results with their
+axioms:
+
+<LeanCommands step="build" />
+
+The first command downloads several gigabytes, and the build checks every proof in the project.
+For the project's full audit, install PowerShell 7 and run the script below. It compares every
+file with its recorded hash, searches the code for forbidden commands, and prints the axioms of
+every public declaration.
+
+<LeanCommands step="verify" />
+
+GitHub runs the build and the audit again on every change to the branch; <a href={lean.links.ci}>here
+are the runs</a>. The zip on this page holds the version of {date(lean.source.date)}, commit
+<code>{lean.source.commit?.slice(0, 7)}</code>. Its SHA-256 is <code class="ln-hash">{lean.download.sha256}</code>.
+
+## Every statement and where it is
+
+The project's <a href={lean.links.docs.theoremIndex}>index</a> matches each statement of the
+paper with its declarations in Lean. Each name links to its line on GitHub.
+
+<LeanIndex />

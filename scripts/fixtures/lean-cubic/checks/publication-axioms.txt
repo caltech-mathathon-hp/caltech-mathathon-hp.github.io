@@ -1,0 +1,8 @@
+ProteinFolding.bondCount_le (S : ProteinFolding.Sequence) (f : ProteinFolding.Fold S.length) :
+  ProteinFolding.bondCount S f ≤
+    S.length ^ 2
+'ProteinFolding.bondCount_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+ProteinFolding.emptyFold_bonds : ProteinFolding.bondCount [] ProteinFolding.emptyFold = 0
+'ProteinFolding.emptyFold_bonds' depends on axioms: [propext]

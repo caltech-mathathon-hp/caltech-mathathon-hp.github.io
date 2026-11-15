@@ -1,0 +1,13 @@
+# Settings for the fixture in lean-cubic/, used by test_build_lean.py (same keys as
+# src/data/lean/certificate.toml).
+
+[source]
+repo_url = "https://github.com/example/hp"
+ref = "HEAD"
+branch = "main"
+path = "lean/cubic"
+namespace = "ProteinFolding"
+zip = "lean/lean-cubic.zip"
+
+[show]
+extra = ["Square.Fold", "Grid", "emptyFold_bonds"]

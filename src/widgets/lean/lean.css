@@ -1,0 +1,364 @@
+/*
+ * The Lean page's widgets. Class prefix ln-. Colours, fonts and sizes only from tokens.css;
+ * Lean's colour is --st-lean. Beads are drawn like the fold game's: a lit disc with a darker rim.
+ */
+
+.ln {
+  font-family: var(--font-sans);
+  /* Lean code: Astro's <Code theme="css-variables"> colours its tokens with these. */
+  --astro-code-foreground: var(--fg);
+  --astro-code-background: var(--bg-sunk);
+  --astro-code-token-keyword: var(--accent);
+  --astro-code-token-function: var(--st-lean);
+  --astro-code-token-constant: var(--st-conjecture);
+  --astro-code-token-string: var(--diff-1-ink);
+  --astro-code-token-string-expression: var(--diff-1-ink);
+  --astro-code-token-comment: var(--fg-muted);
+  --astro-code-token-parameter: var(--fg);
+  --astro-code-token-punctuation: var(--fg);
+  --astro-code-token-link: var(--accent);
+}
+
+/* ---------- A status as a mark and a word ---------- */
+.ln-dot {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45em;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--fg-muted);
+}
+.ln-dot i {
+  flex: none;
+  align-self: center;
+  width: 0.85em;
+  height: 0.85em;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.ln-dot.is-definition i {
+  border-radius: 2px;
+  background: var(--st-cited);
+}
+.ln-dot.is-proved i {
+  background: var(--st-lean);
+}
+.ln-dot.is-conditional i {
+  border: 2px solid var(--st-lean);
+  background: linear-gradient(90deg, var(--st-lean) 50%, var(--bg-elev) 50%);
+}
+.ln-dot.is-premise i {
+  border: 1.5px dashed var(--fg-subtle);
+}
+
+/* ---------- The certificate card ---------- */
+.ln-cert {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'head' 'route' 'foot';
+  gap: var(--s-5);
+  margin: var(--s-5) 0 var(--s-6);
+  padding: var(--s-5);
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+@media (min-width: 52rem) {
+  .ln-cert {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 20rem);
+    grid-template-areas: 'head route' 'foot route';
+    grid-template-rows: auto 1fr;
+    gap: var(--s-4) var(--s-7);
+  }
+  .ln-cert-foot {
+    align-self: end;
+  }
+}
+.ln-cert-head {
+  grid-area: head;
+}
+.ln-cert-claim {
+  margin: 0 0 var(--s-3);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  color: var(--fg);
+}
+.ln-cert-how {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: var(--lh-ui);
+  color: var(--fg-muted);
+}
+.ln-cert-foot {
+  grid-area: foot;
+  display: grid;
+  gap: var(--s-3);
+}
+.ln-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.ln-facts li {
+  margin: 0;
+}
+/* The dot goes after an item, so a wrapped line never starts with one. */
+.ln-facts li:not(:last-child)::after {
+  content: '·';
+  margin-left: var(--s-2);
+}
+.ln-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: 0;
+}
+.ln-links .btn {
+  flex-wrap: wrap;
+  row-gap: 0.3em;
+  line-height: 1.2;
+  text-decoration: none;
+}
+.ln-links .btn > span {
+  white-space: nowrap;
+}
+.ln-btn-note {
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* The chain of reductions: beads joined by sticks, top to bottom. */
+.ln-route {
+  grid-area: route;
+  --ln-rail: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ln-step {
+  margin: 0;
+}
+.ln-node,
+.ln-via {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0;
+  line-height: var(--lh-ui);
+}
+.ln-node {
+  flex-wrap: wrap;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--fg);
+}
+.ln-node-name {
+  flex: 0 1 auto;
+}
+.ln-bead {
+  --c: var(--st-lean);
+  flex: none;
+  width: var(--ln-rail);
+  height: var(--ln-rail);
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--c) 72%, #000);
+  background:
+    radial-gradient(circle at 34% 32%, rgb(255 255 255 / 0.42) 0 17%, transparent 19%),
+    var(--c);
+}
+.ln-step.is-start .ln-bead {
+  --c: var(--st-cited);
+}
+.ln-step.is-goal .ln-node {
+  font-size: var(--fs-base);
+}
+.ln-np {
+  margin-left: auto;
+  padding: 0.1em 0.55em;
+  border: 1px solid color-mix(in srgb, var(--st-lean) 45%, transparent);
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--st-lean);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.ln-np:hover {
+  background: color-mix(in srgb, var(--st-lean) 10%, transparent);
+}
+.ln-via {
+  min-height: 2.4rem;
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.ln-via a {
+  color: inherit;
+}
+.ln-via.is-proved a {
+  color: var(--st-lean);
+}
+.ln-stick {
+  flex: none;
+  align-self: stretch;
+  position: relative;
+  width: var(--ln-rail);
+}
+.ln-stick::before {
+  content: '';
+  position: absolute;
+  left: calc(50% - 1.5px);
+  top: 3px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--st-lean);
+}
+.ln-stick::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 5px);
+  bottom: 2px;
+  border: 5px solid transparent;
+  border-bottom: 0;
+  border-top: 7px solid var(--st-lean);
+}
+.ln-via.is-premise .ln-stick::before {
+  background: repeating-linear-gradient(to bottom, var(--fg-subtle) 0 4px, transparent 4px 7px);
+}
+.ln-via.is-premise .ln-stick::after {
+  border-top-color: var(--fg-subtle);
+}
+
+/* ---------- Code ---------- */
+.ln-decl {
+  margin: var(--s-4) 0 var(--s-5);
+  min-width: 0;
+  background: var(--bg-elev);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.ln-decl-head {
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--rule);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: var(--lh-ui);
+  color: var(--fg);
+}
+.ln .ln-codeblock {
+  margin: 0;
+  padding: var(--s-3) var(--s-4);
+  border-radius: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+}
+.ln-cmd {
+  margin: var(--s-3) 0 var(--s-4);
+}
+.ln-cmd .ln-codeblock {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+}
+.ln-decl-where {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-3);
+  margin: 0;
+  padding: var(--s-2) var(--s-4);
+  border-top: 1px solid var(--rule);
+  font-size: var(--fs-xs);
+  color: var(--fg-muted);
+}
+.ln-decl-where a {
+  text-decoration: none;
+}
+.ln-decl-where a:hover code {
+  text-decoration: underline;
+}
+.ln-decl-where code,
+.ln-names code {
+  font-size: 1em;
+}
+
+/* What Lean prints: one result per row, its axioms below it. */
+.ln-output {
+  display: grid;
+  gap: var(--s-2);
+  overflow-x: auto;
+  background: var(--bg-sunk);
+  color: var(--fg);
+  font-family: var(--font-mono);
+}
+.ln-out-row {
+  display: grid;
+}
+.ln-out-axioms {
+  padding-left: 2ch;
+  color: var(--st-lean);
+}
+
+/* ---------- The index ---------- */
+.ln-table-wrap {
+  margin: var(--s-4) 0 var(--s-5);
+  overflow-x: auto;
+}
+.ln-table {
+  margin: 0;
+}
+.ln-table thead th {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.ln-table td {
+  vertical-align: top;
+}
+.ln-table td:last-child {
+  width: 10rem;
+}
+.ln-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-1);
+  font-size: var(--fs-xs);
+}
+.ln-names a {
+  text-decoration: none;
+}
+.ln-names code {
+  overflow-wrap: anywhere;
+}
+.ln-names-narrow {
+  display: none;
+  margin-top: var(--s-1);
+}
+@media (max-width: 40rem) {
+  .ln-table .ln-col-lean {
+    display: none;
+  }
+  .ln-names-narrow {
+    display: flex;
+  }
+  .ln-table td:last-child {
+    width: 7rem;
+  }
+}
+
+/* The zip's SHA-256, in the page's prose. */
+.ln-hash {
+  overflow-wrap: anywhere;
+}

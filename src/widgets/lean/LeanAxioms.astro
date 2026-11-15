@@ -1,0 +1,34 @@
+---
+/**
+ * What Lean prints for the main results when you run checks/CubicHardness.lean: each
+ * declaration's type, then the axioms it depends on. Taken from the project's recorded run,
+ * checks/publication-axioms.txt.
+ *
+ *   <LeanAxioms names="hpStringFold_NPComplete perfectIffThreshold_holds" />
+ */
+import './lean.css';
+import { lean, names as split } from './lean';
+
+interface Props {
+  names: string;
+}
+const ns = 'ProteinFolding.';
+const rows = split(Astro.props.names).map((n) => {
+  const r = lean.axiomReport.find((a) => a.name === n || a.name === ns + n);
+  if (!r) throw new Error(`Lean page: ${n} is not in the axiom report (checks/publication-axioms.txt).`);
+  return r;
+});
+// Shorter to read without the namespace; Lean prints it in full.
+const bare = (s: string) => s.replaceAll(ns, '');
+---
+
+<figure class="ln ln-decl ln-out wide">
+  <pre class="ln-codeblock ln-output">{
+    rows.map((r) => (
+      <span class="ln-out-row">
+        <span>{bare(`${r.name} ${r.type}`)}</span>
+        <span class="ln-out-axioms">depends on axioms: [{r.axioms.join(', ')}]</span>
+      </span>
+    ))
+  }</pre>
+</figure>

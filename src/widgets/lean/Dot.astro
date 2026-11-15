@@ -1,0 +1,17 @@
+---
+/**
+ * A status as a small mark and a word:
+ *   <Dot status="conditional" />   ◐ Proved, assuming Cook–Levin
+ * definition: grey square · proved: teal bead · conditional: half-filled teal bead · premise: dashed ring
+ */
+import { statusLabel, type Status } from './lean';
+
+interface Props {
+  status: Status;
+  /** Text instead of the status word. */
+  label?: string;
+}
+const { status, label } = Astro.props;
+---
+
+<span class={`ln-dot is-${status}`}><i aria-hidden="true"></i>{label ?? statusLabel[status]}</span>

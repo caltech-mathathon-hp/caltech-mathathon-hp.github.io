@@ -1,0 +1,763 @@
+{
+  "_comment": "Written by scripts/build_lean.py from lean/cubic on the lean-certificates branch. Do not edit by hand.",
+  "source": {
+    "ref": "origin/lean-certificates",
+    "path": "lean/cubic",
+    "commit": "2254adcb56a81c0048092c263090046b210a41f6",
+    "date": "2026-11-14"
+  },
+  "project": {
+    "lean": "4.24.0",
+    "mathlib": "v4.24.0",
+    "files": 286,
+    "lines": 36073,
+    "declarations": 4231,
+    "theorems": 2556,
+    "sorries": 0,
+    "axioms": 0,
+    "nativeDecide": 0
+  },
+  "links": {
+    "repo": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io",
+    "tree": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/tree/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic",
+    "clone": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io.git",
+    "branch": "lean-certificates",
+    "ci": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/actions/workflows/lean-certificates.yml",
+    "docs": {
+      "readme": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/README.md",
+      "theoremIndex": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/docs/theorem-index.md",
+      "model": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/docs/model.md",
+      "proofRoute": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/docs/proof-route.md",
+      "verification": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/docs/verification.md",
+      "audit": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/checks/CubicHardness.lean"
+    }
+  },
+  "download": {
+    "path": "lean/lean-cubic.zip",
+    "bytes": 608096,
+    "sha256": "40206fe78bd36992752b58ec78dae68e69e1a5c93df87c412be3a70781f1226e"
+  },
+  "index": [
+    {
+      "concept": "Section 2: HP words, folds and bonds",
+      "names": [
+        "Residue",
+        "Sequence",
+        "Fold",
+        "hhBonds",
+        "bondCount",
+        "energy"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "Common/Statement",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Statement.lean"
+        }
+      ],
+      "note": "definitions"
+    },
+    {
+      "concept": "Section 2: fixed cubic graph and HP decision problem",
+      "names": [
+        "cubicLattice",
+        "HPInstance.Accepts"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "Cubic/Statement",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean"
+        }
+      ],
+      "note": "definitions"
+    },
+    {
+      "concept": "Section 2: perfect folding",
+      "names": [
+        "PacksCube",
+        "PerfectHPStringFold"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "Cubic/Statement",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean"
+        }
+      ],
+      "note": "definitions"
+    },
+    {
+      "concept": "Encoding and meaning of NP-completeness",
+      "names": [
+        "hpEncoding",
+        "perfectEncoding",
+        "InNP",
+        "NPHard",
+        "NPComplete"
+      ],
+      "status": "definition",
+      "sources": [
+        {
+          "label": "Encodings",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Encodings.lean"
+        },
+        {
+          "label": "Complexity",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Complexity.lean"
+        }
+      ],
+      "note": ""
+    },
+    {
+      "concept": "Theorem 3.2: perfect packing iff maximum bond threshold",
+      "names": [
+        "perfectIffThreshold_holds"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "Proofs/Main",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/Main.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Footnote 1: membership in NP",
+      "names": [
+        "hpStringFold_inNP",
+        "perfectHPStringFold_inNP"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "NPMembership",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/NPMembership.lean"
+        }
+      ],
+      "note": "unconditional proofs"
+    },
+    {
+      "concept": "Strong numerical hardness used for packing",
+      "names": [
+        "SATPacking.modifiedBinPackingUnary_NPHard"
+      ],
+      "status": "conditional",
+      "sources": [
+        {
+          "label": "SATPackingComputable",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/SATPackingComputable.lean"
+        }
+      ],
+      "note": "assumes Cook–Levin"
+    },
+    {
+      "concept": "Section 3.2: both directions of the packing-to-folding reduction, by an alternative frame",
+      "names": [
+        "CubicPacking.packingToPerfect_correct"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "PackingReductionCorrect",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/PackingReductionCorrect.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Polynomial-time reduction to perfect folding",
+      "names": [
+        "CubicPacking.packingToPerfect_karp"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "PackingReductionCorrect",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/PackingReductionCorrect.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Perfect folding to HP threshold folding",
+      "names": [
+        "perfect_karpReduces_hp"
+      ],
+      "status": "proved",
+      "sources": [
+        {
+          "label": "PerfectToHPComputable",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean"
+        }
+      ],
+      "note": "unconditional proof"
+    },
+    {
+      "concept": "Main step: PERFECT HP STRING-FOLD NP-hard",
+      "names": [
+        "PerfectHPStringFoldNPHard",
+        "perfectHPStringFold_NPHard"
+      ],
+      "status": "conditional",
+      "sources": [
+        {
+          "label": "Statement",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/MainTheorem.lean"
+        },
+        {
+          "label": "proof",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/Main.lean"
+        }
+      ],
+      "note": "with Cook–Levin"
+    },
+    {
+      "concept": "PERFECT HP STRING-FOLD NP-complete",
+      "names": [
+        "PerfectHPStringFoldNPComplete",
+        "perfectHPStringFold_NPComplete"
+      ],
+      "status": "conditional",
+      "sources": [],
+      "note": "Same files; proof with Cook–Levin"
+    },
+    {
+      "concept": "Main theorem: cubic HP STRING-FOLD NP-complete",
+      "names": [
+        "HPStringFoldNPComplete",
+        "hpStringFold_NPComplete"
+      ],
+      "status": "conditional",
+      "sources": [],
+      "note": "Same files; proof with Cook–Levin"
+    },
+    {
+      "concept": "Explicit remaining premise",
+      "names": [
+        "SAT.CookLevin"
+      ],
+      "status": "premise",
+      "sources": [
+        {
+          "label": "Common/CookLevin",
+          "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/CookLevin.lean"
+        }
+      ],
+      "note": "proposition only"
+    }
+  ],
+  "decls": {
+    "Residue": {
+      "full": "ProteinFolding.Residue",
+      "kw": "inductive",
+      "file": "ProteinFolding/Common/Statement.lean",
+      "line": 27,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Statement.lean#L27",
+      "code": "/-- Hydrophobic (H) and hydrophilic (P) residues. -/\ninductive Residue where\n  | H\n  | P\n  deriving DecidableEq, Repr"
+    },
+    "Sequence": {
+      "full": "ProteinFolding.Sequence",
+      "kw": "abbrev",
+      "file": "ProteinFolding/Common/Statement.lean",
+      "line": 33,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Statement.lean#L33",
+      "code": "/-- An input protein is a finite word over {H,P}; the empty word is allowed. -/\nabbrev Sequence := List Residue"
+    },
+    "Fold": {
+      "full": "ProteinFolding.Fold",
+      "kw": "structure",
+      "file": "ProteinFolding/Common/Statement.lean",
+      "line": 37,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Statement.lean#L37",
+      "code": "/-- A self-avoiding walk of length N vertices in an arbitrary simple graph.\nOnly consecutive positions must be adjacent; other positions may also touch. -/\nstructure Fold {V : Type*} (G : SimpleGraph V) (N : ℕ) where\n  pos : Fin N → V\n  injective_pos : Function.Injective pos\n  consecutive : ∀ i j : Fin N, i.val + 1 = j.val → G.Adj (pos i) (pos j)"
+    },
+    "hhBonds": {
+      "full": "ProteinFolding.hhBonds",
+      "kw": "def",
+      "file": "ProteinFolding/Common/Statement.lean",
+      "line": 54,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Statement.lean#L54",
+      "code": "/-- H-H bonds, represented by ordered indices i < j to avoid double counting.\nIn particular, we do NOT exclude pairs with j = i + 1. -/\ndef hhBonds (S : Sequence) (f : Fold G S.length) :\n    Finset (Fin S.length × Fin S.length) :=\n  (Finset.univ ×ˢ Finset.univ).filter fun ij =>\n    ij.1 < ij.2 ∧ S.get ij.1 = Residue.H ∧ S.get ij.2 = Residue.H ∧\n      G.Adj (f.pos ij.1) (f.pos ij.2)"
+    },
+    "bondCount": {
+      "full": "ProteinFolding.bondCount",
+      "kw": "def",
+      "file": "ProteinFolding/Common/Statement.lean",
+      "line": 60,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Statement.lean#L60",
+      "code": "def bondCount (S : Sequence) (f : Fold G S.length) : ℕ :=\n  (hhBonds S f).card"
+    },
+    "energy": {
+      "full": "ProteinFolding.energy",
+      "kw": "def",
+      "file": "ProteinFolding/Common/Statement.lean",
+      "line": 64,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Statement.lean#L64",
+      "code": "/-- Integer-valued energy, with the sign convention in the paper. -/\ndef energy (S : Sequence) (f : Fold G S.length) : ℤ :=\n  -(bondCount S f : ℤ)"
+    },
+    "cubicLattice": {
+      "full": "ProteinFolding.cubicLattice",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 23,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L23",
+      "code": "/-- The fixed infinite graph Z³: a step changes exactly one coordinate by ±1. -/\ndef cubicLattice : SimpleGraph Site where\n  Adj x y := latticeDistance x y = 1\n  symm := by\n    intro x y h\n    rw [latticeDistance_comm y x]\n    exact h\n  loopless := by\n    intro x\n    simp [latticeDistance]"
+    },
+    "HPInstance.Accepts": {
+      "full": "ProteinFolding.HPInstance.Accepts",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 42,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L42",
+      "code": "def HPInstance.Accepts (I : HPInstance) : Prop :=\n  HPStringFold (G := cubicLattice) I.sequence I.minBonds"
+    },
+    "PacksCube": {
+      "full": "ProteinFolding.PacksCube",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 62,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L62",
+      "code": "/-- Exact filling, not merely containment: every cube site is occupied by H,\nand every H is in the cube. Injectivity also excludes P from these sites. -/\ndef PacksCube (S : Sequence) (f : Fold cubicLattice S.length) (n : ℕ) : Prop :=\n  ∃ a : Site, hydrophobicSites S f = cube a n"
+    },
+    "PerfectHPStringFold": {
+      "full": "ProteinFolding.PerfectHPStringFold",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 78,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L78",
+      "code": "/-- A total predicate on raw inputs: an incorrect H count makes it false. -/\ndef PerfectHPStringFold (S : Sequence) (n : ℕ) : Prop :=\n  hydrophobicCount S = n ^ 3 ∧\n    ∃ f : Fold cubicLattice S.length, PacksCube S f n"
+    },
+    "hpEncoding": {
+      "full": "ProteinFolding.hpEncoding",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Encodings.lean",
+      "line": 13,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Encodings.lean#L13",
+      "code": "/-- Section 2's HP STRING-FOLD instance with the graph fixed to Z³.\nFormat: tagged residues, separator, sign bit, binary magnitude of m.\nLength = |S| + 2 + bitlength(|m|); no padding and no unary integer field. -/\ndef hpEncoding : FinEncoding HPInstance :=\n  let e := pairEncoding sequenceEncoding signedEncoding\n  { Γ := e.Γ\n    ΓFin := e.ΓFin\n    encode := fun I => e.encode (I.sequence, I.minBonds)\n    decode := fun w => (e.decode w).map (fun sm => ⟨sm.1, sm.2⟩)\n    decode_encode := by\n      intro I\n      rw [e.decode_encode]\n      cases I\n      rfl }"
+    },
+    "perfectEncoding": {
+      "full": "ProteinFolding.perfectEncoding",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Encodings.lean",
+      "line": 32,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Encodings.lean#L32",
+      "code": "/-- Section 2's perfect-fold input: tagged residues, separator, binary n.\nLength = |S| + 1 + bitlength(n). Binary is economical even for malformed inputs;\non valid inputs with n>0, the explicit sequence already has at least n³ symbols. -/\ndef perfectEncoding : FinEncoding PerfectInput :=\n  pairEncoding sequenceEncoding finEncodingNatBool"
+    },
+    "InNP": {
+      "full": "ProteinFolding.InNP",
+      "kw": "def",
+      "file": "ProteinFolding/Common/Complexity.lean",
+      "line": 39,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Complexity.lean#L39",
+      "code": "/-- The polynomially bounded verifier definition of NP.\n\nThe certificate encoder must cover all words over its alphabet. This prevents\nan arbitrary encoding image from hiding an undecidable certificate-validity\ncondition. Ordinary finite-word certificates with `wordEncoding` satisfy this\ncondition directly. The verifier runs on `pairEncoding ea ec`, whose length is\nthe input length plus certificate length plus one. Both lengths in the bound\nare actual encoding lengths; p has natural coefficients.\n\nThis is a predicate definition, not a proof of membership for any HP problem. -/\ndef InNP {A : Type} (ea : FinEncoding A) (L : A → Prop) : Prop :=\n  ∃ (C : Type) (ec : FinEncoding C),\n    Function.Surjective ec.encode ∧\n    ∃ (p : Polynomial ℕ) (R : A × C → Prop),\n      PolyTimeDecidable (pairEncoding ea ec) R ∧\n        ∀ x, L x ↔ ∃ c, (ec.encode c).length ≤ p.eval (ea.encode x).length ∧ R (x, c)"
+    },
+    "NPHard": {
+      "full": "ProteinFolding.NPHard",
+      "kw": "def",
+      "file": "ProteinFolding/Common/Complexity.lean",
+      "line": 55,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Complexity.lean#L55",
+      "code": "/-- Universal NP-hardness, not hardness relative to an assumed complete problem.\nThe source type is in universe zero, just as in mathlib's TM2 computation API. -/\ndef NPHard {A : Type} (ea : FinEncoding A) (L : A → Prop) : Prop :=\n  ∀ (B : Type) (eb : FinEncoding B) (M : B → Prop),\n    InNP eb M → KarpReduces eb ea M L"
+    },
+    "NPComplete": {
+      "full": "ProteinFolding.NPComplete",
+      "kw": "def",
+      "file": "ProteinFolding/Common/Complexity.lean",
+      "line": 60,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Complexity.lean#L60",
+      "code": "/-- Membership in NP together with universal Karp NP-hardness. -/\ndef NPComplete {A : Type} (ea : FinEncoding A) (L : A → Prop) : Prop :=\n  InNP ea L ∧ NPHard ea L"
+    },
+    "perfectIffThreshold_holds": {
+      "full": "ProteinFolding.perfectIffThreshold_holds",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/Main.lean",
+      "line": 14,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/Main.lean#L14",
+      "code": "theorem perfectIffThreshold_holds : PerfectIffThreshold"
+    },
+    "hpStringFold_inNP": {
+      "full": "ProteinFolding.hpStringFold_inNP",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/NPMembership.lean",
+      "line": 34,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/NPMembership.lean#L34",
+      "code": "/-- HP STRING-FOLD on the fixed cubic lattice belongs to NP (footnote 1).\nThe polynomial verifier is implemented and its soundness/completeness proved. -/\ntheorem hpStringFold_inNP : InNP hpEncoding (fun I : HPInstance => I.Accepts)"
+    },
+    "perfectHPStringFold_inNP": {
+      "full": "ProteinFolding.perfectHPStringFold_inNP",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/NPMembership.lean",
+      "line": 39,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/NPMembership.lean#L39",
+      "code": "/-- PERFECT HP STRING-FOLD belongs to NP (footnote 1). Raw inputs with the\nwrong H count are rejected, exactly as in the frozen problem definition. -/\ntheorem perfectHPStringFold_inNP :\n    InNP perfectEncoding (fun I : PerfectInput => PerfectHPStringFold I.1 I.2)"
+    },
+    "SATPacking.modifiedBinPackingUnary_NPHard": {
+      "full": "ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/SATPackingComputable.lean",
+      "line": 43,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/SATPackingComputable.lean#L43",
+      "code": "/-- The strong unary packing source is NP-hard assuming only Cook--Levin.\nEvery reduction and runtime witness used after that source assumption is\nproved, rather than supplied as an additional hypothesis. -/\ntheorem modifiedBinPackingUnary_NPHard (hCL : CookLevin) :\n    Packing.ModifiedBinPackingUnaryNPHard"
+    },
+    "CubicPacking.packingToPerfect_correct": {
+      "full": "ProteinFolding.CubicPacking.packingToPerfect_correct",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/PackingReductionCorrect.lean",
+      "line": 21,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/PackingReductionCorrect.lean#L21",
+      "code": "/-- The implemented total map preserves both yes- and no-instances. -/\ntheorem packingToPerfect_correct (I : Packing.Instance) :\n    Packing.ModifiedAccepts I ↔\n      PerfectHPStringFold (packingToPerfect I).1 (packingToPerfect I).2"
+    },
+    "CubicPacking.packingToPerfect_karp": {
+      "full": "ProteinFolding.CubicPacking.packingToPerfect_karp",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/PackingReductionCorrect.lean",
+      "line": 28,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/PackingReductionCorrect.lean#L28",
+      "code": "/-- The actual polynomial-time many-one reduction, with both semantic\ndirections proved on all raw inputs and no additional assumptions. -/\ntheorem packingToPerfect_karp :\n    KarpReduces Packing.instanceEncoding perfectEncoding Packing.ModifiedAccepts\n      (fun I : PerfectInput => PerfectHPStringFold I.1 I.2)"
+    },
+    "perfect_karpReduces_hp": {
+      "full": "ProteinFolding.perfect_karpReduces_hp",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean",
+      "line": 114,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/PerfectToHPComputable.lean#L114",
+      "code": "/-- Theorem 3.2 yields an actual Karp reduction on all raw perfect inputs.\nThe wrong-H-count cases map to a fixed HP no-instance. -/\ntheorem perfect_karpReduces_hp :\n    KarpReduces perfectEncoding hpEncoding\n      (fun I : PerfectInput => PerfectHPStringFold I.1 I.2) (fun I : HPInstance => I.Accepts)"
+    },
+    "PerfectHPStringFoldNPHard": {
+      "full": "ProteinFolding.PerfectHPStringFoldNPHard",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/MainTheorem.lean",
+      "line": 21,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/MainTheorem.lean#L21",
+      "code": "/-- The main hardness step, Section 2 and Section 3.2 (pp. 31-32):\nPERFECT HP STRING-FOLD is NP-hard. Raw inputs with the wrong H count are rejected. -/\ndef PerfectHPStringFoldNPHard : Prop :=\n  NPHard perfectEncoding (fun I : PerfectInput => PerfectHPStringFold I.1 I.2)"
+    },
+    "perfectHPStringFold_NPHard": {
+      "full": "ProteinFolding.perfectHPStringFold_NPHard",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/Main.lean",
+      "line": 24,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/Main.lean#L24",
+      "code": "/-- PERFECT HP STRING-FOLD is NP-hard, assuming only the explicit Cook--Levin\nstatement. Every subsequent reduction and its runtime are kernel checked. -/\ntheorem perfectHPStringFold_NPHard (hCL : SAT.CookLevin) :\n    PerfectHPStringFoldNPHard"
+    },
+    "PerfectHPStringFoldNPComplete": {
+      "full": "ProteinFolding.PerfectHPStringFoldNPComplete",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/MainTheorem.lean",
+      "line": 27,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/MainTheorem.lean#L27",
+      "code": "/-- Section 3.2's NP-completeness claim for PERFECT HP STRING-FOLD.\nFootnote 1 (p. 31) distinguishes hardness from the additional NP-membership step.\nThe raw-input formulation uses the same perfect-packing predicate as Section 2. -/\ndef PerfectHPStringFoldNPComplete : Prop :=\n  NPComplete perfectEncoding (fun I : PerfectInput => PerfectHPStringFold I.1 I.2)"
+    },
+    "perfectHPStringFold_NPComplete": {
+      "full": "ProteinFolding.perfectHPStringFold_NPComplete",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/Main.lean",
+      "line": 31,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/Main.lean#L31",
+      "code": "/-- The perfect cubic problem is NP-complete: hardness from the proved\npacking reduction, membership from the proved direction-certificate verifier. -/\ntheorem perfectHPStringFold_NPComplete (hCL : SAT.CookLevin) :\n    PerfectHPStringFoldNPComplete"
+    },
+    "HPStringFoldNPComplete": {
+      "full": "ProteinFolding.HPStringFoldNPComplete",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/MainTheorem.lean",
+      "line": 16,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/MainTheorem.lean#L16",
+      "code": "/-- The paper's main result, announced in Section 2 (p. 31) and Section 3:\nHP STRING-FOLD on the fixed cubic lattice Z³ is NP-complete. -/\ndef HPStringFoldNPComplete : Prop :=\n  NPComplete hpEncoding (fun I : HPInstance => I.Accepts)"
+    },
+    "hpStringFold_NPComplete": {
+      "full": "ProteinFolding.hpStringFold_NPComplete",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/Main.lean",
+      "line": 37,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/Main.lean#L37",
+      "code": "/-- The paper's main theorem: HP STRING-FOLD on the unchanged cubic lattice\nis NP-complete, using the actual perfect-to-threshold Karp reduction. -/\ntheorem hpStringFold_NPComplete (hCL : SAT.CookLevin) :\n    HPStringFoldNPComplete"
+    },
+    "SAT.CookLevin": {
+      "full": "ProteinFolding.SAT.CookLevin",
+      "kw": "def",
+      "file": "ProteinFolding/Common/CookLevin.lean",
+      "line": 192,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/CookLevin.lean#L192",
+      "code": "/-- **The Cook–Levin hypothesis**: CNF-SAT (binary indices) is NP-hard in the\nproject's sense. Use only as an explicit hypothesis. -/\ndef CookLevin : Prop := NPHard cnfEncoding Satisfiable"
+    },
+    "HPStringFold": {
+      "full": "ProteinFolding.HPStringFold",
+      "kw": "def",
+      "file": "ProteinFolding/Common/Statement.lean",
+      "line": 72,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Statement.lean#L72",
+      "code": "/-- HP STRING-FOLD on a specified graph, with the paper's integer threshold. -/\ndef HPStringFold (S : Sequence) (m : ℤ) : Prop :=\n  ∃ f : Fold G S.length, m ≤ (bondCount S f : ℤ)"
+    },
+    "latticeDistance": {
+      "full": "ProteinFolding.latticeDistance",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 14,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L14",
+      "code": "/-- Manhattan distance on the cubic lattice. -/\ndef latticeDistance (x y : Site) : ℕ :=\n  ∑ k : Fin 3, (x k - y k).natAbs"
+    },
+    "cube": {
+      "full": "ProteinFolding.cube",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 49,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L49",
+      "code": "/-- The n × n × n lattice cube with lower corner a. For n = 0 it is empty. -/\ndef cube (a : Site) (n : ℕ) : Set Site :=\n  {p | ∀ k : Fin 3, a k ≤ p k ∧ p k < a k + (n : ℤ)}"
+    },
+    "hydrophobicSites": {
+      "full": "ProteinFolding.hydrophobicSites",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 57,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L57",
+      "code": "/-- The sites occupied by H residues in a fold. -/\ndef hydrophobicSites (S : Sequence) (f : Fold cubicLattice S.length) : Set Site :=\n  {p | ∃ i : Fin S.length, S.get i = Residue.H ∧ f.pos i = p}"
+    },
+    "HPInstance": {
+      "full": "ProteinFolding.HPInstance",
+      "kw": "structure",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 37,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L37",
+      "code": "/-- The finite input to HP STRING-FOLD when the graph is fixed to Z³. -/\nstructure HPInstance where\n  sequence : Sequence\n  minBonds : ℤ\n  deriving Repr"
+    },
+    "PerfectInstance": {
+      "full": "ProteinFolding.PerfectInstance",
+      "kw": "structure",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 67,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L67",
+      "code": "/-- The well-formed inputs to PERFECT HP STRING-FOLD. A natural side length\nimplements the meaningful nonnegative integer sizes; zero is permitted. -/\nstructure PerfectInstance where\n  side : ℕ\n  sequence : Sequence\n  count_eq : hydrophobicCount sequence = side ^ 3"
+    },
+    "cubeBondThreshold": {
+      "full": "ProteinFolding.cubeBondThreshold",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 84,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L84",
+      "code": "/-- The number of internal lattice edges in an n × n × n cube.\nNatural subtraction also gives zero for the empty cube. -/\ndef cubeBondThreshold (n : ℕ) : ℤ := (3 * n ^ 2 * (n - 1) : ℕ)"
+    },
+    "PerfectIffThreshold": {
+      "full": "ProteinFolding.PerfectIffThreshold",
+      "kw": "def",
+      "file": "ProteinFolding/Cubic/Statement.lean",
+      "line": 88,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Statement.lean#L88",
+      "code": "/-- Theorem 3.2 of the paper, recorded as a proposition for future proof.\nThis is a definition of a target, NOT a proof or an axiom. -/\ndef PerfectIffThreshold : Prop :=\n  ∀ I : PerfectInstance,\n    I.Accepts ↔ HPStringFold (G := cubicLattice) I.sequence (cubeBondThreshold I.side)"
+    },
+    "PolyTimeDecidable": {
+      "full": "ProteinFolding.PolyTimeDecidable",
+      "kw": "def",
+      "file": "ProteinFolding/Common/Complexity.lean",
+      "line": 24,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Complexity.lean#L24",
+      "code": "/-- A total Boolean decider on encoded inputs, with a polynomial TM2 time bound.\nThe machine structure is data, so `Nonempty` turns its existence into a Prop.\nAs in mathlib, behavior outside the image of the input encoding is unspecified. -/\ndef PolyTimeDecidable {A : Type} (ea : FinEncoding A) (L : A → Prop) : Prop :=\n  ∃ f : A → Bool,\n    Nonempty (TM2ComputableInPolyTime ea finEncodingBoolBool f) ∧\n      ∀ x, f x = true ↔ L x"
+    },
+    "KarpReduces": {
+      "full": "ProteinFolding.KarpReduces",
+      "kw": "def",
+      "file": "ProteinFolding/Common/Complexity.lean",
+      "line": 48,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/Complexity.lean#L48",
+      "code": "/-- Karp (polynomial-time many-one) reducibility, for independently encoded types.\nThe reducing function is total and preserves both yes- and no-instances. -/\ndef KarpReduces {A B : Type} (ea : FinEncoding A) (eb : FinEncoding B)\n    (L : A → Prop) (M : B → Prop) : Prop :=\n  ∃ f : A → B,\n    Nonempty (TM2ComputableInPolyTime ea eb f) ∧ ∀ x, L x ↔ M (f x)"
+    },
+    "ThreeDimensionalMatching.cnfToBlockMatching_karp": {
+      "full": "ProteinFolding.ThreeDimensionalMatching.cnfToBlockMatching_karp",
+      "kw": "theorem",
+      "file": "ProteinFolding/Common/SAT/CNFMatchingReduction.lean",
+      "line": 32,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Common/SAT/CNFMatchingReduction.lean#L32",
+      "code": "/-- The source reduction uses the frozen binary CNF encoding and the explicit\nunary-universe 3DM encoding, with a proved actual polynomial-time machine. -/\ntheorem cnfToBlockMatching_karp :\n    KarpReduces cnfEncoding instanceEncoding Satisfiable Accepts"
+    },
+    "MatchingPacking.matching_karpReduces_modified": {
+      "full": "ProteinFolding.MatchingPacking.matching_karpReduces_modified",
+      "kw": "theorem",
+      "file": "ProteinFolding/Cubic/Proofs/MatchingPackingComputable.lean",
+      "line": 111,
+      "href": "https://github.com/caltech-mathathon-hp/caltech-mathathon-hp.github.io/blob/2254adcb56a81c0048092c263090046b210a41f6/lean/cubic/ProteinFolding/Cubic/Proofs/MatchingPackingComputable.lean#L111",
+      "code": "/-- Correctness and a fully constructed finite-machine polynomial-time witness\nfor strong unary modified packing, with no source-hardness assumption. -/\ntheorem matching_karpReduces_modified :\n    KarpReduces ThreeDimensionalMatching.instanceEncoding Packing.instanceEncoding\n      ThreeDimensionalMatching.Accepts Packing.ModifiedAccepts"
+    }
+  },
+  "axiomReport": [
+    {
+      "name": "ProteinFolding.HPStringFoldNPComplete",
+      "type": ": Prop",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.PerfectHPStringFoldNPHard",
+      "type": ": Prop",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.PerfectHPStringFoldNPComplete",
+      "type": ": Prop",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.perfectIffThreshold_holds",
+      "type": ": ProteinFolding.PerfectIffThreshold",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.hpStringFold_inNP",
+      "type": ": ProteinFolding.InNP ProteinFolding.hpEncoding fun I => I.Accepts",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.perfectHPStringFold_inNP",
+      "type": ": ProteinFolding.InNP ProteinFolding.perfectEncoding fun I => ProteinFolding.PerfectHPStringFold I.1 I.2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.ThreeDimensionalMatching.cnfToBlockMatching_karp",
+      "type": ": ProteinFolding.KarpReduces ProteinFolding.SAT.cnfEncoding ProteinFolding.ThreeDimensionalMatching.instanceEncoding ProteinFolding.SAT.Satisfiable ProteinFolding.ThreeDimensionalMatching.Accepts",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.MatchingPacking.matching_karpReduces_modified",
+      "type": ": ProteinFolding.KarpReduces ProteinFolding.ThreeDimensionalMatching.instanceEncoding ProteinFolding.Packing.instanceEncoding ProteinFolding.ThreeDimensionalMatching.Accepts ProteinFolding.Packing.ModifiedAccepts",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.CubicPacking.packingToPerfectComputable",
+      "type": ": Turing.TM2ComputableInPolyTime ProteinFolding.Packing.instanceEncoding ProteinFolding.perfectEncoding ProteinFolding.CubicPacking.packingToPerfect",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.CubicPacking.frameWord_complete",
+      "type": "(q Q : ℕ) (items : List ℕ) (hq : 2 ≤ q) (hQ : q < Q) (hpositive : ∀ a ∈ items, 0 < a) (heven : ∀ a ∈ items, Even a) (parts : List (List ℕ)) (hexact : ProteinFolding.Packing.Exact { sizes := items, capacity := 4 * Q, bins := q } parts) : ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.frameWord q Q items) (ProteinFolding.CubicPacking.side q Q)",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.CubicPackingGeometry.frameWord_sound",
+      "type": "(q Q : ℕ) (items : List ℕ) (hq : 2 ≤ q) (hQ : q < Q) (hpos : ∀ s ∈ items, 0 < s) (hsum : items.sum = q * (4 * Q)) : ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.frameWord q Q items) (ProteinFolding.CubicPacking.side q Q) → ∃ parts, ProteinFolding.Packing.Exact { sizes := items, capacity := 4 * Q, bins := q } parts",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.CubicPacking.packingToPerfect_complete",
+      "type": "(I : ProteinFolding.Packing.Instance) (hI : ProteinFolding.Packing.ModifiedAccepts I) : ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.packingToPerfect I).1 (ProteinFolding.CubicPacking.packingToPerfect I).2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.CubicPacking.packingToPerfect_sound",
+      "type": "(I : ProteinFolding.Packing.Instance) : ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.packingToPerfect I).1 (ProteinFolding.CubicPacking.packingToPerfect I).2 → ProteinFolding.Packing.ModifiedAccepts I",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.CubicPacking.packingToPerfect_correct",
+      "type": "(I : ProteinFolding.Packing.Instance) : ProteinFolding.Packing.ModifiedAccepts I ↔ ProteinFolding.PerfectHPStringFold (ProteinFolding.CubicPacking.packingToPerfect I).1 (ProteinFolding.CubicPacking.packingToPerfect I).2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.CubicPacking.packingToPerfect_karp",
+      "type": ": ProteinFolding.KarpReduces ProteinFolding.Packing.instanceEncoding ProteinFolding.perfectEncoding ProteinFolding.Packing.ModifiedAccepts fun I => ProteinFolding.PerfectHPStringFold I.1 I.2",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.perfect_karpReduces_hp",
+      "type": ": ProteinFolding.KarpReduces ProteinFolding.perfectEncoding ProteinFolding.hpEncoding (fun I => ProteinFolding.PerfectHPStringFold I.1 I.2) fun I => I.Accepts",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.SATPacking.modifiedBinPackingUnary_NPHard",
+      "type": "(hCL : ProteinFolding.SAT.CookLevin) : ProteinFolding.Packing.ModifiedBinPackingUnaryNPHard",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.perfectHPStringFold_NPHard",
+      "type": "(hCL : ProteinFolding.SAT.CookLevin) : ProteinFolding.PerfectHPStringFoldNPHard",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.perfectHPStringFold_NPComplete",
+      "type": "(hCL : ProteinFolding.SAT.CookLevin) : ProteinFolding.PerfectHPStringFoldNPComplete",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "name": "ProteinFolding.hpStringFold_NPComplete",
+      "type": "(hCL : ProteinFolding.SAT.CookLevin) : ProteinFolding.HPStringFoldNPComplete",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  ]
+}

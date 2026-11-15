@@ -1,0 +1,36 @@
+---
+/**
+ * Lean declarations from the certificate, in one block: definitions with their bodies, theorems
+ * with their statements only. Highlighted at build time by Shiki; the colours come from
+ * tokens.css through the --astro-code-* variables in lean.css. Below the code, a link to each
+ * declaration's line on GitHub.
+ *
+ *   <LeanCode names="Residue Sequence Fold" caption="HP strings and folds" />
+ */
+import { Code } from 'astro:components';
+import './lean.css';
+import { decl, names as split, short } from './lean';
+
+interface Props {
+  names: string;
+  caption?: string;
+}
+const { names, caption } = Astro.props;
+const ds = split(names).map((n) => ({ name: n, ...decl(n) }));
+const code = ds.map((d) => d.code.trimEnd()).join('\n\n');
+---
+
+<figure class="ln ln-decl wide">
+  {caption && <figcaption class="ln-decl-head">{caption}</figcaption>}
+  <Code code={code} lang="lean4" theme="css-variables" class="ln-codeblock" />
+  <p class="ln-decl-where">
+    <span class="ln-decl-in">Source:</span>
+    {
+      ds.map((d) => (
+        <a href={d.href} title={`${d.file}, line ${d.line}`}>
+          <code>{short(d.name)}</code>
+        </a>
+      ))
+    }
+  </p>
+</figure>
