@@ -1,0 +1,119 @@
+---
+/**
+ * Reduction3D: Berger and Leighton's reduction executed in 3D. Pick a bin packing instance, pack it
+ * (drag and drop, or let the solver do it), and S_B folds into a perfect cube step by step as in
+ * §3.2.3, with the packing on its front face.
+ *
+ *   <div class="full"><Reduction3D /></div>
+ *
+ * Left: instance, packing board, parameters, the formula of S_B, the front face, the checks.
+ * Right: the three.js stage (dark in both themes) with the step timeline in a dock.
+ * Logic: reduction.client.js (UI, rendering) and construction.js (S_B and the fold, also runs in Node).
+ * Styles: styles.css (ids and classes prefixed rd-). One widget per page (the ids are fixed).
+ */
+import './styles.css';
+import { withBase } from '../../lib/url';
+
+const cards = withBase('/original-proof/');
+---
+
+<div class="rd-root ui" data-cards={cards}>
+  <aside class="rd-left" aria-label="Instance, packing and construction">
+    <section class="rd-card">
+      <h3>Bin packing instance</h3>
+      <label class="rd-fld"><span>Preset</span><select id="rd-preset"></select></label>
+      <div class="rd-row2">
+        <label class="rd-fld"><span>K (bins)</span><input id="rd-inK" type="number" min="1" max="3" step="1" /></label>
+        <label class="rd-fld"><span>B (bin size)</span><input id="rd-inB" type="number" min="2" step="2" /></label>
+      </div>
+      <label class="rd-fld"><span>Item sizes, even, adding up to B·K</span><input id="rd-inS" type="text" spellcheck="false" /></label>
+    </section>
+
+    <section class="rd-card">
+      <h3>Pack the bins <span id="rd-packHint"></span></h3>
+      <div id="rd-tetris">
+        <div id="rd-tPool"></div>
+        <div id="rd-tBins"></div>
+      </div>
+      <div class="rd-btnrow">
+        <button class="rd-btn2" id="rd-tReset" type="button">Empty the bins</button>
+        <button class="rd-btn2" id="rd-tSolve" type="button">Solve it for me</button>
+      </div>
+      <div id="rd-solveinfo" class="rd-solveinfo"></div>
+      <button id="rd-find" class="rd-primary" type="button">Fold the string</button>
+      <div id="rd-status" class="rd-status" role="status"></div>
+    </section>
+
+    <section class="rd-card">
+      <h3>Parameters (§3.2.2)</h3>
+      <table class="rd-params" id="rd-params"></table>
+    </section>
+
+    <section class="rd-card">
+      <h3><span>The string S<sub>B</sub> (Fig. 3)</span> <button class="rd-tog" id="rd-fmtTog" type="button">show numbers</button></h3>
+      <div id="rd-formula"></div>
+    </section>
+
+    <section class="rd-card">
+      <h3>The front face, k = 0</h3>
+      <div class="rd-faceWrap">
+        <canvas id="rd-face" width="228" height="228" aria-label="Map of the front face as it fills"></canvas>
+        <div id="rd-faceLegend"></div>
+      </div>
+    </section>
+
+    <section class="rd-card">
+      <h3>Checks of the fold</h3>
+      <div id="rd-checks"><div class="check"><small>Fold the string to build and check the fold.</small></div></div>
+    </section>
+  </aside>
+
+  <div class="rd-stage" role="group" aria-label="3D view of the fold">
+    <div id="rd-gl"></div>
+    <div id="rd-placeholder" class="rd-placeholder">
+      <div>Pack the bins on the left, or let the solver do it, and press <b>Fold the string</b>.<br />S<sub>B</sub> appears as a straight chain; <b>→</b> then folds it one step at a time.</div>
+    </div>
+    <div id="rd-hud" hidden>
+      <div class="box" id="rd-stats"></div>
+      <div class="rd-viewmenu">
+        <button class="box" id="rd-viewBtn" type="button" aria-controls="rd-toggles">View ▾</button>
+        <div class="box" id="rd-toggles" hidden>
+          <label><input type="checkbox" id="rd-tgP" checked /> P's</label>
+          <label><input type="checkbox" id="rd-tgBond" checked /> chain</label>
+          <label><input type="checkbox" id="rd-tgHP" checked /> H/P colours (H red, P faint)</label>
+          <label><input type="checkbox" id="rd-tgCut" /> cut a corner away</label>
+          <label><input type="checkbox" id="rd-tgLab" checked /> strip labels</label>
+          <label><input type="checkbox" id="rd-tgCam" /> move the camera with each step</label>
+        </div>
+      </div>
+    </div>
+    <div id="rd-dock" hidden>
+      <div id="rd-timeline" aria-label="Steps"></div>
+      <div id="rd-stepinfo">
+        <div id="rd-stepTag"></div>
+        <div id="rd-stepTitle"></div>
+        <div id="rd-stepRes"></div>
+        <div id="rd-stepBody"></div>
+      </div>
+      <div id="rd-controls">
+        <button id="rd-bFirst" type="button" title="First step" aria-label="First step">⏮</button>
+        <button id="rd-bPrev" type="button" title="Back one step (←)" aria-label="Back one step">◀</button>
+        <button id="rd-bPlay" class="play" type="button" title="Play all steps (Space)">▶ Play</button>
+        <button id="rd-bNext" type="button" title="Finish this step, or fold the next one (→)" aria-label="Next step">▶</button>
+        <button id="rd-bSkip" type="button" title="Finish this step now" aria-label="Finish this step">⏩</button>
+        <button id="rd-bReplay" type="button" title="Replay this step" aria-label="Replay this step">⟲</button>
+        <span class="kbd">→ next step · ← back · Space plays all · drag to turn</span>
+        <div class="sp">speed <input id="rd-speed" type="range" min="0" max="100" value="50" aria-label="Speed" /> <span id="rd-speedLbl">1.0×</span></div>
+      </div>
+      <div id="rd-progress"><div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // three.js and the construction come in their own chunk, loaded once the page is up
+  const roots = document.querySelectorAll<HTMLElement>('.rd-root');
+  if (roots.length) {
+    import('./reduction.client.js').then(({ mount }) => roots.forEach((el) => mount(el)));
+  }
+</script>

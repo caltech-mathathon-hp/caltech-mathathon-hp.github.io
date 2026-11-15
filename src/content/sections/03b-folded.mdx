@@ -1,0 +1,34 @@
+---
+title: The reduction, folded
+slug: folded
+navTitle: Folded in 3D
+kicker: Part I, in 3D
+lede: Berger and Leighton's construction, carried out. Pack a small bin packing instance and watch its string fold, step by step, into a perfect cube whose front face shows your packing.
+summary: The whole reduction in 3D. A bin packing instance becomes the string of the proof, which folds step by step into a perfect cube with the packing on its front face.
+order: 3.5
+---
+
+import Reduction3D from '../../widgets/reduction-3d/Reduction3D.astro';
+
+The [original proof](../original-proof/) turns every bin packing instance into an HP string $S_B$, and shows that $S_B$ has a perfect fold exactly when the items can be packed. Here the construction runs on a computer. Choose an instance and drag its items into the bins, or leave them and let the solver pack them. Then press **Fold the string**: $S_B$ appears as a straight chain, and every press of <kbd>→</kbd> folds its next piece as in §3.2.3 of the paper, until the H's fill an $n\times n\times n$ cube and the strips of its front face show the packing.
+
+<div class="full"><Reduction3D /></div>
+
+## Reading the picture
+
+The H's are red: a light red on the edges, paler in the faces, the core and the paddings, and dark in the walls. The P's are faint grey, and every item ribbon has its own bright colour, the same as on the packing board. *View* switches to one colour per step of the construction, hides the P's, or cuts a corner off the cube.
+
+The dock under the cube lists the steps in the order of the string. Each step names the piece of $S_B$ it folds, marks that piece in the formula on the left, and links to its card on the [proof board](../original-proof/). <kbd>←</kbd> goes back one step and <kbd>Space</kbd> plays all of them. The counter counts H–H pairs the way the paper does, consecutive H's included, so a perfect fold reaches $3n^2(n-1)$ (see [Pairs and contacts](../original-proof/#pairs-and-contacts)).
+
+## Why the cube is so big
+
+Even small instances give a large cube. With two bins of size at most 8, $q = 2\max(K, \lceil B^{1/3}\rceil) = 4$, so $n = q(2q+1)+2 = 38$: 54,872 H's and about 85,000 letters. The running example of the proof cards has bins of size 10, which already needs $q = 6$ and $n = 80$, that is 512,000 H's. It is among the presets, but slow on older computers. The longest pieces are the linkers: each has $52n+2$ P's, which is why their loops hang far below the cube.
+
+## How close this is to the paper
+
+The string is exactly that of Fig. 3, checked letter by letter, and the frame, the periods and the spaced rod sit at the coordinates of §3.2.3 (Figs. 4–8). Two kinds of route are only asserted in the paper, so we had to choose them:
+
+- The short hops of four or seven P's between faces are found by a small search that keeps them at distance at least 2 from the cube.
+- The linkers do not use the switchboard of [13 Untangling the linkers](../original-proof/#step-bl-crossbar). With a dozen of them it is enough to give each linker its own plane in front of the cube and to put its slack into one loop.
+
+Every fold is checked as it is built: its letters are those of $S_B$, no site is used twice, the H's fill the cube, and the H–H pairs reach $3n^2(n-1)$. The panel on the left lists these checks.

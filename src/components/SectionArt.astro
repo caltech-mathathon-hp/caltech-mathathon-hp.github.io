@@ -88,6 +88,25 @@ const cubeBeads: Bead[] = chain3
     return { x, y, kind: n === 0 || n === 9 ? 'P' : 'H', r: 9 };
   });
 
+// ---------- folded: the string, straight, and the cube it folds into, a packing on its front ----------
+// a 3×3×3 cube in a flatter oblique view than the one above; the front face (z = 1) shows two
+// strips of items (the proof figures' item colours) with a row of wall H's between them.
+const fdSeq = 'PHPPHHPPHP';
+const fdChain: Bead[] = fdSeq.split('').map((ch, k) => ({ x: 16 + k * 13, y: 66, kind: ch === 'H' ? 'H' : 'P' }));
+const fdIso = (x: number, y: number, z: number): Pt => [254 + x * 31 - z * 15, 66 + x * 7 + z * 12 - y * 31];
+const fdFront: Record<string, string> = {
+  '-1,1': 'var(--item-1)', '0,1': 'var(--item-1)', '1,1': 'var(--item-2)',
+  '-1,-1': 'var(--item-3)', '0,-1': 'var(--item-4)', '1,-1': 'var(--item-4)',
+};
+const fdBeads: { x: number; y: number; fill: string | null; d: number }[] = [];
+for (const x of [-1, 0, 1])
+  for (const y of [-1, 0, 1])
+    for (const z of [-1, 0, 1]) {
+      const [px, py] = fdIso(x, y, z);
+      fdBeads.push({ x: px, y: py, fill: z === 1 ? (fdFront[`${x},${y}`] ?? null) : null, d: z + 0.5 * y + 0.3 * x });
+    }
+fdBeads.sort((a, b) => a.d - b.d);
+
 // ---------- context: the cited works by year, the two 1998 proofs in H colour ----------
 const works = [
   'abel2013', 'aichholzer2003', 'atkins1999', 'bahi2013', 'balbach2023', 'berger1998', 'berman2004',
@@ -145,7 +164,7 @@ const leanEdges = [
 ---
 
 {
-  ['playground', 'original-proof', 'context', 'lean'].includes(slug) && (
+  ['playground', 'original-proof', 'folded', 'context', 'lean'].includes(slug) && (
     <svg class="section-art" viewBox="0 0 320 130" aria-hidden="true" focusable="false">
       <defs>
         <radialGradient id={id('h')} cx="0.36" cy="0.32" r="0.75">
@@ -195,6 +214,19 @@ const leanEdges = [
           {cubeContacts.map(([a, b]) => <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} class="sa-contact" />)}
           {cubeBeads.map((b) =>
             b.kind === 'H' ? <circle cx={b.x} cy={b.y} r="9" fill={`url(#${id('h')})`} /> : <circle cx={b.x} cy={b.y} r="7" class="sa-p" />,
+          )}
+        </g>
+      )}
+
+      {slug === 'folded' && (
+        <g>
+          <polyline points={fdChain.map((b) => `${b.x},${b.y}`).join(' ')} class="sa-chain" />
+          {fdChain.map((b) =>
+            b.kind === 'H' ? <circle cx={b.x} cy={b.y} r="6.5" fill={`url(#${id('h')})`} /> : <circle cx={b.x} cy={b.y} r="5" class="sa-p" />,
+          )}
+          <line x1="150" y1="66" x2="188" y2="66" class="sa-arrow" marker-end={`url(#${id('arrow')})`} />
+          {fdBeads.map((b) =>
+            b.fill ? <circle cx={b.x} cy={b.y} r="7" class="sa-item" style={`fill:${b.fill}`} /> : <circle cx={b.x} cy={b.y} r="7" fill={`url(#${id('h')})`} />,
           )}
         </g>
       )}
@@ -302,6 +334,10 @@ const leanEdges = [
     stroke-width: 1.4;
     stroke-linecap: round;
     stroke-linejoin: round;
+  }
+  .sa-item {
+    stroke: color-mix(in srgb, var(--fg) 25%, transparent);
+    stroke-width: 1;
   }
   .sa-axis {
     stroke: var(--rule-strong);
