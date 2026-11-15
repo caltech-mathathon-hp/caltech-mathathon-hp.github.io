@@ -1,0 +1,478 @@
+/* the page around the player, in the site's tokens (src/theme/tokens.css is loaded by the video) */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+/*
+ * Wide windows: the picture on the left, the list of steps on the right, all in one screen.
+ * --pw is the picture's width: as wide as the window allows, and short enough that the header,
+ * the picture, its step bar and the buttons fit the window's height without scrolling.
+ */
+.page {
+  --toc: 320px;
+  --gap: 28px;
+  --pw: min(calc(100vw - 48px - var(--toc) - var(--gap)), max(560px, calc((100dvh - 212px) * 16 / 9)));
+  padding: 18px 24px 28px;
+}
+.head,
+.main {
+  width: calc(var(--pw) + var(--gap) + var(--toc));
+  margin: 0 auto;
+}
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.main {
+  display: grid;
+  grid-template-columns: var(--pw) var(--toc);
+  gap: var(--gap);
+}
+.watch {
+  min-width: 0;
+}
+.kicker {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1 {
+  margin: 4px 0 0;
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 600;
+}
+.keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 13px;
+  color: var(--fg-subtle);
+}
+.keys span {
+  white-space: nowrap;
+}
+kbd {
+  display: inline-block;
+  min-width: 22px;
+  padding: 1px 6px;
+  margin: 0 3px 0 0;
+  border: 1px solid var(--rule-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--bg-elev);
+  color: var(--fg-muted);
+  font: 600 12px/1.5 var(--font-sans);
+  text-align: center;
+}
+/* the picture and its step bar */
+.stage {
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 6px 24px rgb(0 0 0 / 0.05);
+}
+.screen {
+  position: relative;
+  cursor: pointer;
+}
+.stage:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  border: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.stage:fullscreen .screen,
+.stage:fullscreen .stepbar {
+  width: min(100vw, calc((100vh - 40px) * 16 / 9));
+}
+
+/* the bar inside a step: play / pause, where you are, how long the step is */
+.stepbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 14px 0 8px;
+  border-top: 1px solid var(--rule);
+  background: var(--bg);
+  user-select: none;
+}
+.stepbar.is-off {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.stepbar button.icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--fg-muted);
+}
+.stepbar button.icon:hover:not(:disabled) {
+  background: var(--bg-elev);
+  color: var(--accent);
+}
+.track {
+  position: relative;
+  flex: 1;
+  height: 24px;
+  cursor: pointer;
+  touch-action: none;
+}
+.rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 3px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+  background: var(--rule);
+  overflow: hidden;
+  transition: height 0.12s;
+}
+.fill {
+  height: 100%;
+  background: var(--accent);
+}
+.thumb {
+  position: absolute;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  margin-left: -5.5px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translateY(-50%) scale(0.75);
+  transition: transform 0.12s;
+}
+.track:hover .rail {
+  height: 5px;
+}
+.track:hover .thumb,
+.track:active .thumb {
+  transform: translateY(-50%) scale(1.15);
+}
+.time {
+  min-width: 78px;
+  text-align: right;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-subtle);
+}
+/* under the picture: step buttons, where you are, speed and play-through */
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.nav {
+  display: flex;
+  gap: 8px;
+}
+button {
+  white-space: nowrap;
+  font: 500 15px/1 var(--font-sans);
+  padding: 9px 14px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  background: var(--bg-elev);
+  color: var(--fg);
+  cursor: pointer;
+}
+button:hover:not(:disabled) {
+  border-color: var(--fg-subtle);
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+button:focus-visible,
+.switch input:focus-visible + .knob {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  min-width: 150px;
+}
+button.primary:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+.where {
+  font-size: 15px;
+  color: var(--fg-subtle);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.where b {
+  color: var(--fg);
+  font-weight: 600;
+}
+.opts {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+/* speed: a small menu that looks like the buttons */
+.speed {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.speed select {
+  appearance: none;
+  font: 500 14px/1 var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  padding: 7px 28px 7px 11px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  background: var(--bg-elev)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2355555f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    no-repeat right 10px center;
+  cursor: pointer;
+}
+.speed select:hover {
+  border-color: var(--fg-subtle);
+}
+.speed select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* play through: a switch */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.knob {
+  position: relative;
+  width: 30px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--rule-strong);
+  transition: background 0.15s;
+}
+.knob::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+  transition: transform 0.15s;
+}
+.switch input:checked + .knob {
+  background: var(--accent);
+}
+.switch input:checked + .knob::after {
+  transform: translateX(12px);
+}
+
+/* the list of steps: a row per scene, its steps as numbered dots. On a wide window it is as tall
+   as the picture column and scrolls inside itself. */
+.toc {
+  position: relative;
+  min-height: 0;
+}
+.toc-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 2px 4px 4px 0;
+  scrollbar-width: thin;
+}
+.part {
+  margin: 14px 10px 5px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.toc-part:first-child .part {
+  margin-top: 4px;
+}
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 6px 3px 10px;
+  border-radius: 9px;
+}
+.row + .row {
+  margin-top: 2px;
+}
+.row:hover {
+  background: var(--bg-sunk);
+}
+.row.is-current {
+  background: var(--accent-weak);
+}
+.rtitle {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  text-align: left;
+  font: 400 14.5px/1.2 var(--font-sans);
+  color: var(--fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.row.is-done .rtitle {
+  color: var(--fg);
+}
+.row.is-current .rtitle {
+  color: var(--accent);
+  font-weight: 600;
+}
+.dots {
+  display: flex;
+  gap: 4px;
+  flex: none;
+}
+.pill {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--bg-elev);
+  font: 600 12.5px/1 var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-subtle);
+}
+.pill:hover:not(.is-current) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.pill.is-past {
+  background: var(--accent-weak);
+  border-color: var(--accent-weak);
+  color: var(--accent);
+}
+.row.is-current .pill.is-past {
+  background: var(--bg-elev);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.pill.is-current {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* short windows: tighter rows, so the list still fits beside the picture */
+@media (max-height: 840px) {
+  .row {
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+  .pill {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+  .part {
+    margin-top: 10px;
+  }
+}
+
+/* narrow windows: the picture full width, the list below it in columns */
+@media (max-width: 1000px) {
+  .page {
+    --pw: calc(100vw - 32px);
+    padding: 14px 16px 24px;
+  }
+  .head,
+  .main {
+    width: auto;
+  }
+  .main {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .toc-scroll {
+    position: static;
+    padding: 0;
+  }
+  .rows {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 2px 12px;
+  }
+  .row + .row {
+    margin-top: 0;
+  }
+  .keys {
+    display: none;
+  }
+}
+
+/* phones: the three step buttons share the first row */
+@media (max-width: 560px) {
+  .nav {
+    width: 100%;
+  }
+  .nav button {
+    flex: 1 1 auto;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  button.primary {
+    min-width: 0;
+    flex-grow: 2;
+  }
+}

@@ -1,0 +1,4 @@
+node_modules/
+# renders: regenerate with npm run render / steps / still
+out/
+.remotion/
