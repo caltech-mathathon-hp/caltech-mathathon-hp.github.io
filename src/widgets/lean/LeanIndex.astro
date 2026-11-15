@@ -6,8 +6,8 @@
  *   <LeanIndex />                 the team's certificate
  *   <LeanIndex cert="shelf" paper="Our paper" />
  *   <LeanIndex cookLevin={{ cert: 'cooklevin', name: 'SAT.CookLevinUniversal.cookLevin' }} />
- *       Cook–Levin is proved in another certificate: rows proved assuming it count as proved,
- *       and the row that assumes it links to its proof.
+ *       Cook–Levin is proved in the certificate cooklevin: rows proved assuming it count as
+ *       proved, and the row that states it links to its proof.
  */
 import './lean.css';
 import Dot from './Dot.astro';
@@ -18,7 +18,7 @@ interface Props {
   cert?: string;
   /** The first column's heading. */
   paper?: string;
-  /** Where Cook–Levin is proved, if in another certificate. */
+  /** Where Cook–Levin is proved, when the index's own project takes it as a hypothesis. */
   cookLevin?: { cert: string; name: string };
 }
 const { cert = 'cubic', paper = 'In the paper', cookLevin } = Astro.props;
@@ -28,10 +28,9 @@ const proof = cookLevin && { name: cookLevin.name, href: decl(cookLevin.name, co
 const assumesCL = (r: (typeof c.index)[number]) => r.status === 'premise' && r.names.includes('SAT.CookLevin');
 const rows = c.index.map((r) => {
   const names = r.names.map(own);
-  if (proof && assumesCL(r)) return { ...r, names: [...names, proof], status: 'proved' as const, label: 'Proved separately' };
-  if (proof && r.status === 'conditional')
-    return { ...r, names, status: 'proved' as const, label: 'Proved, with Cook–Levin proved separately' };
-  return { ...r, names, label: undefined };
+  if (proof && assumesCL(r)) return { ...r, names: [...names, proof], status: 'proved' as const };
+  if (proof && r.status === 'conditional') return { ...r, names, status: 'proved' as const };
+  return { ...r, names };
 });
 ---
 
@@ -60,7 +59,7 @@ const rows = c.index.map((r) => {
               </span>
             </td>
             <td>
-              <Dot status={r.status} label={r.label} />
+              <Dot status={r.status} />
             </td>
           </tr>
         ))

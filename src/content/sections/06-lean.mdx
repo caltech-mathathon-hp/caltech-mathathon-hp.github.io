@@ -3,7 +3,7 @@ title: Lean formalization
 slug: lean
 navTitle: Lean
 kicker: Part IV
-lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem twice, once with their reduction and once with ours. The team's proof assumes one classical theorem, Cook–Levin. Cook–Levin is now proved in Lean as well, and our project plugs it in, so HP folding on the cubic lattice is NP-complete with no hypothesis left. You can download the three projects and check them yourself.
+lede: Lean, a program that checks proofs step by step, has checked Berger and Leighton's theorem twice, once with their reduction and once with ours. The team has also proved in Lean the one classical theorem the proof uses, Cook–Levin, so HP folding on the cubic lattice is NP-complete with no hypothesis left. You can download the three projects and check them yourself.
 summary: Berger and Leighton's theorem checked in Lean twice, with their reduction and with ours, and with the Cook–Levin theorem proved in Lean too.
 order: 6
 status: ready
@@ -28,8 +28,8 @@ export const cooklevin = cert('cooklevin');
 <LeanCertificate
   label="Berger and Leighton's reduction"
   claim="Lean checks that HP folding on the cubic lattice is NP-complete."
-  how="Each problem in the chain reduces to the next in polynomial time, and both folding problems are in NP. The team's project proves all of this except the first step, which it takes as a hypothesis. A separate project proves that step, the Cook–Levin theorem, and ours, below, plugs it into this chain."
-  labels={{ SAT: 'Cook–Levin, proved in a separate project' }}
+  how="Each problem in the chain reduces to the next in polynomial time, and both folding problems are in NP. Lean proves every step. This folder takes the first one, the Cook–Levin theorem, as a hypothesis; the team proves it in the folder lean/cooklevin, and our project, below, plugs it into this chain."
+  labels={{ SAT: 'Cook–Levin, proved in Lean' }}
   provedIn={{ SAT: { cert: 'cooklevin', name: 'SAT.CookLevinUniversal.cookLevin' } }}
 />
 
@@ -80,9 +80,9 @@ checks a proposed fold in polynomial time.
 
 For hardness, Lean follows the chains at the top of this page. Each step is a reduction: a
 function that turns instances of one problem into instances of the next, preserves the answer,
-and is computed by a Turing machine whose running time Lean proves polynomial. The team's
-certificate assumes the first step, from every problem in NP to SAT; ours proves it too, as the
-next section explains. These are the main results as Lean states them; their proofs are in the
+and is computed by a Turing machine whose running time Lean proves polynomial. The first step,
+from every problem in NP to SAT, is the Cook–Levin theorem; the next section explains how its
+proof enters. These are the main results as Lean states them; their proofs are in the
 files linked below each block.
 
 <LeanCode
@@ -90,7 +90,7 @@ files linked below each block.
   caption="The main results"
 />
 
-## What Lean assumes
+## The Cook–Levin step
 
 The Cook–Levin theorem says that every problem in NP reduces to SAT in polynomial time. Cook
 proved it in 1971 and Levin, independently, in 1973. It has been checked by computer in Coq
@@ -100,8 +100,8 @@ formula, a long project of its own. A Lean 4 proof by <Cite k="rbarish2026npcomp
 exists, but it uses its own Turing machines instead of mathlib's, so connecting it to the team's
 project would take more work, and no person has reviewed it.
 
-So the team's project states Cook–Levin as a proposition, `SAT.CookLevin`, and the three hardness
-theorems take it as a hypothesis `hCL`. A hypothesis is not an axiom: Lean checks that the
+So the team's reduction, in `lean/cubic`, states Cook–Levin as a proposition, `SAT.CookLevin`, and
+its three hardness theorems take it as a hypothesis `hCL`. A hypothesis is not an axiom: Lean checks that the
 theorem follows from it, and a Lean proof of `SAT.CookLevin` turns the three theorems into
 unconditional ones.
 
@@ -114,7 +114,7 @@ in the theorem's type. This is what Lean prints for three of the main results:
 
 ### A Lean proof of Cook–Levin
 
-Such a proof now exists, in a Lean project of its own, `lean/cooklevin`. It is written for the
+The team has since proved it, in the folder `lean/cooklevin`. The proof is written for the
 team's definitions. It shares 67 files with the team's library, among them `CookLevin.lean` and
 `Complexity.lean`, which define SAT, NP and reductions, and all 67 are byte-identical to the
 team's. So its theorem has exactly the type of the hypothesis `hCL`.
@@ -187,7 +187,7 @@ folding, where each builds its own string.
 The team's certificate proves the paper's theorem about the paper's problems, but in two places
 not by the paper's argument. The paper takes the hardness of bin packing with small numbers from
 Garey and Johnson <Cite k="garey1979computers" />. The project proves it in Lean instead, from SAT
-through 3D matching, so no published result enters the proof except Cook–Levin. Our certificate
+through 3D matching, and Cook–Levin is proved in Lean too, so no published result enters the proof. Our certificate
 uses this part of the team's proof as it is.
 
 The reduction from bin packing to perfect folding builds a different string from the one in the
@@ -283,8 +283,8 @@ SHA-256 is <code class="ln-hash">{cooklevin.download.sha256}</code>.
 ## Every statement and where it is
 
 Each project has an index that matches each statement of its paper with its declarations in
-Lean. Where an index marks a statement as proved assuming Cook–Levin, the tables show it as
-proved, because the Cook–Levin project proves that assumption.
+Lean. Some declarations take Cook–Levin as a hypothesis; the tables mark them proved, because the
+team proves Cook–Levin in `lean/cooklevin`.
 
 ### Berger and Leighton's reduction
 

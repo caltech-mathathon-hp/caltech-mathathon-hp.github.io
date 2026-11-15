@@ -7,7 +7,7 @@
  *   <LeanCertificate />                                   the team's certificate
  *   <LeanCertificate cert="shelf" label="…" claim="…" how="…" labels={{ 'Perfect folding': '…' }} />
  *   <LeanCertificate provedIn={{ SAT: { cert: 'cooklevin', name: 'SAT.CookLevinUniversal.cookLevin' } }} />
- *                         a step the project assumes, drawn as proved and linked to its proof in another one
+ *                         a step this folder assumes, drawn as proved and linked to its proof in another folder
  */
 import './lean.css';
 import { asset, cert as getCert, date, decl, num, size } from './lean';
@@ -22,7 +22,7 @@ interface Props {
   labels?: Record<string, string>;
   /** What the project's vendor/ copy holds, for its line in the facts. */
   vendored?: string;
-  /** Steps the project assumes but another certificate proves, by the problem they lead to. */
+  /** Steps this folder assumes and another folder proves, by the problem they lead to. */
   provedIn?: Record<string, { cert: string; name: string }>;
 }
 const {
