@@ -1,0 +1,1092 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Snake meets the 2-D HP protein folding problem: steer the growing chain step by step over an infinite lattice, hug as many H's together as you can, and don't bite yourself.">
+<title>HP Snake</title>
+<style>
+  :root {
+    --bg: #0b1019; --ink: #e9eef6; --muted: #8e9ab0; --faint: #5d677b;
+    --panel: rgba(16, 22, 34, .86); --line: rgba(148, 163, 184, .16);
+    --h: #ef4444; --p: #9ca3af; --gold: #fbbf24; --ok: #34d399; --bad: #f87171;
+    --round: ui-rounded, "SF Pro Rounded", "Nunito", "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink);
+    font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; touch-action: none; user-select: none; -webkit-user-select: none; }
+  canvas#cv { position: fixed; inset: 0; display: block; }
+  button { font: inherit; color: inherit; }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,.35); }
+
+  /* ---------- top-left: title + level */
+  #tl { position: fixed; left: 16px; top: 16px; padding: 10px 14px 11px; max-width: min(330px, calc(50vw - 24px)); }
+  .brand { font: 800 20px/1.1 var(--round); letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+  .brand .bd { display: inline-flex; gap: 3px; }
+  .brand .bd i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+  #lvlName { margin-top: 5px; font-weight: 650; font-size: 13.5px; }
+  #lvlMeta { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .chip { font-size: 11.5px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line);
+    color: var(--muted); background: transparent; cursor: pointer; white-space: nowrap; }
+  .chip:hover { color: var(--ink); border-color: rgba(148,163,184,.4); }
+  .chip.off { opacity: .55; text-decoration: line-through; }
+
+  /* ---------- top-right: energy */
+  #tr { position: fixed; right: 16px; top: 16px; padding: 12px 16px; width: min(300px, calc(50vw - 24px)); }
+  .erow { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  .erow + .erow { margin-top: 6px; }
+  .lab { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 650; }
+  .lab i { font-style: normal; text-transform: none; letter-spacing: 0; color: var(--faint); font-weight: 500; display: block; font-size: 11px; margin-top: 1px; }
+  .big { font: 800 34px/1 var(--round); font-variant-numeric: tabular-nums; letter-spacing: -.02em; white-space: nowrap; }
+  #eYou.bump { animation: bump .35s ease-out; }
+  @keyframes bump { 30% { transform: scale(1.18); color: var(--gold); } }
+  #eOpt { color: var(--gold); }
+  .bar { position: relative; height: 8px; border-radius: 99px; background: rgba(148,163,184,.14); margin: 11px 0 7px; overflow: hidden; }
+  #barFill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 99px;
+    background: linear-gradient(90deg, #f87171, #ef4444 55%, #fbbf24); transition: width .25s; }
+  .small { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #reach.bad { color: var(--bad); } #reach.ok { color: var(--ok); }
+
+  /* ---------- bottom: sequence strip */
+  #bottom { position: fixed; left: 50%; transform: translateX(-50%); bottom: 12px; width: min(980px, calc(100vw - 32px));
+    display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+  #strip { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--gap, 4px); padding: 9px 12px; max-width: 100%; }
+  #strip i { width: var(--d, 14px); height: var(--d, 14px); border-radius: 50%; display: block; transition: transform .15s, opacity .2s; }
+  #strip i.h { background: var(--h); } #strip i.p { background: var(--p); }
+  #strip i.done { opacity: .25; }
+  #strip i.next { transform: scale(1.45); box-shadow: 0 0 0 2px #121a28, 0 0 0 3.5px #fff; }
+  #keys { font-size: 11.5px; color: var(--faint); margin-top: 6px; }
+  kbd { font: 600 10.5px/1 ui-monospace, Menlo, monospace; padding: 2px 5px; border-radius: 5px; border: 1px solid var(--line);
+    color: var(--muted); background: rgba(148,163,184,.08); }
+
+  #prompt { position: fixed; left: 50%; transform: translateX(-50%); font: 700 14.5px var(--round); color: var(--ink);
+    background: var(--panel); padding: 8px 15px; border-radius: 999px; border: 1px solid var(--line);
+    animation: pulse 1.6s ease-in-out infinite; pointer-events: none; white-space: nowrap; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; }
+  @keyframes pulse { 50% { opacity: .55; } }
+  #banner { position: fixed; left: 50%; transform: translateX(-50%); font: 700 13px var(--round); color: var(--gold);
+    background: var(--panel); padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(251,191,36,.35); white-space: nowrap; }
+
+  /* ---------- result card */
+  #result { position: fixed; left: 50%; transform: translateX(-50%); width: min(560px, calc(100vw - 32px)); padding: 14px 18px 16px; text-align: center; }
+  .rtitle { font: 800 24px/1.15 var(--round); }
+  .rtitle.bad { color: var(--bad); }
+  .rsub { color: var(--muted); margin-top: 4px; font-size: 13.5px; }
+  .rstats { margin-top: 8px; font-variant-numeric: tabular-nums; font-size: 13px; }
+  .rstats b { font-weight: 700; }
+  .newbest { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 700; color: #0b1019; background: var(--gold); border-radius: 99px; padding: 1px 7px; vertical-align: 1px; }
+  .stars { font-size: 28px; letter-spacing: 4px; color: var(--gold); line-height: 1; margin-bottom: 4px; }
+  .stars .off, .ms .off { color: rgba(148,163,184,.25); }
+  .btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 13px; }
+  .btn { font: 650 13px var(--round); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line);
+    background: rgba(148,163,184,.08); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { background: rgba(148,163,184,.17); }
+  .btn.primary { background: var(--h); border-color: transparent; color: #fff; }
+  .btn.primary:hover { filter: brightness(1.1); }
+  .btn:disabled { opacity: .38; cursor: default; }
+  .btn kbd { margin-left: 6px; }
+  .btn.primary kbd { color: #fff; border-color: rgba(255,255,255,.4); background: rgba(255,255,255,.12); }
+
+  /* ---------- menu overlay */
+  #ov { position: fixed; inset: 0; background: rgba(6,9,15,.66); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+    overflow-y: auto; padding: 28px 16px; touch-action: pan-y; }
+  #menuCard { width: min(900px, 100%); margin: 0 auto; padding: 24px 26px 22px; position: relative; }
+  .title { font: 900 46px/1 var(--round); letter-spacing: -.03em; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .title .bd { display: inline-flex; gap: 5px; }
+  .title .bd i { width: 16px; height: 16px; border-radius: 50%; display: block; }
+  .tag { color: var(--muted); font-size: 15.5px; margin-top: 7px; }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 18px; }
+  @media (max-width: 560px) { .rules { grid-template-columns: 1fr; } }
+  .rule { background: rgba(148,163,184,.06); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13px; color: #c3ccda; }
+  .rule b { color: var(--ink); }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: -1px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .kind { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin: 18px 0 8px; font-weight: 700; }
+  .lvgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 9px; }
+  .lv { text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: rgba(148,163,184,.05); cursor: pointer; }
+  .lv:hover { border-color: rgba(248,113,113,.65); background: rgba(239,68,68,.08); }
+  .lv.cur { border-color: rgba(251,191,36,.55); }
+  .lvtop { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-weight: 700; }
+  .ms { color: var(--gold); font-size: 12px; letter-spacing: 1px; }
+  .lvdots { display: flex; flex-wrap: wrap; gap: 2px; margin: 7px 0 6px; }
+  .lvdots i { width: 6px; height: 6px; border-radius: 50%; display: block; }
+  .lvmeta { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #custom { flex: 1; min-width: 200px; font: 13px ui-monospace, Menlo, monospace; padding: 9px 11px; border-radius: 10px;
+    border: 1px solid var(--line); background: rgba(0,0,0,.25); color: var(--ink); text-transform: uppercase; user-select: text; -webkit-user-select: text; }
+  #custom:focus { outline: none; border-color: rgba(248,113,113,.6); }
+  .err { color: var(--bad); font-size: 12.5px; min-height: 1.2em; margin-top: 6px; }
+  .foot { color: var(--faint); font-size: 12px; margin-top: 14px; line-height: 1.55; }
+  .foot b { color: var(--muted); }
+  .x { position: absolute; right: 14px; top: 14px; }
+  .dimlink { margin-top: 14px; }
+
+  /* ---------- touch d-pad */
+  #dpad { position: fixed; right: 14px; bottom: 76px; display: grid; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(3, 50px); gap: 4px; }
+  #dpad button { border-radius: 12px; border: 1px solid var(--line); background: var(--panel); font-size: 19px; color: var(--ink); touch-action: none; }
+  #dpad button:active { background: rgba(239,68,68,.35); }
+
+  @media (max-width: 640px) {
+    #tl { padding: 8px 10px; } .brand { font-size: 16px; } #lvlName { font-size: 12.5px; }
+    #tr { padding: 9px 11px; } .big { font-size: 25px; } .lab i { display: none; }
+    .small { flex-direction: column; gap: 1px; }
+    .title { font-size: 34px; } #menuCard { padding: 18px 16px; }
+    #keys { display: none; }
+  }
+  @media (pointer: coarse) { #keys { display: none; } }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<div id="tl" class="panel">
+  <div class="brand"><span class="bd"><i style="background:var(--h)"></i><i style="background:var(--p)"></i><i style="background:var(--h)"></i></span>HP Snake</div>
+  <div id="lvlName">—</div>
+  <div id="lvlMeta">—</div>
+  <div class="chips">
+    <button class="chip" data-act="menu" title="Levels (Esc)">☰ levels</button>
+    <button class="chip" id="chipHints" data-act="hints" title="Toggle hot-spot hints (H)">💡 hints</button>
+    <button class="chip" id="chipSound" data-act="sound" title="Toggle sound (M)">🔊 sound</button>
+  </div>
+</div>
+
+<div id="tr" class="panel" aria-live="polite">
+  <div class="erow"><span class="lab">Your energy<i id="eYouSub">E = −(# H–H contacts)</i></span><span id="eYou" class="big">0</span></div>
+  <div class="erow"><span class="lab">Theoretical min E*<i id="eSrc">…</i></span><span id="eOpt" class="big">…</span></div>
+  <div class="bar"><div id="barFill"></div></div>
+  <div class="small"><span id="cnt">0 / ? contacts</span><span id="reach"></span></div>
+</div>
+
+<div id="bottom">
+  <div id="strip" class="panel"></div>
+  <div id="keys"><kbd>← ↑ → ↓</kbd> / <kbd>WASD</kbd> place next residue · <kbd>Z</kbd> undo · <kbd>H</kbd> hints · <kbd>R</kbd> restart · <kbd>Esc</kbd> levels</div>
+</div>
+
+<div id="prompt" hidden></div>
+<div id="banner" hidden></div>
+<div id="result" class="panel" hidden></div>
+
+<div id="dpad" hidden>
+  <span></span><button data-dir="1" aria-label="up">▲</button><span></span>
+  <button data-dir="2" aria-label="left">◀</button><button data-undo="1" aria-label="undo">↶</button><button data-dir="0" aria-label="right">▶</button>
+  <span></span><button data-dir="3" aria-label="down">▼</button><span></span>
+</div>
+
+<div id="ov" hidden><div id="menuCard" class="panel"></div></div>
+
+<script>
+'use strict';
+// =====================================================================================
+//  Constants & levels
+// =====================================================================================
+const DX = [1, 0, -1, 0], DY = [0, 1, 0, -1];            // 0 = east, 1 = north, 2 = west, 3 = south
+const KEYDIR = { ArrowRight: 0, KeyD: 0, ArrowUp: 1, KeyW: 1, ArrowLeft: 2, KeyA: 2, ArrowDown: 3, KeyS: 3 };
+const COL = { h: '#ef4444', hDark: '#8f1d1d', p: '#9ca3af', pDark: '#4b5563', bond: '#cbd5e1', gold: '#fbbf24', bad: '#f87171' };
+const TAU = Math.PI * 2;
+
+// opt = max # of H–H contacts (E* = −opt). Warm-ups and benchmarks ≤ 36 residues were verified with the
+// exact branch & bound below; the four longest are the standard literature optima for these 2-D benchmarks.
+const LEVELS = [
+  { name: 'Hairpin',     seq: 'HPPH',             opt: 1, kind: 'warm' },
+  { name: 'Staple',      seq: 'HHPPHH',           opt: 2, kind: 'warm' },
+  { name: 'Zig-zag',     seq: 'HPHPPHPH',         opt: 3, kind: 'warm' },
+  { name: 'Clamp',       seq: 'HHPHPPHPHH',       opt: 4, kind: 'warm' },
+  { name: 'Twins',       seq: 'HPPHHPPHHPPH',     opt: 5, kind: 'warm' },
+  { name: 'Little core', seq: 'HPHHPPHHHHPHHHPH', opt: 8, kind: 'warm' },
+  { name: 'Benchmark 20', seq: 'HPHPPHHPHPPHPHHPPHPH', opt: 9, kind: 'bench' },
+  { name: 'Benchmark 24', seq: 'HHPPHPPHPPHPPHPPHPPHPPHH', opt: 9, kind: 'bench' },
+  { name: 'Benchmark 25', seq: 'PPHPPHHPPPPHHPPPPHHPPPPHH', opt: 8, kind: 'bench' },
+  { name: 'Benchmark 36', seq: 'PPPHHPPHHPPPPPHHHHHHHPPHHPPPPHHPPHPP', opt: 14, kind: 'bench' },
+  { name: 'Benchmark 48', seq: 'PPHPPHHPPHHPPPPPHHHHHHHHHHPPPPPPHHPPHHPPHPPHHHHH', opt: 23, kind: 'bench', lit: true },
+  { name: 'Benchmark 50', seq: 'HHPHPHPHPHHHHPHPPPHPPPHPPPPHPPPHPPPHPHHHHPHPHPHPHH', opt: 21, kind: 'bench', lit: true },
+  { name: 'Benchmark 60', seq: 'PPHHHPHHHHHHHHPPPHHHHHHHHHHPHPPPHHHHHHHHHHHHPPPPHHHHHHPHHPHP', opt: 36, kind: 'bench', lit: true },
+  { name: 'Benchmark 64', seq: 'HHHHHHHHHHHHPHPHPPHHPPHHPPHPPHHPPHHPPHPPHHPPHHPPHPHPHHHHHHHHHHHH', opt: 42, kind: 'bench', lit: true },
+];
+LEVELS.forEach((L, i) => { L.idx = i; });
+
+// =====================================================================================
+//  Exact solver: branch & bound over self-avoiding walks (also shipped into a Web Worker)
+// =====================================================================================
+function solveHP(seq, timeLimitMs) {
+  const n = seq.length;
+  const H = Uint8Array.from(seq, c => (c === 'H' ? 1 : 0));
+  const W = 2 * n + 5, C = (W * W) >> 1;
+  const grid = new Int32Array(W * W);                  // 0 = empty, else residue index + 1
+  const D = [1, W, -1, -W];
+  const pos = new Int32Array(n);
+  // maxFut[k]: upper bound on contacts residues k..n-1 can still make with earlier residues
+  // (an interior residue has ≤ 2 free sides once both chain bonds are taken; the last one ≤ 3).
+  const maxFut = new Int32Array(n + 2);
+  for (let j = n - 1; j >= 0; j--) maxFut[j] = maxFut[j + 1] + (H[j] ? (j === n - 1 ? 3 : 2) : 0);
+  let best = -1, bestPos = null, nodes = 0, aborted = false;
+  const t0 = Date.now();
+  pos[0] = C; grid[C] = 1;
+  if (n === 1) return { best: 0, fold: [C], exact: true, W };
+  pos[1] = C + 1; grid[C + 1] = 2;
+  if (n === 2) return { best: 0, fold: [C, C + 1], exact: true, W };
+  const gain = (p, k) => {
+    if (!H[k]) return 0;
+    let g = 0;
+    for (let d = 0; d < 4; d++) { const q = grid[p + D[d]]; if (q && q - 1 < k - 1 && H[q - 1]) g++; }
+    return g;
+  };
+  function rec(k, cur, turned) {
+    if (aborted) return;
+    if ((++nodes & 0xfffff) === 0 && Date.now() - t0 > timeLimitMs) { aborted = true; return; }
+    if (k === n) { if (cur > best) { best = cur; bestPos = Array.from(pos); } return; }
+    if (cur + maxFut[k] <= best) return;
+    const p0 = pos[k - 1], cand = [], gains = [];
+    for (let d = 0; d < 4; d++) {
+      const p = p0 + D[d];
+      if (grid[p]) continue;
+      if (!turned && d !== 0 && d !== 1) continue;      // mirror symmetry: the first turn goes "up"
+      const g = gain(p, k);
+      let i = cand.length; cand.push(p); gains.push(g);
+      while (i > 0 && gains[i - 1] < g) { cand[i] = cand[i - 1]; gains[i] = gains[i - 1]; i--; }
+      cand[i] = p; gains[i] = g;
+    }
+    for (let i = 0; i < cand.length; i++) {
+      const p = cand[i];
+      pos[k] = p; grid[p] = k + 1;
+      rec(k + 1, cur + gains[i], turned || p - p0 === W);
+      grid[p] = 0;
+    }
+  }
+  rec(2, 0, false);
+  return { best, fold: bestPos, exact: !aborted, nodes, ms: Date.now() - t0, W };
+}
+
+// contacts only join residues of opposite index parity, and each H has ≤ 2 free sides (≤ 3 at a chain end)
+function parityBound(seq) {
+  const n = seq.length; let e = 0, o = 0;
+  for (let i = 0; i < n; i++) if (seq[i] === 'H') { const cap = (i === 0 || i === n - 1) ? 3 : 2; if (i & 1) o += cap; else e += cap; }
+  return Math.min(e, o);
+}
+
+let solverWorker = null;
+function runSolver(seq, ms, cb) {
+  if (solverWorker) { solverWorker.terminate(); solverWorker = null; }
+  const fallback = () => setTimeout(() => cb(solveHP(seq, Math.min(ms, 1500))), 30);
+  try {
+    const src = solveHP.toString() + '\nonmessage = e => postMessage(solveHP(e.data.seq, e.data.ms));';
+    const url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+    const w = new Worker(url);
+    solverWorker = w;
+    w.onmessage = e => { w.terminate(); if (solverWorker === w) solverWorker = null; URL.revokeObjectURL(url); cb(e.data); };
+    w.onerror = ev => { if (ev.preventDefault) ev.preventDefault(); w.terminate(); if (solverWorker === w) solverWorker = null; fallback(); };
+    w.postMessage({ seq, ms });
+  } catch (err) { fallback(); }
+}
+
+// =====================================================================================
+//  Small helpers, storage, audio
+// =====================================================================================
+const $ = s => document.querySelector(s);
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const keyOf = (x, y) => (x + 4096) * 8192 + (y + 4096);
+const fmtE = v => (v === 0 ? '0' : v < 0 ? '−' + (-v) : '+' + v);
+const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+const easeOutBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('hpsnake.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('hpsnake.' + k, JSON.stringify(v)); } catch (e) { /* private mode etc. */ } },
+};
+const settings = { hints: store.get('hints', true), muted: store.get('muted', false) };
+const best = store.get('best', {}) || {};                // keyed by sequence → max contacts achieved
+
+let AC = null;
+function audio() {
+  if (settings.muted) return null;
+  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function beep(freq, dur = 0.08, type = 'sine', vol = 0.05, slide = 0, delay = 0) {
+  const a = audio(); if (!a) return;
+  const t = a.currentTime + delay, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq * slide), t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.03);
+}
+const sfx = {
+  step(isH) { beep(isH ? 330 : 247, 0.045, 'triangle', 0.03); },
+  hug(g, total) { for (let i = 0; i < g; i++) beep(523 * Math.pow(2, Math.min(total - g + i, 24) / 12), 0.16, 'sine', 0.07, 0, i * 0.075); },
+  die() { beep(190, 0.5, 'sawtooth', 0.05, 0.25); beep(95, 0.5, 'square', 0.03, 0.4); },
+  bump() { beep(110, 0.07, 'square', 0.03); },
+  win(perfect) { (perfect ? [523, 659, 784, 1047, 1319] : [523, 659, 784]).forEach((f, i) => beep(f, 0.2, 'triangle', 0.06, 0, i * 0.1)); },
+};
+
+// =====================================================================================
+//  Game state
+// =====================================================================================
+let LV = null, G = null, OPT = null, menuOpen = false, solveToken = 0;
+const parts = [], floats = [], confetti = [];
+
+function newGame(level) {
+  LV = level;
+  const n = level.seq.length, now = performance.now();
+  G = {
+    n, seq: level.seq, H: Array.from(level.seq, c => c === 'H'),
+    xs: [0], ys: [0], born: [now], occ: new Map([[keyOf(0, 0), 0]]), k: 1,
+    contacts: [],                       // [i, j, bornTime]
+    lastDir: 0, state: 'ready', death: null, showOpt: false,
+    prevBest: best[level.seq], ver: 0, reachVer: -1, reach: null,
+  };
+  G.maxFut = new Int32Array(n + 1);
+  for (let j = n - 1; j >= 1; j--) G.maxFut[j] = G.maxFut[j + 1] + (G.H[j] ? (j === n - 1 ? 3 : 2) : 0);
+  parts.length = floats.length = confetti.length = 0;
+  cam.shake = 0;
+  requestOptimum(level);
+  buildStrip();
+  $('#result').hidden = true; $('#banner').hidden = true;
+  updateHUD(); updatePrompt();
+  measure(); camTarget(true);
+}
+
+function requestOptimum(level) {
+  const token = ++solveToken, seq = level.seq, n = seq.length;
+  const known = level.opt != null;
+  OPT = { status: known ? 'ready' : 'pending', contacts: known ? level.opt : null, src: known ? (level.lit ? 'literature' : 'exact') : 'search',
+          upper: parityBound(seq), fold: null };
+  if (n > 40 && known) { if (solverWorker) { solverWorker.terminate(); solverWorker = null; } return; }  // literature value only
+  runSolver(seq, known ? 8000 : 9000, r => {
+    if (token !== solveToken) return;
+    const fold = foldFromSolver(r, seq);
+    if (known) { if (r.best === level.opt) OPT.fold = fold; }
+    else {
+      OPT.contacts = r.best; OPT.fold = fold; OPT.status = 'ready';
+      OPT.src = r.exact ? 'exact' : 'search';
+      if (r.exact) OPT.upper = r.best;
+    }
+    updateHUD();
+    if (G.state === 'done' || G.state === 'dead') showResult();
+  });
+}
+
+function foldFromSolver(r, seq) {
+  if (!r || !r.fold) return null;
+  const W = r.W, C = (W * W) >> 1, cx = C % W, cy = (C - cx) / W, xs = [], ys = [];
+  for (const p of r.fold) { const px = p % W; xs.push(px - cx); ys.push((p - px) / W - cy); }
+  return { xs, ys, contacts: contactsOf(xs, ys, seq) };
+}
+function contactsOf(xs, ys, seq) {
+  const m = new Map(), out = [];
+  xs.forEach((x, i) => m.set(keyOf(x, ys[i]), i));
+  for (let i = 0; i < xs.length; i++) {
+    if (seq[i] !== 'H') continue;
+    for (let d = 0; d < 4; d++) { const j = m.get(keyOf(xs[i] + DX[d], ys[i] + DY[d])); if (j !== undefined && j > i + 1 && seq[j] === 'H') out.push([i, j, 0]); }
+  }
+  return out;
+}
+
+function gainAt(x, y, k) {
+  if (!G.H[k]) return 0;
+  let g = 0;
+  for (let d = 0; d < 4; d++) { const j = G.occ.get(keyOf(x + DX[d], y + DY[d])); if (j !== undefined && j < k - 1 && G.H[j]) g++; }
+  return g;
+}
+function dirOf(xs, ys, k) {
+  if (k < 2) return 0;
+  const dx = xs[k - 1] - xs[k - 2], dy = ys[k - 1] - ys[k - 2];
+  return dx === 1 ? 0 : dy === 1 ? 1 : dx === -1 ? 2 : 3;
+}
+
+// Flood fill from the head over free sites (inside the chain's bounding box + a 1-site ring, which is
+// always free and connects to the rest of the infinite lattice). Tells us which sites the chain can still
+// reach and whether the head is sealed inside a finite pocket.
+function reachInfo() {
+  if (G.reachVer === G.ver) return G.reach;
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  for (let i = 0; i < G.k; i++) { x0 = Math.min(x0, G.xs[i]); x1 = Math.max(x1, G.xs[i]); y0 = Math.min(y0, G.ys[i]); y1 = Math.max(y1, G.ys[i]); }
+  x0--; x1++; y0--; y1++;
+  const seen = new Set(), q = [G.xs[G.k - 1], G.ys[G.k - 1]];
+  let open = false;
+  while (q.length) {
+    const y = q.pop(), x = q.pop();
+    for (let d = 0; d < 4; d++) {
+      const nx = x + DX[d], ny = y + DY[d];
+      if (nx < x0 || nx > x1 || ny < y0 || ny > y1) continue;
+      const key = keyOf(nx, ny);
+      if (seen.has(key) || G.occ.has(key)) continue;
+      seen.add(key); q.push(nx, ny);
+      if (nx === x0 || nx === x1 || ny === y0 || ny === y1) open = true;
+    }
+  }
+  G.reach = { seen, open, size: seen.size }; G.reachVer = G.ver;
+  return G.reach;
+}
+
+function tryMove(d) {
+  const hx = G.xs[G.k - 1], hy = G.ys[G.k - 1], x = hx + DX[d], y = hy + DY[d];
+  const hit = G.occ.get(keyOf(x, y));
+  if (hit !== undefined) { die('clash', { x, y, hit, who: G.k }); return; }
+  place(x, y);
+}
+
+function place(x, y) {
+  const k = G.k, now = performance.now();
+  G.xs.push(x); G.ys.push(y); G.born.push(now); G.occ.set(keyOf(x, y), k); G.k++; G.ver++;
+  G.lastDir = dirOf(G.xs, G.ys, G.k);
+  let g = 0;
+  if (G.H[k]) for (let d = 0; d < 4; d++) {
+    const j = G.occ.get(keyOf(x + DX[d], y + DY[d]));
+    if (j !== undefined && j < k - 1 && G.H[j]) {
+      G.contacts.push([j, k, now]); g++;
+      burst((x + G.xs[j]) / 2, (y + G.ys[j]) / 2, 16, [COL.gold, COL.h, '#fff']);
+    }
+  }
+  if (g) {
+    floats.push({ x, y: y + 0.45, t0: now, text: g === 1 ? '+1 hug' : g === 2 ? '+2 double hug!' : '+3 GROUP HUG!!' });
+    sfx.hug(g, G.contacts.length);
+    const e = $('#eYou'); e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump');
+  } else sfx.step(G.H[k]);
+  if (G.k === G.n) { finish(); return; }
+  let free = 0;
+  for (let d = 0; d < 4; d++) if (!G.occ.has(keyOf(x + DX[d], y + DY[d]))) free++;
+  if (!free) { die('trapped', { x, y, who: k }); return; }
+  updateHUD();
+}
+
+function popLast() {
+  if (G.k <= 1) return;
+  const k = G.k - 1;
+  G.occ.delete(keyOf(G.xs[k], G.ys[k]));
+  G.xs.pop(); G.ys.pop(); G.born.pop(); G.k--; G.ver++;
+  G.contacts = G.contacts.filter(c => c[1] !== k);
+  G.lastDir = dirOf(G.xs, G.ys, G.k);
+}
+
+function undo() {
+  if (!G || G.showOpt) return;
+  if (G.state === 'dead') { if (G.death.type === 'trapped') popLast(); G.death = null; G.state = 'running'; }
+  else if (G.state === 'done') { popLast(); G.state = 'running'; }
+  else if (G.state === 'running' && G.k > 1) popLast();
+  else return;
+  $('#result').hidden = true; measure();
+  updateHUD(); updatePrompt();
+}
+
+function die(type, info) {
+  G.state = 'dead'; G.death = Object.assign({ type, t: performance.now() }, info);
+  cam.shake = 1; sfx.die();
+  const hx = G.xs[G.k - 1], hy = G.ys[G.k - 1];
+  burst(type === 'clash' ? (hx + info.x) / 2 : hx, type === 'clash' ? (hy + info.y) / 2 : hy, 26, [COL.bad, '#fff', COL.p], 4.5);
+  updateHUD(); updatePrompt(); showResult();
+}
+
+function finish() {
+  G.state = 'done';
+  const c = G.contacts.length;
+  if (best[G.seq] == null || c > best[G.seq]) { best[G.seq] = c; store.set('best', best); }
+  const perfect = OPT.status === 'ready' && c >= OPT.contacts;
+  sfx.win(perfect);
+  if (perfect) launchConfetti();
+  updateHUD(); updatePrompt(); showResult();
+}
+
+function nextLevel() {
+  if (LV.idx != null && LV.idx + 1 < LEVELS.length) newGame(LEVELS[LV.idx + 1]);
+  else if (LV.kind === 'random') newGame(randomLevel());
+  else openMenu();
+}
+function randomLevel() {
+  const n = 14 + Math.floor(Math.random() * 9);
+  let s;
+  do { s = ''; for (let i = 0; i < n; i++) s += Math.random() < 0.5 ? 'H' : 'P'; } while ((s.match(/H/g) || []).length < 5);
+  return { name: 'Random chain', seq: s, kind: 'random' };
+}
+
+function toggleOpt() {
+  if (!G || !OPT.fold || (G.state !== 'done' && G.state !== 'dead')) return;
+  G.showOpt = !G.showOpt;
+  const b = $('#banner');
+  b.hidden = !G.showOpt;
+  b.textContent = `Optimal fold · E = ${fmtE(-OPT.fold.contacts.length)} · press O to return to yours`;
+  positionFloaters();
+  showResult();
+  camTarget();
+}
+
+// =====================================================================================
+//  Input
+// =====================================================================================
+function onDir(d) {
+  if (!G || menuOpen || G.showOpt) return;
+  if (G.state === 'done' || G.state === 'dead') return;
+  if (G.state === 'ready') G.state = 'running';
+  // stepping straight back onto the previous residue is always a misclick: just bump instead of dying
+  if (G.k > 1 && d === (G.lastDir + 2) % 4) { sfx.bump(); cam.shake = Math.max(cam.shake, 0.25); return; }
+  tryMove(d);
+  updatePrompt();
+}
+
+function act(a) {
+  if (a.startsWith('play:')) { closeMenu(); newGame(LEVELS[+a.slice(5)]); return; }
+  switch (a) {
+    case 'retry': newGame(LV); break;
+    case 'next': nextLevel(); break;
+    case 'undo': undo(); break;
+    case 'opt': toggleOpt(); break;
+    case 'menu': openMenu(); break;
+    case 'close': closeMenu(); break;
+    case 'hints': settings.hints = !settings.hints; store.set('hints', settings.hints); updateHUD(); break;
+    case 'sound': settings.muted = !settings.muted; store.set('muted', settings.muted); updateHUD(); if (!settings.muted) beep(660, 0.1, 'sine', 0.05); break;
+    case 'random': closeMenu(); newGame(randomLevel()); break;
+    case 'custom': {
+      const raw = ($('#custom').value || '').toUpperCase().replace(/[\s,]/g, '');
+      const err = $('#customErr');
+      if (/[^HP]/.test(raw)) { err.textContent = 'Only H and P please — this is the HP model, not the alphabet soup model.'; return; }
+      if (raw.length < 3) { err.textContent = 'At least 3 residues. A dipeptide has very little folding drama.'; return; }
+      if (raw.length > 100) { err.textContent = 'Max 100 residues — beyond that the lattice gets lonely.'; return; }
+      closeMenu(); newGame({ name: 'Custom chain', seq: raw, kind: 'custom' });
+      break;
+    }
+  }
+}
+
+addEventListener('keydown', e => {
+  if (e.target && e.target.tagName === 'INPUT') { if (e.key === 'Enter') act('custom'); if (e.key === 'Escape') e.target.blur(); return; }
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const c = e.code;
+  if (c in KEYDIR) { if (!menuOpen) { e.preventDefault(); onDir(KEYDIR[c]); } return; }
+  switch (c) {
+    case 'KeyR': if (!menuOpen && G) newGame(LV); break;
+    case 'KeyZ': case 'Backspace': e.preventDefault(); if (!menuOpen) undo(); break;
+    case 'KeyH': act('hints'); break;
+    case 'KeyM': act('sound'); break;
+    case 'KeyO': if (!menuOpen) toggleOpt(); break;
+    case 'KeyN': if (!menuOpen && G && G.state === 'done') nextLevel(); break;
+    case 'Escape': if (menuOpen) closeMenu(); else openMenu(); break;
+    case 'Enter': case 'NumpadEnter':
+      if (menuOpen || !G) break;
+      e.preventDefault();
+      if (G.state === 'done') nextLevel(); else if (G.state === 'dead') newGame(LV);
+      break;
+  }
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (b && !b.disabled) { act(b.dataset.act); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); }
+});
+$('#ov').addEventListener('click', e => { if (e.target.id === 'ov' && G) closeMenu(); });
+
+// swipe on the board + d-pad on touch screens
+let swipe = null;
+cv.addEventListener('pointerdown', e => { swipe = { x: e.clientX, y: e.clientY }; });
+cv.addEventListener('pointerup', e => {
+  if (!swipe) return;
+  const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+  onDir(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 0 : 2) : (dy > 0 ? 3 : 1));
+});
+if (matchMedia('(pointer: coarse)').matches) $('#dpad').hidden = false;
+$('#dpad').addEventListener('pointerdown', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  e.preventDefault();
+  if (b.dataset.dir != null) onDir(+b.dataset.dir); else undo();
+});
+
+// =====================================================================================
+//  HUD / DOM
+// =====================================================================================
+function starsFor(c, opt) {
+  if (opt == null) return null;
+  if (opt === 0 || c >= opt) return 3;
+  const r = c / opt;
+  return r >= 0.75 ? 2 : r >= 0.5 ? 1 : 0;
+}
+const starsHTML = n => '★'.repeat(n) + `<span class="off">${'★'.repeat(3 - n)}</span>`;
+const dotsHTML = seq => Array.from(seq, ch => `<i style="background:var(--${ch === 'H' ? 'h' : 'p'})"></i>`).join('');
+
+function buildStrip() {
+  const st = $('#strip'); st.innerHTML = '';
+  for (let i = 0; i < G.n; i++) {
+    const el = document.createElement('i');
+    el.className = G.H[i] ? 'h' : 'p';
+    el.title = `#${i + 1}: ${G.seq[i]}`;
+    st.appendChild(el);
+  }
+  layoutStrip();
+}
+function layoutStrip() {
+  if (!G) return;
+  const avail = Math.min(980, innerWidth - 32) - 26;
+  const d = clamp(Math.floor(avail / G.n) - 4, 7, 18);
+  const st = $('#strip');
+  st.style.setProperty('--d', d + 'px'); st.style.setProperty('--gap', (d < 10 ? 3 : 4) + 'px');
+}
+
+function updateHUD() {
+  if (!G) return;
+  const c = G.contacts.length;
+  $('#eYou').textContent = fmtE(-c);
+  $('#lvlName').textContent = LV.name;
+  $('#lvlMeta').textContent = `${G.n} residues · placed ${G.k}/${G.n}`;
+  $('#chipHints').classList.toggle('off', !settings.hints);
+  $('#chipSound').classList.toggle('off', settings.muted);
+
+  const eOpt = $('#eOpt'), eSrc = $('#eSrc'), reach = $('#reach');
+  let optC = null;
+  if (OPT.status === 'ready') {
+    optC = OPT.contacts;
+    eOpt.textContent = (OPT.src === 'search' ? '≤ ' : '') + fmtE(-optC);
+    eSrc.textContent = OPT.src === 'exact' ? 'exact · branch & bound' : OPT.src === 'literature' ? 'known optimum (benchmark)' : `best found in 9 s · bound ${fmtE(-OPT.upper)}`;
+  } else {
+    eOpt.textContent = '…';
+    eSrc.textContent = `searching… (bound ${fmtE(-OPT.upper)})`;
+  }
+  $('#cnt').textContent = `${c} / ${optC ?? '?'} H–H contacts`;
+  $('#barFill').style.width = (optC == null ? 0 : optC === 0 ? 100 : Math.min(100, c / optC * 100)) + '%';
+  reach.className = '';
+  if (optC == null) reach.textContent = '';
+  else if (G.state === 'done') { reach.textContent = c >= optC ? '🏆 optimal!' : `${Math.round(c / Math.max(1, optC) * 100)}% of optimum`; reach.className = c >= optC ? 'ok' : ''; }
+  else if (G.state === 'dead') { reach.textContent = '💀 denatured'; reach.className = 'bad'; }
+  else if (G.k < G.n && !reachInfo().open && reachInfo().size < G.n - G.k) { reach.textContent = `🕳️ pocket fits ${reachInfo().size}, need ${G.n - G.k}`; reach.className = 'bad'; }
+  else if (c + G.maxFut[G.k] < optC) { reach.textContent = '💀 E* out of reach'; reach.className = 'bad'; }
+  else { reach.textContent = '🎯 E* still in play'; reach.className = 'ok'; }
+
+  const kids = $('#strip').children;
+  for (let i = 0; i < kids.length; i++) {
+    kids[i].classList.toggle('done', i < G.k);
+    kids[i].classList.toggle('next', i === G.k && G.state !== 'dead');
+  }
+}
+
+function updatePrompt() {
+  const p = $('#prompt');
+  let txt = '';
+  if (G && !menuOpen) {
+    if (G.state === 'ready') txt = 'Each arrow key (or swipe) places the next residue — take your time';
+  }
+  p.textContent = txt; p.hidden = !txt;
+  positionFloaters();
+}
+
+function positionFloaters() {
+  const tr = $('#tr').getBoundingClientRect(), tl = $('#tl').getBoundingClientRect();
+  const top = Math.max(tr.bottom, tl.bottom);
+  $('#banner').style.top = (top + 10) + 'px';
+  const bottom = $('#bottom').getBoundingClientRect();
+  $('#prompt').style.top = (bottom.top - 52) + 'px';
+}
+
+function showResult() {
+  const el = $('#result');
+  const c = G.contacts.length, ready = OPT.status === 'ready', optC = OPT.contacts;
+  const optBtn = `<button class="btn" data-act="opt" ${OPT.fold ? '' : 'disabled title="' + (OPT.status === 'pending' ? 'still computing…' : 'no optimal fold stored for this long benchmark') + '"'}>${G.showOpt ? 'Back to my fold' : 'Peek at an optimal fold'}<kbd>O</kbd></button>`;
+  let html;
+  if (G.state === 'dead') {
+    const d = G.death;
+    const title = d.type === 'clash' ? pick(['Steric clash! 💥', 'Ouroboros moment 🐍', 'Self-intersection! 🪢', 'Pauli says no 🙅']) : pick(['Painted into a corner 🎨', 'Boxed in! 📦', 'Dead end 🧱']);
+    const sub = d.type === 'clash'
+      ? `Residue #${d.who + 1} tried to sit on residue #${d.hit + 1}. Two residues, one lattice site — not in this universe.`
+      : `Residue #${d.who + 1} has no free neighbour left, so the remaining ${G.n - d.who - 1} residues have nowhere to go.`;
+    if (!d.title) { d.title = title; d.sub = sub; }
+    html = `<div class="rtitle bad">${d.title}</div><div class="rsub">${d.sub}</div>
+      <div class="rstats">Placed <b>${G.k}/${G.n}</b> residues · reached <b>E = ${fmtE(-c)}</b>${ready ? ` · E* = ${(OPT.src === 'search' ? '≤ ' : '') + fmtE(-optC)}` : ''}</div>
+      <div class="btns"><button class="btn primary" data-act="retry">Try again<kbd>Enter</kbd></button>
+      <button class="btn" data-act="undo">Oops, undo<kbd>Z</kbd></button>${optBtn}
+      <button class="btn" data-act="menu">Levels<kbd>Esc</kbd></button></div>`;
+  } else {
+    let title, sub, starLine = '';
+    if (!ready) { title = 'Folded! 🧬'; sub = 'Computing the theoretical minimum to grade you…'; }
+    else {
+      const r = optC === 0 ? 1 : c / optC;
+      const st = starsFor(c, optC);
+      starLine = `<div class="stars">${starsHTML(st)}</div>`;
+      if (OPT.src === 'search' && c > optC) { title = 'You beat the solver! 🤯'; sub = `Branch & bound gave up after 9 s at E = ${fmtE(-optC)}. You found ${fmtE(-c)}. Human intuition 1, exponential search 0.`; }
+      else if (optC === 0) { title = 'Trivially optimal 🤷'; sub = 'There were no H–H hugs to be had. Every fold is the native state.'; }
+      else if (r >= 1) { title = 'Native state reached! 🏆'; sub = 'You hit the theoretical minimum. Anfinsen would be proud.'; }
+      else if (r >= 0.75) { title = 'Molten globule 🫠'; sub = 'So close to native. A chaperone would nudge you the rest of the way.'; }
+      else if (r >= 0.5) { title = 'Partially folded 🌀'; sub = 'Half the hydrophobic hugs found. The water is still judging those exposed H’s.'; }
+      else if (c > 0) { title = 'Spaghetti with ambition 🍝'; sub = 'Some structure, mostly vibes. Try curling the H’s inward.'; }
+      else { title = 'Fully denatured noodle 🍜'; sub = 'Not a single H–H hug. The H’s are crying in the solvent.'; }
+    }
+    const nb = (G.prevBest == null || c > G.prevBest) && LV.kind !== 'random' ? '<span class="newbest">new best</span>' : '';
+    html = `${starLine}<div class="rtitle">${title}</div><div class="rsub">${sub}</div>
+      <div class="rstats">Your fold: <b>E = ${fmtE(-c)}</b>${nb}${ready ? ` · theoretical min: <b style="color:var(--gold)">E* = ${(OPT.src === 'search' ? '≤ ' : '') + fmtE(-optC)}</b>` : ''}</div>
+      <div class="btns"><button class="btn primary" data-act="next">${LV.idx != null && LV.idx + 1 < LEVELS.length ? 'Next level' : LV.kind === 'random' ? 'Another random' : 'Levels'}<kbd>Enter</kbd></button>
+      <button class="btn" data-act="retry">Retry<kbd>R</kbd></button><button class="btn" data-act="undo">Undo<kbd>Z</kbd></button>${optBtn}</div>`;
+  }
+  el.innerHTML = html; el.hidden = false;
+  el.style.bottom = (innerHeight - $('#bottom').getBoundingClientRect().top + 8) + 'px';
+  measure(); camTarget();
+}
+
+function openMenu() {
+  menuOpen = true;
+  renderMenu();
+  $('#ov').hidden = false;
+  updatePrompt();
+}
+function closeMenu() { menuOpen = false; $('#ov').hidden = true; updatePrompt(); }
+
+function renderMenu() {
+  const lvCard = L => {
+    const b = best[L.seq], st = b == null ? '' : starsHTML(starsFor(b, L.opt));
+    return `<button class="lv${LV && LV.idx === L.idx ? ' cur' : ''}" data-act="play:${L.idx}">
+      <div class="lvtop"><span>${esc(L.name)}</span><span class="ms">${st}</span></div>
+      <div class="lvdots">${dotsHTML(L.seq)}</div>
+      <div class="lvmeta">${L.seq.length} residues · E* = ${fmtE(-L.opt)}${b != null ? ' · best ' + fmtE(-b) : ''}</div></button>`;
+  };
+  const inGame = G && (G.state === 'running' || G.state === 'ready');
+  $('#menuCard').innerHTML = `
+    ${G ? `<button class="btn x" data-act="close">${inGame && G.k > 1 ? 'Resume' : 'Close'}<kbd>Esc</kbd></button>` : ''}
+    <div class="title"><span class="bd"><i style="background:var(--h)"></i><i style="background:var(--p)"></i><i style="background:var(--p)"></i><i style="background:var(--h)"></i></span>HP Snake</div>
+    <div class="tag">Fold the protein. Hug the H’s. Don’t bite yourself.</div>
+    <div class="rules">
+      <div class="rule"><b>You are the growing chain.</b> Starting at the origin of an infinite square lattice, every arrow press lays down the next residue of a known H/P sequence (shown at the bottom). Nothing moves until you do.</div>
+      <div class="rule"><span class="dot" style="background:var(--h)"></span> <b>H</b> is hydrophobic. Two H’s on neighbouring sites that aren’t bonded in the chain form a contact worth <b>E&nbsp;=&nbsp;−1</b>. <span class="dot" style="background:var(--p)"></span> <b>P</b> is polar and doesn’t care.</div>
+      <div class="rule"><b>Just like snake:</b> step onto an occupied site or box yourself in, and the protein denatures. Game over.</div>
+      <div class="rule"><b>Goal:</b> finish the chain with your energy as close as you can get to the theoretical minimum <b style="color:var(--gold)">E*</b> (top right).</div>
+    </div>
+    <div class="kind">Warm-ups</div>
+    <div class="lvgrid">${LEVELS.filter(L => L.kind === 'warm').map(lvCard).join('')}</div>
+    <div class="kind">Classic 2-D HP benchmarks</div>
+    <div class="lvgrid">${LEVELS.filter(L => L.kind === 'bench').map(lvCard).join('')}</div>
+    <div class="kind">Freestyle</div>
+    <div class="row"><button class="btn primary" data-act="random">🎲 Random chain</button>
+      <input id="custom" placeholder="or type your own, e.g. HPHPPHHPHH" maxlength="140" spellcheck="false" autocomplete="off">
+      <button class="btn" data-act="custom">Fold it</button></div>
+    <div id="customErr" class="err"></div>
+    <div class="foot"><b>Pro tip:</b> the lattice is a checkerboard, so residues <i>i</i> and <i>j</i> can only ever touch when <i>i − j</i> is odd. The red glow (hints) marks reachable free sites next to exposed H’s that a later H of the right parity could still claim.<br>
+      <b>Where E* comes from:</b> for chains up to ~30 residues it is computed exactly in your browser by branch &amp; bound over self-avoiding walks. The four longest benchmarks use the known optima from the literature, since exhaustive search there would outlast your coffee.<br>
+      <b>Keys:</b> ← ↑ → ↓ / WASD place next residue · Z undo · O peek optimum · H hints · M sound · R restart · Esc menu</div>
+    <div class="dimlink"><a class="btn" href="hp-snake-3d.html">🧊 Too flat? Try HP Snake 3-D</a></div>`;
+}
+
+// =====================================================================================
+//  Camera & layout
+// =====================================================================================
+const cam = { x: 0, y: 0, s: 44, tx: 0, ty: 0, ts: 44, shake: 0, ox: 0, oy: 0 };
+const view = { cx: 0, cy: 0, w: 1, h: 1 };
+let VW = 0, VH = 0, DPR = 1;
+
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2); VW = innerWidth; VH = innerHeight;
+  cv.width = Math.round(VW * DPR); cv.height = Math.round(VH * DPR);
+  cv.style.width = VW + 'px'; cv.style.height = VH + 'px';
+  layoutStrip(); measure(); positionFloaters();
+  if (G && !$('#result').hidden) $('#result').style.bottom = (innerHeight - $('#bottom').getBoundingClientRect().top + 8) + 'px';
+  camTarget(true);
+}
+function measure() {
+  const tr = $('#tr').getBoundingClientRect(), tl = $('#tl').getBoundingClientRect();
+  let top = Math.max(tr.bottom, tl.bottom) + 10;
+  const res = $('#result');
+  let bot = VH - (res.hidden ? $('#bottom') : res).getBoundingClientRect().top + 10;
+  const maxInset = VH * 0.62;
+  if (top + bot > maxInset) { const f = maxInset / (top + bot); top *= f; bot *= f; }
+  view.w = VW; view.h = Math.max(80, VH - top - bot); view.cx = VW / 2; view.cy = top + view.h / 2;
+}
+function shownChain() {
+  if (G.showOpt && OPT.fold) return { xs: OPT.fold.xs, ys: OPT.fold.ys, k: OPT.fold.xs.length, contacts: OPT.fold.contacts, born: null };
+  return { xs: G.xs, ys: G.ys, k: G.k, contacts: G.contacts, born: G.born };
+}
+function isLive() { return G && !G.showOpt && (G.state === 'running' || G.state === 'ready'); }
+function camTarget(snap) {
+  if (!G) return;
+  const c = shownChain(), live = isLive();
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  for (let i = 0; i < c.k; i++) { x0 = Math.min(x0, c.xs[i]); x1 = Math.max(x1, c.xs[i]); y0 = Math.min(y0, c.ys[i]); y1 = Math.max(y1, c.ys[i]); }
+  const pad = live ? 3 : 1.4;
+  x0 -= pad; x1 += pad; y0 -= pad; y1 += pad;
+  const maxS = Math.min(58, Math.min(view.w, view.h) / 7.5);
+  let s = Math.max(10, Math.min(view.w / (x1 - x0), view.h / (y1 - y0), maxS));
+  let x = (x0 + x1) / 2, y = (y0 + y1) / 2;
+  if (live) {
+    const hx = c.xs[c.k - 1], hy = c.ys[c.k - 1];
+    const hw = Math.max(0, view.w / (2 * s) - 2.5), hh = Math.max(0, view.h / (2 * s) - 2.5);
+    x = clamp(x, hx - hw, hx + hw); y = clamp(y, hy - hh, hy + hh);
+  }
+  cam.tx = x; cam.ty = y; cam.ts = s;
+  if (snap) { cam.x = x; cam.y = y; cam.s = s; }
+}
+const SX = x => view.cx + (x - cam.x) * cam.s + cam.ox;
+const SY = y => view.cy - (y - cam.y) * cam.s + cam.oy;
+
+// =====================================================================================
+//  Effects
+// =====================================================================================
+function burst(x, y, n, colors, speed = 3) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, v = speed * (0.4 + Math.random());
+    parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, decay: 1.4 + Math.random() * 1.2, r: 0.04 + Math.random() * 0.06, c: pick(colors) });
+  }
+}
+function launchConfetti() {
+  const cols = [COL.h, COL.p, COL.gold, '#fff', '#f87171'];
+  for (let i = 0; i < 180; i++) confetti.push({
+    x: Math.random() * VW, y: -20 - Math.random() * VH * 0.5, vx: (Math.random() - 0.5) * 80, vy: 90 + Math.random() * 160,
+    rot: Math.random() * TAU, vr: (Math.random() - 0.5) * 10, w: 6 + Math.random() * 6, h: 3 + Math.random() * 4, c: pick(cols),
+  });
+}
+function updateFX(dt) {
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= Math.exp(-dt * 3); p.vy *= Math.exp(-dt * 3); p.life -= p.decay * dt;
+    if (p.life <= 0) parts.splice(i, 1);
+  }
+  for (let i = confetti.length - 1; i >= 0; i--) {
+    const p = confetti[i];
+    p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt; p.vx += Math.sin(p.y / 40) * 4 * dt;
+    if (p.y > VH + 30) confetti.splice(i, 1);
+  }
+  const now = performance.now();
+  for (let i = floats.length - 1; i >= 0; i--) if (now - floats[i].t0 > 1200) floats.splice(i, 1);
+  cam.shake *= Math.exp(-dt * 5);
+  if (cam.shake < 0.01) cam.shake = 0;
+  cam.ox = cam.shake ? (Math.random() - 0.5) * cam.shake * 18 : 0;
+  cam.oy = cam.shake ? (Math.random() - 0.5) * cam.shake * 18 : 0;
+}
+
+// =====================================================================================
+//  Rendering
+// =====================================================================================
+const ctx = cv.getContext('2d');
+
+function drawGrid() {
+  const s = cam.s;
+  const xa = Math.floor(cam.x - (view.cx + 30) / s), xb = Math.ceil(cam.x + (VW - view.cx + 30) / s);
+  const ya = Math.floor(cam.y - (VH - view.cy + 30) / s), yb = Math.ceil(cam.y + (view.cy + 30) / s);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(148,163,184,0.065)';
+  ctx.beginPath();
+  for (let x = xa; x <= xb; x++) { const X = Math.round(SX(x)) + 0.5; ctx.moveTo(X, 0); ctx.lineTo(X, VH); }
+  for (let y = ya; y <= yb; y++) { const Y = Math.round(SY(y)) + 0.5; ctx.moveTo(0, Y); ctx.lineTo(VW, Y); }
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(148,163,184,0.17)';
+  ctx.beginPath();
+  const X0 = Math.round(SX(0)) + 0.5, Y0 = Math.round(SY(0)) + 0.5;
+  ctx.moveTo(X0, 0); ctx.lineTo(X0, VH); ctx.moveTo(0, Y0); ctx.lineTo(VW, Y0);
+  ctx.stroke();
+  if (s >= 14) {
+    ctx.fillStyle = 'rgba(148,163,184,0.3)';
+    const d = s >= 30 ? 2.2 : 1.6;
+    for (let x = xa; x <= xb; x++) { const X = SX(x); for (let y = ya; y <= yb; y++) ctx.fillRect(X - d / 2, SY(y) - d / 2, d, d); }
+  }
+}
+
+function drawHot(now) {
+  const remH = [0, 0];
+  for (let i = G.k; i < G.n; i++) if (G.H[i]) remH[i & 1]++;
+  const hot = new Map(), reach = reachInfo().seen;
+  for (let i = 0; i < G.k; i++) {
+    if (!G.H[i]) continue;
+    for (let d = 0; d < 4; d++) {
+      const x = G.xs[i] + DX[d], y = G.ys[i] + DY[d], key = keyOf(x, y);
+      if (!reach.has(key) || !remH[((x + y) % 2 + 2) % 2]) continue;   // reachable, and a site only ever hosts residues of one parity
+      const h = hot.get(key);
+      if (h) h.n++; else hot.set(key, { x, y, n: 1 });
+    }
+  }
+  const s = cam.s, pulse = 0.85 + 0.15 * Math.sin(now / 320);
+  for (const h of hot.values()) {
+    const X = SX(h.x), Y = SY(h.y), R = s * 0.5;
+    const g = ctx.createRadialGradient(X, Y, 0, X, Y, R);
+    g.addColorStop(0, `rgba(239,68,68,${(0.12 + 0.1 * h.n) * pulse})`);
+    g.addColorStop(1, 'rgba(239,68,68,0)');
+    ctx.fillStyle = g; ctx.fillRect(X - R, Y - R, 2 * R, 2 * R);
+  }
+}
+
+function residuePos(c, i, now, anim) {
+  let x = c.xs[i], y = c.ys[i];
+  if (c.born && i > 0) {
+    const t = (now - c.born[i]) / anim;
+    if (t < 1) { const e = easeOutCubic(Math.max(0, t)); x = c.xs[i - 1] + (x - c.xs[i - 1]) * e; y = c.ys[i - 1] + (y - c.ys[i - 1]) * e; }
+  }
+  return [SX(x), SY(y)];
+}
+
+function drawEyes(X, Y, r, dir, mood, now) {
+  const fx = DX[dir], fy = -DY[dir], px = -fy, py = fx;
+  for (const side of [-1, 1]) {
+    const ex = X + fx * r * 0.28 + px * r * 0.4 * side, ey = Y + fy * r * 0.28 + py * r * 0.4 * side;
+    if (mood === 'dead') {
+      const q = r * 0.17;
+      ctx.strokeStyle = '#1b1f27'; ctx.lineWidth = Math.max(1.5, r * 0.11); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(ex - q, ey - q); ctx.lineTo(ex + q, ey + q); ctx.moveTo(ex + q, ey - q); ctx.lineTo(ex - q, ey + q); ctx.stroke();
+    } else if (mood === 'happy') {
+      ctx.strokeStyle = '#1b1f27'; ctx.lineWidth = Math.max(1.5, r * 0.11); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.arc(ex, ey + r * 0.06, r * 0.17, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+    } else {
+      const blink = (now % 3400) < 110;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.ellipse(ex, ey, r * 0.23, blink ? r * 0.04 : r * 0.23, 0, 0, TAU); ctx.fill();
+      if (!blink) { ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(ex + fx * r * 0.09, ey + fy * r * 0.09, r * 0.11, 0, TAU); ctx.fill(); }
+    }
+  }
+}
+
+function drawChain(c, now) {
+  const s = cam.s, r = s * 0.3, anim = 90;
+  const P = [];
+  for (let i = 0; i < c.k; i++) P.push(residuePos(c, i, now, anim));
+
+  // H–H contacts: glowing dashed gold
+  ctx.save();
+  ctx.lineCap = 'round';
+  ctx.setLineDash([Math.max(3, s * 0.12), Math.max(2.5, s * 0.09)]);
+  ctx.lineDashOffset = -now / 35;
+  ctx.strokeStyle = COL.gold; ctx.shadowColor = 'rgba(251,191,36,0.75)'; ctx.shadowBlur = Math.max(4, s * 0.25);
+  for (const [i, j, b] of c.contacts) {
+    if (i >= c.k || j >= c.k) continue;
+    const flash = b ? Math.max(0, 1 - (now - b) / 700) : 0;
+    ctx.lineWidth = Math.max(1.5, s * 0.065) * (1 + 1.6 * flash);
+    ctx.beginPath(); ctx.moveTo(P[i][0], P[i][1]); ctx.lineTo(P[j][0], P[j][1]); ctx.stroke();
+  }
+  ctx.restore();
+
+  // backbone
+  if (c.k > 1) {
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'rgba(203,213,225,0.85)'; ctx.lineWidth = Math.max(2, s * 0.13);
+    ctx.beginPath(); ctx.moveTo(P[0][0], P[0][1]);
+    for (let i = 1; i < c.k; i++) ctx.lineTo(P[i][0], P[i][1]);
+    ctx.stroke();
+  }
+
+  // origin ring
+  ctx.save();
+  ctx.setLineDash([3, 3]); ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.arc(SX(0), SY(0), r * 1.5, 0, TAU); ctx.stroke();
+  ctx.restore();
+
+  // residues
+  const headI = c.k - 1;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (let i = 0; i < c.k; i++) {
+    const [X, Y] = P[i], isH = G.seq[i] === 'H';
+    let rr = r;
+    if (c.born) { const t = (now - c.born[i]) / 240; if (t < 1) rr = r * Math.max(0.2, easeOutBack(Math.max(0, t))); }
+    ctx.beginPath(); ctx.arc(X, Y, rr, 0, TAU);
+    ctx.fillStyle = isH ? COL.h : COL.p; ctx.fill();
+    ctx.lineWidth = Math.max(1, s * 0.035); ctx.strokeStyle = isH ? COL.hDark : COL.pDark; ctx.stroke();
+    ctx.beginPath(); ctx.arc(X - rr * 0.33, Y - rr * 0.33, rr * 0.3, 0, TAU);
+    ctx.fillStyle = 'rgba(255,255,255,0.26)'; ctx.fill();
+    if (i !== headI && rr > 8) {
+      ctx.font = `700 ${Math.round(rr * 0.95)}px ui-rounded, system-ui, sans-serif`;
+      ctx.fillStyle = isH ? 'rgba(255,255,255,0.88)' : 'rgba(31,41,55,0.75)';
+      ctx.fillText(isH ? 'H' : 'P', X, Y + 0.5);
+    }
+  }
+
+  // head with eyes
+  if (c.k >= 1) {
+    const [X, Y] = P[headI];
+    let mood = 'normal', dir = dirOf(c.xs, c.ys, c.k);
+    if (G.showOpt || G.state === 'done') mood = 'happy';
+    else if (G.state === 'dead') mood = 'dead';
+    drawEyes(X, Y, r, dir, mood, now);
+  }
+}
+
+function drawGhosts(now) {
+  if (G.k >= G.n) return;
+  const k = G.k, hx = G.xs[k - 1], hy = G.ys[k - 1], s = cam.s, r = s * 0.3;
+  const isH = G.H[k];
+  for (let d = 0; d < 4; d++) {
+    if (k > 1 && d === (G.lastDir + 2) % 4) continue;
+    const x = hx + DX[d], y = hy + DY[d], X = SX(x), Y = SY(y);
+    if (G.occ.has(keyOf(x, y))) continue;
+    const a = 0.34;
+    ctx.globalAlpha = a;
+    ctx.beginPath(); ctx.arc(X, Y, r * 0.92, 0, TAU);
+    ctx.fillStyle = isH ? COL.h : COL.p; ctx.fill();
+    ctx.globalAlpha = Math.min(1, a + 0.25);
+    ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.stroke(); ctx.restore();
+    ctx.globalAlpha = 1;
+    const g = gainAt(x, y, k);
+    if (g > 0) {
+      const bx = X + r * 0.85, by = Y - r * 0.85, br = Math.max(8, r * 0.5);
+      ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fillStyle = COL.gold; ctx.fill();
+      ctx.fillStyle = '#1b1f27'; ctx.font = `800 ${Math.round(br * 1.1)}px ui-rounded, system-ui, sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('+' + g, bx, by + 0.5);
+      ctx.globalAlpha = 1;
+    }
+  }
+}
+
+function drawDeath(now) {
+  const d = G.death, r = cam.s * 0.3, p = 0.5 + 0.5 * Math.sin(now / 110);
+  const X = SX(d.type === 'clash' ? d.x : G.xs[G.k - 1]), Y = SY(d.type === 'clash' ? d.y : G.ys[G.k - 1]);
+  ctx.strokeStyle = `rgba(248,113,113,${0.45 + 0.55 * p})`; ctx.lineWidth = Math.max(2, cam.s * 0.07);
+  ctx.beginPath(); ctx.arc(X, Y, r * (1.45 + 0.25 * p), 0, TAU); ctx.stroke();
+  if (d.type === 'clash') {
+    const q = r * 0.7;
+    ctx.beginPath(); ctx.moveTo(X - q, Y - q); ctx.lineTo(X + q, Y + q); ctx.moveTo(X + q, Y - q); ctx.lineTo(X - q, Y + q); ctx.stroke();
+  }
+}
+
+function drawFX(now) {
+  const s = cam.s;
+  for (const p of parts) {
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.c;
+    ctx.beginPath(); ctx.arc(SX(p.x), SY(p.y), Math.max(1.2, p.r * s), 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const f of floats) {
+    const t = (now - f.t0) / 1200;
+    ctx.globalAlpha = Math.max(0, 1 - t * t);
+    ctx.font = `800 ${Math.round(clamp(s * 0.42, 14, 24))}px ui-rounded, system-ui, sans-serif`;
+    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(11,16,25,0.85)';
+    const X = SX(f.x), Y = SY(f.y + t * 1.1);
+    ctx.strokeText(f.text, X, Y); ctx.fillStyle = COL.gold; ctx.fillText(f.text, X, Y);
+  }
+  ctx.globalAlpha = 1;
+  for (const p of confetti) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+    ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+    ctx.restore();
+  }
+}
+
+function draw(now) {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.fillStyle = '#0b1019'; ctx.fillRect(0, 0, VW, VH);
+  const vg = ctx.createRadialGradient(VW / 2, view.cy, 0, VW / 2, view.cy, Math.max(VW, VH) * 0.7);
+  vg.addColorStop(0, 'rgba(30,41,64,0.55)'); vg.addColorStop(1, 'rgba(30,41,64,0)');
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, VW, VH);
+  drawGrid();
+  if (!G) return;
+  const live = isLive();
+  if (live && settings.hints) drawHot(now);
+  drawChain(shownChain(), now);
+  if (live) drawGhosts(now);
+  if (!G.showOpt && G.state === 'dead') drawDeath(now);
+  drawFX(now);
+}
+
+// =====================================================================================
+//  Main loop
+// =====================================================================================
+let lastT = performance.now();
+function frame(t) {
+  const dt = Math.min(0.05, (t - lastT) / 1000); lastT = t;
+  if (G) camTarget();
+  const f = 1 - Math.exp(-dt * 5);
+  cam.x += (cam.tx - cam.x) * f; cam.y += (cam.ty - cam.y) * f; cam.s += (cam.ts - cam.s) * f;
+  updateFX(dt);
+  draw(t);
+  requestAnimationFrame(frame);
+}
+
+addEventListener('resize', resize);
+newGame(LEVELS[0]);
+resize();
+openMenu();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

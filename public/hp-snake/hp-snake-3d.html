@@ -1,0 +1,1299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Snake meets the 3-D HP protein folding problem: steer the growing chain step by step through an infinite cubic lattice, hug as many H's together as you can, and don't bite yourself.">
+<title>HP Snake 3D</title>
+<style>
+  :root {
+    --bg: #0b1019; --ink: #e9eef6; --muted: #8e9ab0; --faint: #5d677b;
+    --panel: rgba(16, 22, 34, .86); --line: rgba(148, 163, 184, .16);
+    --h: #ef4444; --p: #9ca3af; --gold: #fbbf24; --ok: #34d399; --bad: #f87171;
+    --round: ui-rounded, "SF Pro Rounded", "Nunito", "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink);
+    font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; touch-action: none; user-select: none; -webkit-user-select: none; }
+  canvas#cv { position: fixed; inset: 0; display: block; cursor: grab; }
+  canvas#cv.drag { cursor: grabbing; }
+  canvas#cv.pointy { cursor: pointer; }
+  button { font: inherit; color: inherit; }
+  a { color: var(--gold); }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 8px 30px rgba(0,0,0,.35); }
+
+  /* ---------- top-left: title + level */
+  #tl { position: fixed; left: 16px; top: 16px; padding: 10px 14px 11px; max-width: min(340px, calc(50vw - 24px)); }
+  .brand { font: 800 20px/1.1 var(--round); letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; }
+  .cube { display: inline-grid; grid-template-columns: repeat(2, 7px); gap: 2px; transform: rotate(-12deg) skewX(-8deg); }
+  .cube i { width: 7px; height: 7px; border-radius: 50%; display: block; }
+  .brand sup { font-size: 11px; color: var(--gold); font-weight: 800; margin-left: -4px; }
+  #lvlName { margin-top: 5px; font-weight: 650; font-size: 13.5px; }
+  #lvlMeta { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .chip { font-size: 11.5px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line);
+    color: var(--muted); background: transparent; cursor: pointer; white-space: nowrap; }
+  .chip:hover { color: var(--ink); border-color: rgba(148,163,184,.4); }
+  .chip.off { opacity: .55; text-decoration: line-through; }
+
+  /* ---------- top-right: energy */
+  #tr { position: fixed; right: 16px; top: 16px; padding: 12px 16px; width: min(300px, calc(50vw - 24px)); }
+  .erow { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  .erow + .erow { margin-top: 6px; }
+  .lab { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 650; }
+  .lab i { font-style: normal; text-transform: none; letter-spacing: 0; color: var(--faint); font-weight: 500; display: block; font-size: 11px; margin-top: 1px; }
+  .big { font: 800 34px/1 var(--round); font-variant-numeric: tabular-nums; letter-spacing: -.02em; white-space: nowrap; }
+  #eYou.bump { animation: bump .35s ease-out; }
+  @keyframes bump { 30% { transform: scale(1.18); color: var(--gold); } }
+  #eOpt { color: var(--gold); }
+  .bar { position: relative; height: 8px; border-radius: 99px; background: rgba(148,163,184,.14); margin: 11px 0 7px; overflow: hidden; }
+  #barFill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 99px;
+    background: linear-gradient(90deg, #f87171, #ef4444 55%, #fbbf24); transition: width .25s; }
+  .small { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #reach.bad { color: var(--bad); } #reach.ok { color: var(--ok); }
+
+  /* ---------- bottom: sequence strip */
+  #bottom { position: fixed; left: 50%; transform: translateX(-50%); bottom: 12px; width: min(980px, calc(100vw - 32px));
+    display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+  #strip { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--gap, 4px); padding: 9px 12px; max-width: 100%; }
+  #strip i { width: var(--d, 14px); height: var(--d, 14px); border-radius: 50%; display: block; transition: transform .15s, opacity .2s; }
+  #strip i.h { background: var(--h); } #strip i.p { background: var(--p); }
+  #strip i.done { opacity: .25; }
+  #strip i.next { transform: scale(1.45); box-shadow: 0 0 0 2px #121a28, 0 0 0 3.5px #fff; }
+  #keys { font-size: 11.5px; color: var(--faint); margin-top: 6px; text-align: center; }
+  kbd { font: 600 10.5px/1 ui-monospace, Menlo, monospace; padding: 2px 5px; border-radius: 5px; border: 1px solid var(--line);
+    color: var(--muted); background: rgba(148,163,184,.08); }
+
+  #prompt { position: fixed; left: 50%; transform: translateX(-50%); font: 700 14.5px var(--round); color: var(--ink);
+    background: var(--panel); padding: 8px 15px; border-radius: 999px; border: 1px solid var(--line);
+    animation: pulse 1.6s ease-in-out infinite; pointer-events: none; white-space: nowrap; max-width: calc(100vw - 32px); overflow: hidden; text-overflow: ellipsis; }
+  @keyframes pulse { 50% { opacity: .55; } }
+  #banner { position: fixed; left: 50%; transform: translateX(-50%); font: 700 13px var(--round); color: var(--gold);
+    background: var(--panel); padding: 7px 14px; border-radius: 999px; border: 1px solid rgba(251,191,36,.35); white-space: nowrap; }
+
+  /* ---------- result card */
+  #result { position: fixed; left: 50%; transform: translateX(-50%); width: min(560px, calc(100vw - 32px)); padding: 14px 18px 16px; text-align: center; }
+  .rtitle { font: 800 24px/1.15 var(--round); }
+  .rtitle.bad { color: var(--bad); }
+  .rsub { color: var(--muted); margin-top: 4px; font-size: 13.5px; }
+  .rstats { margin-top: 8px; font-variant-numeric: tabular-nums; font-size: 13px; }
+  .rstats b { font-weight: 700; }
+  .newbest { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 700; color: #0b1019; background: var(--gold); border-radius: 99px; padding: 1px 7px; vertical-align: 1px; }
+  .stars { font-size: 28px; letter-spacing: 4px; color: var(--gold); line-height: 1; margin-bottom: 4px; }
+  .stars .off, .ms .off { color: rgba(148,163,184,.25); }
+  .btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 13px; }
+  .btn { font: 650 13px var(--round); padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line);
+    background: rgba(148,163,184,.08); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { background: rgba(148,163,184,.17); }
+  .btn.primary { background: var(--h); border-color: transparent; color: #fff; }
+  .btn.primary:hover { filter: brightness(1.1); }
+  .btn:disabled { opacity: .38; cursor: default; }
+  .btn kbd { margin-left: 6px; }
+  .btn.primary kbd { color: #fff; border-color: rgba(255,255,255,.4); background: rgba(255,255,255,.12); }
+
+  /* ---------- menu overlay */
+  #ov { position: fixed; inset: 0; background: rgba(6,9,15,.66); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+    overflow-y: auto; padding: 28px 16px; touch-action: pan-y; }
+  #menuCard { width: min(900px, 100%); margin: 0 auto; padding: 24px 26px 22px; position: relative; }
+  .title { font: 900 46px/1 var(--round); letter-spacing: -.03em; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .title .cube { grid-template-columns: repeat(2, 13px); gap: 4px; }
+  .title .cube i { width: 13px; height: 13px; }
+  .title sup { font-size: 20px; color: var(--gold); margin-left: -8px; }
+  .tag { color: var(--muted); font-size: 15.5px; margin-top: 7px; }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 18px; }
+  @media (max-width: 560px) { .rules { grid-template-columns: 1fr; } }
+  .rule { background: rgba(148,163,184,.06); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13px; color: #c3ccda; }
+  .rule b { color: var(--ink); }
+  .dot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; vertical-align: -1px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .kind { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin: 18px 0 8px; font-weight: 700; }
+  .lvgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 9px; }
+  .lv { text-align: left; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: rgba(148,163,184,.05); cursor: pointer; }
+  .lv:hover { border-color: rgba(248,113,113,.65); background: rgba(239,68,68,.08); }
+  .lv.cur { border-color: rgba(251,191,36,.55); }
+  .lvtop { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-weight: 700; }
+  .ms { color: var(--gold); font-size: 12px; letter-spacing: 1px; }
+  .lvdots { display: flex; flex-wrap: wrap; gap: 2px; margin: 7px 0 6px; }
+  .lvdots i { width: 6px; height: 6px; border-radius: 50%; display: block; }
+  .lvmeta { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  #custom { flex: 1; min-width: 200px; font: 13px ui-monospace, Menlo, monospace; padding: 9px 11px; border-radius: 10px;
+    border: 1px solid var(--line); background: rgba(0,0,0,.25); color: var(--ink); text-transform: uppercase; user-select: text; -webkit-user-select: text; }
+  #custom:focus { outline: none; border-color: rgba(248,113,113,.6); }
+  .err { color: var(--bad); font-size: 12.5px; min-height: 1.2em; margin-top: 6px; }
+  .foot { color: var(--faint); font-size: 12px; margin-top: 14px; line-height: 1.55; }
+  .foot b { color: var(--muted); }
+  .x { position: absolute; right: 14px; top: 14px; }
+  .dimlink { margin-top: 14px; }
+
+  /* ---------- touch d-pad */
+  #dpad { position: fixed; right: 14px; bottom: 76px; display: grid; grid-template-columns: repeat(3, 50px); grid-template-rows: repeat(3, 50px); gap: 4px; }
+  #dpad button { border-radius: 12px; border: 1px solid var(--line); background: var(--panel); font-size: 19px; color: var(--ink); touch-action: none; }
+  #dpad button.depth { font-size: 22px; color: var(--gold); }
+  #dpad button.rot { font-size: 17px; color: var(--muted); }
+  #dpad button:active { background: rgba(239,68,68,.35); }
+
+  @media (max-width: 640px) {
+    #tl { padding: 8px 10px; } .brand { font-size: 16px; } #lvlName { font-size: 12.5px; }
+    #tr { padding: 9px 11px; } .big { font-size: 25px; } .lab i { display: none; }
+    .small { flex-direction: column; gap: 1px; }
+    .title { font-size: 34px; } #menuCard { padding: 18px 16px; }
+    #keys { display: none; }
+  }
+  @media (pointer: coarse) { #keys { display: none; } }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+
+<div id="tl" class="panel">
+  <div class="brand"><span class="cube"><i style="background:var(--h)"></i><i style="background:var(--p)"></i><i style="background:var(--p)"></i><i style="background:var(--h)"></i></span>HP Snake <sup>3D</sup></div>
+  <div id="lvlName">—</div>
+  <div id="lvlMeta">—</div>
+  <div class="chips">
+    <button class="chip" data-act="menu" title="Levels (Esc)">☰ levels</button>
+    <button class="chip" id="chipHints" data-act="hints" title="Toggle hot-spot hints (H)">💡 hints</button>
+    <button class="chip" id="chipSound" data-act="sound" title="Toggle sound (M)">🔊 sound</button>
+    <button class="chip" data-act="view" title="Reset the camera (V)">🎥 view</button>
+  </div>
+</div>
+
+<div id="tr" class="panel" aria-live="polite">
+  <div class="erow"><span class="lab">Your energy<i>E = −(# H–H contacts)</i></span><span id="eYou" class="big">0</span></div>
+  <div class="erow"><span class="lab">Theoretical min E*<i id="eSrc">…</i></span><span id="eOpt" class="big">…</span></div>
+  <div class="bar"><div id="barFill"></div></div>
+  <div class="small"><span id="cnt">0 / ? contacts</span><span id="reach"></span></div>
+</div>
+
+<div id="bottom">
+  <div id="strip" class="panel"></div>
+  <div id="keys"><kbd>← ↑ → ↓</kbd> / <kbd>WASD</kbd> across the screen · <kbd>Q</kbd> into · <kbd>E</kbd> out of the screen · drag to orbit · <kbd>Z</kbd> undo · <kbd>H</kbd> hints · <kbd>R</kbd> restart · <kbd>Esc</kbd> levels</div>
+</div>
+
+<div id="prompt" hidden></div>
+<div id="banner" hidden></div>
+<div id="result" class="panel" hidden></div>
+
+<div id="dpad" hidden>
+  <button class="depth" data-int="in" aria-label="into the screen">⊗</button><button data-int="up" aria-label="up">▲</button><button class="depth" data-int="out" aria-label="out of the screen">⊙</button>
+  <button data-int="left" aria-label="left">◀</button><button data-undo="1" aria-label="undo">↶</button><button data-int="right" aria-label="right">▶</button>
+  <button class="rot" data-rot="-1" aria-label="rotate view left">⟲</button><button data-int="down" aria-label="down">▼</button><button class="rot" data-rot="1" aria-label="rotate view right">⟳</button>
+</div>
+
+<div id="ov" hidden><div id="menuCard" class="panel"></div></div>
+
+<script>
+'use strict';
+// =====================================================================================
+//  Constants & levels
+// =====================================================================================
+// directions on the cubic lattice: 0 = +x, 1 = +y (up), 2 = +z (towards the default camera), 3 = −x, 4 = −y, 5 = −z
+const DV = [[1, 0, 0], [0, 1, 0], [0, 0, 1], [-1, 0, 0], [0, -1, 0], [0, 0, -1]];
+const OPP = d => (d + 3) % 6;
+const MOVES = 'RUFLDB';                                   // move letters, same order as DV
+const COL = { h: '#ef4444', p: '#9ca3af', bond: '#cbd5e1', gold: '#fbbf24', bad: '#f87171' };
+const SHADE = {                                           // sphere gradients: highlight, body, rim
+  h: ['#ffb4b4', '#ef4444', '#7a1414'],
+  p: ['#f3f4f6', '#9ca3af', '#3b4250'],
+};
+const TAU = Math.PI * 2;
+
+// opt = max # of H–H contacts (E* = −opt); fold = move string of an optimal fold (R/L = ±x, U/D = ±y, F/B = ±z).
+// Every fold below was checked to reach `opt`; that `opt` is the maximum was shown by exhaustive search
+// (branch & bound below, or scripts/hp-optimum.ts on the site), and for the 27-H cube by isoperimetry.
+const LEVELS = [
+  { name: 'Hairpin',      seq: 'HPPH',             opt: 1,  fold: 'RUL',             kind: 'warm' },
+  { name: 'Zig-zag',      seq: 'HPHPPHPH',         opt: 3,  fold: 'RURULLD',         kind: 'warm' },
+  { name: 'Clamp',        seq: 'HHPHPPHPHH',       opt: 5,  fold: 'RULUFDRDL',       kind: 'warm' },
+  { name: 'Twins',        seq: 'HPPHHPPHHPPH',     opt: 5,  fold: 'RULURFLDRDL',     kind: 'warm' },
+  { name: 'Sugar cube',   seq: 'HHHHHHHH',         opt: 5,  fold: 'RULFRDL',         kind: 'warm' },
+  { name: 'Loops',        seq: 'PHHPPHHPPHHPPHHP', opt: 8,  fold: 'RRRULLLFRRRDLLL', kind: 'warm' },
+  { name: 'Little core',  seq: 'HPHHPPHHHHPHHHPH', opt: 10, fold: 'RULUFDLBDLFRRRU', kind: 'warm' },
+  { name: 'Benchmark 20', seq: 'HPHPPHHPHPPHPHHPPHPH', opt: 11, fold: 'RURULLLFLDRBRFDRUUL', kind: 'bench',
+    src: 'exact · exhaustive search' },
+  { name: 'The 3×3×3 cube', seq: 'HHHHHHHHHHHHHHHHHHHHHHHHHHH', opt: 28, fold: 'RRULLURRFLLDRRDLLFRRULLURR', kind: 'bench',
+    src: 'proved · isoperimetry' },
+];
+LEVELS.forEach((L, i) => { L.idx = i; });
+
+// =====================================================================================
+//  Exact solver: branch & bound over self-avoiding walks (also shipped into a Web Worker)
+// =====================================================================================
+function solveHP3(seq, timeLimitMs) {
+  const n = seq.length;
+  const H = Uint8Array.from(seq, c => (c === 'H' ? 1 : 0));
+  const R = n + 1, W = 2 * R + 1, W2 = W * W;
+  const occ = new Int32Array(W * W2).fill(-1);
+  const D = [1, W, W2, -1, -W, -W2];
+  const C = R * (1 + W + W2);
+  const pos = new Int32Array(n);
+  // an interior H has ≤ 4 free sides, a chain end ≤ 5; a contact always joins an even- and an odd-indexed residue
+  const cap = i => (H[i] ? (i === 0 || i === n - 1 ? 5 : 4) : 0);
+  const suf0 = new Int32Array(n + 1), suf1 = new Int32Array(n + 1);
+  for (let i = n - 1; i >= 0; i--) { suf0[i] = suf0[i + 1] + (i % 2 === 0 ? cap(i) : 0); suf1[i] = suf1[i + 1] + (i % 2 === 1 ? cap(i) : 0); }
+  const pc = [0, 0];                                     // free sides of the placed H's, by parity
+  let best = -1, bestPos = null, nodes = 0, aborted = false;
+  const t0 = Date.now();
+  const place = (q, d) => {
+    let g = 0;
+    for (let t = 0; t < 6; t++) { const j = occ[q + D[t]]; if (j >= 0 && H[j]) { pc[j & 1]--; if (H[d] && j !== d - 1) g++; } }
+    occ[q] = d;
+    let f = 0;
+    if (H[d]) for (let t = 0; t < 6; t++) if (occ[q + D[t]] < 0) f++;
+    pc[d & 1] += f;
+    return [g, f];
+  };
+  const unplace = (q, d, f) => {
+    pc[d & 1] -= f; occ[q] = -1;
+    for (let t = 0; t < 6; t++) { const j = occ[q + D[t]]; if (j >= 0 && H[j]) pc[j & 1]++; }
+  };
+  pos[0] = C; occ[C] = 0; if (H[0]) pc[0] += 6;
+  if (n === 1) return { best: 0, fold: [C], exact: true, W };
+  pos[1] = C + 1; place(C + 1, 1);
+  if (n === 2) return { best: 0, fold: [C, C + 1], exact: true, W };
+  // symmetry: the first step is +x, the first step off the x-axis is +y, the first step off the xy-plane is +z
+  function rec(d, score, st) {
+    if (aborted) return;
+    if ((++nodes & 0x3ffff) === 0 && Date.now() - t0 > timeLimitMs) { aborted = true; return; }
+    if (d === n) { if (score > best) { best = score; bestPos = Array.from(pos); } return; }
+    const uE = suf0[d], uO = suf1[d];
+    if (score + Math.min(uE + uO, uE + pc[0], uO + pc[1]) <= best) return;
+    const p0 = pos[d - 1], cq = [], ck = [], cs = [];
+    for (let s = 0; s < 6; s++) {
+      let ns = st;
+      if (st === 0) { if (s === 0) ns = 0; else if (s === 1) ns = 1; else continue; }
+      else if (st === 1) { if (s === 5) continue; if (s === 2) ns = 2; }
+      const q = p0 + D[s];
+      if (occ[q] >= 0) continue;
+      let g = 0, o = 0;
+      for (let t = 0; t < 6; t++) { const j = occ[q + D[t]]; if (j >= 0) { o++; if (H[d] && j < d - 1 && H[j]) g++; } }
+      const key = g * 8 + o;                             // contacts first, then compactness
+      let i = cq.length; cq.push(q); ck.push(key); cs.push(ns);
+      while (i > 0 && ck[i - 1] < key) { cq[i] = cq[i - 1]; ck[i] = ck[i - 1]; cs[i] = cs[i - 1]; i--; }
+      cq[i] = q; ck[i] = key; cs[i] = ns;
+    }
+    for (let i = 0; i < cq.length; i++) {
+      const q = cq[i];
+      const gf = place(q, d);
+      pos[d] = q;
+      rec(d + 1, score + gf[0], cs[i]);
+      unplace(q, d, gf[1]);
+      if (aborted) return;
+    }
+  }
+  rec(2, 0, 0);
+  return { best, fold: bestPos, exact: !aborted, nodes, ms: Date.now() - t0, W };
+}
+
+// contacts only join residues of opposite index parity, and each H has ≤ 4 free sides (≤ 5 at a chain end)
+function parityBound(seq) {
+  const n = seq.length; let e = 0, o = 0;
+  for (let i = 0; i < n; i++) if (seq[i] === 'H') { const cap = (i === 0 || i === n - 1) ? 5 : 4; if (i & 1) o += cap; else e += cap; }
+  return Math.min(e, o);
+}
+
+let solverWorker = null;
+function runSolver(seq, ms, cb) {
+  if (solverWorker) { solverWorker.terminate(); solverWorker = null; }
+  const fallback = () => setTimeout(() => cb(solveHP3(seq, Math.min(ms, 1500))), 30);
+  try {
+    const src = solveHP3.toString() + '\nonmessage = e => postMessage(solveHP3(e.data.seq, e.data.ms));';
+    const url = URL.createObjectURL(new Blob([src], { type: 'text/javascript' }));
+    const w = new Worker(url);
+    solverWorker = w;
+    w.onmessage = e => { w.terminate(); if (solverWorker === w) solverWorker = null; URL.revokeObjectURL(url); cb(e.data); };
+    w.onerror = ev => { if (ev.preventDefault) ev.preventDefault(); w.terminate(); if (solverWorker === w) solverWorker = null; fallback(); };
+    w.postMessage({ seq, ms });
+  } catch (err) { fallback(); }
+}
+
+// =====================================================================================
+//  Small helpers, storage, audio
+// =====================================================================================
+const $ = s => document.querySelector(s);
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const keyOf = (x, y, z) => ((x + 512) * 1024 + (y + 512)) * 1024 + (z + 512);
+const fmtE = v => (v === 0 ? '0' : v < 0 ? '−' + (-v) : '+' + v);
+const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+const easeOutBack = t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const COARSE = matchMedia('(pointer: coarse)').matches;
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('hpsnake3d.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('hpsnake3d.' + k, JSON.stringify(v)); } catch (e) { /* private mode etc. */ } },
+};
+const settings = { hints: store.get('hints', true), muted: store.get('muted', false) };
+const best = store.get('best', {}) || {};                // keyed by sequence → max contacts achieved
+
+let AC = null;
+function audio() {
+  if (settings.muted) return null;
+  if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
+function beep(freq, dur = 0.08, type = 'sine', vol = 0.05, slide = 0, delay = 0) {
+  const a = audio(); if (!a) return;
+  const t = a.currentTime + delay, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t);
+  if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq * slide), t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + 0.03);
+}
+const sfx = {
+  step(isH, depth) { beep((isH ? 330 : 247) * (depth ? 1.12 : 1), 0.045, 'triangle', 0.03); },
+  hug(g, total) { for (let i = 0; i < g; i++) beep(523 * Math.pow(2, Math.min(total - g + i, 24) / 12), 0.16, 'sine', 0.07, 0, i * 0.075); },
+  die() { beep(190, 0.5, 'sawtooth', 0.05, 0.25); beep(95, 0.5, 'square', 0.03, 0.4); },
+  bump() { beep(110, 0.07, 'square', 0.03); },
+  win(perfect) { (perfect ? [523, 659, 784, 1047, 1319] : [523, 659, 784]).forEach((f, i) => beep(f, 0.2, 'triangle', 0.06, 0, i * 0.1)); },
+};
+
+// =====================================================================================
+//  Game state
+// =====================================================================================
+let LV = null, G = null, OPT = null, menuOpen = false, solveToken = 0;
+const parts = [], floats = [], confetti = [];
+
+function newGame(level) {
+  LV = level;
+  const n = level.seq.length, now = performance.now();
+  G = {
+    n, seq: level.seq, H: Array.from(level.seq, c => c === 'H'),
+    xs: [0], ys: [0], zs: [0], born: [now], occ: new Map([[keyOf(0, 0, 0), 0]]), k: 1,
+    contacts: [],                       // [i, j, bornTime]
+    lastDir: 0, state: 'ready', death: null, showOpt: false,
+    prevBest: best[level.seq], ver: 0, reachVer: -1, reach: null,
+  };
+  // suffix sums of the free-side caps of the unplaced H's, by index parity (for the live upper bound)
+  const cap = i => (G.H[i] ? (i === 0 || i === n - 1 ? 5 : 4) : 0);
+  G.suf = [new Int32Array(n + 1), new Int32Array(n + 1)];
+  for (let i = n - 1; i >= 0; i--) { G.suf[0][i] = G.suf[0][i + 1] + (i % 2 ? 0 : cap(i)); G.suf[1][i] = G.suf[1][i + 1] + (i % 2 ? cap(i) : 0); }
+  parts.length = floats.length = confetti.length = 0;
+  cam.shake = 0; cam.userOrbit = false;
+  requestOptimum(level);
+  buildStrip();
+  $('#result').hidden = true; $('#banner').hidden = true;
+  updateHUD(); updatePrompt();
+  measure(); camTarget(true);
+}
+
+function requestOptimum(level) {
+  const token = ++solveToken, seq = level.seq;
+  if (solverWorker) { solverWorker.terminate(); solverWorker = null; }
+  if (level.opt != null) {
+    OPT = { status: 'ready', contacts: level.opt, src: level.src || 'exact · branch & bound', exact: true,
+            upper: level.opt, fold: level.fold ? foldFromMoves(level.fold, seq) : null };
+    return;
+  }
+  OPT = { status: 'pending', contacts: null, src: '', exact: false, upper: parityBound(seq), fold: null };
+  runSolver(seq, 9000, r => {
+    if (token !== solveToken) return;
+    OPT.contacts = Math.max(0, r.best); OPT.fold = foldFromSolver(r, seq); OPT.status = 'ready';
+    OPT.exact = r.exact;
+    OPT.src = r.exact ? 'exact · branch & bound' : `best found in 9 s · bound ${fmtE(-OPT.upper)}`;
+    if (r.exact) OPT.upper = OPT.contacts;
+    updateHUD();
+    if (G.state === 'done' || G.state === 'dead') showResult();
+  });
+}
+
+function foldFromMoves(mv, seq) {
+  const xs = [0], ys = [0], zs = [0];
+  for (const ch of mv) { const d = DV[MOVES.indexOf(ch)], k = xs.length - 1; xs.push(xs[k] + d[0]); ys.push(ys[k] + d[1]); zs.push(zs[k] + d[2]); }
+  return { xs, ys, zs, contacts: contactsOf(xs, ys, zs, seq) };
+}
+function foldFromSolver(r, seq) {
+  if (!r || !r.fold) return null;
+  const W = r.W, R = (W - 1) / 2, xs = [], ys = [], zs = [];
+  for (const p of r.fold) { const x = p % W, y = Math.floor(p / W) % W, z = Math.floor(p / (W * W)); xs.push(x - R); ys.push(y - R); zs.push(z - R); }
+  return { xs, ys, zs, contacts: contactsOf(xs, ys, zs, seq) };
+}
+function contactsOf(xs, ys, zs, seq) {
+  const m = new Map(), out = [];
+  xs.forEach((x, i) => m.set(keyOf(x, ys[i], zs[i]), i));
+  for (let i = 0; i < xs.length; i++) {
+    if (seq[i] !== 'H') continue;
+    for (const d of DV) { const j = m.get(keyOf(xs[i] + d[0], ys[i] + d[1], zs[i] + d[2])); if (j !== undefined && j > i + 1 && seq[j] === 'H') out.push([i, j, 0]); }
+  }
+  return out;
+}
+
+function gainAt(x, y, z, k) {
+  if (!G.H[k]) return 0;
+  let g = 0;
+  for (const d of DV) { const j = G.occ.get(keyOf(x + d[0], y + d[1], z + d[2])); if (j !== undefined && j < k - 1 && G.H[j]) g++; }
+  return g;
+}
+function dirOf(xs, ys, zs, k) {
+  if (k < 2) return 0;
+  const dx = xs[k - 1] - xs[k - 2], dy = ys[k - 1] - ys[k - 2], dz = zs[k - 1] - zs[k - 2];
+  return dx === 1 ? 0 : dy === 1 ? 1 : dz === 1 ? 2 : dx === -1 ? 3 : dy === -1 ? 4 : 5;
+}
+
+// live upper bound on the contacts still to come: every future contact has an unplaced end and joins
+// an even- and an odd-indexed residue, and a placed H can only take as many as it has free sides
+function futureBound() {
+  const pc = [0, 0];
+  for (let i = 0; i < G.k; i++) {
+    if (!G.H[i]) continue;
+    for (const d of DV) if (!G.occ.has(keyOf(G.xs[i] + d[0], G.ys[i] + d[1], G.zs[i] + d[2]))) pc[i & 1]++;
+  }
+  const uE = G.suf[0][G.k], uO = G.suf[1][G.k];
+  return Math.min(uE + uO, uE + pc[0], uO + pc[1]);
+}
+
+// Flood fill from the head over free sites (inside the chain's bounding box + a 1-site shell, which is
+// always free and connects to the rest of the infinite lattice).
+function reachInfo() {
+  if (G.reachVer === G.ver) return G.reach;
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9, z0 = 1e9, z1 = -1e9;
+  for (let i = 0; i < G.k; i++) {
+    x0 = Math.min(x0, G.xs[i]); x1 = Math.max(x1, G.xs[i]); y0 = Math.min(y0, G.ys[i]); y1 = Math.max(y1, G.ys[i]);
+    z0 = Math.min(z0, G.zs[i]); z1 = Math.max(z1, G.zs[i]);
+  }
+  x0--; x1++; y0--; y1++; z0--; z1++;
+  const seen = new Set(), q = [G.xs[G.k - 1], G.ys[G.k - 1], G.zs[G.k - 1]];
+  let open = false;
+  while (q.length) {
+    const z = q.pop(), y = q.pop(), x = q.pop();
+    for (const d of DV) {
+      const nx = x + d[0], ny = y + d[1], nz = z + d[2];
+      if (nx < x0 || nx > x1 || ny < y0 || ny > y1 || nz < z0 || nz > z1) continue;
+      const key = keyOf(nx, ny, nz);
+      if (seen.has(key) || G.occ.has(key)) continue;
+      seen.add(key); q.push(nx, ny, nz);
+      if (nx === x0 || nx === x1 || ny === y0 || ny === y1 || nz === z0 || nz === z1) open = true;
+    }
+  }
+  G.reach = { seen, open, size: seen.size }; G.reachVer = G.ver;
+  return G.reach;
+}
+
+function tryMove(d) {
+  const k = G.k - 1, v = DV[d];
+  const x = G.xs[k] + v[0], y = G.ys[k] + v[1], z = G.zs[k] + v[2];
+  const hit = G.occ.get(keyOf(x, y, z));
+  if (hit !== undefined) { die('clash', { x, y, z, hit, who: G.k }); return; }
+  place(x, y, z);
+}
+
+function place(x, y, z) {
+  const k = G.k, now = performance.now();
+  G.xs.push(x); G.ys.push(y); G.zs.push(z); G.born.push(now); G.occ.set(keyOf(x, y, z), k); G.k++; G.ver++;
+  G.lastDir = dirOf(G.xs, G.ys, G.zs, G.k);
+  let g = 0;
+  if (G.H[k]) for (const d of DV) {
+    const j = G.occ.get(keyOf(x + d[0], y + d[1], z + d[2]));
+    if (j !== undefined && j < k - 1 && G.H[j]) {
+      G.contacts.push([j, k, now]); g++;
+      burst((x + G.xs[j]) / 2, (y + G.ys[j]) / 2, (z + G.zs[j]) / 2, 16, [COL.gold, COL.h, '#fff']);
+    }
+  }
+  if (g) {
+    floats.push({ x, y: y + 0.5, z, t0: now, text: g === 1 ? '+1 hug' : g === 2 ? '+2 double hug!' : g === 3 ? '+3 GROUP HUG!!' : `+${g} MEGA HUG!!!` });
+    sfx.hug(g, G.contacts.length);
+    const e = $('#eYou'); e.classList.remove('bump'); void e.offsetWidth; e.classList.add('bump');
+  } else sfx.step(G.H[k], G.lastDir % 3 === MAP.perm[2]);
+  if (G.k === G.n) { finish(); return; }
+  let free = 0;
+  for (const d of DV) if (!G.occ.has(keyOf(x + d[0], y + d[1], z + d[2]))) free++;
+  if (!free) { die('trapped', { x, y, z, who: k }); return; }
+  updateHUD();
+}
+
+function popLast() {
+  if (G.k <= 1) return;
+  const k = G.k - 1;
+  G.occ.delete(keyOf(G.xs[k], G.ys[k], G.zs[k]));
+  G.xs.pop(); G.ys.pop(); G.zs.pop(); G.born.pop(); G.k--; G.ver++;
+  G.contacts = G.contacts.filter(c => c[1] !== k);
+  G.lastDir = dirOf(G.xs, G.ys, G.zs, G.k);
+}
+
+function undo() {
+  if (!G || G.showOpt) return;
+  if (G.state === 'dead') { if (G.death.type === 'trapped') popLast(); G.death = null; G.state = 'running'; }
+  else if (G.state === 'done') { popLast(); G.state = 'running'; }
+  else if (G.state === 'running' && G.k > 1) popLast();
+  else return;
+  cam.userOrbit = true;                                  // stop the victory spin, keep the view where it is
+  $('#result').hidden = true; measure();
+  updateHUD(); updatePrompt();
+}
+
+function die(type, info) {
+  G.state = 'dead'; G.death = Object.assign({ type, t: performance.now() }, info);
+  cam.shake = 1; sfx.die();
+  const k = G.k - 1, c = type === 'clash';
+  burst(c ? (G.xs[k] + info.x) / 2 : G.xs[k], c ? (G.ys[k] + info.y) / 2 : G.ys[k], c ? (G.zs[k] + info.z) / 2 : G.zs[k], 26, [COL.bad, '#fff', COL.p], 4.5);
+  updateHUD(); updatePrompt(); showResult();
+}
+
+function finish() {
+  G.state = 'done';
+  const c = G.contacts.length;
+  if (best[G.seq] == null || c > best[G.seq]) { best[G.seq] = c; store.set('best', best); }
+  const perfect = OPT.status === 'ready' && c >= OPT.contacts;
+  sfx.win(perfect);
+  if (perfect) launchConfetti();
+  cam.userOrbit = false;
+  updateHUD(); updatePrompt(); showResult();
+}
+
+function nextLevel() {
+  if (LV.idx != null && LV.idx + 1 < LEVELS.length) newGame(LEVELS[LV.idx + 1]);
+  else if (LV.kind === 'random') newGame(randomLevel());
+  else openMenu();
+}
+function randomLevel() {
+  const n = 11 + Math.floor(Math.random() * 5);
+  let s;
+  do { s = ''; for (let i = 0; i < n; i++) s += Math.random() < 0.5 ? 'H' : 'P'; } while ((s.match(/H/g) || []).length < 5);
+  return { name: 'Random chain', seq: s, kind: 'random' };
+}
+
+function toggleOpt() {
+  if (!G || !OPT.fold || (G.state !== 'done' && G.state !== 'dead')) return;
+  G.showOpt = !G.showOpt;
+  const b = $('#banner');
+  b.hidden = !G.showOpt;
+  b.textContent = `Optimal fold · E = ${fmtE(-OPT.fold.contacts.length)} · press O to return to yours`;
+  cam.userOrbit = false;
+  positionFloaters();
+  showResult();
+  camTarget();
+}
+
+// =====================================================================================
+//  Camera-relative steering: which lattice direction each key means from the current view
+// =====================================================================================
+// The three screen axes (right, up, towards you) are matched to the three lattice axes by the permutation
+// that lines them up best, with a little hysteresis so the mapping doesn't flicker near 45°.
+const INTENTS = ['right', 'left', 'up', 'down', 'in', 'out'];
+const KEY_LABEL = { right: '→', left: '←', up: '↑', down: '↓', in: 'Q', out: 'E' };
+const TOUCH_LABEL = { right: '▶', left: '◀', up: '▲', down: '▼', in: '⊗', out: '⊙' };
+const PERMS = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
+const MAP = { perm: PERMS[0], sgn: [1, 1, 1], dirOfIntent: {}, intentOfDir: [] };
+
+function updateMap() {
+  const { r, u, c } = B;
+  const score = p => Math.abs(r[p[0]]) + Math.abs(u[p[1]]) + Math.abs(c[p[2]]);
+  let bp = MAP.perm, bs = score(MAP.perm) + 0.12;
+  for (const p of PERMS) { const s = score(p); if (s > bs) { bs = s; bp = p; } }
+  const same = bp === MAP.perm;
+  const sg = (v, i) => (same && Math.abs(v) < 0.1 ? MAP.sgn[i] : v >= 0 ? 1 : -1);
+  MAP.sgn = [sg(r[bp[0]], 0), sg(u[bp[1]], 1), sg(c[bp[2]], 2)];
+  MAP.perm = bp;
+  const dir = (axis, s) => (s > 0 ? axis : axis + 3);
+  const [aR, aU, aT] = bp, [sR, sU, sT] = MAP.sgn;
+  const m = { right: dir(aR, sR), left: dir(aR, -sR), up: dir(aU, sU), down: dir(aU, -sU), out: dir(aT, sT), in: dir(aT, -sT) };
+  MAP.dirOfIntent = m;
+  for (const it of INTENTS) MAP.intentOfDir[m[it]] = it;
+}
+
+// =====================================================================================
+//  Input
+// =====================================================================================
+function onDir(d) {
+  if (!G || menuOpen || G.showOpt) return;
+  if (G.state === 'done' || G.state === 'dead') return;
+  if (G.state === 'ready') G.state = 'running';
+  // stepping straight back onto the previous residue is always a misclick: just bump instead of dying
+  if (G.k > 1 && d === OPP(G.lastDir)) { sfx.bump(); cam.shake = Math.max(cam.shake, 0.25); return; }
+  tryMove(d);
+  updatePrompt();
+}
+const onIntent = it => onDir(MAP.dirOfIntent[it]);
+
+function orbit(dYaw, dPitch) {
+  cam.tyaw += dYaw; cam.tpitch = clamp(cam.tpitch + dPitch, PITCH_MIN, PITCH_MAX);
+  cam.userOrbit = true;
+}
+function resetView() { cam.tyaw = cam.yaw + angleDiff(YAW0, cam.yaw); cam.tpitch = PITCH0; cam.zoom = 1; cam.userOrbit = true; }
+const angleDiff = (a, b) => { let d = (a - b) % TAU; if (d > Math.PI) d -= TAU; if (d < -Math.PI) d += TAU; return d; };
+
+function act(a) {
+  if (a.startsWith('play:')) { closeMenu(); newGame(LEVELS[+a.slice(5)]); return; }
+  switch (a) {
+    case 'retry': newGame(LV); break;
+    case 'next': nextLevel(); break;
+    case 'undo': undo(); break;
+    case 'opt': toggleOpt(); break;
+    case 'menu': openMenu(); break;
+    case 'close': closeMenu(); break;
+    case 'view': resetView(); break;
+    case 'hints': settings.hints = !settings.hints; store.set('hints', settings.hints); updateHUD(); break;
+    case 'sound': settings.muted = !settings.muted; store.set('muted', settings.muted); updateHUD(); if (!settings.muted) beep(660, 0.1, 'sine', 0.05); break;
+    case 'random': closeMenu(); newGame(randomLevel()); break;
+    case 'custom': {
+      const raw = ($('#custom').value || '').toUpperCase().replace(/[\s,]/g, '');
+      const err = $('#customErr');
+      if (/[^HP]/.test(raw)) { err.textContent = 'Only H and P please — this is the HP model, not the alphabet soup model.'; return; }
+      if (raw.length < 3) { err.textContent = 'At least 3 residues. A dipeptide has very little folding drama.'; return; }
+      if (raw.length > 60) { err.textContent = 'Max 60 residues in 3-D — there is a lot of room to get lost in up here.'; return; }
+      closeMenu(); newGame({ name: 'Custom chain', seq: raw, kind: 'custom' });
+      break;
+    }
+  }
+}
+
+const KEYINT = { ArrowRight: 'right', KeyD: 'right', ArrowLeft: 'left', KeyA: 'left', ArrowUp: 'up', KeyW: 'up',
+                 ArrowDown: 'down', KeyS: 'down', KeyQ: 'in', KeyE: 'out', PageUp: 'in', PageDown: 'out' };
+addEventListener('keydown', e => {
+  if (e.target && e.target.tagName === 'INPUT') { if (e.key === 'Enter') act('custom'); if (e.key === 'Escape') e.target.blur(); return; }
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const c = e.code;
+  if (c in KEYINT) {
+    if (menuOpen) return;
+    e.preventDefault();
+    let it = KEYINT[c];
+    if (e.shiftKey && it === 'up') it = 'in';
+    if (e.shiftKey && it === 'down') it = 'out';
+    onIntent(it);
+    return;
+  }
+  switch (c) {
+    case 'KeyJ': orbit(-Math.PI / 4, 0); break;
+    case 'KeyL': orbit(Math.PI / 4, 0); break;
+    case 'KeyI': orbit(0, 0.25); break;
+    case 'KeyK': orbit(0, -0.25); break;
+    case 'KeyV': act('view'); break;
+    case 'KeyR': if (!menuOpen && G) newGame(LV); break;
+    case 'KeyZ': case 'Backspace': e.preventDefault(); if (!menuOpen) undo(); break;
+    case 'KeyH': act('hints'); break;
+    case 'KeyM': act('sound'); break;
+    case 'KeyO': if (!menuOpen) toggleOpt(); break;
+    case 'KeyN': if (!menuOpen && G && G.state === 'done') nextLevel(); break;
+    case 'Escape': if (menuOpen) closeMenu(); else openMenu(); break;
+    case 'Enter': case 'NumpadEnter':
+      if (menuOpen || !G) break;
+      e.preventDefault();
+      if (G.state === 'done') nextLevel(); else if (G.state === 'dead') newGame(LV);
+      break;
+  }
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (b && !b.disabled) { act(b.dataset.act); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); }
+});
+$('#ov').addEventListener('click', e => { if (e.target.id === 'ov' && G) closeMenu(); });
+
+// pointer on the board: drag = orbit, pinch / wheel = zoom, tap on a bubble = place the next residue there
+const ptrs = new Map();
+let drag = null, pinch = null;
+cv.addEventListener('pointerdown', e => {
+  cv.setPointerCapture(e.pointerId);
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (ptrs.size === 1) drag = { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, moved: false };
+  else if (ptrs.size === 2) {
+    const [a, b] = [...ptrs.values()];
+    pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), zoom: cam.zoom }; drag = null;
+  }
+});
+cv.addEventListener('pointermove', e => {
+  const p = ptrs.get(e.pointerId);
+  if (!p) { cv.classList.toggle('pointy', !!ghostAt(e.clientX, e.clientY)); return; }
+  p.x = e.clientX; p.y = e.clientY;
+  if (pinch && ptrs.size === 2) {
+    const [a, b] = [...ptrs.values()];
+    cam.zoom = clamp(pinch.zoom * Math.hypot(a.x - b.x, a.y - b.y) / Math.max(1, pinch.d), 0.4, 3);
+    return;
+  }
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) > 6) { drag.moved = true; cv.classList.add('drag'); }
+  if (drag.moved) {
+    cam.yaw -= dx * 0.009; cam.tyaw = cam.yaw;
+    cam.pitch = clamp(cam.pitch + dy * 0.007, PITCH_MIN, PITCH_MAX); cam.tpitch = cam.pitch;
+    cam.userOrbit = true;
+  }
+  drag.x = e.clientX; drag.y = e.clientY;
+});
+function endPtr(e) {
+  if (!ptrs.has(e.pointerId)) return;
+  ptrs.delete(e.pointerId);
+  if (ptrs.size < 2) pinch = null;
+  if (drag && !drag.moved && e.type === 'pointerup') {
+    const g = ghostAt(e.clientX, e.clientY);
+    if (g) onDir(g.d);
+  }
+  if (!ptrs.size) { drag = null; cv.classList.remove('drag'); }
+}
+cv.addEventListener('pointerup', endPtr);
+cv.addEventListener('pointercancel', endPtr);
+cv.addEventListener('wheel', e => { e.preventDefault(); cam.zoom = clamp(cam.zoom * Math.exp(-e.deltaY * 0.0015), 0.4, 3); }, { passive: false });
+
+if (COARSE) $('#dpad').hidden = false;
+$('#dpad').addEventListener('pointerdown', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  e.preventDefault();
+  if (b.dataset.int) onIntent(b.dataset.int);
+  else if (b.dataset.rot) orbit(+b.dataset.rot * Math.PI / 4, 0);
+  else undo();
+});
+
+// =====================================================================================
+//  HUD / DOM
+// =====================================================================================
+function starsFor(c, opt) {
+  if (opt == null) return null;
+  if (opt === 0 || c >= opt) return 3;
+  const r = c / opt;
+  return r >= 0.75 ? 2 : r >= 0.5 ? 1 : 0;
+}
+const starsHTML = n => '★'.repeat(n) + `<span class="off">${'★'.repeat(3 - n)}</span>`;
+const dotsHTML = seq => Array.from(seq, ch => `<i style="background:var(--${ch === 'H' ? 'h' : 'p'})"></i>`).join('');
+
+function buildStrip() {
+  const st = $('#strip'); st.innerHTML = '';
+  for (let i = 0; i < G.n; i++) {
+    const el = document.createElement('i');
+    el.className = G.H[i] ? 'h' : 'p';
+    el.title = `#${i + 1}: ${G.seq[i]}`;
+    st.appendChild(el);
+  }
+  layoutStrip();
+}
+function layoutStrip() {
+  if (!G) return;
+  const avail = Math.min(980, innerWidth - 32) - 26;
+  const d = clamp(Math.floor(avail / G.n) - 4, 7, 18);
+  const st = $('#strip');
+  st.style.setProperty('--d', d + 'px'); st.style.setProperty('--gap', (d < 10 ? 3 : 4) + 'px');
+}
+
+function updateHUD() {
+  if (!G) return;
+  const c = G.contacts.length;
+  $('#eYou').textContent = fmtE(-c);
+  $('#lvlName').textContent = LV.name;
+  $('#lvlMeta').textContent = `${G.n} residues · placed ${G.k}/${G.n}`;
+  $('#chipHints').classList.toggle('off', !settings.hints);
+  $('#chipSound').classList.toggle('off', settings.muted);
+
+  const eOpt = $('#eOpt'), eSrc = $('#eSrc'), reach = $('#reach');
+  let optC = null;
+  if (OPT.status === 'ready') {
+    optC = OPT.contacts;
+    eOpt.textContent = (OPT.exact ? '' : '≤ ') + fmtE(-optC);
+    eSrc.textContent = OPT.src;
+  } else {
+    eOpt.textContent = '…';
+    eSrc.textContent = `searching… (bound ${fmtE(-OPT.upper)})`;
+  }
+  $('#cnt').textContent = `${c} / ${optC ?? '?'} H–H contacts`;
+  $('#barFill').style.width = (optC == null ? 0 : optC === 0 ? 100 : Math.min(100, c / optC * 100)) + '%';
+  reach.className = '';
+  if (optC == null) reach.textContent = '';
+  else if (G.state === 'done') { reach.textContent = c >= optC ? '🏆 optimal!' : `${Math.round(c / Math.max(1, optC) * 100)}% of optimum`; reach.className = c >= optC ? 'ok' : ''; }
+  else if (G.state === 'dead') { reach.textContent = '💀 denatured'; reach.className = 'bad'; }
+  else if (G.k < G.n && !reachInfo().open && reachInfo().size < G.n - G.k) { reach.textContent = `🕳️ pocket fits ${reachInfo().size}, need ${G.n - G.k}`; reach.className = 'bad'; }
+  else if (c + futureBound() < optC) { reach.textContent = '💀 E* out of reach'; reach.className = 'bad'; }
+  else { reach.textContent = '🎯 E* still in play'; reach.className = 'ok'; }
+
+  const kids = $('#strip').children;
+  for (let i = 0; i < kids.length; i++) {
+    kids[i].classList.toggle('done', i < G.k);
+    kids[i].classList.toggle('next', i === G.k && G.state !== 'dead');
+  }
+}
+
+function updatePrompt() {
+  const p = $('#prompt');
+  let txt = '';
+  if (G && !menuOpen && G.state === 'ready')
+    txt = COARSE ? 'Tap a bubble to place the next residue · drag to orbit' : 'Arrows move across the screen, Q / E into and out of it · drag to orbit';
+  p.textContent = txt; p.hidden = !txt;
+  positionFloaters();
+}
+
+function positionFloaters() {
+  const tr = $('#tr').getBoundingClientRect(), tl = $('#tl').getBoundingClientRect();
+  const top = Math.max(tr.bottom, tl.bottom);
+  $('#banner').style.top = (top + 10) + 'px';
+  const bottom = $('#bottom').getBoundingClientRect();
+  $('#prompt').style.top = (bottom.top - 52) + 'px';
+}
+
+function showResult() {
+  const el = $('#result');
+  const c = G.contacts.length, ready = OPT.status === 'ready', optC = OPT.contacts, le = OPT.exact ? '' : '≤ ';
+  const optBtn = `<button class="btn" data-act="opt" ${OPT.fold ? '' : 'disabled title="still computing…"'}>${G.showOpt ? 'Back to my fold' : 'Peek at an optimal fold'}<kbd>O</kbd></button>`;
+  let html;
+  if (G.state === 'dead') {
+    const d = G.death;
+    if (!d.title) {
+      d.title = d.type === 'clash' ? pick(['Steric clash! 💥', 'Ouroboros moment 🐍', 'Tied yourself in a knot 🪢', 'Pauli says no 🙅', 'Lost in the third dimension 🌀'])
+                                   : pick(['Painted into a corner 🎨', 'Boxed in! 📦', 'Dead end in 3-D 🧱']);
+      d.sub = d.type === 'clash'
+        ? `Residue #${d.who + 1} tried to sit on residue #${d.hit + 1}. Two residues, one lattice site — not in this universe, not even with a third dimension.`
+        : `Residue #${d.who + 1} has all six neighbours taken, so the remaining ${G.n - d.who - 1} residues have nowhere to go.`;
+    }
+    html = `<div class="rtitle bad">${d.title}</div><div class="rsub">${d.sub}</div>
+      <div class="rstats">Placed <b>${G.k}/${G.n}</b> residues · reached <b>E = ${fmtE(-c)}</b>${ready ? ` · E* = ${le + fmtE(-optC)}` : ''}</div>
+      <div class="btns"><button class="btn primary" data-act="retry">Try again<kbd>Enter</kbd></button>
+      <button class="btn" data-act="undo">Oops, undo<kbd>Z</kbd></button>${optBtn}
+      <button class="btn" data-act="menu">Levels<kbd>Esc</kbd></button></div>`;
+  } else {
+    let title, sub, starLine = '';
+    if (!ready) { title = 'Folded! 🧬'; sub = 'Computing the theoretical minimum to grade you…'; }
+    else {
+      const r = optC === 0 ? 1 : c / optC;
+      starLine = `<div class="stars">${starsHTML(starsFor(c, optC))}</div>`;
+      if (!OPT.exact && c > optC) { title = 'You beat the solver! 🤯'; sub = `Branch & bound gave up after 9 s at E = ${fmtE(-optC)}. You found ${fmtE(-c)}. Human intuition 1, exponential search 0.`; }
+      else if (optC === 0) { title = 'Trivially optimal 🤷'; sub = 'There were no H–H hugs to be had. Every fold is the native state.'; }
+      else if (r >= 1) { title = 'Native state reached! 🏆'; sub = 'You hit the theoretical minimum — in three dimensions. Anfinsen would be proud.'; }
+      else if (r >= 0.75) { title = 'Molten globule 🫠'; sub = 'So close to native. A chaperone would nudge you the rest of the way.'; }
+      else if (r >= 0.5) { title = 'Partially folded 🌀'; sub = 'Half the hydrophobic hugs found. Use the depth — H’s love a 3-D huddle.'; }
+      else if (c > 0) { title = 'Spaghetti with ambition 🍝'; sub = 'Some structure, mostly vibes. Try curling the H’s into a little cube.'; }
+      else { title = 'Fully denatured noodle 🍜'; sub = 'Not a single H–H hug. The H’s are crying in the solvent.'; }
+    }
+    const nb = (G.prevBest == null || c > G.prevBest) && LV.kind !== 'random' ? '<span class="newbest">new best</span>' : '';
+    html = `${starLine}<div class="rtitle">${title}</div><div class="rsub">${sub}</div>
+      <div class="rstats">Your fold: <b>E = ${fmtE(-c)}</b>${nb}${ready ? ` · theoretical min: <b style="color:var(--gold)">E* = ${le + fmtE(-optC)}</b>` : ''}</div>
+      <div class="btns"><button class="btn primary" data-act="next">${LV.idx != null && LV.idx + 1 < LEVELS.length ? 'Next level' : LV.kind === 'random' ? 'Another random' : 'Levels'}<kbd>Enter</kbd></button>
+      <button class="btn" data-act="retry">Retry<kbd>R</kbd></button><button class="btn" data-act="undo">Undo<kbd>Z</kbd></button>${optBtn}</div>`;
+  }
+  el.innerHTML = html; el.hidden = false;
+  el.style.bottom = (innerHeight - $('#bottom').getBoundingClientRect().top + 8) + 'px';
+  measure(); camTarget();
+}
+
+function openMenu() {
+  menuOpen = true;
+  renderMenu();
+  $('#ov').hidden = false;
+  updatePrompt();
+}
+function closeMenu() { menuOpen = false; $('#ov').hidden = true; updatePrompt(); }
+
+function renderMenu() {
+  const lvCard = L => {
+    const b = best[L.seq], st = b == null ? '' : starsHTML(starsFor(b, L.opt));
+    return `<button class="lv${LV && LV.idx === L.idx ? ' cur' : ''}" data-act="play:${L.idx}">
+      <div class="lvtop"><span>${esc(L.name)}</span><span class="ms">${st}</span></div>
+      <div class="lvdots">${dotsHTML(L.seq)}</div>
+      <div class="lvmeta">${L.seq.length} residues · E* = ${fmtE(-L.opt)}${b != null ? ' · best ' + fmtE(-b) : ''}</div></button>`;
+  };
+  const inGame = G && (G.state === 'running' || G.state === 'ready');
+  const cube = '<span class="cube"><i style="background:var(--h)"></i><i style="background:var(--p)"></i><i style="background:var(--p)"></i><i style="background:var(--h)"></i></span>';
+  $('#menuCard').innerHTML = `
+    ${G ? `<button class="btn x" data-act="close">${inGame && G.k > 1 ? 'Resume' : 'Close'}<kbd>Esc</kbd></button>` : ''}
+    <div class="title">${cube}HP Snake <sup>3D</sup></div>
+    <div class="tag">Same snake, one more dimension to get tangled in.</div>
+    <div class="rules">
+      <div class="rule"><b>You are the growing chain.</b> Starting at the origin of an infinite cubic lattice, every key press (or tap on a bubble) lays down the next residue of a known H/P sequence (shown at the bottom). Nothing moves until you do.</div>
+      <div class="rule"><span class="dot" style="background:var(--h)"></span> <b>H</b> is hydrophobic. Two H’s on neighbouring sites that aren’t bonded in the chain form a contact worth <b>E&nbsp;=&nbsp;−1</b>. <span class="dot" style="background:var(--p)"></span> <b>P</b> is polar and doesn’t care.</div>
+      <div class="rule"><b>Steering in 3-D:</b> arrows / WASD move across the screen, <b>Q</b> pushes into it, <b>E</b> pulls towards you. Each bubble around the head shows its key, and keys follow the camera. Drag to orbit, scroll or pinch to zoom.</div>
+      <div class="rule"><b>Just like snake:</b> bite yourself or seal yourself in and the protein denatures. <b>Goal:</b> finish with your energy as close as you can to the theoretical minimum <b style="color:var(--gold)">E*</b> (top right).</div>
+    </div>
+    <div class="kind">Warm-ups</div>
+    <div class="lvgrid">${LEVELS.filter(L => L.kind === 'warm').map(lvCard).join('')}</div>
+    <div class="kind">Challenges</div>
+    <div class="lvgrid">${LEVELS.filter(L => L.kind === 'bench').map(lvCard).join('')}</div>
+    <div class="kind">Freestyle</div>
+    <div class="row"><button class="btn primary" data-act="random">🎲 Random chain</button>
+      <input id="custom" placeholder="or type your own, e.g. HPHPPHHPHH" maxlength="80" spellcheck="false" autocomplete="off">
+      <button class="btn" data-act="custom">Fold it</button></div>
+    <div id="customErr" class="err"></div>
+    <div class="foot"><b>Pro tip:</b> the cubic lattice is a 3-D checkerboard, so residues <i>i</i> and <i>j</i> can only ever touch when <i>i − j</i> is odd. Each H has at most 4 free sides (5 at the chain ends), which gives the bound shown while E* is being computed. The red glow (hints) marks reachable free sites next to exposed H’s that a later H of the right parity could still claim.<br>
+      <b>Where E* comes from:</b> every level’s optimum was proved by exhaustive search (for the 27-H cube by the discrete isoperimetric inequality: only a 3×3×3 cube scores 28). Random and custom chains are solved in your browser by branch &amp; bound over self-avoiding walks; past ~16 residues it may stop at the best fold it found.<br>
+      <b>Keys:</b> ← ↑ → ↓ / WASD across the screen · Q / E (or Shift + ↑ / ↓) into / out of it · J L I K orbit · V reset view · Z undo · O peek optimum · H hints · M sound · R restart · Esc menu</div>
+    <div class="dimlink"><a class="btn" href="hp-snake.html">▦ Back to flatland: HP Snake 2-D</a></div>`;
+}
+
+// =====================================================================================
+//  Camera & projection
+// =====================================================================================
+const YAW0 = 0.62, PITCH0 = 0.5, PITCH_MIN = 0.12, PITCH_MAX = 1.45;
+const cam = { yaw: YAW0, pitch: PITCH0, tyaw: YAW0, tpitch: PITCH0, zoom: 1, userOrbit: false,
+              x: 0, y: 0, z: 0, tx: 0, ty: 0, tz: 0, s: 50, ts: 50, rad: 2, trad: 2, floor: -1, tfloor: -1,
+              dist: 14, shake: 0, ox: 0, oy: 0 };
+const B = { r: [1, 0, 0], u: [0, 1, 0], c: [0, 0, 1] };   // camera right, up, and towards-the-viewer vectors
+const view = { cx: 0, cy: 0, w: 1, h: 1 };
+let VW = 0, VH = 0, DPR = 1;
+
+function updateBasis() {
+  const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw), cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
+  B.c = [cp * sy, sp, cp * cy];
+  B.r = [cy, 0, -sy];
+  const f = [-B.c[0], -B.c[1], -B.c[2]], r = B.r;
+  B.u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]];
+}
+// world → screen; returns [X, Y, scale, depth towards the viewer]
+function proj(x, y, z) {
+  const vx = x - cam.x, vy = y - cam.y, vz = z - cam.z, { r, u, c } = B;
+  const X = vx * r[0] + vy * r[1] + vz * r[2];
+  const Y = vx * u[0] + vy * u[1] + vz * u[2];
+  const Z = vx * c[0] + vy * c[1] + vz * c[2];
+  const k = cam.dist / Math.max(0.6, cam.dist - Z);
+  return [view.cx + X * k * cam.s + cam.ox, view.cy - Y * k * cam.s + cam.oy, k, Z];
+}
+
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2); VW = innerWidth; VH = innerHeight;
+  cv.width = Math.round(VW * DPR); cv.height = Math.round(VH * DPR);
+  cv.style.width = VW + 'px'; cv.style.height = VH + 'px';
+  layoutStrip(); measure(); positionFloaters();
+  if (G && !$('#result').hidden) $('#result').style.bottom = (innerHeight - $('#bottom').getBoundingClientRect().top + 8) + 'px';
+  camTarget(true);
+}
+function measure() {
+  const tr = $('#tr').getBoundingClientRect(), tl = $('#tl').getBoundingClientRect();
+  let top = Math.max(tr.bottom, tl.bottom) + 10;
+  const res = $('#result');
+  let bot = VH - (res.hidden ? $('#bottom') : res).getBoundingClientRect().top + 10;
+  const maxInset = VH * 0.62;
+  if (top + bot > maxInset) { const f = maxInset / (top + bot); top *= f; bot *= f; }
+  view.w = VW; view.h = Math.max(80, VH - top - bot); view.cx = VW / 2; view.cy = top + view.h / 2;
+}
+function shownChain() {
+  if (G.showOpt && OPT.fold) { const f = OPT.fold; return { xs: f.xs, ys: f.ys, zs: f.zs, k: f.xs.length, contacts: f.contacts, born: null }; }
+  return { xs: G.xs, ys: G.ys, zs: G.zs, k: G.k, contacts: G.contacts, born: G.born };
+}
+function isLive() { return G && !G.showOpt && (G.state === 'running' || G.state === 'ready'); }
+function camTarget(snap) {
+  if (!G) return;
+  const c = shownChain(), live = isLive();
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9, z0 = 1e9, z1 = -1e9;
+  for (let i = 0; i < c.k; i++) {
+    x0 = Math.min(x0, c.xs[i]); x1 = Math.max(x1, c.xs[i]); y0 = Math.min(y0, c.ys[i]); y1 = Math.max(y1, c.ys[i]);
+    z0 = Math.min(z0, c.zs[i]); z1 = Math.max(z1, c.zs[i]);
+  }
+  const mx = (x0 + x1) / 2, my = (y0 + y1) / 2, mz = (z0 + z1) / 2;
+  let rad = 0;
+  for (let i = 0; i < c.k; i++) rad = Math.max(rad, Math.hypot(c.xs[i] - mx, c.ys[i] - my, c.zs[i] - mz));
+  rad += live ? 1.35 : 0.7;                              // room for the bubbles around the head
+  cam.tx = mx; cam.ty = my; cam.tz = mz; cam.trad = rad;
+  cam.tfloor = y0 - 1;
+  cam.ts = clamp(Math.min(view.w, view.h) / (2 * rad + 0.9), 14, 92);
+  if (snap) { cam.x = mx; cam.y = my; cam.z = mz; cam.rad = rad; cam.s = cam.ts; cam.floor = cam.tfloor; }
+}
+
+// =====================================================================================
+//  Effects
+// =====================================================================================
+function burst(x, y, z, n, colors, speed = 3) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * TAU, b = Math.acos(2 * Math.random() - 1), v = speed * (0.4 + Math.random());
+    parts.push({ x, y, z, vx: Math.sin(b) * Math.cos(a) * v, vy: Math.cos(b) * v, vz: Math.sin(b) * Math.sin(a) * v,
+                 life: 1, decay: 1.4 + Math.random() * 1.2, r: 0.04 + Math.random() * 0.06, c: pick(colors) });
+  }
+}
+function launchConfetti() {
+  const cols = [COL.h, COL.p, COL.gold, '#fff', '#f87171'];
+  for (let i = 0; i < 180; i++) confetti.push({
+    x: Math.random() * VW, y: -20 - Math.random() * VH * 0.5, vx: (Math.random() - 0.5) * 80, vy: 90 + Math.random() * 160,
+    rot: Math.random() * TAU, vr: (Math.random() - 0.5) * 10, w: 6 + Math.random() * 6, h: 3 + Math.random() * 4, c: pick(cols),
+  });
+}
+function updateFX(dt) {
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i], f = Math.exp(-dt * 3);
+    p.x += p.vx * dt; p.y += p.vy * dt; p.z += p.vz * dt; p.vx *= f; p.vy *= f; p.vz *= f; p.life -= p.decay * dt;
+    if (p.life <= 0) parts.splice(i, 1);
+  }
+  for (let i = confetti.length - 1; i >= 0; i--) {
+    const p = confetti[i];
+    p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt; p.vx += Math.sin(p.y / 40) * 4 * dt;
+    if (p.y > VH + 30) confetti.splice(i, 1);
+  }
+  const now = performance.now();
+  for (let i = floats.length - 1; i >= 0; i--) if (now - floats[i].t0 > 1200) floats.splice(i, 1);
+  cam.shake *= Math.exp(-dt * 5);
+  if (cam.shake < 0.01) cam.shake = 0;
+  cam.ox = cam.shake ? (Math.random() - 0.5) * cam.shake * 18 : 0;
+  cam.oy = cam.shake ? (Math.random() - 0.5) * cam.shake * 18 : 0;
+}
+
+// =====================================================================================
+//  Rendering
+// =====================================================================================
+const ctx = cv.getContext('2d');
+let ghostHits = [];                                      // screen circles of the bubbles, for taps
+
+function ghostAt(X, Y) {
+  let bestG = null, bz = -1e9;
+  for (const g of ghostHits) if (Math.hypot(X - g.X, Y - g.Y) < g.R && g.Z > bz) { bz = g.Z; bestG = g; }
+  return bestG;
+}
+
+function drawFloor() {
+  const fy = cam.floor, cx = Math.round(cam.x), cz = Math.round(cam.z), ext = Math.ceil(cam.rad + 3.5);
+  ctx.lineWidth = 1;
+  const seg = (x1, z1, x2, z2) => {
+    const d = Math.hypot((x1 + x2) / 2 - cam.x, (z1 + z2) / 2 - cam.z) / ext;
+    if (d >= 1) return;
+    const a = proj(x1, fy, z1), b = proj(x2, fy, z2);
+    ctx.strokeStyle = `rgba(148,163,184,${0.2 * Math.pow(1 - d, 1.4)})`;
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+  };
+  for (let i = -ext; i <= ext; i++) for (let j = -ext; j < ext; j++) { seg(cx + i, cz + j, cx + i, cz + j + 1); seg(cx + j, cz + i, cx + j + 1, cz + i); }
+}
+
+function shadeBead(X, Y, rad, isH, fog, alpha = 1) {
+  const s = isH ? SHADE.h : SHADE.p;
+  const g = ctx.createRadialGradient(X - rad * 0.38, Y - rad * 0.42, rad * 0.08, X, Y, rad);
+  g.addColorStop(0, s[0]); g.addColorStop(0.45, s[1]); g.addColorStop(1, s[2]);
+  ctx.globalAlpha = alpha;
+  ctx.beginPath(); ctx.arc(X, Y, rad, 0, TAU); ctx.fillStyle = g; ctx.fill();
+  if (fog > 0.01) { ctx.fillStyle = `rgba(11,16,25,${fog})`; ctx.fill(); }
+  ctx.globalAlpha = 1;
+}
+
+function drawEyes(X, Y, r, mood, now, look) {
+  for (const side of [-1, 1]) {
+    const ex = X + r * 0.38 * side + look[0] * r * 0.12, ey = Y - r * 0.12 + look[1] * r * 0.12;
+    if (mood === 'dead') {
+      const q = r * 0.17;
+      ctx.strokeStyle = '#1b1f27'; ctx.lineWidth = Math.max(1.5, r * 0.11); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(ex - q, ey - q); ctx.lineTo(ex + q, ey + q); ctx.moveTo(ex + q, ey - q); ctx.lineTo(ex - q, ey + q); ctx.stroke();
+    } else if (mood === 'happy') {
+      ctx.strokeStyle = '#1b1f27'; ctx.lineWidth = Math.max(1.5, r * 0.11); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.arc(ex, ey + r * 0.06, r * 0.17, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+    } else {
+      const blink = (now % 3400) < 110;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.ellipse(ex, ey, r * 0.23, blink ? r * 0.04 : r * 0.23, 0, 0, TAU); ctx.fill();
+      if (!blink) { ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(ex + look[0] * r * 0.09, ey + look[1] * r * 0.09, r * 0.11, 0, TAU); ctx.fill(); }
+    }
+  }
+}
+
+function residueXYZ(c, i, now) {
+  let x = c.xs[i], y = c.ys[i], z = c.zs[i];
+  if (c.born && i > 0) {
+    const t = (now - c.born[i]) / 90;
+    if (t < 1) { const e = easeOutCubic(Math.max(0, t)); x = c.xs[i - 1] + (x - c.xs[i - 1]) * e; y = c.ys[i - 1] + (y - c.ys[i - 1]) * e; z = c.zs[i - 1] + (z - c.zs[i - 1]) * e; }
+  }
+  return [x, y, z];
+}
+
+function drawScene(now) {
+  const c = shownChain(), live = isLive(), S = cam.s, R0 = 0.31;
+  const W3 = [], P = [];
+  for (let i = 0; i < c.k; i++) { const w = residueXYZ(c, i, now); W3.push(w); P.push(proj(w[0], w[1], w[2])); }
+  const fogOf = Z => clamp(0.5 - Z / (2 * cam.rad + 1), 0, 1) * 0.42;
+
+  // shadows on the floor, and a drop line under the head
+  const sp = Math.max(0.22, Math.sin(cam.pitch));
+  for (let i = 0; i < c.k; i++) {
+    const [x, y, z] = W3[i], q = proj(x, cam.floor, z), h = Math.max(0, y - cam.floor);
+    const rx = R0 * 1.15 * S * q[2];
+    ctx.fillStyle = `rgba(0,0,0,${0.34 / (1 + 0.45 * (h - 1))})`;
+    ctx.beginPath(); ctx.ellipse(q[0], q[1], rx, rx * sp, 0, 0, TAU); ctx.fill();
+  }
+  if (c.k && live) {
+    const [x, y, z] = W3[c.k - 1], a = P[c.k - 1], b = proj(x, cam.floor, z);
+    ctx.save(); ctx.setLineDash([3, 4]); ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); ctx.restore();
+  }
+
+  // everything that needs depth sorting
+  const items = [];
+  for (let i = 0; i < c.k; i++) items.push({ t: 0, i, Z: P[i][3] });
+  for (let i = 1; i < c.k; i++) items.push({ t: 1, i, Z: (P[i][3] + P[i - 1][3]) / 2 - 0.01 });
+  for (const ct of c.contacts) if (ct[0] < c.k && ct[1] < c.k) items.push({ t: 2, ct, Z: (P[ct[0]][3] + P[ct[1]][3]) / 2 - 0.02 });
+
+  ghostHits = [];
+  const ghosts = [];
+  if (live && G.k < G.n) {
+    const k = G.k, hx = G.xs[k - 1], hy = G.ys[k - 1], hz = G.zs[k - 1];
+    for (let d = 0; d < 6; d++) {
+      if (k > 1 && d === OPP(G.lastDir)) continue;
+      const x = hx + DV[d][0], y = hy + DV[d][1], z = hz + DV[d][2];
+      if (G.occ.has(keyOf(x, y, z))) continue;
+      const q = proj(x, y, z), gh = { d, q, g: gainAt(x, y, z, k) };
+      ghosts.push(gh);
+      items.push({ t: 3, gh, Z: q[3] });
+      ghostHits.push({ X: q[0], Y: q[1], R: Math.max(20, R0 * S * q[2] * 1.25), Z: q[3], d });
+    }
+  }
+  if (live && settings.hints) {
+    const remH = [0, 0];
+    for (let i = G.k; i < G.n; i++) if (G.H[i]) remH[i & 1]++;
+    const hot = new Map(), reach = reachInfo().seen;
+    for (let i = 0; i < G.k; i++) {
+      if (!G.H[i]) continue;
+      for (const d of DV) {
+        const x = G.xs[i] + d[0], y = G.ys[i] + d[1], z = G.zs[i] + d[2], key = keyOf(x, y, z);
+        if (!reach.has(key) || !remH[(((x + y + z) % 2) + 2) % 2]) continue;   // a site only ever hosts residues of one parity
+        const h = hot.get(key);
+        if (h) h.n++; else hot.set(key, { x, y, z, n: 1 });
+      }
+    }
+    for (const h of hot.values()) { const q = proj(h.x, h.y, h.z); items.push({ t: 4, q, n: h.n, Z: q[3] - 0.03 }); }
+  }
+  items.sort((a, b) => a.Z - b.Z);
+
+  const headI = c.k - 1, pulse = 0.85 + 0.15 * Math.sin(now / 320);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const it of items) {
+    if (it.t === 0) {                                    // residue
+      const i = it.i, [X, Y, k] = P[i], isH = G.seq[i] === 'H';
+      let rr = R0 * S * k;
+      if (c.born) { const t = (now - c.born[i]) / 240; if (t < 1) rr *= Math.max(0.2, easeOutBack(Math.max(0, t))); }
+      shadeBead(X, Y, rr, isH, fogOf(it.Z));
+      if (i === 0) {
+        ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = 'rgba(255,255,255,0.38)'; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.arc(X, Y, rr * 1.45, 0, TAU); ctx.stroke(); ctx.restore();
+      }
+      if (i !== headI && rr > 9) {
+        ctx.font = `700 ${Math.round(rr * 0.9)}px ui-rounded, system-ui, sans-serif`;
+        ctx.fillStyle = isH ? 'rgba(255,255,255,0.86)' : 'rgba(31,41,55,0.72)';
+        ctx.fillText(isH ? 'H' : 'P', X, Y + 0.5);
+      }
+      if (i === headI) {
+        let mood = 'normal';
+        if (G.showOpt || G.state === 'done') mood = 'happy';
+        else if (G.state === 'dead') mood = 'dead';
+        const dv = DV[dirOf(c.xs, c.ys, c.zs, c.k)];
+        let lx = dv[0] * B.r[0] + dv[1] * B.r[1] + dv[2] * B.r[2], ly = -(dv[0] * B.u[0] + dv[1] * B.u[1] + dv[2] * B.u[2]);
+        const ll = Math.hypot(lx, ly); if (ll > 1) { lx /= ll; ly /= ll; }
+        drawEyes(X, Y, rr, mood, now, [lx, ly]);
+      }
+    } else if (it.t === 1) {                             // backbone bond
+      const a = P[it.i - 1], b = P[it.i], k = (a[2] + b[2]) / 2, fog = fogOf(it.Z);
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = `rgba(71,85,105,${1 - fog})`; ctx.lineWidth = Math.max(2.5, S * 0.16 * k);
+      ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      ctx.strokeStyle = `rgba(226,232,240,${0.9 - fog})`; ctx.lineWidth = Math.max(1.2, S * 0.07 * k);
+      ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+    } else if (it.t === 2) {                             // H–H contact
+      const [i, j, born] = it.ct, a = P[i], b = P[j], k = (a[2] + b[2]) / 2;
+      const flash = born ? Math.max(0, 1 - (now - born) / 700) : 0;
+      ctx.save();
+      ctx.lineCap = 'round'; ctx.setLineDash([Math.max(3, S * k * 0.12), Math.max(2.5, S * k * 0.09)]); ctx.lineDashOffset = -now / 35;
+      ctx.strokeStyle = COL.gold; ctx.shadowColor = 'rgba(251,191,36,0.75)'; ctx.shadowBlur = Math.max(4, S * 0.25);
+      ctx.globalAlpha = 1 - fogOf(it.Z) * 0.8;
+      ctx.lineWidth = Math.max(1.5, S * k * 0.07) * (1 + 1.6 * flash);
+      ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      ctx.restore();
+    } else if (it.t === 3) {                             // bubble for the next residue
+      const { q } = it.gh, rr = R0 * S * q[2] * 0.9, isH = G.H[G.k];
+      shadeBead(q[0], q[1], rr, isH, 0, 0.3);
+      ctx.save(); ctx.globalAlpha = 0.6; ctx.setLineDash([3, 3]); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(q[0], q[1], rr, 0, TAU); ctx.stroke(); ctx.restore();
+    } else {                                             // hint glow
+      const [X, Y, k] = it.q, R = S * k * 0.42;
+      const g = ctx.createRadialGradient(X, Y, 0, X, Y, R);
+      g.addColorStop(0, `rgba(239,68,68,${(0.12 + 0.09 * it.n) * pulse})`);
+      g.addColorStop(1, 'rgba(239,68,68,0)');
+      ctx.fillStyle = g; ctx.fillRect(X - R, Y - R, 2 * R, 2 * R);
+    }
+  }
+
+  // key caps on the bubbles, always on top so you can read them
+  for (const gh of ghosts) {
+    const [X, Y, k] = gh.q, rr = R0 * S * k * 0.9, it = MAP.intentOfDir[gh.d];
+    const lab = (COARSE ? TOUCH_LABEL : KEY_LABEL)[it], fs = Math.round(clamp(rr * 0.85, 11, 18));
+    ctx.font = `800 ${fs}px ui-rounded, system-ui, sans-serif`;
+    const w = Math.max(fs * 1.25, ctx.measureText(lab).width + 8), h = fs * 1.3;
+    const depth = it === 'in' || it === 'out';
+    ctx.fillStyle = depth ? 'rgba(251,191,36,0.92)' : 'rgba(233,238,246,0.92)';
+    ctx.beginPath(); roundRect(X - w / 2, Y - h / 2, w, h, 5); ctx.fill();
+    ctx.fillStyle = '#111827'; ctx.fillText(lab, X, Y + 1);
+    if (gh.g > 0) {
+      const bx = X + rr * 0.95, by = Y - rr * 0.95, br = Math.max(8, rr * 0.5);
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, TAU); ctx.fillStyle = COL.gold; ctx.fill();
+      ctx.strokeStyle = '#1b1f27'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.fillStyle = '#1b1f27'; ctx.font = `800 ${Math.round(br * 1.1)}px ui-rounded, system-ui, sans-serif`;
+      ctx.fillText('+' + gh.g, bx, by + 0.5);
+    }
+  }
+}
+
+function roundRect(x, y, w, h, r) {
+  ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+
+function drawDeath(now) {
+  const d = G.death, k = G.k - 1, p = 0.5 + 0.5 * Math.sin(now / 110);
+  const q = d.type === 'clash' ? proj(d.x, d.y, d.z) : proj(G.xs[k], G.ys[k], G.zs[k]);
+  const r = cam.s * 0.31 * q[2];
+  ctx.strokeStyle = `rgba(248,113,113,${0.45 + 0.55 * p})`; ctx.lineWidth = Math.max(2, cam.s * 0.07);
+  ctx.beginPath(); ctx.arc(q[0], q[1], r * (1.45 + 0.25 * p), 0, TAU); ctx.stroke();
+  if (d.type === 'clash') {
+    const s = r * 0.7;
+    ctx.beginPath(); ctx.moveTo(q[0] - s, q[1] - s); ctx.lineTo(q[0] + s, q[1] + s); ctx.moveTo(q[0] + s, q[1] - s); ctx.lineTo(q[0] - s, q[1] + s); ctx.stroke();
+  }
+}
+
+function drawFX(now) {
+  const S = cam.s;
+  for (const p of parts) {
+    const q = proj(p.x, p.y, p.z);
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.c;
+    ctx.beginPath(); ctx.arc(q[0], q[1], Math.max(1.2, p.r * S * q[2]), 0, TAU); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (const f of floats) {
+    const t = (now - f.t0) / 1200, q = proj(f.x, f.y, f.z);
+    ctx.globalAlpha = Math.max(0, 1 - t * t);
+    ctx.font = `800 ${Math.round(clamp(S * 0.42, 14, 24))}px ui-rounded, system-ui, sans-serif`;
+    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(11,16,25,0.85)';
+    const X = q[0], Y = q[1] - t * S * 1.1;
+    ctx.strokeText(f.text, X, Y); ctx.fillStyle = COL.gold; ctx.fillText(f.text, X, Y);
+  }
+  ctx.globalAlpha = 1;
+  for (const p of confetti) {
+    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+    ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+    ctx.restore();
+  }
+}
+
+function draw(now) {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.fillStyle = '#0b1019'; ctx.fillRect(0, 0, VW, VH);
+  const vg = ctx.createRadialGradient(VW / 2, view.cy, 0, VW / 2, view.cy, Math.max(VW, VH) * 0.7);
+  vg.addColorStop(0, 'rgba(30,41,64,0.55)'); vg.addColorStop(1, 'rgba(30,41,64,0)');
+  ctx.fillStyle = vg; ctx.fillRect(0, 0, VW, VH);
+  if (!G) return;
+  drawFloor();
+  drawScene(now);
+  if (!G.showOpt && G.state === 'dead') drawDeath(now);
+  drawFX(now);
+}
+
+// =====================================================================================
+//  Main loop
+// =====================================================================================
+let lastT = performance.now();
+function frame(t) {
+  const dt = Math.min(0.05, (t - lastT) / 1000); lastT = t;
+  if (G) {
+    camTarget();
+    // a slow victory spin while you admire the finished fold (until you grab the camera)
+    if (!cam.userOrbit && !drag && (G.state === 'done' || G.showOpt)) cam.tyaw += dt * 0.35;
+  }
+  const f = 1 - Math.exp(-dt * 5), fa = 1 - Math.exp(-dt * 7);
+  cam.x += (cam.tx - cam.x) * f; cam.y += (cam.ty - cam.y) * f; cam.z += (cam.tz - cam.z) * f;
+  cam.rad += (cam.trad - cam.rad) * f; cam.floor += (cam.tfloor - cam.floor) * f;
+  cam.s += (cam.ts * cam.zoom - cam.s) * f;
+  if (!drag) { cam.yaw += (cam.tyaw - cam.yaw) * fa; cam.pitch += (cam.tpitch - cam.pitch) * fa; }
+  cam.dist = 9 + 2 * cam.rad;
+  updateBasis();
+  updateMap();
+  updateFX(dt);
+  draw(t);
+  requestAnimationFrame(frame);
+}
+
+addEventListener('resize', resize);
+updateBasis(); updateMap();
+newGame(LEVELS[0]);
+resize();
+openMenu();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+---
+/**
+ * HpSnakeEgg: an easter egg. It wraps a widget (the folding game on the Playground) and puts a
+ * small rainbow button in that widget's top right corner. The button swaps the widget, in place,
+ * for HP Snake: a game of folding a string on the lattice one residue at a time, 2D on the square
+ * lattice and 3D on the cubic lattice. The same button (or the ✕) swaps the widget back.
+ *
+ *   import HpSnakeEgg from '../../widgets/hp-snake/HpSnakeEgg.astro';
+ *   <div class="wide"><HpSnakeEgg><FoldGame client:load … /></HpSnakeEgg></div>
+ *
+ * The games are standalone pages in public/hp-snake/ (no build step, no dependencies), shown in
+ * an iframe inside the panel. They keep their own dark arcade look with red H's and grey P's, so
+ * unlike the other widgets they do not use tokens.css; only the button and the panel frame live
+ * here. The page opens the game when its address ends in #hp-snake (or #hp-snake-3d).
+ * Styles: hp-snake.css (classes prefixed hs-).
+ */
+import './hp-snake.css';
+import { withBase } from '../../lib/url';
+
+const games = {
+  '2d': withBase('/hp-snake/hp-snake.html'),
+  '3d': withBase('/hp-snake/hp-snake-3d.html'),
+};
+---
+
+<div class="hs-host" data-games={JSON.stringify(games)}>
+  <div class="hs-widget"><slot /></div>
+
+  <section class="hs-panel" aria-label="HP Snake" hidden>
+    <div class="hs-bar">
+      <span class="hs-title"><span aria-hidden="true">🐍</span> HP Snake</span>
+      <div class="hs-tabs" role="group" aria-label="Lattice">
+        <button type="button" data-dim="2d" aria-pressed="true">2D</button>
+        <button type="button" data-dim="3d" aria-pressed="false">3D</button>
+      </div>
+      <a class="hs-open" href={games['2d']} target="_blank" rel="noopener">Full screen ↗</a>
+      <button type="button" class="hs-close" aria-label="Back to the folding game" title="Back to the folding game">✕</button>
+    </div>
+    <iframe class="hs-frame" title="HP Snake" allow="fullscreen; autoplay"></iframe>
+  </section>
+
+  <button type="button" class="hs-egg" aria-pressed="false" aria-label="Secret game: HP Snake" title="Psst… a secret game">
+    <span class="hs-gloss" aria-hidden="true"></span>
+  </button>
+</div>
+
+<script>
+  type Dim = '2d' | '3d';
+  for (const host of document.querySelectorAll<HTMLElement>('.hs-host')) {
+    const games = JSON.parse(host.dataset.games ?? '{}') as Record<Dim, string>;
+    const egg = host.querySelector<HTMLButtonElement>('.hs-egg')!;
+    const panel = host.querySelector<HTMLElement>('.hs-panel')!;
+    const frame = host.querySelector<HTMLIFrameElement>('.hs-frame')!;
+    const open = host.querySelector<HTMLAnchorElement>('.hs-open')!;
+    const tabs = [...host.querySelectorAll<HTMLButtonElement>('.hs-tabs button')];
+
+    let dim: Dim = '2d';
+    try {
+      if (localStorage.getItem('hpsnake.egg.dim') === '3d') dim = '3d';
+    } catch {}
+
+    const mark = (d: Dim) => {
+      dim = d;
+      for (const t of tabs) t.setAttribute('aria-pressed', String(t.dataset.dim === d));
+      open.href = games[d];
+      try {
+        localStorage.setItem('hpsnake.egg.dim', d);
+      } catch {}
+    };
+    const focusGame = () => {
+      frame.focus({ preventScroll: true });
+      frame.contentWindow?.focus();
+    };
+    // load a game into the frame; the frame keeps it (and your progress) while the panel is hidden
+    const load = (d: Dim) => {
+      mark(d);
+      if (frame.dataset.dim !== d) {
+        frame.dataset.dim = d;
+        frame.src = games[d];
+      } else focusGame();
+    };
+    const isOn = () => host.classList.contains('is-snake');
+
+    const show = (d: Dim = dim) => {
+      if (!isOn()) {
+        host.classList.add('is-snake');
+        panel.hidden = false;
+        egg.setAttribute('aria-pressed', 'true');
+        egg.title = 'Back to the folding game';
+        // bring the whole game into view if part of it is off screen
+        const r = panel.getBoundingClientRect();
+        const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-h')) * 16 || 56;
+        if (r.top < header || r.bottom > innerHeight) panel.scrollIntoView({ block: 'start' });
+      }
+      load(d);
+    };
+    const hide = () => {
+      if (!isOn()) return;
+      host.classList.remove('is-snake');
+      panel.hidden = true;
+      egg.setAttribute('aria-pressed', 'false');
+      egg.title = 'Psst… a secret game';
+      // the folding game was hidden: let it measure itself again
+      window.dispatchEvent(new Event('resize'));
+      egg.focus({ preventScroll: true });
+    };
+
+    egg.addEventListener('click', () => (isOn() ? hide() : show()));
+    host.querySelector('.hs-close')!.addEventListener('click', hide);
+    for (const t of tabs) t.addEventListener('click', () => load(t.dataset.dim as Dim));
+    frame.addEventListener('load', () => {
+      // each game links to the other one: keep the switch in step when the frame navigates by itself
+      try {
+        const d: Dim = /hp-snake-3d\.html$/.test(frame.contentWindow?.location.pathname ?? '') ? '3d' : '2d';
+        frame.dataset.dim = d;
+        mark(d);
+      } catch {}
+      if (isOn()) focusGame();
+    });
+
+    const fromHash = () => {
+      if (location.hash === '#hp-snake') show();
+      else if (location.hash === '#hp-snake-3d') show('3d');
+    };
+    window.addEventListener('hashchange', fromHash);
+    fromHash();
+  }
+</script>

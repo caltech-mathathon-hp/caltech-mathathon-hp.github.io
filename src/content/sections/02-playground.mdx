@@ -9,6 +9,7 @@ order: 2
 
 import FoldGame from '../../widgets/fold-game/FoldGame.tsx';
 import BinPack from '../../widgets/bin-pack/BinPack.tsx';
+import HpSnakeEgg from '../../widgets/hp-snake/HpSnakeEgg.astro';
 
 {/* Level titles in the text are those of src/widgets/fold-game/levels/*.json and
     src/widgets/bin-pack/levels/*.json; rename them here if a level is renamed there. */}
@@ -19,8 +20,12 @@ Place the letters of the string one at a time, each on a free node next to the o
 that end up side by side without being neighbours in the string make a **contact**, drawn as a
 dashed line. Each level says how many contacts its best fold has; try to reach that number.
 
+{/* Easter egg: HpSnakeEgg puts a small rainbow button in the game's top right corner; it swaps
+    the game, in place, for HP Snake (public/hp-snake/). */}
 <div class="wide">
-  <FoldGame client:load levels latticePicker lattice="cubic" />
+  <HpSnakeEgg>
+    <FoldGame client:load levels latticePicker lattice="cubic" />
+  </HpSnakeEgg>
 </div>
 
 The levels start on the cubic lattice, where Berger and Leighton proved their theorem, and lead
