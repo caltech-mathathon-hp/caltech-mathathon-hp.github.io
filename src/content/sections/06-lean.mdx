@@ -25,7 +25,11 @@ export const cooklevin = cert('cooklevin');
     from lean/cooklevin (see the comments at the top of the .toml files next to them). Run it again
     when a project changes. */}
 
-<LeanCertificate label="Berger and Leighton's reduction" />
+<LeanCertificate
+  label="Berger and Leighton's reduction"
+  how="Each problem in the chain reduces to the next in polynomial time. This project proves every step after the first, and that both folding problems are in NP. A separate project proves the first step, and ours, below, plugs it into this chain too."
+  labels={{ SAT: 'Cook–Levin, assumed here, proved below' }}
+/>
 
 <LeanCertificate
   cert="shelf"
